@@ -1,3 +1,7 @@
+# Loaded here too so the queue works even before a running server reloads
+# config/initializers/pagy.rb.
+require "pagy/extras/array"
+
 module Editorial
   class FlagReviewsController < BaseController
     PER_PAGE = 20
