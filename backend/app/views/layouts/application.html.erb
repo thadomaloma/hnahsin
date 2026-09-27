@@ -21,6 +21,7 @@
         <nav aria-label="Primary navigation">
           <%= link_to "Overview", dashboard_path, class: ("current" if current_page?(dashboard_path)) %>
           <%= link_to "Content", editorial_content_items_path, class: ("current" if request.path.start_with?("/editorial/content_items")) %>
+          <% if %w[language culture].any? { |kind| current_user.can_review?(kind) } %><%= link_to "Review", editorial_flag_reviews_path, class: ("current" if request.path.start_with?("/editorial/flag_reviews")) %><% end %>
           <%= link_to "Coverage", editorial_coverage_path, class: ("current" if request.path.start_with?("/editorial/coverage")) %>
           <%= link_to "Releases", editorial_content_packs_path, class: ("current" if request.path.start_with?("/editorial/content_packs")) %>
           <%= link_to flutter_web_test_url, id: "game-test-link", target: "_blank", rel: "noopener", class: "external", title: "Opens the local Flutter web build (flutter run -d web-server --web-port=5050) in its own window" do %>Game test <span aria-hidden="true">&#8599;</span><% end %>

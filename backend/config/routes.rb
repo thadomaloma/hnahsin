@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     get "word_images/:checksum", to: "word_images#show", as: :word_image,
       constraints: { checksum: /[0-9a-f]{64}/ }
     resource :bulk_game_modes, only: :create
+    resources :flag_reviews, only: %i[index update]
     get "coverage", to: "coverage#show", as: :coverage
   end
 

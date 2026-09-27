@@ -704,3 +704,16 @@ table.coverage td, table.coverage th { white-space: nowrap; }
 .bulk-bar select { width: auto; min-width: 170px; }
 .bulk-bar .muted { margin-left: auto; font-size: 12px; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- Flagged-word review ---------- */
+.flag-card { margin-bottom: 16px; }
+.flag-head { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: start; }
+.flag-head h2 { margin: 0; font-size: 22px; }
+.flag-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.decision-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.decision { display: inline-flex; align-items: center; gap: 6px; margin: 0; padding: 9px 14px; border: 1px solid var(--line); border-radius: var(--radius-pill); cursor: pointer; font-weight: 700; }
+.decision:has(input:checked) { background: var(--mint); border-color: var(--green); }
+.decision-drop:has(input:checked) { background: #fff0ee; border-color: #d9574a; }
+.match-hint[data-verdict=ok] { color: var(--green-dark); font-weight: 700; }
+.match-hint[data-verdict=check] { color: #9a6800; font-weight: 700; }
+.match-hint[data-verdict=fix] { color: #c0392b; font-weight: 700; }
