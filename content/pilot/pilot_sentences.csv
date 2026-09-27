@@ -1,0 +1,41 @@
+sentence_id,text_mizo,english_support,linked_candidate_ids,tq_level,status,language_review,learning_review,notes
+sentence.001,Kan inah lo kal rawh.,Please come to our house.,word.in.house|word.lo.come|word.kal,TQ1,draft,pending,pending,
+sentence.002,Ka nu chu a hlim.,My mother is happy.,word.nu|word.hlim,TQ0,draft,pending,pending,
+sentence.003,Ka pa chu a kal.,My father is going.,word.pa|word.kal,TQ0,draft,pending,pending,
+sentence.004,Naupang chu a nui.,The child is smiling.,word.naupang,TQ0,draft,pending,pending,"Candidate nui not yet in pilot list"
+sentence.005,Kan chhûngkua chu kan hlim.,Our family is happy.,word.chhungkua|word.hlim,TQ1,draft,pending,pending,
+sentence.006,Ka pi leh ka pu an lo kal.,My grandmother and grandfather are coming.,word.pi|word.pu|word.lo.come|word.kal,TQ1,draft,pending,pending,
+sentence.007,Ka ṭhian nên kan zir dûn.,I study together with my friend.,word.thian|word.zir,TQ1,draft,pending,pending,"Confirm dûn spelling and naturalness"
+sentence.008,Mikhual chu inah a thleng.,The guest arrived at the house.,word.mikhual|word.in.house,TQ1,draft,pending,pending,"Candidate thleng not yet in pilot list"
+sentence.009,Zirtîrtu chu sikul a kal.,The teacher goes to school.,word.zirtirtu|word.sikul|word.kal,TQ1,draft,pending,pending,
+sentence.010,Zirlaiin lehkhabu a chhiar.,The student reads a book.,word.zirlai|word.lehkhabu|word.chhiar,TQ1,draft,pending,pending,"Case/spacing review"
+sentence.011,Lehkhabuah i hming ziak rawh.,Write your name in the book.,word.lehkhabu|word.ziak,TQ1,draft,pending,pending,"Candidate hming not yet in pilot list"
+sentence.012,He thumal hi chhiar rawh.,Read this word.,word.thumal|word.chhiar,TQ0,draft,pending,pending,
+sentence.013,Mizo tawng ka zir.,I learn Mizo.,word.tawng|word.zir,TQ0,draft,pending,pending,
+sentence.014,Zawhna hi chhâng rawh.,Answer this question.,word.zawhna|word.chhanna,TQ1,draft,pending,pending,"Verb form and linked sense review"
+sentence.015,I chhânna chu a dik e.,Your answer is correct.,word.chhanna,TQ1,draft,pending,pending,"Candidate dik not yet in pilot list"
+sentence.016,Ar chu in bulah a kal.,The chicken walks near the house.,word.ar|word.in.house|word.kal,TQ0,draft,pending,pending,
+sentence.017,Ui chu a tlân chak.,The dog runs fast.,word.ui|word.tlan|word.chak,TQ0,draft,pending,pending,
+sentence.018,Sava chu thingah a thut.,The bird sits on the tree.,word.sava|word.thing|word.thut,TQ0,draft,pending,pending,"Postposition/naturalness review"
+sentence.019,Sangha chu tuiah a awm.,The fish is in the water.,word.sangha|word.tui,TQ0,draft,pending,pending,"Candidate awm not yet in pilot list"
+sentence.020,Sakei chu ramsa chak tak a ni.,The tiger is a strong wild animal.,word.sakei|word.chak,TQ1,draft,pending,pending,"Candidate ramsa not yet in pilot list"
+sentence.021,Ni chu a eng.,The sun is shining.,word.ni.sun,TQ0,draft,pending,pending,"Candidate eng not yet in pilot list"
+sentence.022,Thla chu zânah a eng.,The moon shines at night.,word.thla.moon|word.zan,TQ0,draft,pending,pending,
+sentence.023,Vânah arsi a awm.,There are stars in the sky.,word.van|word.arsi,TQ1,draft,pending,pending,"Locative and singular/plural review"
+sentence.024,Tlâng aṭangin lui kan hmu.,We see the river from the mountain.,word.tlang|word.lui,TQ1,draft,pending,pending,"Candidate hmu not yet in pilot list"
+sentence.025,Thing hnuaiah kan thut.,We sit under the tree.,word.thing|word.thut,TQ0,draft,pending,pending,
+sentence.026,Pâr chu a mawi.,The flower is beautiful.,word.par|word.mawi,TQ0,draft,pending,pending,
+sentence.027,"Tho la, sikul kal rawh.",Wake up and go to school.,word.tho.rise|word.sikul|word.kal,TQ1,draft,pending,pending,"Tone/imperative naturalness review"
+sentence.028,Chaw ei rawh.,Please eat your meal.,word.chaw|word.ei,TQ0,draft,pending,pending,
+sentence.029,Tui in rawh.,Please drink water.,word.tui|word.in.drink,TQ0,draft,pending,pending,
+sentence.030,Ka thu sawi ngaithla rawh.,Please listen to what I say.,word.sawi|word.ngaithla,TQ1,draft,pending,pending,"Naturalness review"
+sentence.031,I duh zâwng thlang rawh.,Choose what you like.,word.duh,TQ1,draft,pending,pending,"Candidate thlang not yet in pilot list"
+sentence.032,He thil hi hmang rawh.,Use this item.,word.hmang,TQ1,draft,pending,pending,"Candidate thil not yet in pilot list"
+sentence.033,Thumal pathum ziak rawh.,Write three words.,word.thumal|word.pathum|word.ziak,TQ0,draft,pending,pending,
+sentence.034,Lehkhabu hi hetah dah rawh.,Put the book here.,word.lehkhabu|word.dah,TQ0,draft,pending,pending,"Candidate hetah not yet in pilot list"
+sentence.035,Zîngah kan zai ho.,We sing together in the morning.,word.zing|word.zai,TQ1,draft,pending,pending,
+sentence.036,Vawiin sikul ka kal.,I go to school today.,word.vawiin|word.sikul|word.kal,TQ0,draft,pending,pending,
+sentence.037,Naktûkah lo kal rawh.,Please come tomorrow.,word.naktuk|word.lo.come|word.kal,TQ0,draft,pending,pending,
+sentence.038,Thingpui leh chaw kan ei.,We have tea and food.,word.thingpui|word.chaw|word.ei,TQ1,draft,pending,pending,"Verb choice/natural English support review"
+sentence.039,Tlawmngaihna chu kan nunphung hlu tak a ni.,Tlawmngaihna is a treasured value in Mizo life.,word.tlawmngaihna,TQ3,draft,pending,pending,"Cultural review and nuanced translation mandatory"
+sentence.040,"Thufing hi chhiar la, a awmzia sawi rawh.",Read this proverb and explain its meaning.,word.thufing|word.chhiar|word.sawi,TQ2,draft,pending,pending,"Grammar and terminology review"

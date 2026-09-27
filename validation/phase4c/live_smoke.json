@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "build": "0.12.0+22",
+  "checked_at": null,
+  "base_url": null,
+  "ready": false,
+  "content_version": null,
+  "content_checksum": null,
+  "reviewed_word_count": 0,
+  "etag_revalidation": false
+}

@@ -1,0 +1,18 @@
+<% if pagy.pages > 1 %>
+  <nav class="pager" aria-label="Pagination">
+    <span class="pager-summary muted"><%= pagy.from %>–<%= pagy.to %> of <%= pagy.count %></span>
+    <span class="pager-controls">
+      <% if pagy.prev %>
+        <%= link_to pagy_url_for(pagy, pagy.prev), class: "button ghost compact" do %><span class="icon-flip"><%= action_icon(:arrow_right) %></span> Previous<% end %>
+      <% else %>
+        <span class="button ghost compact disabled"><span class="icon-flip"><%= action_icon(:arrow_right) %></span> Previous</span>
+      <% end %>
+      <span class="pager-page">Page <%= pagy.page %> of <%= pagy.pages %></span>
+      <% if pagy.next %>
+        <%= link_to pagy_url_for(pagy, pagy.next), class: "button ghost compact" do %>Next <%= action_icon(:arrow_right) %><% end %>
+      <% else %>
+        <span class="button ghost compact disabled">Next <%= action_icon(:arrow_right) %></span>
+      <% end %>
+    </span>
+  </nav>
+<% end %>

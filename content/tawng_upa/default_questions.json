@@ -1,0 +1,70 @@
+{
+  "_comment": "Built-in Tawng Upa questions (lib/src/data.dart oldWordQuestions), imported as question drafts by `bin/rails editorial:import_game_content`.",
+  "questions": [
+    {
+      "prompt_mizo": "“Tlawmngaihna” tih hian eng nge a kawh?",
+      "options": [
+        "Mahni hmasial lova mi dangte ngaihsakna",
+        "Sum leh pai ngahna",
+        "Mi dang hlauhna",
+        "Thu sawi thiamna"
+      ],
+      "answer": "Mahni hmasial lova mi dangte ngaihsakna",
+      "explanation_mizo": "Tlawmngaihna chu mahni hmasial lova mi dangte ṭanpui leh ngaihsakna rilru a ni.",
+      "emoji": "🤝",
+      "difficulty": 1
+    },
+    {
+      "prompt_mizo": "“Zawlbuk” chu eng nge ni?",
+      "options": [
+        "Hmanlai tlangvalte awmkhawmna in",
+        "Buh sengna hmun",
+        "Chawhmeh chi khat",
+        "Khuang chi khat"
+      ],
+      "answer": "Hmanlai tlangvalte awmkhawmna in",
+      "explanation_mizo": "Zawlbuk chu hmanlai Mizo khuaa tlangvalte awmkhawmna leh mikhual thlenna in a ni.",
+      "emoji": "🏡",
+      "difficulty": 1
+    },
+    {
+      "prompt_mizo": "“Hnial” tih awmzia eng nge?",
+      "options": [
+        "Thu sawi inpersan",
+        "Hla sak",
+        "Tlan chak",
+        "Chaw ei"
+      ],
+      "answer": "Thu sawi inpersan",
+      "explanation_mizo": "Hnial tih chu thu sawi inpawm lo va inhnial tihna a ni.",
+      "emoji": "🗣️",
+      "difficulty": 1
+    },
+    {
+      "prompt_mizo": "“Tlawh” tih chu eng nge?",
+      "options": [
+        "Mi emaw hmun emaw va tlawh",
+        "Mut",
+        "In lam pan",
+        "Lehkha ziak"
+      ],
+      "answer": "Mi emaw hmun emaw va tlawh",
+      "explanation_mizo": "Tlawh tih chu mi emaw hmun emaw va kan tihna a ni.",
+      "emoji": "📍",
+      "difficulty": 1
+    },
+    {
+      "prompt_mizo": "“Thufing” chu eng nge?",
+      "options": [
+        "Finna thu tawi",
+        "Thawnthu sei",
+        "Hla thu",
+        "Hmingthang"
+      ],
+      "answer": "Finna thu tawi",
+      "explanation_mizo": "Thufing chu nunna zirtîrna leh finna thu tawi a ni.",
+      "emoji": "💡",
+      "difficulty": 1
+    }
+  ]
+}

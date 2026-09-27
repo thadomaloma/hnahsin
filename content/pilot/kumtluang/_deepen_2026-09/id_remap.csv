@@ -1,0 +1,719 @@
+source,old_candidate_id,new_candidate_id,canonical_form
+class1,word.grep,word.grep,grep
+class1,word.jam,word.jam,jam
+class1,word.haw,word.haw,haw
+class1,word.ral,word.ral,ral
+class1,word.lam,word.lam-3,lam
+class1,word.thuai,word.thuai,thuai
+class1,word.der,word.der,der
+class1,word.zuk,word.zuk,zuk
+class1,word.peng,word.peng,pêng
+class1,word.tap,word.tap,ṭap
+class1,word.tala,word.tala,tala
+class1,word.nun,word.nun,nun
+class1,word.nui,word.nui,nui
+class1,word.pho,word.pho,pho
+class1,word.rit,word.rit,rit
+class1,word.lal,word.lal,lal
+class1,word.nei,word.nei,nei
+class1,word.lak,word.lak,lak
+class1,word.bul,word.bul,bul
+class1,word.mak,word.mak,mak
+class1,word.tak,word.tak,tak
+class1,word.thleng,word.thleng,thlêng
+class1,word.nawt,word.nawt-2,nâwt
+class1,word.tin,word.tin,tin
+class1,word.ainawn,word.ainawn,ainâwn
+class1,word.buhhum,word.buhhum,buhhûm
+class1,word.tuh,word.tuh,tuh
+class1,word.to,word.to,ṭo
+class1,word.vui,word.vui,vûi
+class1,word.ngiau,word.ngiau,ngiau
+class1,word.tawk,word.tawk,tâwk
+class1,word.bauh,word.bauh,bauh
+class1,word.deng,word.deng,deng
+class1,word.thiam,word.thiam,thiam
+class1,word.mum,word.mum,mum
+class1,word.lir,word.lir,lir
+class1,word.hram,word.hram-3,hrâm
+class1,word.rawl,word.rawl,râwl
+class1,word.ring,word.ring,ring
+class1,word.hawihhawm,word.hawihhawm-2,hawihhâwm
+class1,word.dial,word.dial,dial
+class1,word.inkawm,word.inkawm,inkâwm
+class1,word.hnial,word.hnial,hnial
+class1,word.thingkittu,word.thingkittu,thingkittu
+class1,word.chuk,word.chuk,chuk
+class1,word.ham,word.ham,ham
+class1,word.biru,word.biru,biru
+class1,word.hlu,word.hlu,hlu
+class1,word.khaum,word.khaum,khaûm
+class1,word.kung,word.kung,kung
+class1,word.hnathial,word.hnathial,hnathial
+class1,word.mumang,word.mumang,mumang
+class1,word.fang,word.fang,fang
+class1,word.lawmawm,word.lawmawm,lawmawm
+class1,word.damlo,word.damlo,damlo
+class1,word.sawt,word.sawt,sawt
+class2,word.vak,word.vak,vak
+class2,word.zar,word.zar-2,zâr
+class2,word.seh,word.seh,seh
+class2,word.phu,word.phu,phu
+class2,word.tla,word.tla,tla
+class2,word.motor,word.motor,motor
+class2,word.thlawhna,word.thlawhna,thlawhna
+class2,word.nawinawk,word.nawinawk,nawinâwk
+class2,word.ting,word.ting,ting
+class2,word.serthlum,word.serthlum,serthlum
+class2,word.pawl2,word.pawl-4,pâwl
+class2,word.chhem2,word.chhem-2,chhêm
+class2,word.kang,word.kang,kâng
+class2,word.thelh,word.thelh-2,ṭhelh
+class2,word.sur,word.sur,sûr
+class2,word.phuh,word.phuh,phuh
+class2,word.ruai,word.ruai,ruai
+class2,word.lawn,word.lawn,lawn
+class2,word.rualbanlo,word.rualbanlo,rualbanlo
+class2,word.auh,word.auh,auh
+class2,word.nawm,word.nawm,nawm
+class2,word.tichhetuah,word.tichhetuah,tichhetuah
+class2,word.khawrh,word.khawrh,khawrh
+class2,word.hling,word.hling,hling
+class2,word.hnuk,word.hnuk-2,hnûk
+class2,word.puak,word.puak,puak
+class2,word.kuhmum,word.kuhmum,kuhmûm
+class2,word.tuihawk,word.tuihawk,tuihâwk
+class2,word.tidur,word.tidur,tidur
+class2,word.puam,word.puam,puam
+class2,word.to,word.to-2,ṭo
+class2,word.thal,word.thal,ṭhâl
+class2,word.khiang,word.khiang,khiang
+class2,word.lungpui,word.lungpui,lungpui
+class2,word.hahchawl,word.hahchawl-2,hahchâwl
+class2,word.cheng,word.cheng,chêng
+class2,word.chawm,word.chawm-2,châwm
+class2,word.hram,word.hram-4,hrâm
+class2,word.var,word.var-2,vâr
+class2,word.ngun,word.ngun-2,ngun
+class2,word.dim,word.dim,dim
+class2,word.veilam,word.veilam-2,veilam
+class2,word.sial,word.sial,sial
+class2,word.vir,word.vir,vir
+class2,word.remchang,word.remchang,remchang
+class2,word.it,word.it,ît
+class2,word.feh,word.feh,feh
+class2,word.chhep,word.chhep,chhep
+class2,word.vengtu,word.vengtu,vêngtu
+class2,word.hlobet,word.hlobet,hlobet
+class2,word.bawhtir,word.bawhtir,bawhtîr
+class2,word.felna,word.felna,felna
+class2,word.tiang,word.tiang,tiang
+class2,word.dawhkan,word.dawhkan,dawhkân
+class2,word.ngilneihna,word.ngilneihna,ngilneihna
+class2,word.khirh,word.khirh,khirh
+class2,word.beidawng,word.beidawng,beidawng
+class2,word.natna,word.natna,natna
+class2,word.nghet,word.nghet,nghet
+class2,word.aiawh,word.aiawh,aiawh
+class2,word.inlar,word.inlar,inlâr
+class2,word.inhnial,word.inhnial,inhnial
+class2,word.umpha,word.umpha,ûmpha
+class2,word.lawmawm,word.lawmawm-2,lawmawm
+class2,word.tumruh,word.tumruh,tumruh
+class2,word.balhla,word.balhla,balhla
+class2,word.fel,word.fel,fel
+class2,word.tuihal,word.tuihal,tuihâl
+class2,word.khar,word.khar,khâr
+class2,word.hawng,word.hawng-2,hawng
+class2,word.ring,word.ring-2,ring
+class3,word.kawng2,word.kawng,kâwng
+class3,word.kezungpui,word.kezungpui,kezungpui
+class3,word.ral2,word.ral-2,râl
+class3,word.thlaphang,word.thlaphang,thlaphâng
+class3,word.rawl2,word.rawl-2,râwl
+class3,word.chawhnu,word.chawhnu,chawhnu
+class3,word.zirtir,word.zirtir,zirtir
+class3,word.dingdi,word.dingdi,dingdi
+class3,word.derhken,word.derhken,derhken
+class3,word.thangrei,word.thangrei,thangrei
+class3,word.hnahsin,word.hnahsin,hnahsin
+class3,word.theitehmul,word.theitehmul,theitehmul
+class3,word.hlai1,word.hlai,hlâi
+class3,word.hlai2,word.hlai-2,hlâi
+class3,word.kawt,word.kawt,kawt
+class3,word.hnung,word.hnung,hnung
+class3,word.thuhnuairawlh,word.thuhnuairawlh,thuhnuairawlh
+class3,word.thatna,word.thatna,thatna
+class3,word.urh,word.urh,urh
+class3,word.palh,word.palh,palh
+class3,word.choka,word.choka,choka
+class3,word.hmusit,word.hmusit,hmusit
+class3,word.nghalchang,word.nghalchang,nghalchang
+class3,word.sabawp,word.sabawp,sa bawp
+class3,word.lungthu,word.lungthu,lungthu
+class3,word.awllen,word.awllen,âwllên
+class3,word.chhawng,word.chhawng,chhâwng
+class3,word.sur,word.sur-2,sûr
+class3,word.ruahtui,word.ruahtui,ruahtui
+class3,word.peng,word.peng-2,peng
+class3,word.faihliau,word.faihliau,fai hliau
+class3,word.tungkhawm,word.tungkhawm,tung khawm
+class3,word.engthawl,word.engthawl,engthawl
+class3,word.vul,word.vul,vul
+class3,word.rapthlak,word.rapthlak,râpthlâk
+class3,word.fai,word.fai,fai
+class3,word.thui2,word.thui-2,ṭhui
+class3,word.antam,word.antam,anṭam
+class3,word.bawm2,word.bawm,bâwm
+class3,word.thau,word.thau,thau
+class3,word.vahtir,word.vahtir,vahtir
+class3,word.rualthawt,word.rualthawt,rual ṭhawt
+class3,word.thuawih,word.thuawih,thuawih
+class3,word.inzah,word.inzah,inzah
+class3,word.lei2,word.lei,lei
+class3,word.buak,word.buak,buak
+class3,word.tlaivar,word.tlaivar,tlaivar
+class3,word.hling,word.hling-2,hling
+class3,word.pua,word.pua,pua
+class3,word.hrai,word.hrai,hrai
+class3,word.thlem,word.thlem,thlêm
+class3,word.tap,word.tap-2,tap
+class3,word.hmaihthelh,word.hmaihthelh,hmaihthelh
+class3,word.tah2,word.tah,tah
+class3,word.buhmal,word.buhmal,buhmal
+class3,word.duhsakna,word.duhsakna,duhsakna
+class3,word.hmuingilna,word.hmuingilna,hmuingilna
+class3,word.nunna,word.nunna,nunna
+class3,word.mamawh,word.mamawh,mamawh
+class3,word.thial,word.thial,thial
+class3,word.zelthel,word.zelthel,zelthel
+class3,word.nachang,word.nachang,nachâng
+class3,word.chuantir,word.chuantir,chuantir
+class3,word.nem,word.nem,nêm
+class3,word.thal,word.thal-2,thal
+class3,word.inphelh,word.inphelh,inphelh
+class3,word.chang2,word.chang,chang
+class3,word.sa2,word.sa-2,sâ
+class4,word.huam,word.huam,huam
+class4,word.thatho,word.thatho,thatho
+class4,word.kawngkhar,word.kawngkhar,kawngkhâr
+class4,word.nui,word.nui-2,nui
+class4,word.thutak,word.thutak,thutak
+class4,word.dim,word.dim-2,dim
+class4,word.phawk,word.phawk,phâwk
+class4,word.mak,word.mak-2,mak
+class4,word.rang,word.rang,rang
+class4,word.hlauthawng,word.hlauthawng-2,hlauthâwng
+class4,word.damdiai,word.damdiai,dam diai
+class4,word.thawhlawm,word.thawhlawm,thawhlawm
+class4,word.chhiatni,word.chhiatni,chhiatni
+class4,word.bengchheng,word.bengchheng,bengchheng
+class4,word.tithlabar,word.tithlabar,tithlabâr
+class4,word.hawihhawm,word.hawihhawm-3,hawihhâwm
+class4,word.thilkawm,word.thilkawm,thilkawm
+class4,word.dawt,word.dawt,dâwt
+class4,word.tlawh,word.tlawh,tlawh
+class4,word.tlai,word.tlai-2,tlai
+class4,word.hul,word.hul,hul
+class4,word.huh,word.huh,huh
+class4,word.rit,word.rit-2,rit
+class4,word.eng,word.eng-3,êng
+class4,word.bial,word.bial,bial
+class4,word.ria,word.ria,ria
+class4,word.zang,word.zang,zâng
+class4,word.sawl,word.sawl,sâwl
+class4,word.chum,word.chum,chum
+class4,word.ralpui,word.ralpui,ralpui
+class4,word.dawm,word.dawm,dawm
+class4,word.lentupui,word.lentupui,lentupui
+class4,word.siang,word.siang,siang
+class4,word.thangthar,word.thangthar,ṭhangthar
+class4,word.nawi,word.nawi,nawi
+class4,word.tiauvut,word.tiauvut,ṭiauvut
+class4,word.tihlim,word.tihlim,tihlim
+class4,word.tiharh,word.tiharh,tiharh
+class4,word.tidarh,word.tidarh,tidarh
+class4,word.zanin,word.zanin-2,zanin
+class4,word.nichin,word.nichin,nichin
+class4,word.hal,word.hal,hâl
+class4,word.mutchhuak,word.mutchhuak,mut chhuak
+class4,word.maianbai,word.maianbai,maian bai
+class4,word.daih,word.daih,daih
+class4,word.peih,word.peih,peih
+class4,word.ngaihnawm,word.ngaihnawm,ngaihnawm
+class4,word.tuihnai,word.tuihnai-2,tuihnâi
+class4,word.biru,word.biru-2,biru
+class4,word.thawm,word.thawm,thâwm
+class4,word.harhvang,word.harhvang-2,harhvâng
+class4,word.nghafuan,word.nghafuan,nghafuan
+class4,word.hnianghnar,word.hnianghnar,hnianghnâr
+class4,word.run,word.run,rûn
+class4,word.ral,word.ral-3,râl
+class4,word.thlaichhiah,word.thlaichhiah,thlaichhiah
+class4,word.inbuatsaih,word.inbuatsaih,inbuatsaih
+class4,word.chhawnghnawh,word.chhawnghnawh,chhâwng hnawh
+class4,word.hmanghria,word.hmanghria,hmanghria
+class4,word.ngatngat,word.ngatngat,ngat ngat
+class4,word.hnual,word.hnual,hnual
+class4,word.hnukchah,word.hnukchah,hnuk chah
+class4,word.zuankahlen,word.zuankahlen,zuankahlên
+class4,word.inphekbeih,word.inphekbeih,inphêk beih
+class4,word.kakpui,word.kakpui,kâkpui
+class4,word.zangruh,word.zangruh,zângruh
+class4,word.tinreng,word.tinreng,tinreng
+class4,word.hlan,word.hlan,hlân
+class4,word.turni,word.turni,tûrni
+class4,word.chun,word.chun,chûn
+class4,word.nghatun,word.nghatun,nghatun
+class4,word.nghadawl,word.nghadawl,nghadawl
+class4,word.nghahrah,word.nghahrah,nghahrah
+class4,word.nghavawk,word.nghavawk,nghavawk
+class4,word.nghavang,word.nghavang,nghavâng
+class4,word.ngharul,word.ngharul,ngharûl
+class4,word.lengphar,word.lengphar,lengphâr
+class4,word.chhawlhring,word.chhawlhring,chhâwlhring
+class4,word.chinrang,word.chinrang,chinrâng
+class4,word.kireuh,word.kireuh,kireuh
+class4,word.tawllawt,word.tawllawt,tawllâwt
+class4,word.varihaw,word.varihaw,varihâw
+class4,word.bullut,word.bullut,bullut
+class4,word.chhuangtuar,word.chhuangtuar,chhuangtuar
+class4,word.arpui,word.arpui,arpui
+class4,word.zawhte,word.zawhte-2,zawhtê
+class4,word.sihal,word.sihal,sihal
+class4,word.sanghar,word.sanghar,sanghar
+class4,word.mupui,word.mupui,mupui
+class4,word.vamur,word.vamur,vamûr
+class4,word.vate,word.vate,vatê
+class4,word.vapual,word.vapual,vapual
+class4,word.sazuk,word.sazuk,sazuk
+class4,word.sanghal,word.sanghal,sanghal
+class4,word.chengkawl,word.chengkawl,chêngkawl
+class4,word.changpat,word.changpat,changpât
+class4,word.pit,word.pit,pit
+class4,word.theiherawt,word.theiherawt,theiherâwt
+class4,word.kual,word.kual,kual
+class4,word.duk,word.duk,duk
+class4,word.kawrtawnghak,word.kawrtawnghak,kawrtawnghâk
+class5,word.titi,word.titi,titi
+class5,word.chhinchhiahna,word.chhinchhiahna,chhinchhiahna
+class5,word.chah,word.chah,chah
+class5,word.nuivarvar,word.nuivarvar,nui var var
+class5,word.hnamtlawm,word.hnamtlawm,hnam tlawm
+class5,word.zung,word.zung,zung
+class5,word.damdawi,word.damdawi,damdawi
+class5,word.hnim,word.hnim,hnim
+class5,word.sairawkherh,word.sairawkherh,sairawkherh
+class5,word.tuifawn,word.tuifawn,tui fawn
+class5,word.leimin,word.leimin,lei min
+class5,word.ditip,word.ditip,ditip
+class5,word.saisir,word.saisir,saisir
+class5,word.chinpar,word.chinpar,chin par
+class5,word.chawnpui,word.chawnpui,chawnpui
+class5,word.ip,word.ip,ip
+class5,word.aieng,word.aieng,aieng
+class5,word.sarzuk,word.sarzuk,sarzuk
+class5,word.sawhthing,word.sawhthing,sawhthing
+class5,word.sekhupthur,word.sekhupthur,sekhupthur
+class5,word.sumbul,word.sumbul,sumbul
+class5,word.tawitaw,word.tawitaw,tawitaw
+class5,word.theiherawt,word.theiherawt-2,theiherawt
+class5,word.tlangsam,word.tlangsam,tlangsam
+class5,word.phuihnam,word.phuihnam,phuihnam
+class5,word.kawltheizik,word.kawltheizik,kawlthei zik
+class5,word.behlawi,word.behlawi,behlawi
+class5,word.thawm,word.thawm-2,thâwm
+class5,word.hnukulh,word.hnukulh,hnuk ulh
+class5,word.hmangchang,word.hmangchang,hmangchang
+class5,word.thuawih,word.thuawih-2,thu awih
+class5,word.inpumkhatna,word.inpumkhatna,inpumkhatna
+class5,word.inlungrual,word.inlungrual,inlungrual
+class5,word.itsikna,word.itsikna,itsikna
+class5,word.phalna,word.phalna,phalna
+class5,word.ruahmansak,word.ruahmansak,ruahmansak
+class5,word.intihretak,word.intihretak,intihre tak
+class5,word.inkalhtlat,word.inkalhtlat,inkalh tlat
+class5,word.pawng,word.pawng,pâwng
+class5,word.hual,word.hual,hual
+class5,word.lungphun,word.lungphun,lungphun
+class5,word.zatzat,word.zatzat,zat zat
+class5,word.liam,word.liam,liam
+class5,word.mitthlaah,word.mitthlaah,mitthlaah
+class5,word.lungnilo,word.lungnilo,lungni lo
+class5,word.thleng,word.thleng-2,thlêng
+class5,word.tanpuina,word.tanpuina,tanpuina
+class5,word.nawi,word.nawi-2,nâwi
+class5,word.choak,word.choak,choâk
+class5,word.tirh,word.tirh,tirh
+class5,word.ramchhuah,word.ramchhuah,ramchhuah
+class5,word.zaidam,word.zaidam,zaidam
+class5,word.thuttir,word.thuttir,thuttir
+class5,word.phian,word.phian,phian
+class5,word.doral,word.doral,dorâl
+class5,word.zam,word.zam,zâm
+class5,word.tlawmweak,word.tlawm-2,tlâwm
+class5,word.sahrang,word.sahrang,sa hrâng
+class5,word.thianchhanthihngam,word.thianchhanthihngam,thian chhan thih ngam
+class5,word.sena,word.sena,sêna
+class5,word.tlakbuak,word.tlakbuak,tlakbuak
+class5,word.lirnghing,word.lirnghing,lirnghing
+class5,word.thingtlang,word.thingtlang,thingtlang
+class5,word.khuh,word.khuh,khuh
+class5,word.vet,word.vet,vêt
+class5,word.khel,word.khel,khêl
+class5,word.thinbih,word.thinbih,thin bih
+class5,word.hnubih,word.hnubih,hnu bih
+class5,word.bilh,word.bilh,bilh
+class5,word.iptechei,word.iptechei,iptechei
+class5,word.thangchhuahpuan,word.thangchhuahpuan,thangchhuahpuan
+class5,word.zodipuan,word.zodipuan,zodipuan
+class5,word.halai,word.halai,ha lai
+class5,word.ting,word.ting-2,ting
+class5,word.thingsaphu,word.thingsaphu,thingsaphu
+class5,word.sentezel,word.sentezel,sentezêl
+class5,word.sahmul,word.sahmul,sahmul
+class5,word.pil,word.pil,pil
+class5,word.vakul,word.vakul,vakul
+class5,word.chhuanawm,word.chhuanawm,chhuanawm
+class6,word.artukkhuan,word.artukkhuan,Artukkhuan
+class6,word.lambak,word.lambak,Lambak
+class6,word.phuihnam,word.phuihnam-2,Phuihnam
+class6,word.antam,word.antam-2,Antam
+class6,word.anthur,word.anthur,Anthûr
+class6,word.chingit,word.chingit,Chingit
+class6,word.behlawi,word.behlawi-2,Behlawi
+class6,word.serthlu,word.serthlu,Serthlu
+class6,word.balhla,word.balhla-2,Balhla
+class6,word.sunhlu,word.sunhlu,Sunhlu
+class6,word.thingfanghmai,word.thingfanghmai,Thingfanghmai
+class6,word.kawlthei,word.kawlthei,Kawlthei
+class6,word.anhling,word.anhling,Anhling
+class6,word.ralram,word.ralram,Râl ram
+class6,word.thinghar,word.thinghar,Thing hâr
+class6,word.thuphachawi,word.thuphachawi,Thupha chawi
+class6,word.losul,word.losul,Losûl
+class6,word.pawhraw,word.pawhraw,Pawhraw
+class6,word.hlet,word.hlet,Hlet
+class6,word.inkulh,word.inkulh,Inkulh
+class6,word.kamtha,word.kamtha,Kam tha
+class6,word.chungtlak,word.chungtlak,Chungtlak
+class6,word.lenrual,word.lenrual,Lenrual
+class6,word.riang,word.riang,Riang
+class6,word.chul,word.chul,Chul
+class6,word.vul,word.vul-2,Vul
+class6,word.mualliam,word.mualliam,Mual liam
+class6,word.aihnahphahpui,word.aihnahphahpui,Ai hnah phahpui
+class6,word.phungzingapiringvawrhang,word.phungzingapiringvawrhang,Phûng zinga piring vawrh ang
+class6,word.buaina,word.buaina,Buaina
+class6,word.balhna,word.balhna,Balhna
+class6,word.inhnawk,word.inhnawk,Inhnawk
+class6,word.kalhnulh,word.kalhnulh,Kalh nulh
+class6,word.nuihsawh,word.nuihsawh,Nuihsawh
+class6,word.fuihpawrh,word.fuihpawrh,Fuihpawrh
+class6,word.farnu,word.farnu,Farnu
+class6,word.thawmmawl,word.thawmmawl,Thawmmâwl
+class6,word.tlangban,word.tlangban,Tlangbân
+class6,word.banglai,word.banglai,Banglai
+class6,word.bangkalhkim,word.bangkalhkim,Bang kalh kim
+class6,word.zufang,word.zufang,Zufâng
+class6,word.thlaichhiahna,word.thlaichhiahna,Thlaichhiahna
+class6,word.zawlpuan,word.zawlpuan,Zawlpuan
+class6,word.sehranlu,word.sehranlu,Se hrân lu
+class6,word.tungchaw,word.tungchaw,Tungchaw
+class6,word.empai,word.empai,Êmpâi
+class6,word.thlangra,word.thlangra,Thlangrâ
+class6,word.arbawm,word.arbawm-2,Arbâwm
+class6,word.paiper,word.paiper,Paipêr
+class6,word.vaihrik,word.vaihrik,Vaihrik
+class6,word.lamthluk,word.lamthluk,Lamthlûk
+class6,word.hniak,word.hniak,Hniak
+class6,word.thidang,word.thidang,Thidang
+class6,word.chemtum,word.chemtum,Chemtum
+class6,word.belmang,word.belmang,Belmang
+class6,word.hlang,word.hlang,Hlâng
+class6,word.dilna,word.dilna,Dilna
+class6,word.sawmna,word.sawmna,Sawmna
+class6,word.thuneitu,word.thuneitu,Thuneitu
+class6,word.thuhruk,word.thuhruk,Thuhrûk
+class7,word.siar,word.siar,siâr
+class7,word.hmatiang,word.hmatiang,hmatiang
+class7,word.tiamthu,word.tiamthu,tiamthu
+class7,word.sirva,word.sirva-2,sîrva
+class7,word.lunglai,word.lunglai,lunglai
+class7,word.chunglum,word.chunglum,chunglûm
+class7,word.mah_riakin,word.mahriakin,mah riakin
+class7,word.chharsak,word.chharsak,chharsak
+class7,word.zak_thei_lo,word.zaktheilo,zak thei lo
+class7,word.lawmman,word.lawmman,lawmman
+class7,word.hreipui,word.hreipui,hreipui
+class7,word.chinghne,word.chinghne,chinghne
+class7,word.beram,word.beram,beram
+class7,word.berampu,word.berampu,berampu
+class7,word.enkawltu,word.enkawltu,enkawltu
+class7,word.hliam,word.hliam,hliam
+class7,word.hnutchhiah,word.hnutchhiah,hnutchhiah
+class7,word.tuar,word.tuar,tuar
+class7,word.seh,word.seh-2,seh
+class7,word.lehchhawng,word.lehchhawng,lehchhawng
+class7,word.hnawksak,word.hnawksak,hnawksak
+class7,word.inring_tawn,word.inringtawn,inring tawn
+class7,word.sazuk,word.sazuk-2,sazuk
+class7,word.hnapkhawn,word.hnapkhawn,hnapkhâwn
+class7,word.mungek,word.mungek,mungek
+class7,word.hnim,word.hnim-2,hnim
+class7,word.savate,word.savate,savate
+class7,word.khau,word.khau-2,khâu
+class7,word.mulukawlh,word.mulukawlh,mulukawlh
+class7,word.choak,word.choak-2,choâk
+class7,word.bal,word.bal-2,bâl
+class7,word.pawlhtu,word.pawlhtu,pawlhtu
+class7,word.dawt,word.dawt-2,dâwt
+class7,word.hai_der,word.haider,hai der
+class7,word.chapo,word.chapo,chapo
+class7,word.sichangneii,word.sichangneii,sichangneii
+class7,word.kangvar,word.kangvar,kângvâr
+class7,word.rapchung,word.rapchung,rapchung
+class7,word.phulraw,word.phulraw,phûlraw
+class7,word.chang,word.chang-2,chang
+class7,word.hlothlo,word.hlothlo,hlothlo
+class7,word.a_ruh_langin,word.aruhlangin,a ruh langin
+class7,word.chhul_khat_kual,word.chhulkhatkual,chhûl khat kual
+class7,word.chhung_tlai,word.chhungtlai,chhung tlai
+class7,word.intuithlar,word.intuithlar,intuithlar
+class7,word.awmni_kham,word.awmnikham,awmni kham
+class7,word.khuavang_ri_kham_sa,word.khuavangrikhamsa,khuavang ri kham sa
+class7,word.luang,word.luang,luang
+class7,word.nasatna,word.nasatna,nasatna
+class7,word.phalhauh,word.phalhauh,phalhauh
+class7,word.huai,word.huai,huai
+class7,word.ramhuai,word.ramhuai,ramhuai
+class7,word.chenchilhtu,word.chenchilhtu,chenchilhtu
+class7,word.vengtu,word.vengtu-2,vengtu
+class7,word.hlum,word.hlum,hlum
+class7,word.chuan_chung,word.chuanchung,chuan chung
+class7,word.bawhbel,word.bawhbel,bawhbel
+class7,word.sut,word.sut-2,sût
+class7,word.tap_chep_sut,word.tapchepsut,tap chep sût
+class7,word.bahzar,word.bahzar,bahzâr
+class7,word.dawvan,word.dawvan,dawvân
+class7,word.awkpaka,word.awkpaka,âwkpakâ
+class7,word.beisei,word.beisei,beisei
+class7,word.zalen,word.zalen,zalên
+class7,word.tihmingchhet,word.tihmingchhet,tihmingchhet
+class7,word.rawngbawl,word.rawngbawl,rawngbawl
+class7,word.hum,word.hum,hum
+class7,word.tihkian,word.tihkian,tihkian
+class7,word.taihmakna,word.taihmakna-2,taihmâkna
+class7,word.tanpuitu,word.tanpuitu,tanpuitu
+class7,word.khawl_khawm,word.khawlkhawm,khawl khâwm
+class7,word.chhek_khawm,word.chhekkhawm,chhêk khâwm
+class7,word.benbel,word.benbel,benbel
+class7,word.hlohna,word.hlohna,hlohna
+class7,word.kaihruaitu,word.kaihruaitu,kaihruaitu
+class7,word.chhep_sual,word.chhepsual,chhep sual
+class7,word.rukruk,word.rukruk,rûkrûk
+class7,word.hnam_hmel,word.hnamhmel,hnam hmêl
+class7,word.beidawnna,word.beidawnna,beidawnna
+class7,word.chirhdum,word.chirhdum,chirhdûm
+class7,word.luahtu,word.luahtu,luahtu
+class7,word.inpumkhatna,word.inpumkhatna-2,inpumkhatna
+class7,word.rawk,word.rawk,rawk
+class7,word.thlahthlam,word.thlahthlam,thlahthlam
+class7,word.mahni_kutke,word.mahnikutke,mahni kutke
+class7,word.lukhawng,word.lukhawng,lukhâwng
+class7,word.thlawn,word.thlawn,thlâwn
+class7,word.kut_tling_lo,word.kuttlinglo,kut tling lo
+class7,word.hut,word.hut,hût
+class7,word.bengbel,word.bengbel,bêngbel
+class7,word.uchuak,word.uchuak,uchuak
+class7,word.hmai_timawk,word.hmaitimawk,hmai timâwk
+class7,word.tlabal,word.tlabal,tlabal
+class7,word.ram_bua,word.rambua,ram bua
+class7,word.dingchang,word.dingchang,dingchang
+class7,word.phuhru,word.phuhru,phuhru
+class7,word.nunrawn,word.nunrawn,nunrâwn
+class7,word.nihlawh,word.nihlawh,nihlawh
+class7,word.hlen,word.hlen,hlen
+class7,word.thuam,word.thuam,thuam
+class7,word.thangthar,word.thangthar-2,thangthar
+class7,word.chhiatni,word.chhiatni-2,chhiatni
+class7,word.run,word.run-2,rûn
+class7,word.thinglenbuang,word.thinglenbuang,thinglenbuang
+class7,word.siahthing,word.siahthing,siahthing
+class7,word.thlangkawr_thli,word.thlangkawrthli,thlangkawr thli
+class7,word.inchhawk,word.inchhawk,inchhawk
+class7,word.nghawr_dim,word.nghawrdim,nghawr dim
+class7,word.ruang,word.ruang,ruang
+class7,word.kawl_virthli,word.kawlvirthli,kawl virthli
+class7,word.ruang_damna,word.ruangdamna,ruang damna
+class7,word.chhak,word.chhak,chhak
+class7,word.thlang,word.thlang,thlang
+class7,word.hleitling,word.hleitling,hleitling
+class7,word.insuknawr,word.insuknawr,insuknawr
+class7,word.inchhawn,word.inchhawn,inchhawn
+class7,word.indaikhalh,word.indaikhalh,indaikhalh
+class7,word.zualko,word.zualko,zualko
+class7,word.inphawi,word.inphawi,inphawi
+class7,word.kawtchhuah,word.kawtchhuah,kawtchhuah
+class7,word.tlangau,word.tlangau,tlangau
+class7,word.ramri,word.ramri,ramri
+class7,word.sa_pan,word.sapan,sa pan
+class7,word.sulsutu,word.sulsutu,sûlsutu
+class7,word.chaldar,word.chaldar,chaldâr
+class7,word.tiaupho,word.tiaupho,tiaupho
+class7,word.tluk_loh_rim_nam,word.tluklohrimnam,tluk loh rim nam
+class7,word.kaiza_veng,word.kaizaveng,kaiza veng
+class7,word.insaseng,word.insaseng,insaseng
+class7,word.hahip,word.hahip,hahip
+class7,word.kawlkhuang,word.kawlkhuang,kâwlkhuang
+class7,word.darmang,word.darmang,darmang
+class7,word.mau_tawtawrawt,word.mautawtawrawt,mau tawtawrawt
+class7,word.tuiumdar,word.tuiumdar,tuiumdâr
+class7,word.man_leh_mual,word.manlehmual,man leh mual
+class7,word.ral_lu_aih,word.ralluaih,ral lu aih
+class7,word.chawn_leh_lam,word.chawnlehlam,chawn leh lâm
+class7,word.kutni_vangthla,word.kutnivangthla,kûtni vângthla
+class7,word.chanvo,word.chanvo,chanvo
+class7,word.enkawlsak,word.enkawlsak,enkawlsak
+class7,word.tikhat,word.tikhat,tikhat
+class7,word.titlem,word.titlem,titlem
+class7,word.peipung,word.peipung,peipung
+class7,word.hnar,word.hnar-2,hnâr
+class7,word.themthiam,word.themthiam,themthiam
+class7,word.kawrawk,word.kawrawk,kawrawk
+class7,word.dahkham,word.dahkham,dahkham
+class7,word.intlawh_pawh,word.intlawhpawh,intlawh pawh
+class7,word.hluihlawn,word.hluihlawn,hluihlâwn
+class7,word.a_sarhu_lai,word.asarhulai,a sârhû lai
+class7,word.mi_hrang,word.mihrang,mi hrâng
+class7,word.tham,word.tham,thâm
+class7,word.piallei_kara,word.pialleikara,piallei kara
+class7,word.kawrvai,word.kawrvai,kawrvâi
+class7,word.sakhming,word.sakhming,sakhming
+class7,word.lentu,word.lentu,lentu
+class7,word.chhuihthang_val,word.chhuihthangval,chhuihthang val
+class7,word.nghilh,word.nghilh,nghilh
+class7,word.lukham,word.lukham,lukham
+class7,word.meizial,word.meizial,meizial
+class7,word.inkhualtelemna,word.inkhualtelemna,inkhualtelemna
+class7,word.pheikhawk,word.pheikhawk,pheikhawk
+class7,word.tel,word.tel,têl
+class7,word.vuakfung,word.vuakfung,vuakfung
+class7,word.chhiarkawp,word.chhiarkawp,chhiarkawp
+class7,word.tial_tial,word.tialtial,tial tial
+class7,word.tulh_tulh,word.tulhtulh,tulh tulh
+class7,word.zawi,word.zawi,zâwi
+class7,word.piai,word.piai,piai
+class7,word.thothang_tha,word.thothangtha,thothâng tha
+class7,word.dimdawi,word.dimdawi,dimdawi
+class7,word.ngurchuai,word.ngurchuai,ngurchuai
+class7,word.mangnghilh,word.mangnghilh,mangnghilh
+class7,word.chhah,word.chhah,chhah
+class7,word.thu_hnuai,word.thuhnuai,thu hnuai
+class7,word.mauh,word.mauh,mauh
+class7,word.awmkhauh,word.awmkhauh,awmkhauh
+class7,word.inchhirna,word.inchhirna,inchhirna
+class7,word.hlau_hlawp,word.hlauhlawp,hlau hlawp
+class7,word.hrek_hrek,word.hrekhrek,hrek hrek
+class7,word.tawn_tawn,word.tawntawn,tâwn tâwn
+class7,word.nawk_nawk,word.nawknawk,nawk nawk
+class7,word.nakalai,word.nakalai,nâkalai
+class7,word.fartuah,word.fartuah,Farṭuah
+class7,word.kaina,word.kaina,kaina
+class7,word.thatni,word.thatni,thatni
+class7,word.lunglai_ril,word.lunglairil,lunglai ril
+class7,word.sakhmel,word.sakhmel,sakhmel
+class7,word.hring_fate,word.hringfate,hring fate
+class7,word.liang,word.liang,liang
+class7,word.thla_kip,word.thlakip,thla kip
+class7,word.sahmim,word.sahmim,sahmîm
+class7,word.latui,word.latui,latui
+class7,word.khuang_hlang,word.khuanghlang,khuang hlâng
+class7,word.saphai,word.saphai,saphâi
+class7,word.ramchhuak,word.ramchhuak,ramchhuak
+class7,word.vakvai,word.vakvai,vakvai
+class7,word.retheih,word.retheih,retheih
+class7,word.chhiahhlawh,word.chhiahhlawh,chhiahhlawh
+class7,word.kep,word.kep,kêp
+class7,word.kawmchar,word.kawmchar,kawmchâr
+class7,word.pitar,word.pitar,pitar
+vartian,word.dawr,word.dawr-2,Dawr
+vartian,word.mipui,word.mipui,Mipui
+vartian,word.kawngkhar,word.kawngkhar-2,Kawngkhar
+vartian,word.choka,word.choka-2,Choka
+vartian,word.thenawm,word.thenawm-2,Ṭhenawm
+vartian,word.ipte,word.ipte,Ipte
+vartian,word.antam,word.antam-3,Anṭam
+vartian,word.chempui,word.chempui,Chempui
+vartian,word.diar,word.diar,Diar
+vartian,word.favah,word.favah,Favah
+vartian,word.chi,word.chi,Chi
+vartian,word.sana,word.sana,Sana
+vartian,word.bur,word.bur,Bur
+vartian,word.purun,word.purun,Purun
+vartian,word.leirawhchan,word.leirawhchan,Leirawhchan
+vartian,word.fian,word.fian,Fian
+vartian,word.bulbawk,word.bulbawk,Bulbawk
+vartian,word.bial,word.bial-2,Bial
+vartian,word.tuthlawh,word.tuthlawh,Tuthlawh
+vartian,word.lehkhachaih,word.lehkhachaih,Lehkhachaih
+vartian,word.bel,word.bel,Bêl
+vartian,word.hniak,word.hniak-2,Hniak
+vartian,word.utawk,word.utawk,Utawk
+vartian,word.sazuk,word.sazuk-3,Sazuk
+vartian,word.hauhuk,word.hauhuk,Hauhuk
+vartian,word.beram,word.beram-2,Beram
+vartian,word.chinghne,word.chinghne-2,Chinghne
+vartian,word.buk,word.buk,Buk
+vartian,word.zuang,word.zuang,Zuang
+vartian,word.nui,word.nui-3,Nui
+vartian,word.lei,word.lei-2,Lei
+vartian,word.ngil,word.ngil,Ngil
+vartian,word.cho,word.chho,Chho
+vartian,word.hnim,word.hnim-3,Hnim
+vartian,word.biak,word.biak,Biak
+vartian,word.mawza,word.mawza,Mawza
+vartian,word.dal,word.dal,Dal
+vartian,word.tel,word.tel-2,Tel
+vartian,word.bahkhawr,word.bahkhawr,Bahkhawr
+vartian,word.iskut,word.iskut,Iskut
+vartian,word.vaimim,word.vaimim,Vaimim
+vartian,word.chini,word.chini,Chini
+vartian,word.silai,word.silai,Silai
+vartian,word.darthlalang,word.darthlalang,Darthlalang
+vartian,word.mai,word.mai-2,Mai
+vartian,word.uchang,word.uchang,Uchang
+vartian,word.perek,word.perek,Perek
+vartian,word.tengte,word.tengte,Tengte
+vartian,word.belthleng,word.belthleng,Belthleng
+vartian,word.thirbel,word.thirbel,Thirbel
+vartian,word.tuium,word.tuium,Tui um
+vartian,word.chana,word.chana,Chana
+vartian,word.dawhkan,word.dawhkan-2,Dawhkan
+vartian,word.chawtani,word.chawtani,Chawtani
+vartian,word.berul,word.berul,Berul
+vartian,word.zikhlum,word.zikhlum,Zikhlum
+vartian,word.phengphehlep,word.phengphehlep-2,Phengphehlep
+vartian,word.chhuatphah,word.chhuatphah,Chhuatphah
+vartian,word.kawtthler,word.kawtthler,Kawtthler
+vartian,word.emping,word.emping,Emping
+vartian,word.thingkung,word.thingkung,Thingkung
+vartian,word.chhang,word.chhang,Chhang
+vartian,word.lawngpar,word.lawngpar,Lawngpar
+vartian,word.fu,word.fu-2,Fu
+vartian,word.nawlhbawk,word.nawlhbawk,Nawlhbawk
+vartian,word.zawngte,word.zawngte-2,Zâwngte
+vartian,word.hlimhla,word.hlimhla,Hlimhla
+vartian,word.intihhlimna,word.intihhlimna,Intihhlimna
+vartian,word.pipu,word.pipu,Pipu
+vartian,word.lirthei,word.lirthei,Lirthei
+vartian,word.inawmlemna,word.inawmlemna,Inawmlemna
+vartian,word.tawlailir,word.tawlailir,Tawlailir
+vartian,word.inkawm,word.inkawm-2,Inkawm
+vartian,word.balhla,word.balhla-3,Balhla
+vartian,word.tin,word.tin-2,Ṭin
+vartian,word.aurinna,word.aurinna,Au rinna
+vartian,word.dakbawm,word.dakbawm,Dak bawm
+vartian,word.dakin,word.dakin,Dak in
+vartian,word.zawrhna,word.zawrhna,Zawrhna
+vartian,word.kawi,word.kawi,Kawi

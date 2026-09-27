@@ -1,0 +1,62 @@
+<div class="section-head"><div><span class="eyebrow" style="color:var(--green)">Editorial library</span><h1>Content</h1></div><% if current_user.can_edit? %><%= link_to new_editorial_content_item_path, class: "button" do %><%= action_icon(:plus) %>New content item<% end %><% end %></div>
+
+<%= form_with url: editorial_content_items_path, method: :get, class: "filters" do %>
+  <div class="field">
+    <label for="filter-status">Status</label>
+    <select name="status" id="filter-status">
+      <option value="">All statuses</option>
+      <% @status_options.each do |status| %>
+        <option value="<%= status %>" <%= "selected" if params[:status] == status %>><%= status.humanize %></option>
+      <% end %>
+    </select>
+  </div>
+  <div class="field">
+    <label for="filter-content-type">Type</label>
+    <select name="content_type" id="filter-content-type">
+      <option value="">All types</option>
+      <% @content_type_options.each do |type| %>
+        <option value="<%= type %>" <%= "selected" if params[:content_type] == type %>><%= type.humanize %></option>
+      <% end %>
+    </select>
+  </div>
+  <div class="field">
+    <label for="filter-game">Game</label>
+    <select name="game" id="filter-game">
+      <option value="">All games</option>
+      <% Editorial::WordGames::GAMES.each do |game, name| %>
+        <option value="<%= game %>" <%= "selected" if params[:game] == game %>><%= name %> (<%= @game_counts[game] %>)</option>
+      <% end %>
+    </select>
+  </div>
+  <div class="field">
+    <label for="filter-picture">Picture</label>
+    <select name="picture" id="filter-picture">
+      <option value="">Any</option>
+      <option value="missing" <%= "selected" if params[:picture] == "missing" %>>Words without a picture (<%= @missing_picture_count %>)</option>
+    </select>
+  </div>
+  <div class="field grow">
+    <label for="filter-q">Search (stable ID or title)</label>
+    <input type="text" name="q" id="filter-q" value="<%= params[:q] %>" placeholder="e.g. word.ralluaih or Kumtluang">
+  </div>
+  <div class="actions">
+    <%= submit_tag "Filter", class: "button" %>
+    <% if params[:status].present? || params[:content_type].present? || params[:q].present? || params[:game].present? || params[:picture].present? %>
+      <%= link_to "Clear", editorial_content_items_path, class: "button ghost" %>
+    <% end %>
+  </div>
+<% end %>
+
+<% bulk = current_user.can_edit? %>
+<%= form_with url: editorial_bulk_game_modes_path, method: :post, id: "bulk-games" do %>
+  <% if bulk %>
+    <div class="bulk-bar">
+      <div><label for="bulk-operation">Selected words</label><select name="operation" id="bulk-operation"><option value="add">Add to game</option><option value="remove">Remove from game</option></select></div>
+      <div><label for="bulk-game">Game</label><select name="game" id="bulk-game"><% Editorial::BodyForm::GAME_MODES.each do |game, name| %><option value="<%= game %>"><%= name %></option><% end %></select></div>
+      <div><%= submit_tag "Apply to selected", class: "button" %></div>
+      <span class="muted">Each selected word gets a new revision sent for review.</span>
+    </div>
+  <% end %>
+  <table><thead><tr><% if bulk %><th><span class="visually-hidden">Select</span></th><% end %><th>Content</th><th>Type</th><th>Status</th><th>Flags</th><th>Latest revision</th><th>Updated</th></tr></thead><tbody><% @content_items.each do |item| %><% revision = item.current_revision %><% notes = revision&.body&.dig("provenance", "notes").to_s %><tr><% if bulk %><td><% if item.word? %><%= check_box_tag "item_ids[]", item.id, false, id: "select-#{item.id}", "aria-label": "Select #{item.title}" %><% end %></td><% end %><td><%= link_to item.title, editorial_content_item_path(item) %><br><span class="code muted"><%= item.stable_id %></span></td><td><%= item.content_type.humanize %></td><td><span class="pill <%= item.status %>"><%= item.status.humanize %></span></td><td><% if notes.match?(/culture-sensitive/i) %><span class="pill culture-flag">Culture</span><% end %><% if notes.match?(/VERIFY/) %><span class="pill verify-flag">Verify</span><% end %></td><td>r<%= revision&.number || "—" %></td><td><%= time_ago_in_words(item.updated_at) %> ago</td></tr><% end %></tbody></table>
+<% end %>
+<%= render "shared/pager", pagy: @pagy %>

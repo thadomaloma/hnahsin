@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "pilot_id": "phase3.community.internal",
+  "status": "preparation",
+  "target_participants": 15,
+  "target_weekly_rows": 60,
+  "controls": {
+    "privacy_notice_approved": {
+      "status": "pending",
+      "owner_id": null,
+      "evidence_ref": null
+    },
+    "facilitator_briefed": {
+      "status": "pending",
+      "owner_id": null,
+      "evidence_ref": null
+    },
+    "guardian_consent_route_tested": {
+      "status": "pending",
+      "owner_id": null,
+      "evidence_ref": null
+    },
+    "withdrawal_and_deletion_tested": {
+      "status": "pending",
+      "owner_id": null,
+      "evidence_ref": null
+    },
+    "support_owner_assigned": {
+      "status": "pending",
+      "owner_id": null,
+      "evidence_ref": null
+    },
+    "incident_route_tested": {
+      "status": "pending",
+      "owner_id": null,
+      "evidence_ref": null
+    },
+    "accessibility_route_ready": {
+      "status": "pending",
+      "owner_id": null,
+      "evidence_ref": null
+    },
+    "content_preview_disclosed": {
+      "status": "ready",
+      "owner_id": "PRODUCT",
+      "evidence_ref": "app:review-notice"
+    }
+  },
+  "privacy_contract": {
+    "opaque_participant_ids_only": true,
+    "no_names_contacts_exact_birthdates_or_precise_location": true,
+    "signed_consent_stored_outside_repository": true,
+    "withdrawal_rows_retained_as_zero_session_rows": true
+  }
+}

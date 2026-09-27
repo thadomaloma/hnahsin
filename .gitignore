@@ -1,0 +1,50 @@
+# --- Flutter / Dart ---
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+*.iml
+.idea/
+.vscode/
+coverage/
+
+# Generated per-machine platform files (contain local paths)
+android/local.properties
+android/.gradle/
+android/app/debug
+android/app/profile
+android/app/release
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/ephemeral/
+ios/Pods/
+ios/.symlinks/
+ios/Runner.xcworkspace/xcuserdata/
+ios/Runner.xcodeproj/xcuserdata/
+macos/Flutter/ephemeral/
+macos/Pods/
+macos/Runner.xcworkspace/xcuserdata/
+macos/Runner.xcodeproj/xcuserdata/
+**/Flutter/GeneratedPluginRegistrant.*
+!**/Flutter/GeneratedPluginRegistrant.swift
+thumal_quest/
+
+# --- Local tooling, logs and diagnostics ---
+.DS_Store
+*.log
+thumal_quest_diagnostics.txt
+thumal_quest_backend_diagnostics.txt
+.playwright-mcp/
+.ruby-lsp/
+Claude outputs/
+__pycache__/
+*.pyc
+
+# --- Secrets (never commit) ---
+.env
+.env.*
+!.env.example
+*.key

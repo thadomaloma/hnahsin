@@ -1,0 +1,85 @@
+{
+  "_comment": "Built-in Mizo game text. The app ships these as defaults; `bin/rails editorial:import_game_content` imports them into Editorial Studio as game_copy drafts so editors can change them. Placeholders: {word}, {gloss}, {answer}, {first}.",
+  "games": {
+    "picture_match": {
+      "title": "Picture Match",
+      "subtitle": "Thlalak leh thumal zawm",
+      "instructions": [
+        "Picture en la, a hming Mizo thlang rawh.",
+        "Chhanna zawhah awmzia leh sentence chhiar rawh."
+      ],
+      "prompt": "He thlalak hming hi eng nge?",
+      "hint": "Hint: English-ah “{gloss}” tihna a ni."
+    },
+    "spelling": {
+      "title": "Spelling",
+      "subtitle": "Hawrawp ruak dah khat",
+      "instructions": [
+        "Thumal leh clue chhiar rawh.",
+        "Hawrawp ruak dahtu tûr thlang rawh."
+      ],
+      "prompt": "Hawrawp remchâng thlang rawh",
+      "hint": "Hint: Hawrawp dik chu “{answer}” a ni."
+    },
+    "word_search": {
+      "title": "Word Search",
+      "subtitle": "Grid-ah thumal zawn",
+      "instructions": [
+        "Letter bul hnai indawtin tap rawh.",
+        "Thumal pangnga zawng hmu vek rawh."
+      ],
+      "hint": "Hint: “{word}” tih thumal hi zawn rawh."
+    },
+    "word_chain": {
+      "title": "Word Chain",
+      "subtitle": "Thumal inzawm tîr",
+      "instructions": [
+        "Thumal tawpna unit en rawh.",
+        "Chumi unit hmanga thumal thar bulṭan rawh."
+      ],
+      "hint": "Hint: {word}"
+    },
+    "tawng_upa": {
+      "title": "Tawng Upa",
+      "subtitle": "Awmzia hriatna quiz",
+      "instructions": [
+        "Thumal leh zawhna chhiar rawh.",
+        "Awmzia dik thlang la, hrilhfiahna chhiar rawh."
+      ],
+      "prompt": "“{word}” tih hian eng nge a kawh?",
+      "hint": "Hint: Chhanna dik chu “{first}…” tiin a bulṭan."
+    },
+    "crossword": {
+      "title": "Crossword",
+      "subtitle": "Clue atanga thumal ziak",
+      "instructions": [
+        "Clue horizontal leh vertical chhiar rawh.",
+        "Box tinah hawrawp pakhat ziak la, answer check rawh."
+      ],
+      "hint": "Hint: Box pakhat kan dah khat sak e."
+    },
+    "thumal_kawp": {
+      "title": "Thumal Kawp",
+      "subtitle": "Memory card kawp zawn",
+      "instructions": [
+        "Card pahnih let la, thumal leh a picture emaw awmzia kawp zawng rawh.",
+        "Card i hmuh tawh theihnghilh suh — a kawp i hriat tawh chu hmu nghal rawh."
+      ],
+      "prompt": "Card pahnih let la, thumal leh a kawp zawng rawh. A kawp i hmuh tawh chu theihnghilh suh!"
+    },
+    "sentence_builder": {
+      "title": "Sentence Builder",
+      "subtitle": "Thumal tiles rem khâwm",
+      "instructions": [
+        "English meaning chhiar la, Mizo thumal tiles thlang rawh.",
+        "Sentence natural taka a indawtin rem khâwm la, check rawh."
+      ],
+      "prompt": "BUILD THIS MEANING",
+      "hint": "Sentence thumal hmasa kan dah sak e."
+    },
+    "common": {
+      "correct_feedback": "A dik e!",
+      "retry_feedback": "Tum leh rawh"
+    }
+  }
+}

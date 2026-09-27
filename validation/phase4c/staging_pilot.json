@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "build": "0.12.0+22",
+  "environment": "staging",
+  "base_url": null,
+  "executed_at": null,
+  "operator_id": null,
+  "deployment": {
+    "production_secrets_configured": false,
+    "database_backup_restore_tested": false,
+    "log_redaction_checked": false,
+    "ready_endpoint_passed": false
+  },
+  "role_separation": {
+    "editor_id": null,
+    "language_reviewer_id": null,
+    "publisher_id": null
+  },
+  "content_release": {
+    "published_content_pack_version": null,
+    "published_content_pack_checksum": null
+  },
+  "drills": {
+    "clean_install_sync": {
+      "passed": false,
+      "evidence_ref": null
+    },
+    "offline_replay": {
+      "passed": false,
+      "evidence_ref": null
+    },
+    "corrupt_candidate_rejected": {
+      "passed": false,
+      "evidence_ref": null
+    },
+    "last_verified_pack_preserved": {
+      "passed": false,
+      "evidence_ref": null
+    },
+    "rollback_restored_pack": {
+      "passed": false,
+      "evidence_ref": null
+    }
+  },
+  "signoffs": {
+    "backend_owner_id": null,
+    "language_lead_id": null,
+    "privacy_owner_id": null
+  }
+}

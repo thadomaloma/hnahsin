@@ -1,0 +1,79 @@
+<section class="hero">
+  <div>
+    <span class="eyebrow">Mizo-first publishing</span>
+    <h1>Editorial confidence,<br>before every release.</h1>
+    <p>Independent language and culture review protects every learner-facing content pack.</p>
+  </div>
+  <div class="actions">
+    <%= link_to editorial_content_items_path, class: "button secondary" do %>Open content library <%= action_icon(:arrow_right) %><% end %>
+    <% if current_user.can_edit? %><%= link_to new_editorial_content_item_path, class: "button" do %><%= action_icon(:plus) %>Create content<% end %><% end %>
+  </div>
+</section>
+
+<% total_items = @counts.values.sum %>
+<div class="grid">
+  <% @counts.each do |name, count| %>
+    <article class="card metric tone-<%= metric_tone(name) %>">
+      <div class="metric-top">
+        <%= metric_icon(name) %>
+        <% if total_items.positive? %><span class="share"><%= ((count / total_items.to_f) * 100).round %>%</span><% end %>
+      </div>
+      <strong><%= count %></strong>
+      <span><%= name.to_s.humanize %></span>
+      <div class="bar-track"><div class="bar-fill" style="width:<%= total_items.positive? ? (count / total_items.to_f * 100).round : 0 %>%"></div></div>
+    </article>
+  <% end %>
+</div>
+
+<div class="split">
+  <section class="card">
+    <div class="section-head" style="margin-top:0"><h2><%= section_icon(:queue) %>Review queue</h2></div>
+    <% if @review_queue.any? %>
+      <ul class="list">
+        <% @review_queue.each do |revision| %>
+          <li>
+            <span class="list-row">
+              <span class="avatar" aria-hidden="true"><%= initials_for(revision.author.email) %></span>
+              <span class="meta">
+                <%= link_to revision.content_item.title, editorial_content_item_content_revision_path(revision.content_item, revision) %>
+                <small class="muted">r<%= revision.number %> · <%= revision.author.email %> · <%= time_ago_in_words(revision.submitted_at) %> ago</small>
+              </span>
+            </span>
+            <span class="pill in_review">In review</span>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <div class="empty">No revisions are awaiting review.</div>
+    <% end %>
+  </section>
+
+  <aside class="card">
+    <div class="section-head" style="margin-top:0"><h2><%= section_icon(:package) %>Latest release</h2></div>
+    <% if @latest_pack %>
+      <p><strong>Pack <%= @latest_pack.pack_version %></strong></p>
+      <p class="muted"><%= @latest_pack.content_pack_entries.count %> reviewed items<br><%= l @latest_pack.published_at, format: :long %></p>
+      <p class="code"><%= @latest_pack.checksum %></p>
+      <%= link_to editorial_content_pack_path(@latest_pack), class: "button ghost" do %>View release <%= action_icon(:arrow_right) %><% end %>
+    <% else %>
+      <div class="empty"><%= section_icon(:inbox) %><br>No pack published yet.</div>
+    <% end %>
+  </aside>
+</div>
+
+<section class="card" style="margin-top:18px">
+  <div class="section-head" style="margin-top:0"><h2><%= section_icon(:activity) %>Recent audit activity</h2></div>
+  <% if @recent_events.any? %>
+    <ul class="timeline">
+      <% @recent_events.each do |event| %>
+        <li>
+          <strong><%= event.action.humanize %></strong>
+          <span class="muted"> · <%= event.actor&.email || "system" %></span>
+          <time><%= time_ago_in_words(event.occurred_at) %> ago</time>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <div class="empty"><%= section_icon(:inbox) %><br>No audit activity yet.</div>
+  <% end %>
+</section>

@@ -1,0 +1,25 @@
+{
+  "pack_id": "thumal-quest-pilot",
+  "pack_version": "0.4.0-draft.1",
+  "schema_version": "2.0",
+  "language": "lus",
+  "release_status": "draft",
+  "generated_at": "2026-09-13T00:00:00Z",
+  "files": [
+    {
+      "path": "pilot_candidates.csv",
+      "records": 100,
+      "sha256": "5dd7940a64257d8b8368967218a74fd83e93aee0e12ccceeacb5f684e4049687"
+    },
+    {
+      "path": "pilot_sentences.csv",
+      "records": 40,
+      "sha256": "b5db61c825e1067ab75a6342bc42a0318cad11f94a84cc7ecbba1c41d5825013"
+    },
+    {
+      "path": "sample_word_item.json",
+      "records": 1,
+      "sha256": "af5d850fda68dd9452e94955bcaa890ea11b619777775e1aab98e22fa3d16a45"
+    }
+  ]
+}

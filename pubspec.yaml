@@ -1,0 +1,47 @@
+name: thumal_quest
+description: A game-first Mizo language learning app for children and adults.
+publish_to: "none"
+version: 0.12.0+22
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # SharedPreferencesAsync is available from 2.3.0 onward. Keeping the lower
+  # bound here lets Flutter installations with an older compatible Dart SDK
+  # resolve the newest version they can use.
+  path: ^1.9.1
+  crypto: ^3.0.6
+  http: ^1.3.0
+  path_provider: ^2.1.5
+  shared_preferences: ^2.5.5
+  sqflite: ^2.4.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/branding/thumal_quest_logo.png
+    - assets/branding/thumal_quest_icon.png
+    - assets/illustrations/
+  fonts:
+    # Plus Jakarta Sans (SIL OFL 1.1, assets/fonts/OFL.txt): covers every Mizo
+    # letter including ṭ/Ṭ and circumflex vowels, so web builds no longer fall
+    # back to downloaded Noto fonts for them.
+    - family: PlusJakartaSans
+      fonts:
+        - asset: assets/fonts/PlusJakartaSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/PlusJakartaSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/PlusJakartaSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/PlusJakartaSans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/PlusJakartaSans-ExtraBold.ttf
+          weight: 800

@@ -1,0 +1,17 @@
+<% content_for :title, "Sign in — Thumal Quest" %>
+<section class="login">
+  <div class="brand-panel">
+    <span class="eyebrow" style="color:var(--green)">Protected workspace</span>
+    <h1>Editorial Studio</h1>
+    <p class="muted">Review and release trusted Mizo learning content.</p>
+  </div>
+  <div class="form-card">
+    <%= form_with url: session_path do |form| %>
+      <%= form.label :email %>
+      <%= form.email_field :email, required: true, autocomplete: "username" %>
+      <%= form.label :password %>
+      <%= form.password_field :password, required: true, autocomplete: "current-password" %>
+      <div style="margin-top:22px"><%= form.submit "Sign in", style: "width:100%" %></div>
+    <% end %>
+  </div>
+</section>

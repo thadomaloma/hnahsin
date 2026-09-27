@@ -1,0 +1,26 @@
+source "https://rubygems.org"
+
+ruby ">= 3.3.0"
+
+gem "rails", "~> 8.1.0"
+gem "json", "~> 2.21"
+gem "csv"
+gem "pagy", "~> 9.0"
+gem "pg", "~> 1.5"
+gem "puma", ">= 6.0"
+gem "bcrypt", "~> 3.1"
+gem "bootsnap", require: false
+
+group :development, :test do
+  gem "debug", platforms: %i[mri windows], require: "debug/prelude"
+  gem "brakeman", require: false
+  gem "rubocop-rails-omakase", require: false
+end
+
+group :test do
+  # minitest 6 dropped Object#stub / Minitest::Mock into this gem (see
+  # minitest's History.rdoc: "Dropped minitest/mock.rb. This has been
+  # extracted to the minitest-mock gem.") -- health_controller_test.rb
+  # uses Object#stub, which needs it.
+  gem "minitest-mock"
+end

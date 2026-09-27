@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "app_version": "0.12.0+22",
+  "status": "passed",
+  "verified_at": "2026-09-19T11:22:48.848168+00:00",
+  "environment": {
+    "macos": "26.6.2",
+    "arch": "arm64",
+    "flutter": "",
+    "xcode": "Xcode 27.0 Build version 27A266a"
+  },
+  "checks": {
+    "artifact_validators": "passed",
+    "dart_format": "passed",
+    "flutter_analyze": "passed",
+    "flutter_tests": "passed",
+    "macos_debug_build": "passed"
+  }
+}
