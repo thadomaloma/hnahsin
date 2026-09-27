@@ -109,4 +109,9 @@ scripts/    Release and validation checks
 - Icons: game-icons.net (CC BY 3.0), Tabler (MIT) and Material Design Icons
   (Apache 2.0) — see `assets/illustrations/ATTRIBUTION.md`.
 
+## License
+
+[MIT](LICENSE) © 2026 Maloma Thado. Third-party fonts and icons keep their own
+licences (listed above).
+
 Development history and earlier phase notes: [`docs/PROJECT_HISTORY.md`](docs/PROJECT_HISTORY.md).
