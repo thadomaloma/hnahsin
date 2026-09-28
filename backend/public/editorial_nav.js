@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     event.preventDefault();
     window.open(
       link.href,
-      "thumalQuestGameTest",
+      "hnahsinGameTest",
       "noopener,width=1280,height=860,menubar=no,toolbar=no,location=no,status=no"
     );
   });

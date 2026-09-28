@@ -91,7 +91,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(13),
                           child: Image.asset(
-                            'assets/branding/thumal_quest_icon.png',
+                            'assets/branding/hnahsin_icon.png',
                             width: 42,
                             height: 42,
                             errorBuilder: (_, __, ___) => const SizedBox(

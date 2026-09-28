@@ -231,7 +231,7 @@ if [ "$needs_hosts" = "true" ]; then
   echo "Flutter Android/iOS/macOS/web host files siam mek..."
   flutter create \
     --platforms=android,ios,macos,web \
-    --org com.thumalquest \
+    --org com.hnahsin \
     --project-name thumal_quest \
     --no-pub \
     .

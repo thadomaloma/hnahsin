@@ -124,7 +124,7 @@ class _BrandHeader extends StatelessWidget {
               boxShadow: QuestShadows.card),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(18),
-            child: Image.asset('assets/branding/thumal_quest_icon.png',
+            child: Image.asset('assets/branding/hnahsin_icon.png',
                 width: 52,
                 height: 52,
                 fit: BoxFit.cover,

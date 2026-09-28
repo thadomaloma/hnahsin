@@ -9,7 +9,7 @@ import 'package:thumal_quest/src/widgets.dart';
 
 void main() {
   testWidgets('opens personalized onboarding for a new learner', (tester) async {
-    await tester.pumpWidget(ThumalQuestApp(controller: QuestController()));
+    await tester.pumpWidget(HnahsinApp(controller: QuestController()));
     await tester.pumpAndSettle();
 
     expect(find.text('HNAHSIN'), findsOneWidget);
@@ -26,7 +26,7 @@ void main() {
     );
     final controller = QuestController(repository: repository);
     await controller.load();
-    await tester.pumpWidget(ThumalQuestApp(controller: controller));
+    await tester.pumpWidget(HnahsinApp(controller: controller));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
 

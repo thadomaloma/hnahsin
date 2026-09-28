@@ -8,8 +8,8 @@ import 'data.dart';
 import 'screens.dart';
 import 'theme.dart';
 
-class ThumalQuestApp extends StatelessWidget {
-  const ThumalQuestApp({super.key, required this.controller});
+class HnahsinApp extends StatelessWidget {
+  const HnahsinApp({super.key, required this.controller});
   final QuestController controller;
 
   @override
@@ -243,7 +243,7 @@ class _SideRail extends StatelessWidget {
           const SizedBox(height: 22),
           ClipRRect(
             borderRadius: BorderRadius.circular(18),
-            child: Image.asset('assets/branding/thumal_quest_icon.png', width: 52, height: 52, fit: BoxFit.cover),
+            child: Image.asset('assets/branding/hnahsin_icon.png', width: 52, height: 52, fit: BoxFit.cover),
           ),
           const SizedBox(height: 30),
           for (var i = 0; i < _destinations.length; i++)

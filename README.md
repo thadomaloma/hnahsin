@@ -40,8 +40,8 @@ You need **Flutter 3.x**, **Ruby 3.3+** with Bundler, and **PostgreSQL 16**
 (`brew install postgresql@16 && brew services start postgresql@16`).
 
 ```bash
-git clone https://github.com/thadomaloma/thumal-quest.git
-cd thumal-quest/backend
+git clone https://github.com/thadomaloma/hnahsin.git
+cd hnahsin/backend
 
 # 1. First time only: gems, database and an admin account
 bundle install

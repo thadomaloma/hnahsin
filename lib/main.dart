@@ -23,6 +23,6 @@ Future<void> main() async {
     debugPrint('Progress could not be loaded: $error');
     debugPrintStack(stackTrace: stackTrace);
   }
-  runApp(ThumalQuestApp(controller: controller));
+  runApp(HnahsinApp(controller: controller));
   unawaited(controller.refreshContent());
 }

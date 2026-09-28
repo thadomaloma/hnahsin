@@ -36,7 +36,7 @@ class StudioFixButton extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: TextButton.icon(
         onPressed: () => launchUrl(EditorTools.studioLink(id),
-            webOnlyWindowName: 'thumalQuestStudio'),
+            webOnlyWindowName: 'hnahsinStudio'),
         icon: const Icon(Icons.edit_note_rounded),
         label: Text('Studio-ah fix rawh ($id)'),
       ),

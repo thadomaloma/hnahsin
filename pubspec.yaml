@@ -27,8 +27,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/branding/thumal_quest_logo.png
-    - assets/branding/thumal_quest_icon.png
+    - assets/branding/hnahsin_logo.png
+    - assets/branding/hnahsin_icon.png
     - assets/illustrations/
   fonts:
     # Plus Jakarta Sans (SIL OFL 1.1, assets/fonts/OFL.txt): covers every Mizo
