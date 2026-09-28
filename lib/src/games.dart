@@ -450,11 +450,16 @@ class _SpellingGameState extends State<SpellingGame> {
       letterBag.addAll(const ['A', 'E', 'I', 'K', 'N', 'T', 'M', 'R']);
     }
 
+    final knownWords = <String>{
+      ...widget.controller.wordCatalog.map((entry) => entry.word.toUpperCase()),
+      ...widget.controller.chainVocabulary.map((word) => word.toUpperCase()),
+    };
+
     final selected =
         pickWordsForLevel(widget.controller, 'spelling', pool, 10, random);
     return [
       for (final entry in selected)
-        _spellingQuestionFor(entry, random, letterBag),
+        _spellingQuestionFor(entry, random, letterBag, knownWords),
     ];
   }
 
@@ -462,6 +467,7 @@ class _SpellingGameState extends State<SpellingGame> {
     WordEntry entry,
     Random random,
     Set<String> letterBag,
+    Set<String> knownWords,
   ) {
     final upper = entry.word.toUpperCase();
     final rating = widget.controller.gameSkill('spelling');
@@ -483,10 +489,16 @@ class _SpellingGameState extends State<SpellingGame> {
         : positions[random.nextInt(positions.length)];
     final correct = upper[maskIndex];
     final masked = upper.replaceRange(maskIndex, maskIndex + 1, '_');
+    // A letter that spells another real word (e.g. a/â pairs) would mark a
+    // right answer wrong, so it is never offered.
     final letterOptions = <String>{
       ...letterBag,
       ...?GameDifficulty.confusableLetters[correct],
-    }.difference(<String>{correct}).toList();
+    }
+        .difference(<String>{correct})
+        .where((letter) => !knownWords
+            .contains(upper.replaceRange(maskIndex, maskIndex + 1, letter)))
+        .toList();
     final distractors = GameDifficulty.distractors(correct, letterOptions,
         rating: rating,
         count: 3,
@@ -923,10 +935,19 @@ class _WordChainGameState extends State<WordChainGame> {
     );
   }
 
+  static bool _links(String from, String to) =>
+      foldMizo(lastMizoUnit(from)) == foldMizo(firstMizoUnit(to));
+
+  /// Unused words that could follow [word] in the chain.
+  Iterable<String> _nextWords(String word, Set<String> vocabulary) => vocabulary
+      .where((next) => next != word && !chain.contains(next))
+      .where((next) => _links(word, next));
+
   String get _hintWord {
-    final needed = lastMizoUnit(chain.last);
-    final matches = widget.controller.chainVocabulary
-        .where((word) => firstMizoUnit(word) == needed && !chain.contains(word))
+    final vocabulary = widget.controller.chainVocabulary;
+    final lastTurn = chain.length == 5;
+    final matches = _nextWords(chain.last, vocabulary)
+        .where((word) => lastTurn || _nextWords(word, vocabulary).isNotEmpty)
         .toList()
       ..sort();
     return matches.isEmpty
@@ -934,18 +955,49 @@ class _WordChainGameState extends State<WordChainGame> {
         : '“${matches.first}” i hmang thei.';
   }
 
+  /// The vocabulary spelling of what was typed; â, ṭ and friends are
+  /// optional as long as only one known word matches.
+  String? _resolve(String typed, Set<String> vocabulary) {
+    if (vocabulary.contains(typed)) return typed;
+    final folded = foldMizo(typed);
+    final matches = vocabulary.where((word) => foldMizo(word) == folded);
+    return matches.length == 1 ? matches.single : null;
+  }
+
   Future<void> submit() async {
     if (!runtime.ready || finishing) return;
-    final word = normalizeMizo(input.text);
+    final typed = normalizeMizo(input.text);
     final needed = lastMizoUnit(chain.last);
-    if (word.isEmpty) return;
+    if (typed.isEmpty) return;
     final vocabulary = widget.controller.chainVocabulary;
+    final resolved = _resolve(typed, vocabulary);
+    // A word we don't know yet may still be real Mizo, and a word nothing
+    // can follow would leave the learner stuck; neither costs a heart.
+    String? notice;
+    if (resolved == null) {
+      notice = 'He thumal hi kan thumal dahkhâwmnaah a la awm lo. '
+          'Thumal dang ziak rawh.';
+    } else if (!chain.contains(resolved) &&
+        _links(chain.last, resolved) &&
+        chain.length < 5 &&
+        _nextWords(resolved, vocabulary).isEmpty) {
+      notice = '“$resolved” a dik, mahse “${lastMizoUnit(resolved)}” hmanga '
+          'bulṭan thumal kan la nei lo. Thumal dang ziak rawh.';
+    }
+    if (notice != null) {
+      setState(() {
+        message = notice;
+        messageIsError = true;
+        input.clear();
+      });
+      await runtime.persist();
+      return;
+    }
+    final word = resolved!;
     String? error;
-    if (!vocabulary.contains(word)) {
-      error = 'He thumal hi kan thumal dahkhâwmnaah a la awm lo.';
-    } else if (chain.contains(word)) {
+    if (chain.contains(word)) {
       error = 'He thumal hi i hmang tawh.';
-    } else if (firstMizoUnit(word) != needed) {
+    } else if (!_links(chain.last, word)) {
       error = '“$needed” hmanga bulṭan tûr a ni.';
     }
     if (error != null) {
@@ -1257,7 +1309,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
   Future<void> tapCell(int row, int col) async {
     if (!runtime.ready || finishing) return;
     final position = (row, col);
-    if (selected.contains(position) || !_near(row, col)) {
+    if (selected.contains(position)) {
       setState(() {
         selected.clear();
         message = 'Letter bul hnai indawtin thlang rawh.';
@@ -1265,7 +1317,11 @@ class _WordSearchGameState extends State<WordSearchGame> {
       await runtime.persist();
       return;
     }
-    setState(() => selected.add(position));
+    // A cell away from the selection starts a new word from that cell.
+    setState(() {
+      if (!_near(row, col)) selected.clear();
+      selected.add(position);
+    });
     final word = current;
     if (targets.contains(word) && !found.contains(word)) {
       HapticFeedback.selectionClick();
@@ -1425,6 +1481,7 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
   GameSession get session => runtime.session;
   final Map<(int, int), String> expected = {};
   final Map<(int, int), TextEditingController> controllers = {};
+  final List<TextEditingController> _retiredControllers = [];
   final Map<(int, int), int> starts = {};
   bool? isCorrect;
   bool finishing = false;
@@ -1455,8 +1512,13 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
           .toList();
     }
 
+    // Only plain letters fit the one-letter cells; a space or hyphen would
+    // make the puzzle unsolvable.
+    final lettersOnly = RegExp(r'^[A-ZÂÊÎÔÛṬ]+$');
     final meaningByWord = <String, String>{
-      for (final entry in pool) entry.word.toUpperCase(): entry.meaningMizo,
+      for (final entry in pool)
+        if (lettersOnly.hasMatch(entry.word.trim().toUpperCase()))
+          entry.word.trim().toUpperCase(): entry.meaningMizo,
     };
 
     final spineCandidates = meaningByWord.keys
@@ -1518,19 +1580,7 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
       },
       onTimedOut: _timedOut,
     );
-    entries = _generateEntries();
-    for (final entry in entries) {
-      starts[(entry.row, entry.col)] = entry.number;
-      for (var i = 0; i < entry.answer.length; i++) {
-        final position = entry.horizontal
-            ? (entry.row, entry.col + i)
-            : (entry.row + i, entry.col);
-        expected[position] = entry.answer[i];
-      }
-    }
-    for (final position in expected.keys) {
-      controllers[position] = TextEditingController();
-    }
+    _buildBoard();
     unawaited(
       runtime.initialize(
         currentIndex: () => controllers.values
@@ -1544,6 +1594,9 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
           if (isCorrect != null) 'isCorrect': isCorrect,
         },
         restorePayload: (snapshot) {
+          // The saved letters belong to the puzzle built from the saved
+          // seed, not the one built for the fresh session in initState.
+          _buildBoard();
           final cells = snapshot.payload['cells'];
           if (cells is Map) {
             for (final entry in cells.entries) {
@@ -1559,10 +1612,32 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
     );
   }
 
+  void _buildBoard() {
+    entries = _generateEntries();
+    // Cells may still be on screen, so replaced controllers are disposed
+    // with the game rather than now.
+    _retiredControllers.addAll(controllers.values);
+    controllers.clear();
+    expected.clear();
+    starts.clear();
+    for (final entry in entries) {
+      starts[(entry.row, entry.col)] = entry.number;
+      for (var i = 0; i < entry.answer.length; i++) {
+        final position = entry.horizontal
+            ? (entry.row, entry.col + i)
+            : (entry.row + i, entry.col);
+        expected[position] = entry.answer[i];
+      }
+    }
+    for (final position in expected.keys) {
+      controllers[position] = TextEditingController();
+    }
+  }
+
   @override
   void dispose() {
     runtime.dispose();
-    for (final controller in controllers.values) {
+    for (final controller in [...controllers.values, ..._retiredControllers]) {
       controller.dispose();
     }
     super.dispose();

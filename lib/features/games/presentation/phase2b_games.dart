@@ -141,7 +141,10 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
         .map((entry) => SentenceExercise(
               id: 'sentence.word.${entry.id}',
               textMizo: entry.exampleMizo,
-              englishSupport: entry.englishGloss,
+              // No English translation of the example exists, so show the
+              // word it teaches rather than passing its gloss off as one.
+              englishSupport:
+                  'A sentence with “${entry.word}” (${entry.englishGloss})',
               tqLevel: entry.difficulty,
             ))
         .toList();

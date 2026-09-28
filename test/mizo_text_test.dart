@@ -13,6 +13,11 @@ void main() {
       expect(lastMizoUnit('In'), firstMizoUnit('Nula'));
       expect(lastMizoUnit('Nula'), firstMizoUnit('Aizawl'));
     });
+    test('folds circumflexes and ṭ for typed answers', () {
+      expect(foldMizo(' Hmûn '), 'hmun');
+      expect(foldMizo('ṬÂNG'), 'tang');
+      expect(foldMizo('nula'), 'nula');
+    });
     test('keeps Mizo cloud language code explicit', () {
       expect(MizoCloudConfig.translationLanguageCode, 'lus');
       expect(MizoCloudConfig.backendOnly, isTrue);

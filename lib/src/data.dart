@@ -592,6 +592,22 @@ bool hasWordPicture(WordEntry entry) =>
 
 String normalizeMizo(String value) => value.trim().toLowerCase();
 
+const _plainLetters = <String, String>{
+  'â': 'a',
+  'ê': 'e',
+  'î': 'i',
+  'ô': 'o',
+  'û': 'u',
+  'ṭ': 't',
+};
+
+/// [normalizeMizo] without circumflexes or the dot in ṭ, for matching what a
+/// learner types on a keyboard that lacks them.
+String foldMizo(String value) => normalizeMizo(value)
+    .split('')
+    .map((letter) => _plainLetters[letter] ?? letter)
+    .join();
+
 const _mizoClusters = <String>[
   'ch',
   'kh',

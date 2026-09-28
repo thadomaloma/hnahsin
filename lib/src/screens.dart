@@ -89,7 +89,7 @@ class _HomeHighlights extends StatelessWidget {
       _FeatureCard(
         icon: Icons.auto_awesome_rounded,
         colors: const [Color(0xFFFF8A6B), Color(0xFFF0566A)],
-        eyebrow: 'TAWNG UPA • 5 ZAWHNA',
+        eyebrow: 'TAWNG UPA • 10 ZAWHNA',
         title: 'Tawng Upa Challenge',
         subtitle: 'Thumal awmzia hriatna',
         trailingLabel: (controller.bestScores['tawng_upa'] ?? 0) > 0
