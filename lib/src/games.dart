@@ -9,6 +9,7 @@ import '../features/games/engine/game_difficulty.dart';
 import '../features/games/engine/game_engine.dart';
 import 'controller.dart';
 import 'data.dart';
+import 'editor_tools.dart';
 import 'game_session.dart';
 import 'game_text.dart';
 import 'game_words.dart';
@@ -362,6 +363,7 @@ class _PictureMatchGameState extends State<PictureMatchGame> {
               message: correct
                   ? '${entry.word}: ${entry.meaningMizo}\n“${entry.exampleMizo}”'
                   : 'Chhanna dik chu “${entry.word}” a ni.'),
+          StudioFixButton(contentId: entry.id),
           const SizedBox(height: 16),
           SizedBox(
               width: double.infinity,
@@ -509,7 +511,9 @@ class _SpellingGameState extends State<SpellingGame> {
       masked: masked,
       options: options,
       answer: correct,
-      hint: entry.meaningMizo,
+      // The meaning often opens with the word itself (“Thlêng chu …”).
+      hint: maskWordInClue(entry.meaningMizo, entry.word),
+      contentId: entry.id,
     );
   }
 
@@ -623,6 +627,7 @@ class _SpellingGameState extends State<SpellingGame> {
               message: correct
                   ? 'A dik e! Letter “${question.answer}” dah chuan thumal a kim.'
                   : 'A dik lo. Chhanna dik chu “${question.answer}” a ni.'),
+          StudioFixButton(contentId: question.contentId),
           const SizedBox(height: 16),
           SizedBox(
               width: double.infinity,
@@ -725,18 +730,22 @@ class _OldWordQuizGameState extends State<OldWordQuizGame> {
 
   ChoiceQuestion _meaningQuestionFor(
       WordEntry entry, Random random, List<WordEntry> pool) {
-    final correct = entry.meaningMizo.trim();
+    // Meanings often open with their own word (“Thlêng chu …”), which
+    // would point straight at the right option, so every option hides it.
+    String meaningOf(WordEntry word) =>
+        maskWordInClue(word.meaningMizo.trim(), word.word);
+    final correct = meaningOf(entry);
     final rating = widget.controller.gameSkill('tawng_upa');
     final seenMeanings = <String>{correct};
     final distractorPool = pool
-        .where((other) => seenMeanings.add(other.meaningMizo.trim()))
+        .where((other) => seenMeanings.add(meaningOf(other)))
         .toList();
     final distractors = GameDifficulty.distractors(entry, distractorPool,
             rating: rating,
             count: 3,
             similarity: wordSimilarity,
             random: random)
-        .map((other) => other.meaningMizo.trim())
+        .map(meaningOf)
         .toList();
     if (distractors.length < 3) {
       final fallbackMeanings = oldWordQuestions
@@ -752,11 +761,12 @@ class _OldWordQuizGameState extends State<OldWordQuizGame> {
       prompt: fillGameText(GameText.of('tawng_upa').prompt, word: entry.word),
       options: options,
       answer: correct,
-      explanation: '“${entry.word}” chu $correct a ni.',
+      explanation: '“${entry.word}”: ${entry.meaningMizo.trim()}',
       difficulty: entry.difficulty,
       // From level 4 the picture no longer gives the meaning away.
       emoji: entry.emoji.trim().isEmpty || rating >= 4 ? '💬' : entry.emoji,
       review: entry.review,
+      contentId: entry.id,
     );
   }
 
@@ -846,6 +856,7 @@ class _OldWordQuizGameState extends State<OldWordQuizGame> {
               message: correct
                   ? question.explanation
                   : 'Chhanna dik chu “${question.answer}” a ni.\n${question.explanation}'),
+          StudioFixButton(contentId: question.contentId),
           const SizedBox(height: 16),
           SizedBox(
               width: double.infinity,

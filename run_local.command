@@ -58,5 +58,7 @@ echo "App:     http://localhost:$web_port  (a build zawh hunah)"
 echo "Tihtawp nan Ctrl+C hmet rawh."
 echo ""
 
+# EDITOR_TOOLS adds "Studio-ah fix rawh" links in games; player builds never set it.
 flutter run -d web-server --web-port "$web_port" \
-  --dart-define=THUMAL_QUEST_API_BASE_URL="http://localhost:$backend_port"
+  --dart-define=THUMAL_QUEST_API_BASE_URL="http://localhost:$backend_port" \
+  --dart-define=THUMAL_QUEST_EDITOR_TOOLS=true

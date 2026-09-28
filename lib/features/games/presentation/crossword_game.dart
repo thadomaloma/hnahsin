@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../../../src/controller.dart';
 import '../../../src/data.dart';
+import '../../../src/editor_tools.dart';
 import '../../../src/game_session.dart';
 import '../../../src/game_text.dart';
 import '../../../src/game_words.dart';
@@ -15,14 +16,6 @@ import '../engine/crossword_layout.dart';
 import '../engine/game_engine.dart';
 
 typedef _Cell = (int, int);
-
-/// [clue] with every spelling of [word] in it blanked out, so a definition
-/// such as “Bauh chu ui au dan a ni.” doesn't give its own answer away.
-String maskWordInClue(String clue, String word) {
-  final answer = foldMizo(word);
-  return clue.replaceAllMapped(RegExp(r'\p{L}+', unicode: true),
-      (match) => foldMizo(match[0]!) == answer ? '……' : match[0]!);
-}
 
 /// Mini Crossword — a real interlocking crossword built from reviewed words.
 /// Levels 1–2 clue in English (recall the Mizo word), level 3 up clue with
@@ -425,6 +418,7 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
                 null => '${done.answer}: ${done.clue}',
               },
             ),
+            StudioFixButton(contentId: done.id),
           ],
           const SizedBox(height: 14),
           _Keyboard(onLetter: _type, onErase: _erase, enabled: runtime.ready && !finishing),

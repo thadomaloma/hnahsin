@@ -18,7 +18,10 @@ class ApplicationController < ActionController::Base
   end
 
   def require_authentication
-    redirect_to new_session_path, alert: "Sign in to open Editorial Studio." unless current_user
+    return if current_user
+
+    session[:return_to] = request.fullpath if request.get?
+    redirect_to new_session_path, alert: "Sign in to open Editorial Studio."
   end
 
   def require_roles!(*roles)

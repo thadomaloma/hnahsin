@@ -8,6 +8,7 @@ import '../../../src/data.dart';
 import '../../../src/game_session.dart';
 import '../../../src/game_text.dart';
 import '../../../src/content_widgets.dart';
+import '../../../src/editor_tools.dart';
 import '../../../src/theme.dart';
 import '../../../src/widgets.dart';
 import '../../learning/domain/learning_state.dart';
@@ -355,6 +356,7 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
               controller: widget.controller,
               contentId: question.id,
             ),
+            StudioFixButton(contentId: question.id),
           ],
           const SizedBox(height: 18),
           FilledButton(

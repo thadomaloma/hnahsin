@@ -1,6 +1,6 @@
 module Editorial
   class ContentItemsController < BaseController
-    before_action -> { require_roles!(:editor) }, except: %i[index show]
+    before_action -> { require_roles!(:editor) }, except: %i[index show open]
     before_action :set_content_item, only: %i[show edit update]
 
     def index
@@ -24,6 +24,18 @@ module Editorial
       @status_options = ContentItem.statuses.keys
       @content_type_options = ContentItem.content_types.keys
       @pagy, @content_items = pagy(scope)
+    end
+
+    # The item a game shows under [stable_id]; ids the game builds itself
+    # (a word's example sentence) or bundled prototype words fall back to a
+    # search.
+    def open
+      stable_id = params[:stable_id].delete_prefix("sentence.word.")
+      item = ContentItem.find_by(stable_id: stable_id)
+      return redirect_to editorial_content_item_path(item) if item
+
+      redirect_to editorial_content_items_path(q: stable_id.sub(/\A\w+\./, "")),
+        alert: "No Studio item is called #{stable_id}; showing the closest matches."
     end
 
     def show

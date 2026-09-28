@@ -192,6 +192,7 @@ class QuestController extends ChangeNotifier {
             emoji: question.emoji,
             review: ContentReview.approved,
             difficulty: question.difficulty,
+            contentId: question.id,
           ),
       ];
 

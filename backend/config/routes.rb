@@ -17,6 +17,9 @@ Rails.application.routes.draw do
       constraints: { checksum: /[0-9a-f]{64}/ }
     resource :bulk_game_modes, only: :create
     resources :flag_reviews, only: %i[index update]
+    # The game's editor tools link here by stable id (e.g. word.auh).
+    get "open/:stable_id", to: "content_items#open", as: :open_content_item,
+      constraints: { stable_id: %r{[^/]+} }, format: false
     get "coverage", to: "coverage#show", as: :coverage
   end
 

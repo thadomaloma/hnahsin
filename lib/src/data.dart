@@ -112,7 +112,8 @@ class ChoiceQuestion {
       required this.explanation,
       this.emoji = '💬',
       this.review = ContentReview.prototypeChecked,
-      this.difficulty = 1});
+      this.difficulty = 1,
+      this.contentId});
   final String prompt;
   final List<String> options;
   final String answer;
@@ -120,6 +121,9 @@ class ChoiceQuestion {
   final String emoji;
   final ContentReview review;
   final int difficulty;
+
+  /// Studio stable id of the word or question this was built from.
+  final String? contentId;
 }
 
 class SpellingQuestion {
@@ -127,11 +131,15 @@ class SpellingQuestion {
       {required this.masked,
       required this.options,
       required this.answer,
-      required this.hint});
+      required this.hint,
+      this.contentId});
   final String masked;
   final List<String> options;
   final String answer;
   final String hint;
+
+  /// Studio stable id of the word this was built from.
+  final String? contentId;
 }
 
 /// Google Cloud settings for a future secure backend. Canonical Mizo text is
@@ -600,6 +608,14 @@ const _plainLetters = <String, String>{
   'û': 'u',
   'ṭ': 't',
 };
+
+/// [clue] with every spelling of [word] in it blanked out, so a definition
+/// such as “Bauh chu ui au dan a ni.” doesn't give its own answer away.
+String maskWordInClue(String clue, String word) {
+  final answer = foldMizo(word);
+  return clue.replaceAllMapped(RegExp(r'\p{L}+', unicode: true),
+      (match) => foldMizo(match[0]!) == answer ? '……' : match[0]!);
+}
 
 /// [normalizeMizo] without circumflexes or the dot in ṭ, for matching what a
 /// learner types on a keyboard that lacks them.

@@ -10,6 +10,9 @@ class SessionsController < ApplicationController
     user = User.authenticate_by(email: params[:email].to_s.strip.downcase, password: params[:password])
     user = nil unless user&.active?
     if user
+      # Only a path on this site, so the login can't bounce somewhere else.
+      return_to = session[:return_to].to_s
+      return_to = dashboard_path unless return_to.start_with?("/") && !return_to.start_with?("//")
       reset_session
       cookies.signed[:editorial_user_id] = {
         value: user.id,
@@ -19,7 +22,7 @@ class SessionsController < ApplicationController
         expires: 12.hours.from_now
       }
       user.update_column(:last_signed_in_at, Time.current)
-      redirect_to dashboard_path, notice: "Welcome back."
+      redirect_to return_to, notice: "Welcome back."
     else
       redirect_to new_session_path, alert: "Email or password is incorrect."
     end
