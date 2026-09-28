@@ -94,23 +94,28 @@ abstract final class GameDifficulty {
     return [for (final entry in ranked.take(count)) entry.$2];
   }
 
-  /// Letters Mizo learners confuse: plain vs circumflex vowels and t vs ṭ.
+  /// Mizo alphabet letters learners confuse: plain vs circumflex vowels,
+  /// aw vs o (they sound alike), n vs ng at a word's end, and t vs ṭ.
   static const confusableLetters = <String, List<String>>{
     'A': ['Â'],
     'Â': ['A'],
+    'AW': ['ÂW', 'O'],
+    'ÂW': ['AW', 'O'],
     'E': ['Ê'],
     'Ê': ['E'],
     'I': ['Î'],
     'Î': ['I'],
-    'O': ['Ô'],
+    'O': ['Ô', 'AW'],
     'Ô': ['O'],
     'U': ['Û'],
     'Û': ['U'],
+    'N': ['NG'],
+    'NG': ['N'],
     'T': ['Ṭ'],
     'Ṭ': ['T'],
   };
 
-  static const _vowels = {'A', 'E', 'I', 'O', 'U', 'Â', 'Ê', 'Î', 'Ô', 'Û'};
+  static const _vowels = {'A', 'AW', 'E', 'I', 'O', 'U', 'Â', 'ÂW', 'Ê', 'Î', 'Ô', 'Û'};
 
   /// How alike two letters are for spelling distractors (1 = easily confused).
   static double letterSimilarity(String a, String b) {

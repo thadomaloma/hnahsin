@@ -132,11 +132,18 @@ class SpellingQuestion {
       required this.options,
       required this.answer,
       required this.hint,
+      this.gloss = '',
       this.contentId});
   final String masked;
   final List<String> options;
   final String answer;
   final String hint;
+
+  /// English meaning, shown once the word is complete.
+  final String gloss;
+
+  /// The whole word, with the blank filled in.
+  String get word => masked.replaceFirst('_', answer);
 
   /// Studio stable id of the word this was built from.
   final String? contentId;
@@ -487,9 +494,9 @@ const spellingQuestions = <SpellingQuestion>[
       answer: 'A',
       hint: 'Tui chhunga nungcha.'),
   SpellingQuestion(
-      masked: 'KH_WVÊL',
-      options: ['A', 'E', 'O', 'U'],
-      answer: 'A',
+      masked: 'KH_VÊL',
+      options: ['AW', 'A', 'E', 'U'],
+      answer: 'AW',
       hint: 'Kan chenna ram pum.'),
 ];
 
@@ -627,24 +634,37 @@ String foldMizo(String value) => normalizeMizo(value)
 /// letters, as a learner reading the alphabet would count them.
 const _mizoDigraphs = <String>['aw', 'ch', 'ng'];
 
-/// [value] split into Mizo alphabet letters. Circumflexes are dropped (â is
-/// still the letter a, and âw is still aw); ṭ stays its own letter.
-List<String> mizoUnits(String value) {
-  final letters = normalizeMizo(value)
+/// [value] (lower-cased) split into Mizo alphabet letters, keeping
+/// circumflexes: “bâwng” → b, âw, ng.
+List<String> mizoLetters(String value) {
+  final text = normalizeMizo(value);
+  final plain = text
       .split('')
       .map((letter) => letter == 'ṭ' ? letter : (_plainLetters[letter] ?? letter))
       .join();
-  final units = <String>[];
+  final letters = <String>[];
   var index = 0;
-  while (index < letters.length) {
+  while (index < text.length) {
     final digraph = _mizoDigraphs
-        .where((candidate) => letters.startsWith(candidate, index))
+        .where((candidate) => plain.startsWith(candidate, index))
         .firstOrNull;
-    units.add(digraph ?? letters[index]);
-    index += digraph?.length ?? 1;
+    final length = digraph?.length ?? 1;
+    letters.add(text.substring(index, index + length));
+    index += length;
   }
-  return units;
+  return letters;
 }
+
+/// [value] split into Mizo alphabet letters for comparing: circumflexes are
+/// dropped (â is still the letter a, and âw is still aw); ṭ stays its own
+/// letter.
+List<String> mizoUnits(String value) => [
+      for (final letter in mizoLetters(value))
+        letter
+            .split('')
+            .map((char) => char == 'ṭ' ? char : (_plainLetters[char] ?? char))
+            .join(),
+    ];
 
 String firstMizoUnit(String value) {
   final units = mizoUnits(value);

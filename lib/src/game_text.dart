@@ -66,7 +66,7 @@ const _defaultGameCopy = <String, GameCopy>{
       title: 'Spelling',
       subtitle: 'Hawrawp ruak dah khat',
       prompt: 'Hawrawp remchâng thlang rawh',
-      hint: 'Hint: Hawrawp dik chu “{answer}” a ni.',
+      hint: 'Hint: Hawrawp dik lo pahnih kan paih e.',
       instructions: <String>[
         'Thumal leh clue chhiar rawh.',
         'Hawrawp ruak dahtu tûr thlang rawh.'

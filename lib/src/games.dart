@@ -10,6 +10,7 @@ import '../features/games/engine/game_engine.dart';
 import 'controller.dart';
 import 'data.dart';
 import 'editor_tools.dart';
+import 'spelling_round.dart';
 import 'game_session.dart';
 import 'game_text.dart';
 import 'game_words.dart';
@@ -338,14 +339,18 @@ class _PictureMatchGameState extends State<PictureMatchGame> {
           const SizedBox(height: 16),
           Text(GameText.of('picture_match').prompt,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w800)),
+              style:
+                  const TextStyle(fontSize: 19, fontWeight: FontWeight.w800)),
         ])),
         GameHintButton(
-            revealed: runtime.hintRevealed, onPressed: runtime.revealHint),
+            revealed: runtime.hintRevealed,
+            onPressed: answered ? null : runtime.revealHint),
         if (runtime.hintRevealed)
           GameHintCard(
               message: fillGameText(GameText.of('picture_match').hint,
-                  word: entry.word, gloss: entry.englishGloss, answer: entry.word)),
+                  word: entry.word,
+                  gloss: entry.englishGloss,
+                  answer: entry.word)),
         const SizedBox(height: 18),
         ...optionSets[index].indexed.map((pair) => Padding(
             padding: const EdgeInsets.only(bottom: 10),
@@ -354,8 +359,9 @@ class _PictureMatchGameState extends State<PictureMatchGame> {
                 label: pair.$2,
                 selected: selected == pair.$2,
                 correct: selected == pair.$2 ? pair.$2 == entry.word : null,
-                onTap:
-                    answered || !runtime.ready ? null : () => choose(pair.$2)))),
+                onTap: answered || !runtime.ready
+                    ? null
+                    : () => choose(pair.$2)))),
         if (answered) ...[
           const SizedBox(height: 6),
           FeedbackCard(
@@ -428,94 +434,14 @@ class _SpellingGameState extends State<SpellingGame> {
     questions = _generateSpellingQuestions();
   }
 
-  /// Builds a spelling round from the live/reviewed word catalog instead of
-  /// the fixed `spellingQuestions` prototype list, so newly reviewed and
-  /// published content (e.g. the Kumtluang curriculum batch) shows up here
-  /// too. Falls back to `spellingQuestions` only if the catalog has nothing
-  /// usable yet (fewer than 20 delivered words, per `ContentPolicy`).
-  List<SpellingQuestion> _generateSpellingQuestions() {
-    final random = session.random;
-    final pool = widget.controller.wordCatalog
-        .where((entry) => ContentPolicy.playable(entry.review))
-        .where((entry) => entry.word.trim().length >= 2)
-        .where((entry) => entry.supportsGame('spelling'))
-        .toList();
-    if (pool.isEmpty) {
-      return <SpellingQuestion>[...spellingQuestions]..shuffle(random);
-    }
-
-    final letterBag = <String>{
-      for (final entry in widget.controller.wordCatalog)
-        ...entry.word.toUpperCase().split(''),
-    }..removeWhere((letter) => !RegExp(r'^[A-ZÂÊÎÔÛṬ]$').hasMatch(letter));
-    if (letterBag.length < 4) {
-      letterBag.addAll(const ['A', 'E', 'I', 'K', 'N', 'T', 'M', 'R']);
-    }
-
-    final knownWords = <String>{
-      ...widget.controller.wordCatalog.map((entry) => entry.word.toUpperCase()),
-      ...widget.controller.chainVocabulary.map((word) => word.toUpperCase()),
-    };
-
-    final selected =
-        pickWordsForLevel(widget.controller, 'spelling', pool, 10, random);
-    return [
-      for (final entry in selected)
-        _spellingQuestionFor(entry, random, letterBag, knownWords),
-    ];
-  }
-
-  SpellingQuestion _spellingQuestionFor(
-    WordEntry entry,
-    Random random,
-    Set<String> letterBag,
-    Set<String> knownWords,
-  ) {
-    final upper = entry.word.toUpperCase();
-    final rating = widget.controller.gameSkill('spelling');
-    final letterPositions = [
-      for (var i = 0; i < upper.length; i++)
-        if (RegExp(r'^[A-ZÂÊÎÔÛṬ]$').hasMatch(upper[i])) i,
-    ];
-    final positions = letterPositions.isEmpty
-        ? [for (var i = 0; i < upper.length; i++) i]
-        : letterPositions;
-    // Higher levels hide the letters learners confuse most (â/a, ṭ/t…).
-    final tricky = positions
-        .where((i) =>
-            GameDifficulty.confusableLetters.containsKey(upper[i]))
-        .toList();
-    final maskIndex = tricky.isNotEmpty &&
-            random.nextDouble() < GameDifficulty.hardness(rating)
-        ? tricky[random.nextInt(tricky.length)]
-        : positions[random.nextInt(positions.length)];
-    final correct = upper[maskIndex];
-    final masked = upper.replaceRange(maskIndex, maskIndex + 1, '_');
-    // A letter that spells another real word (e.g. a/â pairs) would mark a
-    // right answer wrong, so it is never offered.
-    final letterOptions = <String>{
-      ...letterBag,
-      ...?GameDifficulty.confusableLetters[correct],
-    }
-        .difference(<String>{correct})
-        .where((letter) => !knownWords
-            .contains(upper.replaceRange(maskIndex, maskIndex + 1, letter)))
-        .toList();
-    final distractors = GameDifficulty.distractors(correct, letterOptions,
-        rating: rating,
-        count: 3,
-        similarity: GameDifficulty.letterSimilarity,
-        random: random);
-    final options = <String>{correct, ...distractors}.toList()..shuffle(random);
-    return SpellingQuestion(
-      masked: masked,
-      options: options,
-      answer: correct,
-      // The meaning often opens with the word itself (“Thlêng chu …”).
-      hint: maskWordInClue(entry.meaningMizo, entry.word),
-      contentId: entry.id,
-    );
-  }
+  List<SpellingQuestion> _generateSpellingQuestions() => buildSpellingRound(
+        catalog: widget.controller.wordCatalog,
+        knownWords: widget.controller.chainVocabulary,
+        rating: widget.controller.gameSkill('spelling'),
+        random: session.random,
+        pick: (pool, count) => pickWordsForLevel(
+            widget.controller, 'spelling', pool, count, session.random),
+      );
 
   Future<void> _timedOut() async {
     if (!mounted || finishing) return;
@@ -566,6 +492,13 @@ class _SpellingGameState extends State<SpellingGame> {
   Widget build(BuildContext context) {
     final question = questions[index];
     final correct = selected == question.answer;
+    // The hint takes away two wrong letters rather than naming the answer.
+    final ruledOut = runtime.hintRevealed
+        ? question.options
+            .where((option) => option != question.answer)
+            .take(2)
+            .toSet()
+        : const <String>{};
     return QuestPage(
       title: GameText.of('spelling').title,
       subtitle: 'Complete the Mizo word',
@@ -582,7 +515,8 @@ class _SpellingGameState extends State<SpellingGame> {
                   fontWeight: FontWeight.w800, color: QuestColors.slate)),
           const SizedBox(height: 18),
           FittedBox(
-              child: Text(question.masked,
+              // Once answered, the whole word.
+              child: Text(selected == null ? question.masked : question.word,
                   style: const TextStyle(
                       fontSize: 34,
                       letterSpacing: 3,
@@ -597,7 +531,8 @@ class _SpellingGameState extends State<SpellingGame> {
                   fontWeight: FontWeight.w600)),
         ])),
         GameHintButton(
-            revealed: runtime.hintRevealed, onPressed: runtime.revealHint),
+            revealed: runtime.hintRevealed,
+            onPressed: selected != null ? null : runtime.revealHint),
         if (runtime.hintRevealed)
           GameHintCard(
               message: fillGameText(GameText.of('spelling').hint,
@@ -611,22 +546,28 @@ class _SpellingGameState extends State<SpellingGame> {
             crossAxisSpacing: 10,
             childAspectRatio: 2.2,
             children: question.options
-                .map((option) => AnswerButton(
-                    label: option,
-                    selected: selected == option,
-                    correct:
-                        selected == option ? option == question.answer : null,
-                    onTap: selected == null && runtime.ready
-                        ? () => choose(option)
-                        : null))
+                .map((option) => Opacity(
+                    opacity: ruledOut.contains(option) ? .35 : 1,
+                    child: AnswerButton(
+                        label: option,
+                        selected: selected == option,
+                        correct: selected == option
+                            ? option == question.answer
+                            : null,
+                        onTap: selected == null &&
+                                runtime.ready &&
+                                !ruledOut.contains(option)
+                            ? () => choose(option)
+                            : null)))
                 .toList()),
         if (selected != null) ...[
           const SizedBox(height: 18),
           FeedbackCard(
               correct: correct,
               message: correct
-                  ? 'A dik e! Letter “${question.answer}” dah chuan thumal a kim.'
-                  : 'A dik lo. Chhanna dik chu “${question.answer}” a ni.'),
+                  ? '“${question.word}” a kim ta.${question.gloss.isEmpty ? '' : '\n${question.gloss}'}'
+                  : 'Chhanna dik chu “${question.answer}” a ni: “${question.word}”.'
+                      '${question.gloss.isEmpty ? '' : '\n${question.gloss}'}'),
           StudioFixButton(contentId: question.contentId),
           const SizedBox(height: 16),
           SizedBox(
@@ -713,8 +654,8 @@ class _OldWordQuizGameState extends State<OldWordQuizGame> {
     final uniqueWords = pool
         .where((entry) => entry.supportsGame('tawng_upa'))
         .where((entry) => usedWords.add(normalizeMizo(entry.word)));
-    final selected =
-        pickWordsForLevel(widget.controller, 'tawng_upa', uniqueWords, 10, random);
+    final selected = pickWordsForLevel(
+        widget.controller, 'tawng_upa', uniqueWords, 10, random);
     final generated = [
       for (final entry in selected) _meaningQuestionFor(entry, random, pool),
     ];
@@ -737,9 +678,8 @@ class _OldWordQuizGameState extends State<OldWordQuizGame> {
     final correct = meaningOf(entry);
     final rating = widget.controller.gameSkill('tawng_upa');
     final seenMeanings = <String>{correct};
-    final distractorPool = pool
-        .where((other) => seenMeanings.add(meaningOf(other)))
-        .toList();
+    final distractorPool =
+        pool.where((other) => seenMeanings.add(meaningOf(other))).toList();
     final distractors = GameDifficulty.distractors(entry, distractorPool,
             rating: rating,
             count: 3,
@@ -834,7 +774,8 @@ class _OldWordQuizGameState extends State<OldWordQuizGame> {
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headlineSmall),
         GameHintButton(
-            revealed: runtime.hintRevealed, onPressed: runtime.revealHint),
+            revealed: runtime.hintRevealed,
+            onPressed: selected != null ? null : runtime.revealHint),
         if (runtime.hintRevealed)
           GameHintCard(
               message: fillGameText(GameText.of('tawng_upa').hint,
@@ -1174,7 +1115,8 @@ class _WordChainGameState extends State<WordChainGame> {
           FeedbackCard(correct: !messageIsError, message: message!)
         ],
         const SizedBox(height: 14),
-        Text('TIP  •  “$needed” hmanga bulṭan thumal ${_playable.length} kan nei.',
+        Text(
+            'TIP  •  “$needed” hmanga bulṭan thumal ${_playable.length} kan nei.',
             style: const TextStyle(
                 color: QuestColors.slate,
                 fontSize: 12,
@@ -1220,13 +1162,12 @@ class _WordSearchGameState extends State<WordSearchGame> {
         .where((entry) => ContentPolicy.playable(entry.review))
         .where((entry) => entry.supportsGame('word_search'))
         .where((entry) {
-          final word = entry.word.toUpperCase();
-          return word.length >= 2 &&
-              word.length <= _gridSize &&
-              !word.contains(' ') &&
-              seen.add(word);
-        })
-        .toList();
+      final word = entry.word.toUpperCase();
+      return word.length >= 2 &&
+          word.length <= _gridSize &&
+          !word.contains(' ') &&
+          seen.add(word);
+    }).toList();
 
     final words = <String>[
       for (final entry in pickWordsForLevel(widget.controller, 'word_search',
@@ -1250,9 +1191,10 @@ class _WordSearchGameState extends State<WordSearchGame> {
     final targetLetters = [for (final word in words) ...word.split('')];
     final hardness = GameDifficulty.hardness(rating);
     final letterList = catalogLetters.toList();
-    String filler() => targetLetters.isNotEmpty && random.nextDouble() < hardness
-        ? targetLetters[random.nextInt(targetLetters.length)]
-        : letterList[random.nextInt(letterList.length)];
+    String filler() =>
+        targetLetters.isNotEmpty && random.nextDouble() < hardness
+            ? targetLetters[random.nextInt(targetLetters.length)]
+            : letterList[random.nextInt(letterList.length)];
 
     // Level 1–2: each word starts its row, top to bottom. Level 3+: words
     // sit anywhere in their row and rows are shuffled.
