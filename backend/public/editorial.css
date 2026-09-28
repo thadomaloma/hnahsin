@@ -53,6 +53,11 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* Keep the scrollbar's space on every page, so the topbar doesn't shift
+   sideways between short pages and long ones (overlay scrollbars, as on a
+   trackpad-only Mac, take no space either way). */
+html { overflow-y: scroll; }
+
 body {
   margin: 0;
   background: var(--paper);
@@ -77,7 +82,7 @@ a { color: inherit; }
   border-bottom: 1px solid var(--line);
   display: flex;
   align-items: center;
-  padding: 0 max(24px, calc((100vw - 1180px) / 2));
+  padding: 0 max(24px, calc((100% - 1180px) / 2));
   gap: 32px;
   position: sticky;
   top: 0;
@@ -722,3 +727,13 @@ table.coverage td, table.coverage th { white-space: nowrap; }
 .match-hint[data-verdict=ok] { color: var(--green-dark); font-weight: 700; }
 .match-hint[data-verdict=check] { color: #9a6800; font-weight: 700; }
 .match-hint[data-verdict=fix] { color: #c0392b; font-weight: 700; }
+
+/* Shown when the "Game test" link has nothing to open. */
+.game-test-notice {
+  position: fixed;
+  top: 86px;
+  right: 24px;
+  max-width: 420px;
+  z-index: 20;
+  box-shadow: var(--shadow-md);
+}

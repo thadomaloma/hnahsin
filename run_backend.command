@@ -101,5 +101,10 @@ if [ "$run_mode" = "check" ]; then
   exit 0
 fi
 
+# Studio's "Game test" link opens this build; a failed build must not stop
+# the Studio from starting.
+"$project_dir/scripts/build_game_test.sh" || echo "Game test build a hlawhchham, Studio erawh kan tan tho e."
+
 echo "Editorial Studio: http://localhost:3000"
+echo "Game test:        http://localhost:3000/game-test/"
 exec bin/rails server

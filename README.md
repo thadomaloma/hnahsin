@@ -64,8 +64,14 @@ Then open:
 
 | What | URL |
 |---|---|
-| App (web preview) | http://localhost:5050 |
+| App (web preview, hot reload) | http://localhost:5050 |
 | Editorial Studio | http://localhost:3000 |
+| Game test (the app, served by the Studio) | http://localhost:3000/game-test/ |
+
+To run only the Studio, use `./run_backend.command`. It also builds the app
+into `backend/public/game-test/` (development only, not committed) whenever
+the app's code changed, so the Studio's **Game test** link works without the
+5050 preview; `scripts/build_game_test.sh` rebuilds it by hand.
 
 Press **Ctrl + C** to stop both. To run the app on a phone or simulator
 instead, use `flutter run` (add
