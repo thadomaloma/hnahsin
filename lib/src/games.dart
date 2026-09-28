@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +13,7 @@ import 'spelling_round.dart';
 import 'game_session.dart';
 import 'game_text.dart';
 import 'game_words.dart';
+import 'meaning_round.dart';
 import 'theme.dart';
 import 'widgets.dart';
 
@@ -633,82 +633,14 @@ class _OldWordQuizGameState extends State<OldWordQuizGame> {
     questions = _generateMeaningQuestions();
   }
 
-  List<ChoiceQuestion> _generateMeaningQuestions() {
-    final random = session.random;
-    final pool = widget.controller.wordCatalog
-        .where((entry) => ContentPolicy.playable(entry.review))
-        .where((entry) => entry.meaningMizo.trim().isNotEmpty)
-        .toList();
-    final distinctMeanings = <String>{
-      for (final entry in pool) entry.meaningMizo.trim(),
-    };
-    // Questions written in Editorial Studio join every round, picked by
-    // level alongside the ones generated from word meanings.
-    final written = widget.controller.deliveredQuestions;
-    if (pool.isEmpty || distinctMeanings.length < 4) {
-      return <ChoiceQuestion>[...written, ...oldWordQuestions]..shuffle(random);
-    }
-    final usedWords = <String>{};
-    // Any reviewed meaning can be a wrong option; only words tagged for
-    // Tawng Upa (or untagged) are asked about.
-    final uniqueWords = pool
-        .where((entry) => entry.supportsGame('tawng_upa'))
-        .where((entry) => usedWords.add(normalizeMizo(entry.word)));
-    final selected = pickWordsForLevel(
-        widget.controller, 'tawng_upa', uniqueWords, 10, random);
-    final generated = [
-      for (final entry in selected) _meaningQuestionFor(entry, random, pool),
-    ];
-    if (written.isEmpty) return generated;
-    return GameDifficulty.pick(
-      [...generated, ...written],
-      rating: widget.controller.gameSkill('tawng_upa'),
-      count: 10,
-      difficultyOf: (question) => question.difficulty,
-      random: random,
-    );
-  }
-
-  ChoiceQuestion _meaningQuestionFor(
-      WordEntry entry, Random random, List<WordEntry> pool) {
-    // Meanings often open with their own word (“Thlêng chu …”), which
-    // would point straight at the right option, so every option hides it.
-    String meaningOf(WordEntry word) =>
-        maskWordInClue(word.meaningMizo.trim(), word.word);
-    final correct = meaningOf(entry);
-    final rating = widget.controller.gameSkill('tawng_upa');
-    final seenMeanings = <String>{correct};
-    final distractorPool =
-        pool.where((other) => seenMeanings.add(meaningOf(other))).toList();
-    final distractors = GameDifficulty.distractors(entry, distractorPool,
-            rating: rating,
-            count: 3,
-            similarity: wordSimilarity,
-            random: random)
-        .map(meaningOf)
-        .toList();
-    if (distractors.length < 3) {
-      final fallbackMeanings = oldWordQuestions
-          .expand((question) => question.options)
-          .where((option) => option != correct && !distractors.contains(option))
-          .toSet()
-          .toList()
-        ..shuffle(random);
-      distractors.addAll(fallbackMeanings.take(3 - distractors.length));
-    }
-    final options = [correct, ...distractors]..shuffle(random);
-    return ChoiceQuestion(
-      prompt: fillGameText(GameText.of('tawng_upa').prompt, word: entry.word),
-      options: options,
-      answer: correct,
-      explanation: '“${entry.word}”: ${entry.meaningMizo.trim()}',
-      difficulty: entry.difficulty,
-      // From level 4 the picture no longer gives the meaning away.
-      emoji: entry.emoji.trim().isEmpty || rating >= 4 ? '💬' : entry.emoji,
-      review: entry.review,
-      contentId: entry.id,
-    );
-  }
+  List<ChoiceQuestion> _generateMeaningQuestions() => buildMeaningRound(
+        catalog: widget.controller.wordCatalog,
+        written: widget.controller.deliveredQuestions,
+        rating: widget.controller.gameSkill('tawng_upa'),
+        random: session.random,
+        pick: (pool, count) => pickWordsForLevel(
+            widget.controller, 'tawng_upa', pool, count, session.random),
+      );
 
   Future<void> _timedOut() async {
     if (!mounted || finishing) return;
@@ -759,6 +691,13 @@ class _OldWordQuizGameState extends State<OldWordQuizGame> {
   Widget build(BuildContext context) {
     final question = questions[index];
     final correct = selected == question.answer;
+    // The hint takes away two wrong meanings rather than naming the answer.
+    final ruledOut = runtime.hintRevealed
+        ? question.options
+            .where((option) => option != question.answer)
+            .take(2)
+            .toSet()
+        : const <String>{};
     return QuestPage(
       title: GameText.of('tawng_upa').title,
       subtitle: 'Meaning challenge',
@@ -783,13 +722,18 @@ class _OldWordQuizGameState extends State<OldWordQuizGame> {
         const SizedBox(height: 22),
         ...question.options.map((option) => Padding(
             padding: const EdgeInsets.only(bottom: 10),
-            child: AnswerButton(
-                label: option,
-                selected: selected == option,
-                correct: selected == option ? option == question.answer : null,
-                onTap: selected == null && runtime.ready
-                    ? () => choose(option)
-                    : null))),
+            child: Opacity(
+                opacity: ruledOut.contains(option) ? .35 : 1,
+                child: AnswerButton(
+                    label: option,
+                    selected: selected == option,
+                    correct:
+                        selected == option ? option == question.answer : null,
+                    onTap: selected == null &&
+                            runtime.ready &&
+                            !ruledOut.contains(option)
+                        ? () => choose(option)
+                        : null)))),
         if (selected != null) ...[
           const SizedBox(height: 8),
           FeedbackCard(

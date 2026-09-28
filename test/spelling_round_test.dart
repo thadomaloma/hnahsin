@@ -75,7 +75,7 @@ void main() {
   test('clues are English early on and Mizo, answer hidden, later', () {
     final catalog = [_word('w.thleng', 'thlêng', meaning: 'Thlêng chu ei dawn atana hmanraw a ni.', gloss: 'plate')];
     expect(_round(catalog).single.hint, 'plate');
-    expect(_round(catalog, rating: 4).single.hint, '…… chu ei dawn atana hmanraw a ni.');
+    expect(_round(catalog, rating: 4).single.hint, 'Ei dawn atana hmanraw a ni.');
   });
 
   test('an English gloss that is only the word falls back to Mizo', () {

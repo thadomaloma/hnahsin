@@ -104,7 +104,7 @@ SpellingQuestion _spellingQuestionFor(
   // word itself blanked (“Thlêng chu …” would give it away).
   final gloss = entry.englishGloss.trim();
   final english = maskWordInClue(gloss, entry.word);
-  final mizo = maskWordInClue(entry.meaningMizo.trim(), entry.word);
+  final mizo = meaningWithoutWord(entry.meaningMizo, entry.word);
   // A gloss that is only the word itself (“jam”) says nothing once hidden.
   final englishUsable = english.contains(RegExp(r'\p{L}', unicode: true));
   return SpellingQuestion(

@@ -91,7 +91,7 @@ const _defaultGameCopy = <String, GameCopy>{
       title: 'Tawng Upa',
       subtitle: 'Awmzia hriatna quiz',
       prompt: '“{word}” tih hian eng nge a kawh?',
-      hint: 'Hint: Chhanna dik chu “{first}…” tiin a bulṭan.',
+      hint: 'Hint: Chhanna dik lo pahnih kan paih e.',
       instructions: <String>[
         'Thumal leh zawhna chhiar rawh.',
         'Awmzia dik thlang la, hrilhfiahna chhiar rawh.'

@@ -622,6 +622,27 @@ String maskWordInClue(String clue, String word) {
       (match) => foldMizo(match[0]!) == answer ? '……' : match[0]!);
 }
 
+/// A definition of [word] ready to show without naming it. Definitions that
+/// open with the word (“Bilh tih hi puan …”, “Bauh chu ui …”) lose that
+/// opening; anywhere else the word is blanked out.
+String meaningWithoutWord(String meaning, String word) {
+  var text = meaning.trim();
+  final tokens = RegExp(r'\p{L}+', unicode: true).allMatches(text).toList();
+  final parts = foldMizo(word).split(RegExp(r'\s+'));
+  final opensWithWord = tokens.length > parts.length + 1 &&
+      [for (var i = 0; i < parts.length; i++) foldMizo(tokens[i][0]!) == parts[i]]
+          .every((same) => same);
+  if (opensWithWord) {
+    var next = parts.length;
+    if (foldMizo(tokens[next][0]!) == 'tih') next += 1;
+    if (next < tokens.length && const {'chu', 'hi'}.contains(foldMizo(tokens[next][0]!))) {
+      final rest = text.substring(tokens[next].end).trimLeft().replaceFirst(RegExp(r'^[,:]\s*'), '');
+      if (rest.isNotEmpty) text = '${rest[0].toUpperCase()}${rest.substring(1)}';
+    }
+  }
+  return maskWordInClue(text, word);
+}
+
 /// [normalizeMizo] without circumflexes or the dot in ṭ, for matching what a
 /// learner types on a keyboard that lacks them.
 String foldMizo(String value) => normalizeMizo(value)

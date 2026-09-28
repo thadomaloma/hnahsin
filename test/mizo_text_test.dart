@@ -24,6 +24,13 @@ void main() {
       expect(lastMizoUnit('In'), firstMizoUnit('Nula'));
       expect(lastMizoUnit('Nula'), firstMizoUnit('Aizawl'));
     });
+    test('definitions drop an opening that names the word', () {
+      expect(meaningWithoutWord('Bilh tih hi puan a khim dan a ni.', 'bilh'), 'Puan a khim dan a ni.');
+      expect(meaningWithoutWord('Bauh chu ui au dan a ni.', 'Bauh'), 'Ui au dan a ni.');
+      expect(meaningWithoutWord('Thlêng chu, ei dawn atana hmanraw.', 'thleng'), 'Ei dawn atana hmanraw.');
+      expect(meaningWithoutWord('A farnu an ti.', 'farnu'), 'A …… an ti.');
+      expect(meaningWithoutWord('Hla sak.', 'zai'), 'Hla sak.');
+    });
     test('folds circumflexes and ṭ for typed answers', () {
       expect(foldMizo(' Hmûn '), 'hmun');
       expect(foldMizo('ṬÂNG'), 'tang');

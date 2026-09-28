@@ -155,7 +155,7 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
 
   static String _clueFor(WordEntry entry, {required bool english}) {
     final gloss = entry.englishGloss.trim();
-    final mizo = maskWordInClue(entry.meaningMizo.trim(), entry.word);
+    final mizo = meaningWithoutWord(entry.meaningMizo, entry.word);
     if (english && gloss.isNotEmpty) return gloss;
     return mizo.isNotEmpty ? mizo : gloss;
   }
