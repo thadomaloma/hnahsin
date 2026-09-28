@@ -74,7 +74,7 @@ const _defaultGameCopy = <String, GameCopy>{
   'word_search': GameCopy(
       title: 'Word Search',
       subtitle: 'Grid-ah thumal zawn',
-      hint: 'Hint: “{word}” tih thumal hi zawn rawh.',
+      hint: 'Hint: “{word}” chu box sen atangin a inṭan.',
       instructions: <String>[
         'Letter bul hnai indawtin tap rawh.',
         'Thumal pangnga zawng hmu vek rawh.'

@@ -10,6 +10,7 @@ import 'controller.dart';
 import 'data.dart';
 import 'editor_tools.dart';
 import 'spelling_round.dart';
+import 'word_search_board.dart';
 import 'game_session.dart';
 import 'game_text.dart';
 import 'game_words.dart';
@@ -1080,10 +1081,9 @@ class WordSearchGame extends StatefulWidget {
 }
 
 class _WordSearchGameState extends State<WordSearchGame> {
-  static const _fallbackTargets = <String>['NULA', 'IN', 'ZAI', 'AWM', 'RAM'];
-  static const _gridSize = 6;
   late List<String> grid;
-  late Set<String> targets;
+  late Map<String, List<(int, int)>> placements;
+  Iterable<String> get targets => placements.keys;
   late final GameRuntime runtime;
   GameSession get session => runtime.session;
   final List<(int, int)> selected = [];
@@ -1093,77 +1093,22 @@ class _WordSearchGameState extends State<WordSearchGame> {
   String get current =>
       selected.map((position) => grid[position.$1][position.$2]).join();
 
-  /// Builds the letter grid from the live/reviewed word catalog (words up
-  /// to `_gridSize` letters, one per row, left-aligned, remaining cells
-  /// filled with plausible letters drawn from the catalog itself) instead
-  /// of the fixed 6-word prototype board. Falls back to that fixed board
-  /// if fewer than `_fallbackTargets.length` usable words are available.
+  /// English meanings of the catalog's words, shown when one is found.
+  late final Map<String, String> glosses = {
+    for (final entry in widget.controller.wordCatalog.reversed)
+      entry.word.trim().toUpperCase(): entry.englishGloss.trim(),
+  };
+
   void _buildBoard() {
-    final random = session.random;
-    final rating = widget.controller.gameSkill('word_search');
-    final seen = <String>{};
-    final candidates = widget.controller.wordCatalog
-        .where((entry) => ContentPolicy.playable(entry.review))
-        .where((entry) => entry.supportsGame('word_search'))
-        .where((entry) {
-      final word = entry.word.toUpperCase();
-      return word.length >= 2 &&
-          word.length <= _gridSize &&
-          !word.contains(' ') &&
-          seen.add(word);
-    }).toList();
-
-    final words = <String>[
-      for (final entry in pickWordsForLevel(widget.controller, 'word_search',
-          candidates, _fallbackTargets.length, random))
-        entry.word.toUpperCase(),
-    ];
-    for (final word in _fallbackTargets) {
-      if (words.length >= _fallbackTargets.length) break;
-      if (!words.contains(word)) words.add(word);
-    }
-
-    final catalogLetters = <String>{
-      for (final entry in widget.controller.wordCatalog)
-        ...entry.word.toUpperCase().split(''),
-    }..removeWhere((letter) => !RegExp(r'^[A-ZÂÊÎÔÛṬ]$').hasMatch(letter));
-    if (catalogLetters.isEmpty) {
-      catalogLetters.addAll(const ['A', 'E', 'I', 'K', 'N', 'T', 'M', 'R']);
-    }
-    // Higher levels fill the grid with the target words' own letters, so
-    // decoy sequences look like real words.
-    final targetLetters = [for (final word in words) ...word.split('')];
-    final hardness = GameDifficulty.hardness(rating);
-    final letterList = catalogLetters.toList();
-    String filler() =>
-        targetLetters.isNotEmpty && random.nextDouble() < hardness
-            ? targetLetters[random.nextInt(targetLetters.length)]
-            : letterList[random.nextInt(letterList.length)];
-
-    // Level 1–2: each word starts its row, top to bottom. Level 3+: words
-    // sit anywhere in their row and rows are shuffled.
-    final scatter = rating >= 3;
-    String fillRow(String word) {
-      final offset = scatter ? random.nextInt(_gridSize - word.length + 1) : 0;
-      final buffer = StringBuffer();
-      for (var i = 0; i < offset; i++) {
-        buffer.write(filler());
-      }
-      buffer.write(word);
-      while (buffer.length < _gridSize) {
-        buffer.write(filler());
-      }
-      return buffer.toString();
-    }
-
-    final rows = <String>[for (final word in words) fillRow(word)];
-    while (rows.length < _gridSize) {
-      rows.add(fillRow(''));
-    }
-    if (scatter) rows.shuffle(random);
-
-    grid = rows;
-    targets = words.toSet();
+    final board = buildWordSearchBoard(
+      catalog: widget.controller.wordCatalog,
+      rating: widget.controller.gameSkill('word_search'),
+      random: session.random,
+      pick: (pool, count) => pickWordsForLevel(
+          widget.controller, 'word_search', pool, count, session.random),
+    );
+    grid = board.rows;
+    placements = board.placements;
   }
 
   @override
@@ -1195,7 +1140,8 @@ class _WordSearchGameState extends State<WordSearchGame> {
             ..clear()
             ..addAll(
               (snapshot.payload['found'] as List<Object?>? ?? const <Object?>[])
-                  .whereType<String>(),
+                  .whereType<String>()
+                  .where(placements.containsKey),
             );
           selected
             ..clear()
@@ -1255,11 +1201,16 @@ class _WordSearchGameState extends State<WordSearchGame> {
     return 'Thumal zawng zawng i hmu tawh.';
   }
 
-  bool _near(int row, int col) {
+  /// Whether (row, col) continues the selection in a straight line: next
+  /// to the last cell, and in the same direction as the cells before it.
+  bool _extends(int row, int col) {
     if (selected.isEmpty) return true;
     final last = selected.last;
-    return (last.$1 == row && (last.$2 - col).abs() == 1) ||
-        (last.$2 == col && (last.$1 - row).abs() == 1);
+    final (dr, dc) = (row - last.$1, col - last.$2);
+    if (dr.abs() + dc.abs() != 1) return false;
+    if (selected.length == 1) return true;
+    final before = selected[selected.length - 2];
+    return dr == last.$1 - before.$1 && dc == last.$2 - before.$2;
   }
 
   Future<void> tapCell(int row, int col) async {
@@ -1275,7 +1226,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
     }
     // A cell away from the selection starts a new word from that cell.
     setState(() {
-      if (!_near(row, col)) selected.clear();
+      if (!_extends(row, col)) selected.clear();
       selected.add(position);
     });
     final word = current;
@@ -1284,7 +1235,8 @@ class _WordSearchGameState extends State<WordSearchGame> {
       setState(() {
         found.add(word);
         selected.clear();
-        message = '“$word” i hmu ta!';
+        final gloss = glosses[word] ?? '';
+        message = '“$word” i hmu ta!${gloss.isEmpty ? '' : ' ($gloss)'}';
         runtime.answer(true);
       });
       if (found.length == targets.length) {
@@ -1342,6 +1294,11 @@ class _WordSearchGameState extends State<WordSearchGame> {
                       final row = cell ~/ 6;
                       final col = cell % 6;
                       final active = selected.contains((row, col));
+                      final isFound = found.any(
+                          (word) => placements[word]!.contains((row, col)));
+                      // The hint marks where the next word starts.
+                      final hinted = runtime.hintRevealed &&
+                          placements[_hintWord]?.first == (row, col);
                       return Semantics(
                           label:
                               'Row ${row + 1}, column ${col + 1}, letter ${grid[row][col]}',
@@ -1356,14 +1313,23 @@ class _WordSearchGameState extends State<WordSearchGame> {
                                   decoration: BoxDecoration(
                                       color: active
                                           ? QuestColors.gold
-                                          : QuestColors.mist,
+                                          : isFound
+                                              ? const Color(0xFFE6F5E2)
+                                              : QuestColors.mist,
+                                      border: hinted
+                                          ? Border.all(
+                                              color: QuestColors.coral,
+                                              width: 3)
+                                          : null,
                                       borderRadius: BorderRadius.circular(10)),
                                   child: ExcludeSemantics(
                                       child: Text(grid[row][col],
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                               fontWeight: FontWeight.w900,
                                               fontSize: 19,
-                                              color: QuestColors.navy))))));
+                                              color: isFound && !active
+                                                  ? QuestColors.successInk
+                                                  : QuestColors.navy))))));
                     },
                   ))),
           const SizedBox(height: 18),
