@@ -184,7 +184,7 @@ class _JourneyHero extends StatelessWidget {
                 label: controller.journeyState.graceAvailable
                     ? 'Grace ready'
                     : 'Grace used',
-                color: const Color(0xFFD8F8F3),
+                color: const Color(0xFFDDF3FF),
               ),
               Pill(
                 icon: Icons.calendar_view_week_rounded,
@@ -678,7 +678,7 @@ class _StoryQuestScreenState extends State<StoryQuestScreen> {
           if (beatIndex == 0) ...<Widget>[
             PremiumCard(
               gradient: const LinearGradient(
-                colors: <Color>[Color(0xFFE3F8F5), Color(0xFFF4F7FF)],
+                colors: <Color>[Color(0xFFDDF3FF), Color(0xFFF4F7FF)],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

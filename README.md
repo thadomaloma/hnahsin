@@ -1,8 +1,10 @@
-# Thumal Quest
+<p align="center"><img src="design/hnahsin/Hnahsin_Logo.png" width="480" alt="Hnahsin — Mizo Thumal Infiamna"></p>
+
+# Hnahsin
 
 **Khelh la, zir la, thiam rawh.** — *Play, learn, master.*
 
-Thumal Quest is a game-first app for learning the **Mizo language** (lus), for
+Hnahsin (*Mizo Thumal Infiamna*) is a game-first app for learning the **Mizo language** (lus), for
 learners from age 5 to adults. It works offline on phones, and every word,
 question and picture is written and reviewed by people in a web-based
 **Editorial Studio**.
@@ -96,6 +98,7 @@ lib/        Flutter app (screens, games, adaptive engine, content sync)
 backend/    Rails 8 Editorial Studio and public content API
 content/    Word lists, game text and questions (CSV/JSON sources)
 assets/     Branding, fonts and bundled illustrations
+design/     Hnahsin logo and icon source art
 docs/       Design system, runbooks and project history
 scripts/    Release and validation checks
 ```

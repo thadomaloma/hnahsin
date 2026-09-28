@@ -16,7 +16,7 @@ class ThumalQuestApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Thumal Quest',
+      title: 'Hnahsin',
       theme: buildQuestTheme(),
       // Honour larger system text, but cap it where game layouts would break.
       builder: (context, child) => MediaQuery.withClampedTextScaling(
@@ -267,13 +267,13 @@ class _SideRail extends StatelessWidget {
                       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                         Icon(
                           index == i ? _destinations[i].selectedIcon : _destinations[i].icon,
-                          color: index == i ? QuestColors.gold : const Color(0xFFB9C6E4),
+                          color: index == i ? QuestColors.gold : const Color(0xFF8FD0FA),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           _destinations[i].label,
                           style: TextStyle(
-                            color: index == i ? Colors.white : const Color(0xFFB9C6E4),
+                            color: index == i ? Colors.white : const Color(0xFF8FD0FA),
                             fontSize: 12,
                             fontWeight: index == i ? FontWeight.w800 : FontWeight.w600,
                           ),

@@ -24,7 +24,7 @@ run_optional() {
 }
 
 {
-  echo "Thumal Quest — Mac Diagnostic Report"
+  echo "Hnahsin — Mac Diagnostic Report"
   echo "Generated (UTC): $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
   echo "Project version: $(sed -n 's/^version: //p' "$project_dir/pubspec.yaml" 2>/dev/null | head -n 1)"
   echo ""

@@ -336,9 +336,9 @@ class _CardTile extends StatelessWidget {
       padding: const EdgeInsets.all(6),
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: matched ? const Color(0xFFE3F7EC) : Colors.white,
+        color: matched ? const Color(0xFFE6F5E2) : Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: matched ? QuestColors.success : const Color(0xFFDCE3EC), width: matched ? 2 : 1.5),
+        border: Border.all(color: matched ? QuestColors.success : const Color(0xFFD6E6F2), width: matched ? 2 : 1.5),
         boxShadow: matched ? QuestShadows.glow(QuestColors.success) : QuestShadows.card,
       ),
       child: FittedBox(fit: BoxFit.scaleDown, child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 90), child: content)),

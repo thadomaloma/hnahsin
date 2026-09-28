@@ -59,7 +59,7 @@ on_error() {
 trap on_error ERR
 
 echo ""
-echo "Thumal Quest — Phase 4C Mac verification"
+echo "Hnahsin — Phase 4C Mac verification"
 echo "========================================="
 echo "Project: $project_dir"
 echo "Mode: $run_mode"
@@ -283,5 +283,5 @@ if [ "$run_mode" = "check" ]; then
 fi
 
 echo ""
-echo "Thumal Quest macOS app hawn mek..."
+echo "Hnahsin macOS app hawn mek..."
 flutter run -d macos

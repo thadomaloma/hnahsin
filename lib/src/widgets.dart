@@ -237,7 +237,7 @@ class PageIntro extends StatelessWidget {
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(color: const Color(0xFFE3F7F4), borderRadius: BorderRadius.circular(99)),
+                  decoration: BoxDecoration(color: const Color(0xFFDDF3FF), borderRadius: BorderRadius.circular(99)),
                   child: Text(
                     eyebrow.toUpperCase(),
                     style: const TextStyle(color: QuestColors.tealDark, fontSize: 10.5, fontWeight: FontWeight.w800, letterSpacing: 1.1),
@@ -455,9 +455,9 @@ class GameResumeBanner extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 14),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
-            color: const Color(0xFFE5F7F4),
+            color: const Color(0xFFDDF3FF),
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: const Color(0xFFC6EEE8)),
+            border: Border.all(color: const Color(0xFF8FD0FA)),
           ),
           child: const Row(
             children: <Widget>[
@@ -557,21 +557,21 @@ class _AnswerButtonState extends State<AnswerButton> {
   @override
   Widget build(BuildContext context) {
     var background = Colors.white;
-    var border = const Color(0xFFDCE3EC);
+    var border = const Color(0xFFD6E6F2);
     var accent = QuestColors.slate;
     IconData? icon;
     if (widget.selected) {
-      background = const Color(0xFFEEF2FF);
+      background = const Color(0xFFEAF6FF);
       border = QuestColors.indigo;
       accent = QuestColors.indigo;
     }
     if (widget.correct == true) {
-      background = const Color(0xFFE3F7EC);
+      background = const Color(0xFFE6F5E2);
       border = QuestColors.success;
-      accent = QuestColors.success;
+      accent = QuestColors.successInk;
       icon = Icons.check_rounded;
     } else if (widget.correct == false) {
-      background = const Color(0xFFFFEAE7);
+      background = const Color(0xFFFCE4EC);
       border = QuestColors.coral;
       accent = QuestColors.coral;
       icon = Icons.close_rounded;
@@ -646,7 +646,7 @@ class FeedbackCard extends StatelessWidget {
   final String message;
   @override
   Widget build(BuildContext context) {
-    final accent = correct ? QuestColors.success : QuestColors.coral;
+    final accent = correct ? QuestColors.successInk : QuestColors.coral;
     return Semantics(
       liveRegion: true,
       label: '${correct ? 'Correct' : 'Try again'}. $message',
@@ -660,7 +660,7 @@ class FeedbackCard extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: correct ? const Color(0xFFE3F7EC) : const Color(0xFFFFEAE7),
+              color: correct ? const Color(0xFFE6F5E2) : const Color(0xFFFCE4EC),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: accent.withValues(alpha: .35)),
             ),
@@ -739,7 +739,7 @@ Future<void> showGameResult(BuildContext context, QuestController controller, St
             Text(
               switch (result.endReason) { GameEndReason.timedOut => 'Hun a tâwp ta. I chhân tawhte chu a save vek e.', GameEndReason.heartsExhausted => 'I score chu a save tawh. Tum leh la, i thiam chho ang.', _ => 'Khelh pahin Mizo tawng i thiam chho zêl e.' },
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Color(0xFFC4D0EA), fontWeight: FontWeight.w500),
+              style: const TextStyle(color: Color(0xFFDDF3FF), fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 14),
             _LevelBanner(outcome: outcome),
@@ -897,7 +897,7 @@ class WordPicture extends StatelessWidget {
       height: size,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        gradient: const LinearGradient(colors: [Color(0xFFE3F7F4), Color(0xFFEEF2FF)]),
+        gradient: const LinearGradient(colors: [Color(0xFFDDF3FF), Color(0xFFEAF6FF)]),
         borderRadius: BorderRadius.circular(size * 0.3),
       ),
       child: Text(initial, style: TextStyle(fontSize: size * 0.48, fontWeight: FontWeight.w800, color: QuestColors.tealDark)),

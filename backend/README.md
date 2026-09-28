@@ -1,4 +1,4 @@
-# Thumal Quest Editorial Studio
+# Hnahsin Editorial Studio
 
 Rails 8.1 + PostgreSQL backend for Mizo content editing, independent review,
 immutable publishing, rollback and pack delivery. (Audio upload, review and
@@ -48,8 +48,8 @@ approving. Changes reach the app in the next published content pack.
 **Which words each game uses.** A word's “Games that use this word” boxes
 decide where it appears (no boxes = every game), and every game honours
 them. In **Content**, the *Game* filter lists the words a game can actually
-use (same rules as the app: Picture Match needs a picture, Crossword 2–5
-letters…), *Picture → Words without a picture* finds words to illustrate, and
+use (same rules as the app: Picture Match needs a picture, Crossword 3–7
+letters, Word Chain single words…), *Picture → Words without a picture* finds words to illustrate, and
 the bar above the list adds or removes a game for all selected words (each
 gets a new revision for review). **Coverage** shows how many live items every
 game has at each level and flags levels with fewer than five.

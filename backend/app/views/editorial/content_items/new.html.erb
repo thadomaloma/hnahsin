@@ -1,4 +1,4 @@
-<div class="section-head"><div><span class="eyebrow" style="color:var(--green)">New draft</span><h1>Create content item</h1></div></div>
+<div class="section-head"><div><span class="eyebrow" style="color:var(--green-dark)">New draft</span><h1>Create content item</h1></div></div>
 <nav class="type-tabs" aria-label="Content type">
   <% [["word", "Word"], ["question", "Tawng Upa question"], ["game_copy", "Game text"], ["sentence", "Sentence"]].each do |type, name| %>
     <%= link_to name, new_editorial_content_item_path(content_type: type), class: ("current" if @structured && @content_item.content_type == type), "aria-current": ("page" if @structured && @content_item.content_type == type) %>

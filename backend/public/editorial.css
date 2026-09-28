@@ -1,4 +1,4 @@
-/* Thumal Quest Editorial Studio — design system
+/* Hnahsin Editorial Studio — design system
    Self-hosted system fonts only (CSP: font-src 'self'); no external requests. */
 
 :root {
@@ -7,18 +7,25 @@
   --muted: #66797a;
   --line: #dfe7e4;
   --line-soft: #ecf1ef;
-  --paper: #f4f7f6;
+  --paper: #fffdf7;
   --white: #ffffff;
 
-  --green: #0a7c72;
-  --green-dark: #075d5a;
-  --green-deep: #062f2b;
-  --mint: #e6f7f3;
-  --mint-strong: #cdeee3;
+  /* Hnahsin palette: sky blues, accent pink, leaf green, cream. The
+     --green/--gold names are kept so no rule needs renaming. White text
+     only ever sits on --green-dark or darker. */
+  --green: #3c9fea;
+  --green-dark: #1565c0;
+  --green-deep: #0d47a1;
+  --mint: #ddf3ff;
+  --mint-strong: #8fd0fa;
 
-  --gold: #b9873a;
-  --gold-soft: #f7ecd6;
-  --gold-line: #e7cf9c;
+  --gold: #c2185b;
+  --gold-soft: #fce4ec;
+  --gold-line: #f48fb1;
+
+  --leaf: #6dbe5e;
+  --leaf-soft: #e6f5e2;
+  --leaf-ink: #2e7d32; /* leaf green is too light for text */
 
   --danger: #a23b3b;
   --danger-soft: #f8e9e8;
@@ -32,10 +39,10 @@
   --radius-lg: 24px;
   --radius-pill: 100px;
 
-  --shadow-xs: 0 1px 2px rgba(8, 30, 28, .06);
-  --shadow-sm: 0 6px 16px rgba(8, 30, 28, .07);
-  --shadow-md: 0 18px 40px -12px rgba(8, 30, 28, .18);
-  --shadow-lg: 0 32px 70px -18px rgba(4, 22, 20, .32);
+  --shadow-xs: 0 1px 2px rgba(13, 71, 161, .06);
+  --shadow-sm: 0 6px 16px rgba(13, 71, 161, .07);
+  --shadow-md: 0 18px 40px -12px rgba(13, 71, 161, .18);
+  --shadow-lg: 0 32px 70px -18px rgba(13, 71, 161, .32);
 
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", ui-sans-serif, "Helvetica Neue", Arial, sans-serif;
   --font-serif: ui-serif, "New York", Georgia, "Iowan Old Style", "Palatino Linotype", serif;
@@ -49,7 +56,7 @@
 body {
   margin: 0;
   background: var(--paper);
-  background-image: radial-gradient(circle at 12% 0%, rgba(10, 124, 114, .05), transparent 45%);
+  background-image: radial-gradient(circle at 12% 0%, rgba(60, 159, 234, .05), transparent 45%);
   color: var(--ink);
   font: 15px/1.6 var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -91,10 +98,8 @@ a { color: inherit; }
 .brand-mark {
   width: 40px; height: 40px;
   border-radius: 12px;
-  display: grid; place-items: center;
-  color: #fff; font-weight: 800; font-size: 13px; letter-spacing: .02em;
-  background: linear-gradient(155deg, var(--green) 0%, var(--green-dark) 65%, var(--green-deep) 100%);
-  box-shadow: 0 8px 18px rgba(7, 93, 90, .32), inset 0 1px 0 rgba(255, 255, 255, .18);
+  display: block;
+  box-shadow: 0 8px 18px rgba(21, 101, 192, .28);
 }
 
 .brand strong { display: block; font-size: 14.5px; letter-spacing: -.01em; }
@@ -162,7 +167,7 @@ a { color: inherit; }
   border: 1px solid var(--green-deep);
   border-radius: 13px;
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--green) 82%, #fff) 0%, var(--green) 42%, var(--green-dark) 100%);
+    linear-gradient(180deg, color-mix(in srgb, var(--green-dark) 82%, #fff) 0%, var(--green-dark) 42%, var(--green-deep) 100%);
   color: #fff;
   padding: 13px 22px;
   font: inherit;
@@ -177,7 +182,7 @@ a { color: inherit; }
   gap: 9px;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .32),
-    inset 0 -1px 1px rgba(4, 22, 20, .25),
+    inset 0 -1px 1px rgba(13, 71, 161, .25),
     var(--shadow-sm);
   transition: background .18s var(--ease), box-shadow .18s var(--ease), transform .18s var(--ease), border-color .18s var(--ease);
 }
@@ -193,22 +198,22 @@ a { color: inherit; }
 }
 
 .button:hover, button:hover, input[type=submit]:hover {
-  background: linear-gradient(180deg, color-mix(in srgb, var(--green-dark) 85%, #fff) 0%, var(--green-dark) 45%, var(--green-deep) 100%);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--green-deep) 85%, #fff) 0%, var(--green-deep) 45%, color-mix(in srgb, var(--green-deep) 80%, #000) 100%);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .3),
-    inset 0 -1px 1px rgba(4, 22, 20, .3),
+    inset 0 -1px 1px rgba(13, 71, 161, .3),
     var(--shadow-md);
   transform: translateY(-2px) scale(1.012);
 }
 
 .button:active, button:active, input[type=submit]:active {
   transform: translateY(0) scale(1);
-  box-shadow: inset 0 2px 4px rgba(4, 22, 20, .35);
+  box-shadow: inset 0 2px 4px rgba(13, 71, 161, .35);
 }
 
 .button:focus-visible, button:focus-visible, input[type=submit]:focus-visible,
 a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
-  outline: 3px solid rgba(10, 124, 114, .32);
+  outline: 3px solid rgba(60, 159, 234, .32);
   outline-offset: 2px;
 }
 
@@ -216,12 +221,12 @@ a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visib
   background: linear-gradient(180deg, #fff 0%, #fbfdfc 100%);
   color: var(--green-dark);
   border-color: rgba(255, 255, 255, .6);
-  box-shadow: inset 0 1px 0 #fff, 0 14px 28px rgba(4, 22, 20, .22);
+  box-shadow: inset 0 1px 0 #fff, 0 14px 28px rgba(13, 71, 161, .22);
 }
 
 .button.secondary:hover {
   background: linear-gradient(180deg, #fff 0%, var(--mint) 100%);
-  box-shadow: inset 0 1px 0 #fff, 0 18px 34px rgba(4, 22, 20, .28);
+  box-shadow: inset 0 1px 0 #fff, 0 18px 34px rgba(13, 71, 161, .28);
   transform: translateY(-2px) scale(1.012);
 }
 
@@ -236,7 +241,7 @@ a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visib
 
 .button.ghost:hover { background: var(--mint); border-color: var(--green); box-shadow: var(--shadow-xs); transform: translateY(-1px); }
 
-.button.ghost:active { box-shadow: inset 0 2px 4px rgba(8, 30, 28, .08); transform: translateY(0); }
+.button.ghost:active { box-shadow: inset 0 2px 4px rgba(13, 71, 161, .08); transform: translateY(0); }
 
 .button.compact { padding: 8px 13px; font-size: 12.5px; border-radius: 10px; gap: 6px; }
 
@@ -247,7 +252,7 @@ button:disabled, input[type=submit]:disabled { opacity: .5; cursor: not-allowed;
 .hero {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-dark) 48%, var(--green) 100%);
+  background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-dark) 100%);
   color: #fff;
   padding: 40px 40px 36px;
   border-radius: var(--radius-lg);
@@ -264,7 +269,7 @@ button:disabled, input[type=submit]:disabled { opacity: .5; cursor: not-allowed;
   inset: 0;
   background:
     radial-gradient(560px 240px at 100% -10%, rgba(255, 255, 255, .10), transparent 60%),
-    radial-gradient(420px 220px at -5% 120%, rgba(185, 135, 58, .28), transparent 65%);
+    radial-gradient(420px 220px at -5% 120%, rgba(194, 24, 91, .22), transparent 65%);
   pointer-events: none;
 }
 
@@ -448,7 +453,7 @@ button:disabled, input[type=submit]:disabled { opacity: .5; cursor: not-allowed;
 
 .pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 
-.pill.approved, .pill.published { background: var(--mint); color: var(--green-dark); }
+.pill.approved, .pill.published { background: var(--leaf-soft); color: var(--leaf-ink); }
 .pill.in_review, .pill.uploaded, .pill.building { background: var(--amber-soft); color: var(--amber-ink); }
 .pill.rejected { background: var(--danger-soft); color: var(--danger); }
 .pill.superseded, .pill.archived, .pill.withdrawn { background: var(--slate-soft); color: var(--slate-ink); }
@@ -546,7 +551,7 @@ textarea { min-height: 240px; font-family: var(--font-mono); font-size: 12.5px; 
 input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: var(--green);
-  box-shadow: 0 0 0 4px rgba(10, 124, 114, .13);
+  box-shadow: 0 0 0 4px rgba(60, 159, 234, .13);
 }
 
 .hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
@@ -565,7 +570,7 @@ input:focus, select:focus, textarea:focus {
   border: 1px solid transparent;
 }
 
-.flash.success { background: var(--mint); color: var(--green-dark); border-color: var(--mint-strong); }
+.flash.success { background: var(--leaf-soft); color: var(--leaf-ink); border-color: var(--leaf); }
 .flash.danger { background: var(--danger-soft); color: var(--danger); border-color: #f0cdcc; }
 
 /* ---------- Code / JSON ---------- */
@@ -573,7 +578,7 @@ input:focus, select:focus, textarea:focus {
 pre.json {
   overflow: auto;
   background: var(--green-deep);
-  color: #cdf3ea;
+  color: #ddf3ff;
   border-radius: var(--radius-md);
   padding: 20px;
   font-family: var(--font-mono);
@@ -601,7 +606,7 @@ pre.json {
   border: 1px dashed #c9d5d3;
   border-radius: var(--radius-md);
   font-size: 13.5px;
-  background: linear-gradient(180deg, rgba(230, 247, 243, .35), transparent);
+  background: linear-gradient(180deg, rgba(221, 243, 255, .35), transparent);
 }
 
 .empty .icon { width: 26px; height: 26px; color: #9db3b0; margin-bottom: 8px; }
@@ -676,7 +681,7 @@ input[type=number], input[type=file] { font: inherit; }
   background: #fff; color: var(--ink); text-decoration: none; font-weight: 700; font-size: 13px;
 }
 .type-tabs a:hover { background: var(--mint); }
-.type-tabs a.current { background: var(--green); border-color: var(--green); color: #fff; }
+.type-tabs a.current { background: var(--green-dark); border-color: var(--green-dark); color: #fff; }
 .check-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 0 12px; }
 .picture-field { border: 1px solid var(--line); border-radius: var(--radius-md); padding: 6px 16px 14px; margin: 20px 0 0; }
 .picture-field legend { font-weight: 800; font-size: 13px; padding: 0 6px; }

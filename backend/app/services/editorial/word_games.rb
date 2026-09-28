@@ -2,7 +2,7 @@ module Editorial
   # Which games a word actually appears in, using the same rules as the
   # mobile app (lib/src/games.dart and friends): the word must be complete,
   # tagged for the game (no tags = every game) and fit the game's shape —
-  # e.g. Picture Match needs a picture, Crossword needs 2–5 letters.
+  # e.g. Picture Match needs a picture, Crossword needs 3–7 plain letters.
   class WordGames
     GAMES = BodyForm::GAME_MODES
     ILLUSTRATIONS = Rails.root.join("..", "assets", "illustrations")
@@ -61,12 +61,19 @@ module Editorial
       when "picture_match" then picture?
       when "spelling" then letters >= 2
       when "word_search" then letters.between?(2, 6) && !@word.include?(" ")
-      when "crossword" then letters.between?(2, 5) && !@word.include?(" ")
+      # One letter per cell, spelled with the on-screen Mizo keyboard.
+      when "crossword" then letters.between?(3, 7) && MIZO_LETTERS.match?(@word.downcase)
+      when "word_chain" then MIZO_LETTERS.match?(@word.downcase)
       when "thumal_kawp" then picture? || @gloss.length <= 22
-      when "sentence_builder" then @example.split.size >= 2
+      # The example must actually use the word it teaches.
+      when "sentence_builder" then @example.split.size >= 2 && fold(@example).include?(fold(@word.split.first.to_s))
       else true
       end
     end
+
+    MIZO_LETTERS = /\A[a-zâêîôûṭ]+\z/
+
+    def fold(text) = text.downcase.tr("âêîôûṭ", "aeiout")
 
     private
 

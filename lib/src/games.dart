@@ -1013,7 +1013,7 @@ class _WordChainGameState extends State<WordChainGame> {
                       fontWeight: FontWeight.w800)),
               const SizedBox(height: 10),
               const Text('Entîrna: In → Nula → Aizawl → Lal',
-                  style: TextStyle(color: Color(0xFFC4D0EA))),
+                  style: TextStyle(color: Color(0xFFDDF3FF))),
             ])),
         const SizedBox(height: 22),
         const SectionTitle('Kan chain'),
@@ -1025,7 +1025,7 @@ class _WordChainGameState extends State<WordChainGame> {
                 .map((word) => Chip(
                     label: Text('${word[0].toUpperCase()}${word.substring(1)}',
                         style: const TextStyle(fontWeight: FontWeight.w900)),
-                    backgroundColor: const Color(0xFFD8F8F3),
+                    backgroundColor: const Color(0xFFDDF3FF),
                     side: BorderSide.none))
                 .toList()),
         if (chain.length == 1) ...[
@@ -1396,7 +1396,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
                                   : null,
                               fontWeight: FontWeight.w800)),
                       backgroundColor: found.contains(word)
-                          ? const Color(0xFFE1F6EA)
+                          ? const Color(0xFFE6F5E2)
                           : Colors.white,
                       side: BorderSide.none))
                   .toList()),

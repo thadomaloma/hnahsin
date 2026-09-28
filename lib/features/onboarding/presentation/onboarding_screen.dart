@@ -104,7 +104,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       const SizedBox(width: 12),
                       const Expanded(
                         child: Text(
-                          'THUMAL QUEST',
+                          'HNAHSIN',
                           style: TextStyle(
                             color: QuestColors.navy,
                             fontWeight: FontWeight.w900,
@@ -323,7 +323,7 @@ class _BenefitRow extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: const Color(0xFFD8F8F3),
+              color: const Color(0xFFDDF3FF),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Icon(icon, color: QuestColors.tealDark),
@@ -341,7 +341,7 @@ class _BenefitRow extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 3),
-                Text(detail, style: const TextStyle(color: Color(0xFFC4D0EA))),
+                Text(detail, style: const TextStyle(color: Color(0xFFDDF3FF))),
               ],
             ),
           ),
@@ -540,7 +540,7 @@ class _SelectionCard extends StatelessWidget {
             duration: const Duration(milliseconds: 160),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: selected ? const Color(0xFFE5F7F4) : Colors.white,
+              color: selected ? const Color(0xFFDDF3FF) : Colors.white,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: selected ? QuestColors.tealDark : QuestColors.line,

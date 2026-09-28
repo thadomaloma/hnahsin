@@ -64,7 +64,7 @@ class CultureTrailScreen extends StatelessWidget {
                             const SizedBox(height: 7),
                             Text(
                               '${controller.journeyState.trailMarks} Trail Marks • Lessons stay open',
-                              style: const TextStyle(color: Color(0xFFC4D0EA)),
+                              style: const TextStyle(color: Color(0xFFDDF3FF)),
                             ),
                           ],
                         ),
@@ -201,7 +201,7 @@ class _CultureCardTile extends StatelessWidget {
             height: 54,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: unlocked ? const Color(0xFFE3F8F5) : QuestColors.mist,
+              color: unlocked ? const Color(0xFFDDF3FF) : QuestColors.mist,
               borderRadius: BorderRadius.circular(17),
             ),
             child: Text(
@@ -289,7 +289,7 @@ class _CultureCardScreenState extends State<CultureCardScreen> {
               height: 92,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: const Color(0xFFE3F8F5),
+                color: const Color(0xFFDDF3FF),
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Text(
@@ -460,7 +460,7 @@ class CollectionScreen extends StatelessWidget {
                             const Text(
                               'Recognition only • No lesson is locked',
                               style: TextStyle(
-                                color: Color(0xFFC4D0EA),
+                                color: Color(0xFFDDF3FF),
                                 fontSize: 11,
                               ),
                             ),

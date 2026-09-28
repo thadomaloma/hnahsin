@@ -17,8 +17,8 @@ class ContentDeliveryStatusCard extends StatelessWidget {
     return PremiumCard(
       gradient: LinearGradient(
         colors: safe
-            ? const <Color>[Color(0xFFE3F8F5), Color(0xFFF6FCFB)]
-            : const <Color>[Color(0xFFFFE8E4), Color(0xFFFFF8F6)],
+            ? const <Color>[Color(0xFFDDF3FF), Color(0xFFF6FCFB)]
+            : const <Color>[Color(0xFFFCE4EC), Color(0xFFFFF8F6)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -12,7 +12,7 @@ void main() {
     await tester.pumpWidget(ThumalQuestApp(controller: QuestController()));
     await tester.pumpAndSettle();
 
-    expect(find.text('THUMAL QUEST'), findsOneWidget);
+    expect(find.text('HNAHSIN'), findsOneWidget);
     expect(find.text('Your Mizo journey starts here.'), findsOneWidget);
     expect(find.text('Start My Journey'), findsOneWidget);
   });

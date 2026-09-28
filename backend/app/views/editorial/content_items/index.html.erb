@@ -1,4 +1,4 @@
-<div class="section-head"><div><span class="eyebrow" style="color:var(--green)">Editorial library</span><h1>Content</h1></div><% if current_user.can_edit? %><%= link_to new_editorial_content_item_path, class: "button" do %><%= action_icon(:plus) %>New content item<% end %><% end %></div>
+<div class="section-head"><div><span class="eyebrow" style="color:var(--green-dark)">Editorial library</span><h1>Content</h1></div><% if current_user.can_edit? %><%= link_to new_editorial_content_item_path, class: "button" do %><%= action_icon(:plus) %>New content item<% end %><% end %></div>
 
 <%= form_with url: editorial_content_items_path, method: :get, class: "filters" do %>
   <div class="field">

@@ -31,7 +31,7 @@ exec > >(tee "$log_file") 2>&1
 fail_with_help() {
   message="$1"
   {
-    echo "Thumal Quest Editorial Studio diagnostic"
+    echo "Hnahsin Editorial Studio diagnostic"
     echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
     echo "Mode: $run_mode"
     echo "Ruby: $(ruby --version 2>/dev/null || echo unavailable)"
@@ -50,7 +50,7 @@ case "$run_mode" in
   *) fail_with_help "Mode hriat loh: $run_mode (run, check, doctor, setup, staging-report)." ;;
 esac
 
-echo "Thumal Quest — Phase 4C Staging Validation"
+echo "Hnahsin — Phase 4C Staging Validation"
 echo "=========================================="
 
 command -v ruby >/dev/null 2>&1 || fail_with_help "Ruby 3.3+ install hmasa rawh: brew install ruby"

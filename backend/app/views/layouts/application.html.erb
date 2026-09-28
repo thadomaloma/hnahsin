@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title><%= content_for(:title) || "Thumal Quest Editorial Studio" %></title>
+    <title><%= content_for(:title) || "Hnahsin Editorial Studio" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light">
-    <link rel="icon" type="image/svg+xml" href="<%= brand_favicon_data_uri %>">
+    <meta name="theme-color" content="#3C9FEA">
+    <link rel="icon" href="/favicon.ico" sizes="48x48 32x32 16x16">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <link rel="stylesheet" href="/editorial.css">
@@ -14,8 +17,8 @@
   <body>
     <header class="topbar">
       <a class="brand" href="<%= current_user ? dashboard_path : new_session_path %>">
-        <span class="brand-mark">TQ</span>
-        <span><strong>Thumal Quest</strong><small>Editorial Studio</small></span>
+        <img class="brand-mark" src="/hnahsin-icon.png" alt="" width="40" height="40">
+        <span><strong>Hnahsin</strong><small>Editorial Studio</small></span>
       </a>
       <% if current_user %>
         <nav aria-label="Primary navigation">

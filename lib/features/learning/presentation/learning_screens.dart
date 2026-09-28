@@ -54,7 +54,7 @@ class LearningOverviewCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             state.level.mizoDescription,
-            style: const TextStyle(color: Color(0xFFC4D0EA), height: 1.4),
+            style: const TextStyle(color: Color(0xFFDDF3FF), height: 1.4),
           ),
           const SizedBox(height: 18),
           Wrap(
@@ -336,7 +336,7 @@ class _PlacementScreenState extends State<PlacementScreen> {
                 Text(
                   '$correct/${questions.length} correct • ${level.mizoDescription}',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: Color(0xFFC4D0EA), height: 1.4),
+                  style: const TextStyle(color: Color(0xFFDDF3FF), height: 1.4),
                 ),
               ],
             ),
@@ -534,7 +534,7 @@ class _DailyReviewScreenState extends State<DailyReviewScreen> {
                   Text(
                     '$correct/${questions.length} correct • Review hun leh tur automatic-in ruahman a ni.',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(color: Color(0xFFC4D0EA), height: 1.4),
+                    style: const TextStyle(color: Color(0xFFDDF3FF), height: 1.4),
                   ),
                 ],
               ),

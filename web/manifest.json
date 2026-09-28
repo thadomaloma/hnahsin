@@ -1,11 +1,11 @@
 {
-    "name": "thumal_quest",
-    "short_name": "thumal_quest",
+    "name": "Hnahsin",
+    "short_name": "Hnahsin",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#3C9FEA",
+    "theme_color": "#3C9FEA",
+    "description": "Hnahsin — Mizo Thumal Infiamna. Learn Mizo by playing word games.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

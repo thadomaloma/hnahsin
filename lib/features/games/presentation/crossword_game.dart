@@ -546,14 +546,14 @@ class _Board extends StatelessWidget {
     // A wrong letter stays red even under the cursor; the cursor is then
     // shown as a gold border.
     final color = wrong
-        ? const Color(0xFFFFD9D5)
+        ? const Color(0xFFFCE4EC)
         : cell == active
             ? QuestColors.gold
             : solved
                 ? const Color(0xFFD9F4E5)
                 : inActive
                     .contains(cell)
-                    ? const Color(0xFFD8F8F3)
+                    ? const Color(0xFFDDF3FF)
                     : Colors.white;
     return Semantics(
       button: true,
@@ -584,7 +584,7 @@ class _Board extends StatelessWidget {
                   style: TextStyle(
                     fontSize: size * .48,
                     fontWeight: FontWeight.w900,
-                    color: wrong ? const Color(0xFFC0392B) : (solved ? QuestColors.success : QuestColors.navy),
+                    color: wrong ? const Color(0xFFC2185B) : (solved ? QuestColors.successInk : QuestColors.navy),
                   ),
                 ),
               ),
@@ -668,7 +668,7 @@ class _ClueTile extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           decoration: BoxDecoration(
-            color: active ? const Color(0xFFD8F8F3) : Colors.transparent,
+            color: active ? const Color(0xFFDDF3FF) : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -681,7 +681,7 @@ class _ClueTile extends StatelessWidget {
                 solved ? '${slot.clue} — ${slot.answer}' : '${slot.clue} (${slot.answer.length})',
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
-                  color: solved ? QuestColors.success : QuestColors.ink,
+                  color: solved ? QuestColors.successInk : QuestColors.ink,
                 ),
               ),
             ),

@@ -143,7 +143,7 @@ class _BrandHeader extends StatelessWidget {
                   color: QuestColors.slate,
                   fontWeight: FontWeight.w600,
                   fontSize: 13.5)),
-          Text('Thumal Quest',
+          Text('Hnahsin',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.headlineSmall),
@@ -211,7 +211,7 @@ class _DailyHero extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 5),
                         decoration: BoxDecoration(
-                            color: const Color(0x2239D6C4),
+                            color: const Color(0x228FD0FA),
                             borderRadius: BorderRadius.circular(99)),
                         child: Text(
                           '${controller.learningState.level.code} • ${controller.track.title.toUpperCase()}',
@@ -236,7 +236,7 @@ class _DailyHero extends StatelessWidget {
                       Text(
                           '${controller.dailyPlan.total} items • Daily learning plan',
                           style: const TextStyle(
-                              color: Color(0xFFC4D0EA),
+                              color: Color(0xFFDDF3FF),
                               fontWeight: FontWeight.w500,
                               fontSize: 13)),
                     ])),
@@ -258,7 +258,7 @@ class _DailyHero extends StatelessWidget {
                 Pill(
                     icon: Icons.bolt_rounded,
                     label: '${controller.xp} XP',
-                    color: const Color(0x2239D6C4),
+                    color: const Color(0x228FD0FA),
                     foreground: QuestColors.teal),
               ]),
               const SizedBox(height: 18),
@@ -457,7 +457,7 @@ class LearnScreen extends StatelessWidget {
           PremiumCard(
             onTap: () => _open(context, WordBankScreen(controller: controller)),
             gradient: const LinearGradient(
-                colors: [Color(0xFFE3F8F5), Color(0xFFF5FBFA)]),
+                colors: [Color(0xFFDDF3FF), Color(0xFFF5FBFA)]),
             child: Row(children: [
               const _IconTile(
                   icon: Icons.menu_book_rounded,
@@ -496,7 +496,7 @@ class LearnScreen extends StatelessWidget {
           _LessonStep(
               number: 2,
               icon: Icons.spellcheck_rounded,
-              color: const Color(0xFFD8F8F3),
+              color: const Color(0xFFDDF3FF),
               foreground: QuestColors.tealDark,
               title: 'Spelling',
               subtitle: 'Hawrawp ruak dah khat',
@@ -603,7 +603,7 @@ class _LessonStep extends StatelessWidget {
         child: Row(children: [
           _IconTile(
               icon: icon,
-              color: active ? const Color(0xFFD8F8F3) : color,
+              color: active ? const Color(0xFFDDF3FF) : color,
               foreground: active ? QuestColors.tealDark : foreground),
           const SizedBox(width: 14),
           Expanded(
@@ -619,7 +619,7 @@ class _LessonStep extends StatelessWidget {
                 Text(subtitle,
                     style: TextStyle(
                         color: active
-                            ? const Color(0xFFC4D0EA)
+                            ? const Color(0xFFDDF3FF)
                             : QuestColors.slate)),
               ])),
           Icon(
@@ -651,7 +651,7 @@ List<_GameInfo> _gameCatalog(QuestController controller) {
         GameText.of('spelling').title,
         Icons.spellcheck_rounded,
         GameText.of('spelling').subtitle,
-        const Color(0xFFD8F8F3),
+        const Color(0xFFDDF3FF),
         QuestColors.tealDark,
         GameText.of('spelling').instructions,
         (mode) => SpellingGame(controller: controller, mode: mode)),
@@ -760,7 +760,7 @@ class _CompletionBadge extends StatelessWidget {
                   fontSize: 16)),
           const Text('PLAYED',
               style: TextStyle(
-                  color: Color(0xFFB9C6E4),
+                  color: Color(0xFF8FD0FA),
                   fontSize: 9,
                   fontWeight: FontWeight.w800,
                   letterSpacing: .8)),
@@ -932,7 +932,7 @@ class _GameCard extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: best > 0
                           ? const Color(0xFFFFF4CA)
-                          : const Color(0xFFEEF2FF),
+                          : const Color(0xFFEAF6FF),
                       borderRadius: BorderRadius.circular(99)),
                   child: Text(
                     best > 0 ? '★ $best' : 'PLAY',
@@ -1008,7 +1008,7 @@ class ProfileScreen extends StatelessWidget {
                           const AlwaysStoppedAnimation(QuestColors.gold)),
                   const SizedBox(height: 8),
                   Text('${controller.xp % 250}/250 XP level thar atan',
-                      style: const TextStyle(color: Color(0xFFC4D0EA))),
+                      style: const TextStyle(color: Color(0xFFDDF3FF))),
                 ])),
             const SizedBox(height: 14),
             Row(children: [

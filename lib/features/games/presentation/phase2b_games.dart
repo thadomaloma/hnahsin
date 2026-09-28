@@ -318,7 +318,7 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
                     question.englishSupport,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                        color: Color(0xFFC4D0EA), fontWeight: FontWeight.w600),
+                        color: Color(0xFFDDF3FF), fontWeight: FontWeight.w600),
                   ),
                 ],
               ],
@@ -345,9 +345,9 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: isCorrect == true
-                  ? const Color(0xFFE1F6EA)
+                  ? const Color(0xFFE6F5E2)
                   : isCorrect == false
-                      ? const Color(0xFFFFE7E4)
+                      ? const Color(0xFFFCE4EC)
                       : Colors.white,
               border: Border.all(color: QuestColors.line),
               borderRadius: BorderRadius.circular(20),
