@@ -101,8 +101,8 @@ const _defaultGameCopy = <String, GameCopy>{
       subtitle: 'Clue atanga thumal ziak',
       hint: 'Hint: Box pakhat kan dah khat sak e.',
       instructions: <String>[
-        'Clue horizontal leh vertical chhiar rawh.',
-        'Box tinah hawrawp pakhat ziak la, answer check rawh.'
+        'Box pakhat tap la, a clue chhiar rawh. Vawi hnih i tap chuan across leh down a inthlak.',
+        'Keyboard hmangin hawrawp ziak rawh. Thumal i ziak kim veleh a dik em tih kan en nghal ang.'
       ]),
   'thumal_kawp': GameCopy(
       title: 'Thumal Kawp',
