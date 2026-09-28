@@ -88,13 +88,18 @@ class QuestController extends ChangeNotifier {
   /// the live/synced catalog, normalized for chaining. This lets Word
   /// Chain grow with the reviewed content pack instead of staying fixed at
   /// the original 44-word prototype list.
+  /// Single words only: phrases such as “buh leh bal” have no one word to
+  /// chain from.
   Set<String> get chainVocabulary => <String>{
         ...chainDictionary,
         ...wordCatalog
             .where((entry) => ContentPolicy.playable(entry.review))
             .where((entry) => entry.supportsGame('word_chain'))
-            .map((entry) => normalizeMizo(entry.word)),
+            .map((entry) => normalizeMizo(entry.word))
+            .where(_singleWord.hasMatch),
       };
+
+  static final _singleWord = RegExp(r'^[a-zâêîôûṭ]+$');
 
   bool get _deliveredCatalogReady {
     final delivered =

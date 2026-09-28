@@ -505,7 +505,7 @@ const chainDictionary = <String>{
   'hming',
   'hnam',
   'in',
-  'inkhel',
+  'inkhêl',
   'kal',
   'lal',
   'lehkhabu',
@@ -519,25 +519,23 @@ const chainDictionary = <String>{
   'nula',
   'nu',
   'pa',
-  'par',
+  'pâr',
   'ram',
   'sakei',
   'sangha',
   'sava',
   'sikul',
-  'thian',
   'ṭhian',
   'thing',
   'thla',
-  'tlang',
+  'tlâng',
   'tlawmngaihna',
-  'tlan',
+  'tlân',
   'tui',
   'ui',
   'upa',
   'zai',
   'ziak',
-  'zirtirtu',
   'zirtîrtu',
 };
 
@@ -624,36 +622,26 @@ String foldMizo(String value) => normalizeMizo(value)
     .map((letter) => _plainLetters[letter] ?? letter)
     .join();
 
-const _mizoClusters = <String>[
-  'ch',
-  'kh',
-  'ng',
-  'ph',
-  'th',
-  'tl',
-  'hm',
-  'hl',
-  'hr',
-  'lh',
-  'rh',
-  'aw'
-];
+/// The two-letter letters of the Mizo alphabet (A AW B CH D E F G NG H I J
+/// K L M N O P R S T Ṭ U V Z). Clusters such as th, kh or hm are two
+/// letters, as a learner reading the alphabet would count them.
+const _mizoDigraphs = <String>['aw', 'ch', 'ng'];
 
+/// [value] split into Mizo alphabet letters. Circumflexes are dropped (â is
+/// still the letter a, and âw is still aw); ṭ stays its own letter.
 List<String> mizoUnits(String value) {
-  final normalized = normalizeMizo(value);
+  final letters = normalizeMizo(value)
+      .split('')
+      .map((letter) => letter == 'ṭ' ? letter : (_plainLetters[letter] ?? letter))
+      .join();
   final units = <String>[];
   var index = 0;
-  while (index < normalized.length) {
-    final matches = _mizoClusters
-        .where((candidate) => normalized.startsWith(candidate, index));
-    if (matches.isNotEmpty) {
-      final match = matches.first;
-      units.add(match);
-      index += match.length;
-    } else {
-      units.add(normalized[index]);
-      index += 1;
-    }
+  while (index < letters.length) {
+    final digraph = _mizoDigraphs
+        .where((candidate) => letters.startsWith(candidate, index))
+        .firstOrNull;
+    units.add(digraph ?? letters[index]);
+    index += digraph?.length ?? 1;
   }
   return units;
 }

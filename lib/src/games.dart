@@ -885,7 +885,14 @@ class _WordChainGameState extends State<WordChainGame> {
   late final GameRuntime runtime;
   GameSession get session => runtime.session;
   final TextEditingController input = TextEditingController();
-  final List<String> chain = ['in'];
+  final List<String> chain = [];
+  late final Set<String> vocabulary;
+
+  /// Vocabulary words by their first letter, for finding what can follow.
+  late final Map<String, List<String>> byFirstLetter;
+
+  /// Catalog entries by normalized word, for meanings and difficulty.
+  late final Map<String, WordEntry> entries;
   String? message;
   bool messageIsError = false;
   bool finishing = false;
@@ -902,6 +909,17 @@ class _WordChainGameState extends State<WordChainGame> {
       },
       onTimedOut: _timedOut,
     );
+    vocabulary = widget.controller.chainVocabulary;
+    byFirstLetter = <String, List<String>>{};
+    for (final word in vocabulary) {
+      (byFirstLetter[firstMizoUnit(word)] ??= <String>[]).add(word);
+    }
+    entries = <String, WordEntry>{
+      for (final entry in widget.controller.wordCatalog.reversed)
+        normalizeMizo(entry.word): entry,
+    };
+    final start = _pickStart();
+    chain.add(start);
     unawaited(
       runtime.initialize(
         currentIndex: () => chain.length - 1,
@@ -917,7 +935,7 @@ class _WordChainGameState extends State<WordChainGame> {
               const <String>[];
           chain
             ..clear()
-            ..addAll(savedChain.isEmpty ? const <String>['in'] : savedChain);
+            ..addAll(savedChain.isEmpty ? <String>[start] : savedChain);
           message = snapshot.payload['message'] as String?;
           messageIsError = snapshot.payload['messageIsError'] as bool? ?? false;
         },
@@ -946,29 +964,61 @@ class _WordChainGameState extends State<WordChainGame> {
     );
   }
 
+  /// A word to start from: at the learner's level, with plenty of words
+  /// that can follow it, so every round opens differently.
+  String _pickStart() {
+    final starts = widget.controller.wordCatalog.where((entry) {
+      final word = normalizeMizo(entry.word);
+      return vocabulary.contains(word) && _nextWords(word).length >= 8;
+    });
+    final picked = pickWordsForLevel(
+        widget.controller, 'word_chain', starts, 1, session.random);
+    return picked.isEmpty ? 'in' : normalizeMizo(picked.single.word);
+  }
+
   static bool _links(String from, String to) =>
-      foldMizo(lastMizoUnit(from)) == foldMizo(firstMizoUnit(to));
+      lastMizoUnit(from) == firstMizoUnit(to);
 
   /// Unused words that could follow [word] in the chain.
-  Iterable<String> _nextWords(String word, Set<String> vocabulary) => vocabulary
-      .where((next) => next != word && !chain.contains(next))
-      .where((next) => _links(word, next));
+  Iterable<String> _nextWords(String word) =>
+      (byFirstLetter[lastMizoUnit(word)] ?? const <String>[])
+          .where((next) => next != word && !chain.contains(next));
+
+  /// Words that can come next without leaving the learner stuck.
+  List<String> get _playable {
+    final lastTurn = chain.length == 5;
+    return _nextWords(chain.last)
+        .where((word) => lastTurn || _nextWords(word).isNotEmpty)
+        .toList();
+  }
 
   String get _hintWord {
-    final vocabulary = widget.controller.chainVocabulary;
-    final lastTurn = chain.length == 5;
-    final matches = _nextWords(chain.last, vocabulary)
-        .where((word) => lastTurn || _nextWords(word, vocabulary).isNotEmpty)
-        .toList()
-      ..sort();
+    // The easiest word the learner is likely to know.
+    final matches = _playable
+      ..sort((a, b) {
+        final byLevel = (entries[a]?.difficulty ?? 1)
+            .compareTo(entries[b]?.difficulty ?? 1);
+        return byLevel != 0 ? byLevel : a.compareTo(b);
+      });
     return matches.isEmpty
         ? 'A thumal dang ngaihtuah rawh.'
         : '“${matches.first}” i hmang thei.';
   }
 
+  /// “nula (young woman)” — what a word means, when the catalog knows.
+  String _withMeaning(String word) {
+    final entry = entries[word];
+    final meaning = entry == null
+        ? ''
+        : (entry.englishGloss.trim().isNotEmpty
+            ? entry.englishGloss.trim()
+            : entry.meaningMizo.trim());
+    return meaning.isEmpty ? '“$word”' : '“$word” ($meaning)';
+  }
+
   /// The vocabulary spelling of what was typed; â, ṭ and friends are
   /// optional as long as only one known word matches.
-  String? _resolve(String typed, Set<String> vocabulary) {
+  String? _resolve(String typed) {
     if (vocabulary.contains(typed)) return typed;
     final folded = foldMizo(typed);
     final matches = vocabulary.where((word) => foldMizo(word) == folded);
@@ -980,8 +1030,7 @@ class _WordChainGameState extends State<WordChainGame> {
     final typed = normalizeMizo(input.text);
     final needed = lastMizoUnit(chain.last);
     if (typed.isEmpty) return;
-    final vocabulary = widget.controller.chainVocabulary;
-    final resolved = _resolve(typed, vocabulary);
+    final resolved = _resolve(typed);
     // A word we don't know yet may still be real Mizo, and a word nothing
     // can follow would leave the learner stuck; neither costs a heart.
     String? notice;
@@ -991,7 +1040,7 @@ class _WordChainGameState extends State<WordChainGame> {
     } else if (!chain.contains(resolved) &&
         _links(chain.last, resolved) &&
         chain.length < 5 &&
-        _nextWords(resolved, vocabulary).isEmpty) {
+        _nextWords(resolved).isEmpty) {
       notice = '“$resolved” a dik, mahse “${lastMizoUnit(resolved)}” hmanga '
           'bulṭan thumal kan la nei lo. Thumal dang ziak rawh.';
     }
@@ -1009,7 +1058,8 @@ class _WordChainGameState extends State<WordChainGame> {
     if (chain.contains(word)) {
       error = 'He thumal hi i hmang tawh.';
     } else if (!_links(chain.last, word)) {
-      error = '“$needed” hmanga bulṭan tûr a ni.';
+      error = '“$word” chu “${firstMizoUnit(word)}” hmangin a inṭan; '
+          '“$needed” hmanga bulṭan tûr a ni.';
     }
     if (error != null) {
       HapticFeedback.mediumImpact();
@@ -1031,7 +1081,10 @@ class _WordChainGameState extends State<WordChainGame> {
     setState(() {
       chain.add(word);
       input.clear();
-      message = 'A dik e! “${lastMizoUnit(word)}” hmanga zawm leh rawh.';
+      // The card's own heading already says “A dik e!”.
+      message = chain.length == 6
+          ? _withMeaning(word)
+          : '${_withMeaning(word)}\n“${lastMizoUnit(word)}” hmanga zawm leh rawh.';
       messageIsError = false;
       runtime.answer(true);
     });
@@ -1090,6 +1143,12 @@ class _WordChainGameState extends State<WordChainGame> {
                     backgroundColor: const Color(0xFFD8F8F3),
                     side: BorderSide.none))
                 .toList()),
+        if (chain.length == 1) ...[
+          const SizedBox(height: 8),
+          Text('Inṭanna: ${_withMeaning(chain.single)}',
+              style: const TextStyle(
+                  color: QuestColors.slate, fontWeight: FontWeight.w600)),
+        ],
         const SizedBox(height: 24),
         Text('“$needed” hmanga bulṭan rawh',
             style: Theme.of(context).textTheme.titleLarge),
@@ -1115,8 +1174,8 @@ class _WordChainGameState extends State<WordChainGame> {
           FeedbackCard(correct: !messageIsError, message: message!)
         ],
         const SizedBox(height: 14),
-        const Text('TIP  •  nula, ni, aizawl, ar, lal, lunglei, lehkhabu…',
-            style: TextStyle(
+        Text('TIP  •  “$needed” hmanga bulṭan thumal ${_playable.length} kan nei.',
+            style: const TextStyle(
                 color: QuestColors.slate,
                 fontSize: 12,
                 fontWeight: FontWeight.w600)),

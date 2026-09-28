@@ -4,10 +4,21 @@ import 'package:thumal_quest/src/data.dart';
 void main() {
   group('Mizo word units', () {
     test('normalizes whitespace and case', () => expect(normalizeMizo('  NULA '), 'nula'));
-    test('treats common consonant clusters as one unit', () {
+    test('splits words into Mizo alphabet letters', () {
       expect(firstMizoUnit('Ngur'), 'ng');
       expect(lastMizoUnit('Thing'), 'ng');
-      expect(firstMizoUnit('Tlawmngaihna'), 'tl');
+      expect(firstMizoUnit('Chaw'), 'ch');
+      expect(lastMizoUnit('Chaw'), 'aw');
+      // th, tl, hm… are two letters of the alphabet, not one.
+      expect(firstMizoUnit('Tlawmngaihna'), 't');
+      expect(firstMizoUnit('Thing'), 't');
+      expect(lastMizoUnit('nghilh'), 'h');
+      expect(mizoUnits('hmun'), ['h', 'm', 'u', 'n']);
+    });
+    test('circumflexes stay the same letter, ṭ is its own', () {
+      expect(mizoUnits('sâwm'), ['s', 'aw', 'm']);
+      expect(lastMizoUnit('nâ'), 'a');
+      expect(firstMizoUnit('ṭhian'), 'ṭ');
     });
     test('supports word-chain comparison', () {
       expect(lastMizoUnit('In'), firstMizoUnit('Nula'));
