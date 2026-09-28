@@ -91,10 +91,21 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
     );
   }
 
+  /// Names keep their capital on a tile: words written with one somewhere
+  /// other than the start of a sentence.
+  Set<String> names = const <String>{};
+
   void _buildRound() {
-    // Reviewed Studio sentences come first so they replace a built-in
-    // sentence with the same ID.
-    final combined = <SentenceExercise>[
+    final rating = widget.controller.gameSkill('sentence_builder');
+    // Sentences with an English meaning to build: reviewed Studio ones
+    // first, so they replace a built-in sentence with the same ID.
+    final seenIds = <String>{};
+    final seenTexts = <String>{};
+    bool fresh(SentenceExercise exercise) =>
+        exercise.tokens.length >= 2 &&
+        seenIds.add(exercise.id) &&
+        seenTexts.add(exercise.tokens.join(' ').toLowerCase());
+    final translated = <SentenceExercise>[
       for (final sentence in widget.controller.deliveredSentences)
         SentenceExercise(
           id: sentence.id,
@@ -103,50 +114,63 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
           tqLevel: sentence.difficulty,
         ),
       ...widget.exercises,
-      ..._wordCatalogSentenceExercises(),
-    ];
-    final seenIds = <String>{};
-    final deduped = <SentenceExercise>[
-      for (final exercise in combined)
-        if (seenIds.add(exercise.id)) exercise,
-    ];
+    ].where(fresh).toList();
+    // Words' example sentences have no translation, so levels 1–2 only use
+    // them when there aren't enough translated sentences; the longest wait
+    // for higher levels.
+    final maxTiles = rating < 2 ? 6 : (rating < 3.5 ? 8 : 12);
+    final examples = rating >= 3 || translated.length < 5
+        ? _wordCatalogSentenceExercises()
+            .where((exercise) => exercise.tokens.length <= maxTiles)
+            .where(fresh)
+            .toList()
+        : const <SentenceExercise>[];
+    final pool = [...translated, ...examples];
+    names = {
+      for (final exercise in pool)
+        for (final (index, token) in exercise.tokens.indexed)
+          // Not the start of a sentence, nor of one after “E khai!”.
+          if (index > 0 &&
+              !_sentenceEnd.hasMatch(exercise.tokens[index - 1]) &&
+              _capitalised.hasMatch(token))
+            SentenceBuilderEngine.tileText(token, first: false),
+    };
     // A sentence's difficulty blends its content level with how many
     // tiles there are to arrange.
     int difficultyOf(SentenceExercise exercise) {
-      final tiles = exercise.textMizo.trim().split(RegExp(r'\s+')).length;
-      final lengthLevel = (tiles - 2).clamp(1, 7);
+      final lengthLevel = (exercise.tokens.length - 2).clamp(1, 7);
       return ((exercise.tqLevel + lengthLevel) / 2).round().clamp(1, 7);
     }
 
-    questions = GameDifficulty.pick(deduped,
-        rating: widget.controller.gameSkill('sentence_builder'),
+    questions = GameDifficulty.pick(pool,
+        rating: rating,
         count: 5,
         difficultyOf: difficultyOf,
         random: session.random);
     tileSets = questions
-        .map((exercise) => engine.shuffledTiles(exercise, session.random))
+        .map((exercise) =>
+            engine.shuffledTiles(exercise, session.random, names: names))
         .toList();
   }
 
-  /// Turns each live/reviewed word catalog entry's own `exampleMizo`
-  /// sentence into a Sentence Builder exercise, so newly reviewed and
-  /// published content (e.g. the Kumtluang curriculum batch, where every
-  /// word already carries one original example sentence) shows up here
-  /// too, without needing a separate "delivered sentence" pipeline.
-  /// Single-word "sentences" are skipped -- there's nothing to rearrange.
+  static final _capitalised = RegExp(r'^[“"‘(]*\p{Lu}', unicode: true);
+  static final _sentenceEnd = RegExp(r'[.!?]["”’]?$');
+
+  /// Turns each reviewed word's own `exampleMizo` sentence into an
+  /// exercise, so newly published words show up here too. Examples that
+  /// don't actually use their word are left out.
   List<SentenceExercise> _wordCatalogSentenceExercises() {
     return widget.controller.wordCatalog
         .where((entry) => ContentPolicy.playable(entry.review))
         .where((entry) => entry.supportsGame('sentence_builder'))
-        .where((entry) => entry.exampleMizo.trim().split(' ').length >= 2)
+        .where((entry) => foldMizo(entry.exampleMizo)
+            .contains(foldMizo(entry.word.trim().split(' ').first)))
         .map((entry) => SentenceExercise(
               id: 'sentence.word.${entry.id}',
               textMizo: entry.exampleMizo,
-              // No English translation of the example exists, so show the
-              // word it teaches rather than passing its gloss off as one.
-              englishSupport:
-                  'A sentence with “${entry.word}” (${entry.englishGloss})',
+              englishSupport: entry.englishGloss,
               tqLevel: entry.difficulty,
+              keyWord: entry.word.trim(),
             ))
         .toList();
   }
@@ -181,7 +205,8 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
   }
 
   Future<void> _hint() async {
-    if (runtime.hintRevealed || finishing) return;
+    // Once the sentence is right there is nothing left to hint at.
+    if (runtime.hintRevealed || finishing || isCorrect == true) return;
     final firstId = '${question.id}.0';
     setState(() {
       selectedIds
@@ -261,7 +286,11 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
             child: Column(
               children: <Widget>[
                 Text(
-                  GameText.of('sentence_builder').prompt,
+                  // A word's example sentence has no meaning to build, only
+                  // the word it is there to teach.
+                  question.keyWord == null
+                      ? GameText.of('sentence_builder').prompt
+                      : 'SENTENCE USING THIS WORD',
                   style: const TextStyle(
                     color: QuestColors.teal,
                     fontSize: 11,
@@ -271,7 +300,9 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  question.englishSupport,
+                  question.keyWord == null
+                      ? question.englishSupport
+                      : '“${question.keyWord}”',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.white,
@@ -280,10 +311,22 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
                     fontWeight: FontWeight.w900,
                   ),
                 ),
+                if (question.keyWord != null &&
+                    question.englishSupport.isNotEmpty) ...<Widget>[
+                  const SizedBox(height: 4),
+                  Text(
+                    question.englishSupport,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        color: Color(0xFFC4D0EA), fontWeight: FontWeight.w600),
+                  ),
+                ],
               ],
             ),
           ),
-          GameHintButton(revealed: runtime.hintRevealed, onPressed: _hint),
+          GameHintButton(
+              revealed: runtime.hintRevealed,
+              onPressed: isCorrect == true ? null : _hint),
           if (runtime.hintRevealed)
             GameHintCard(message: GameText.of('sentence_builder').hint),
           const SizedBox(height: 8),

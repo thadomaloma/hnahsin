@@ -10,20 +10,34 @@ class SentenceTile {
 class SentenceBuilderEngine {
   const SentenceBuilderEngine();
 
+  static final _edgePunctuation =
+      RegExp('^[“”"‘’\'(\\[]+|[“”"‘’\'()\\].,!?;:]+\$');
+
+  /// A word as its tile shows it: without the punctuation around it, and the
+  /// sentence's first word without its capital unless it is a name
+  /// ([names]), so neither gives away where a tile goes.
+  static String tileText(String token,
+      {required bool first, Set<String> names = const <String>{}}) {
+    final bare = token.replaceAll(_edgePunctuation, '');
+    // A name also covers its endings (Mizo → Mizote, Pathian → Pathianin).
+    final isName = names.contains(bare) ||
+        names.any((name) => name.length >= 3 && bare.startsWith(name));
+    if (!first || bare.isEmpty || isName) return bare;
+    return '${bare[0].toLowerCase()}${bare.substring(1)}';
+  }
+
   List<SentenceTile> shuffledTiles(
     SentenceExercise exercise,
-    Random random,
-  ) {
-    final tiles = exercise.tokens
-        .asMap()
-        .entries
-        .map(
-          (entry) => SentenceTile(
-            id: '${exercise.id}.${entry.key}',
-            text: entry.value,
-          ),
-        )
-        .toList();
+    Random random, {
+    Set<String> names = const <String>{},
+  }) {
+    final tiles = [
+      for (final (index, token) in exercise.tokens.indexed)
+        SentenceTile(
+          id: '${exercise.id}.$index',
+          text: tileText(token, first: index == 0, names: names),
+        ),
+    ];
     tiles.shuffle(random);
     if (tiles.length > 1 && evaluate(exercise, tiles)) {
       final first = tiles.removeAt(0);
@@ -32,8 +46,19 @@ class SentenceBuilderEngine {
     return List<SentenceTile>.unmodifiable(tiles);
   }
 
-  bool evaluate(SentenceExercise exercise, List<SentenceTile> answer) =>
-      answer.map((tile) => tile.text).join(' ') == exercise.textMizo;
+  /// Right when the tiles read as the sentence does; two tiles showing the
+  /// same word are interchangeable.
+  bool evaluate(SentenceExercise exercise, List<SentenceTile> answer) {
+    String plain(String text) =>
+        text.replaceAll(_edgePunctuation, '').toLowerCase();
+    final expected = exercise.tokens.map(plain).toList();
+    final given = answer.map((tile) => plain(tile.text)).toList();
+    if (given.length != expected.length) return false;
+    for (var i = 0; i < expected.length; i++) {
+      if (given[i] != expected[i]) return false;
+    }
+    return true;
+  }
 
   String readableAnswer(List<SentenceTile> answer) =>
       answer.map((tile) => tile.text).join(' ');
@@ -45,6 +70,7 @@ class SentenceExercise {
     required this.textMizo,
     required this.englishSupport,
     required this.tqLevel,
+    this.keyWord,
   });
 
   final String id;
@@ -52,7 +78,16 @@ class SentenceExercise {
   final String englishSupport;
   final int tqLevel;
 
-  List<String> get tokens => textMizo.split(' ');
+  /// Set for a word's example sentence, which has no translation: the word
+  /// it teaches, shown in place of a meaning to build.
+  final String? keyWord;
+
+  /// The words to arrange; a stray mark on its own (“—”) is not a tile.
+  List<String> get tokens => [
+        for (final token in textMizo.trim().split(RegExp(r'\s+')))
+          if (token.replaceAll(RegExp(r'[^\p{L}\p{N}]', unicode: true), '').isNotEmpty)
+            token,
+      ];
 }
 
 /// Short, low-ambiguity prototype sentences. They still remain behind the
