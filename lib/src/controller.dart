@@ -21,8 +21,13 @@ class QuestController extends ChangeNotifier {
   QuestController({
     QuestRepository? repository,
     ContentSyncService? contentSyncService,
+    DateTime Function()? clock,
   })  : _repository = repository ?? InMemoryQuestRepository(),
-        _contentSyncService = contentSyncService;
+        _contentSyncService = contentSyncService,
+        _clock = clock ?? DateTime.now;
+
+  /// Local time; tests pass a fixed one to step through days.
+  final DateTime Function() _clock;
 
   final QuestRepository _repository;
   final ContentSyncService? _contentSyncService;
@@ -39,6 +44,9 @@ class QuestController extends ChangeNotifier {
   int streak = 1;
   int completedLessons = 0;
   int dailyProgress = 0;
+
+  /// Local day (YYYY-MM-DD) of the last finished round.
+  String? playDay;
   final Set<String> completedGames = <String>{};
   final Map<String, int> bestScores = <String, int>{};
   final Map<String, int> gameSkills = <String, int>{};
@@ -110,8 +118,40 @@ class QuestController extends ChangeNotifier {
 
   int get level => (xp ~/ 250) + 1;
   double get levelProgress => (xp % 250) / 250;
+  /// Rounds finished today; yesterday's count doesn't carry over.
+  int get roundsToday => playDay == _dayKey(_clock()) ? dailyProgress : 0;
+
+  /// Days in a row with at least one round, still alive while today's or
+  /// yesterday's round counts; 0 once a day has been missed.
+  int get currentStreak {
+    final today = _clock();
+    final alive = playDay == _dayKey(today) ||
+        playDay == _dayKey(today.subtract(const Duration(days: 1)));
+    return alive ? streak : 0;
+  }
+
+  /// Rounds played today against the daily goal (one round for each goal
+  /// “minute”, as rounds take about a minute).
   double get dailyGoalProgress =>
-      (dailyProgress / profile.dailyGoalMinutes).clamp(0, 1).toDouble();
+      (roundsToday / profile.dailyGoalMinutes).clamp(0, 1).toDouble();
+
+  /// Which day it is since 1970 in local time, so “today's game” changes at
+  /// local midnight.
+  int get dayNumber {
+    final now = _clock();
+    return DateTime.utc(now.year, now.month, now.day).millisecondsSinceEpoch ~/ Duration.millisecondsPerDay;
+  }
+
+  /// Words whose next look is due: missed in a game or ready for a refresh.
+  int get wordsToReplay {
+    final now = _clock().toUtc();
+    return learningState.masteries.values
+        .where((item) => item.stage != MasteryStage.unseen && item.isDue(now))
+        .length;
+  }
+
+  static String _dayKey(DateTime local) =>
+      '${local.year.toString().padLeft(4, '0')}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')}';
 
   DailyLessonPlan get dailyPlan {
     final playable = wordCatalog
@@ -244,6 +284,7 @@ class QuestController extends ChangeNotifier {
     streak = progress.streak;
     completedLessons = progress.completedLessons;
     dailyProgress = progress.dailyProgress;
+    playDay = progress.playDay;
     track = LearningTrack.values[
         progress.trackIndex.clamp(0, LearningTrack.values.length - 1).toInt()];
     completedGames
@@ -266,6 +307,7 @@ class QuestController extends ChangeNotifier {
         completedGames: Set<String>.unmodifiable(completedGames),
         bestScores: Map<String, int>.unmodifiable(bestScores),
         gameSkills: Map<String, int>.unmodifiable(gameSkills),
+        playDay: playDay,
       );
 
   Future<void> completeOnboarding(LearnerProfile value) async {
@@ -566,10 +608,19 @@ class QuestController extends ChangeNotifier {
       level: nextSkill.floor(),
       skill: nextSkill,
     );
+    final now = _clock();
+    final today = _dayKey(now);
+    final yesterday = _dayKey(now.subtract(const Duration(days: 1)));
     final next = _progress.copyWith(
       xp: xp + xpAwarded,
       dailyProgress:
-          (dailyProgress + 1).clamp(0, profile.dailyGoalMinutes).toInt(),
+          (roundsToday + 1).clamp(0, profile.dailyGoalMinutes).toInt(),
+      streak: playDay == today
+          ? streak
+          : playDay == yesterday
+              ? streak + 1
+              : 1,
+      playDay: today,
       completedGames: <String>{...completedGames, gameId},
       bestScores: updatedScores,
       gameSkills: <String, int>{...gameSkills, gameId: (nextSkill * 100).round()},

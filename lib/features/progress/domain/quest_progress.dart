@@ -8,6 +8,7 @@ class QuestProgress {
     required this.completedGames,
     required this.bestScores,
     this.gameSkills = const <String, int>{},
+    this.playDay,
   });
 
   factory QuestProgress.empty() => const QuestProgress(
@@ -31,6 +32,10 @@ class QuestProgress {
   /// Adaptive skill rating per game, stored ×100 (e.g. 340 = rating 3.4).
   final Map<String, int> gameSkills;
 
+  /// The last local day (YYYY-MM-DD) a game round was finished: what
+  /// [dailyProgress] and [streak] are counted against.
+  final String? playDay;
+
   QuestProgress copyWith({
     int? xp,
     int? streak,
@@ -40,6 +45,7 @@ class QuestProgress {
     Set<String>? completedGames,
     Map<String, int>? bestScores,
     Map<String, int>? gameSkills,
+    String? playDay,
   }) {
     return QuestProgress(
       xp: xp ?? this.xp,
@@ -52,6 +58,7 @@ class QuestProgress {
       ),
       bestScores: Map<String, int>.unmodifiable(bestScores ?? this.bestScores),
       gameSkills: Map<String, int>.unmodifiable(gameSkills ?? this.gameSkills),
+      playDay: playDay ?? this.playDay,
     );
   }
 
@@ -64,6 +71,7 @@ class QuestProgress {
         'completedGames': completedGames.toList()..sort(),
         'bestScores': bestScores,
         'gameSkills': gameSkills,
+        if (playDay != null) 'playDay': playDay,
       };
 
   factory QuestProgress.fromJson(Map<String, Object?> json) {
@@ -99,6 +107,7 @@ class QuestProgress {
               ),
             )
           : const <String, int>{},
+      playDay: json['playDay'] is String ? json['playDay'] as String : null,
     );
   }
 }

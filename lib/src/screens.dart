@@ -29,11 +29,13 @@ class HomeScreen extends StatelessWidget {
         builder: (context, _) => QuestTabPage(children: [
           _BrandHeader(controller: controller),
           const SizedBox(height: 20),
-          _DailyHero(controller: controller),
+          _DailyHero(controller: controller, openGames: openGames),
           const SizedBox(height: 28),
-          _HomeHighlights(controller: controller),
-          const SizedBox(height: 28),
-          SectionTitle('Popular Games',
+          if (_journeyVisible) ...[
+            _HomeJourney(controller: controller),
+            const SizedBox(height: 28),
+          ],
+          SectionTitle('Games',
               trailing: TextButton(
                   onPressed: openGames, child: const Text('View All'))),
           const SizedBox(height: 12),
@@ -46,71 +48,39 @@ class HomeScreen extends StatelessWidget {
       );
 }
 
-class _HomeHighlights extends StatelessWidget {
-  const _HomeHighlights({required this.controller});
+bool get _journeyVisible =>
+    !JourneyContentPolicy.isProduction || JourneyContentPolicy.releaseReady;
+
+class _HomeJourney extends StatelessWidget {
+  const _HomeJourney({required this.controller});
   final QuestController controller;
 
   @override
-  Widget build(BuildContext context) {
-    final journeyVisible =
-        !JourneyContentPolicy.isProduction || JourneyContentPolicy.releaseReady;
-    final journey =
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      SectionTitle(
-        'Mizo Journey',
-        trailing: TextButton(
-          onPressed: () =>
-              _open(context, JourneyScreen(controller: controller)),
-          child: const Text('View Map'),
+  Widget build(BuildContext context) =>
+      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        SectionTitle(
+          'Mizo Journey',
+          trailing: TextButton(
+            onPressed: () =>
+                _open(context, JourneyScreen(controller: controller)),
+            child: const Text('View Map'),
+          ),
         ),
-      ),
-      const SizedBox(height: 8),
-      _FeatureCard(
-        icon: Icons.route_rounded,
-        colors: const [Color(0xFF7569E8), Color(0xFF5B4FD0)],
-        eyebrow: 'STORY PATH',
-        title: controller.nextJourneyNode?.titleEnglish ??
-            (controller.journeyState.completedNodeIds.length ==
-                    journeyNodes.length
-                ? 'Journey Complete'
-                : 'Continue Your Journey'),
-        subtitle: controller.nextJourneyNode?.subtitleMizo ??
-            '${controller.journeyState.completedNodeIds.length}/${journeyNodes.length} story stops • Daily quests',
-        onTap: () => _open(context, JourneyScreen(controller: controller)),
-      ),
-    ]);
-    final challenge =
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const SizedBox(
-          height: 48,
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: SectionTitle('Daily Challenge'))),
-      const SizedBox(height: 8),
-      _FeatureCard(
-        icon: Icons.auto_awesome_rounded,
-        colors: const [Color(0xFFFF8A6B), Color(0xFFF0566A)],
-        eyebrow: 'TAWNG UPA • 10 ZAWHNA',
-        title: 'Tawng Upa Challenge',
-        subtitle: 'Thumal awmzia hriatna',
-        trailingLabel: (controller.bestScores['tawng_upa'] ?? 0) > 0
-            ? 'BEST ${controller.bestScores['tawng_upa']}'
-            : null,
-        onTap: () => _open(context, OldWordQuizGame(controller: controller)),
-      ),
-    ]);
-    return LayoutBuilder(builder: (context, constraints) {
-      if (!journeyVisible) return challenge;
-      if (constraints.maxWidth >= 720) {
-        return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Expanded(child: journey),
-          const SizedBox(width: 16),
-          Expanded(child: challenge),
-        ]);
-      }
-      return Column(children: [journey, const SizedBox(height: 20), challenge]);
-    });
-  }
+        const SizedBox(height: 8),
+        _FeatureCard(
+          icon: Icons.route_rounded,
+          colors: const [Color(0xFF7569E8), Color(0xFF5B4FD0)],
+          eyebrow: 'STORY PATH',
+          title: controller.nextJourneyNode?.titleEnglish ??
+              (controller.journeyState.completedNodeIds.length ==
+                      journeyNodes.length
+                  ? 'Journey Complete'
+                  : 'Continue Your Journey'),
+          subtitle: controller.nextJourneyNode?.subtitleMizo ??
+              '${controller.journeyState.completedNodeIds.length}/${journeyNodes.length} story stops • Daily quests',
+          onTap: () => _open(context, JourneyScreen(controller: controller)),
+        ),
+      ]);
 }
 
 class _BrandHeader extends StatelessWidget {
@@ -174,12 +144,19 @@ class _BrandHeader extends StatelessWidget {
 }
 
 class _DailyHero extends StatelessWidget {
-  const _DailyHero({required this.controller});
+  const _DailyHero({required this.controller, required this.openGames});
   final QuestController controller;
+  final VoidCallback openGames;
 
   @override
   Widget build(BuildContext context) {
-    final placed = controller.learningState.placementCompleted;
+    // Home opens on play: one game a day, in turn, started in one tap. The
+    // daily lesson lives on the Learn tab.
+    final games = _gameCatalog(controller);
+    final game = games[controller.dayNumber % games.length];
+    final replay = controller.wordsToReplay;
+    final best = controller.bestScores[game.id] ?? 0;
+    final streak = controller.currentStreak;
     final compact = MediaQuery.sizeOf(context).width < 380;
     return Container(
       decoration: BoxDecoration(
@@ -223,8 +200,16 @@ class _DailyHero extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 12),
+                      const Text('VAWIIN GAME',
+                          style: TextStyle(
+                              color: Color(0xFFDDF3FF),
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1.1)),
+                      const SizedBox(height: 2),
                       Text(
-                        'Vawiin thumal 5\nzir ila.',
+                        game.title,
+                        maxLines: 2,
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: compact ? 24 : 28,
@@ -234,17 +219,29 @@ class _DailyHero extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                          '${controller.dailyPlan.total} items • Daily learning plan',
+                          [
+                            game.subtitle,
+                            if (best > 0) 'Best $best',
+                          ].join(' • '),
                           style: const TextStyle(
                               color: Color(0xFFDDF3FF),
                               fontWeight: FontWeight.w500,
                               fontSize: 13)),
+                      if (replay > 0) ...[
+                        const SizedBox(height: 4),
+                        Text('Thumal $replay i hmuh leh tur a awm',
+                            style: const TextStyle(
+                                color: QuestColors.gold,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 13)),
+                      ],
                     ])),
                 const SizedBox(width: 12),
                 ProgressRing(
                     size: compact ? 74 : 88,
                     value: controller.dailyGoalProgress,
-                    label: '${controller.dailyProgress}/5\nDONE'),
+                    label:
+                        '${controller.roundsToday}/${controller.profile.dailyGoalMinutes}\nKHELH'),
               ]),
               const SizedBox(height: 18),
               Wrap(spacing: 8, runSpacing: 8, children: [
@@ -252,7 +249,9 @@ class _DailyHero extends StatelessWidget {
                     icon: Icons.local_fire_department_rounded,
                     label: controller.profile.gentleMode
                         ? 'Learning rhythm'
-                        : '${controller.streak} day streak',
+                        : streak > 0
+                            ? '$streak day streak'
+                            : 'Vawiin ṭan rawh',
                     color: const Color(0x26FFC94A),
                     foreground: QuestColors.gold),
                 Pill(
@@ -264,13 +263,16 @@ class _DailyHero extends StatelessWidget {
               const SizedBox(height: 18),
               _GoldButton(
                 icon: Icons.play_arrow_rounded,
-                label: placed ? 'Start Daily Lesson' : 'Find My Mizo Level',
-                onPressed: () => _open(
-                  context,
-                  placed
-                      ? DailyReviewScreen(controller: controller)
-                      : PlacementScreen(controller: controller),
-                ),
+                label: 'Khelh rawh',
+                onPressed: () =>
+                    _open(context, game.builder(GameMode.standard)),
+              ),
+              const SizedBox(height: 4),
+              TextButton(
+                onPressed: openGames,
+                style: TextButton.styleFrom(
+                    foregroundColor: const Color(0xFFDDF3FF)),
+                child: const Text('Game dang khelh rawh'),
               ),
             ]),
           ),
@@ -342,14 +344,12 @@ class _FeatureCard extends StatelessWidget {
       required this.eyebrow,
       required this.title,
       required this.subtitle,
-      required this.onTap,
-      this.trailingLabel});
+      required this.onTap});
   final IconData icon;
   final List<Color> colors;
   final String eyebrow;
   final String title;
   final String subtitle;
-  final String? trailingLabel;
   final VoidCallback onTap;
 
   @override
@@ -397,25 +397,15 @@ class _FeatureCard extends StatelessWidget {
                         color: QuestColors.slate, fontSize: 13)),
               ])),
           const SizedBox(width: 8),
-          Column(mainAxisSize: MainAxisSize.min, children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                  color: colors.first.withValues(alpha: .12),
-                  shape: BoxShape.circle),
-              child: Icon(Icons.arrow_forward_rounded,
-                  color: colors.last, size: 20),
-            ),
-            if (trailingLabel != null) ...[
-              const SizedBox(height: 4),
-              Text(trailingLabel!,
-                  style: const TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w800,
-                      color: QuestColors.tealDark)),
-            ],
-          ]),
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+                color: colors.first.withValues(alpha: .12),
+                shape: BoxShape.circle),
+            child:
+                Icon(Icons.arrow_forward_rounded, color: colors.last, size: 20),
+          ),
         ]),
       );
 }

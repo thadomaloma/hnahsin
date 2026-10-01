@@ -31,7 +31,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
 
     expect(controller.profile.onboardingCompleted, isTrue);
-    expect(find.text('Daily Challenge'), findsOneWidget);
+    expect(find.text('VAWIIN GAME'), findsOneWidget);
+    expect(find.text('Khelh rawh'), findsOneWidget);
     expect(find.text('Home'), findsOneWidget);
     expect(find.text('Learn'), findsWidgets);
     expect(find.text('Games'), findsWidgets);
