@@ -427,7 +427,7 @@ const oldWordQuestions = <ChoiceQuestion>[
       emoji: '🤝',
       review: ContentReview.reviewRequired),
   ChoiceQuestion(
-      prompt: '“Zawlbuk” chu eng nge ni?',
+      prompt: '“Zawlbuk” tih hian eng nge a kawh?',
       options: [
         'Hmanlai tlangvalte awmkhawmna in',
         'Buh sengna hmun',
@@ -440,29 +440,29 @@ const oldWordQuestions = <ChoiceQuestion>[
       emoji: '🏡',
       review: ContentReview.reviewRequired),
   ChoiceQuestion(
-      prompt: '“Hnial” tih awmzia eng nge?',
-      options: ['Thu sawi inpersan', 'Hla sak', 'Tlan chak', 'Chaw ei'],
-      answer: 'Thu sawi inpersan',
-      explanation: 'Hnial tih chu thu sawi inpawm lo va inhnial tihna a ni.',
+      prompt: '“Hnial” tih hian eng nge a kawh?',
+      options: ['Mi thusawi pawm lova dodal', 'Hla sak', 'Tlan chak', 'Chaw ei'],
+      answer: 'Mi thusawi pawm lova dodal',
+      explanation: 'Hnial tih chu mi thusawi pawm lova dodal tihna a ni.',
       emoji: '🗣️',
       review: ContentReview.reviewRequired),
   ChoiceQuestion(
-      prompt: '“Tlawh” tih chu eng nge?',
+      prompt: '“Tlawh” tih hian eng nge a kawh?',
       options: [
-        'Mi emaw hmun emaw va tlawh',
+        'Mi emaw hmun emaw va kan',
         'Mut',
         'In lam pan',
         'Lehkha ziak'
       ],
-      answer: 'Mi emaw hmun emaw va tlawh',
+      answer: 'Mi emaw hmun emaw va kan',
       explanation: 'Tlawh tih chu mi emaw hmun emaw va kan tihna a ni.',
       emoji: '📍',
       review: ContentReview.reviewRequired),
   ChoiceQuestion(
-      prompt: '“Thufing” chu eng nge?',
-      options: ['Finna thu tawi', 'Thawnthu sei', 'Hla thu', 'Hmingthang'],
+      prompt: '“Thufing” tih hian eng nge a kawh?',
+      options: ['Finna thu tawi', 'Thawnthu sei', 'Hla thu', 'Thu hriattîrna'],
       answer: 'Finna thu tawi',
-      explanation: 'Thufing chu nunna zirtîrna leh finna thu tawi a ni.',
+      explanation: 'Thufing chu nun kawng zirtîrna leh finna thu tawi a ni.',
       emoji: '💡',
       review: ContentReview.reviewRequired),
 ];

@@ -90,4 +90,30 @@ void main() {
   test('falls back to the built-in questions without enough words', () {
     expect(_round(catalog: _catalog.take(2).toList()), hasLength(oldWordQuestions.length));
   });
+
+  test('falls back to the built-in questions when no word is tagged for it', () {
+    final tagged = [
+      for (final w in _catalog)
+        WordEntry(
+            id: w.id,
+            word: w.word,
+            meaningMizo: w.meaningMizo,
+            englishGloss: w.englishGloss,
+            exampleMizo: '',
+            emoji: '',
+            category: w.category,
+            review: w.review,
+            gameModes: const {'spelling'}),
+    ];
+    expect(_round(catalog: tagged), hasLength(oldWordQuestions.length));
+  });
+
+  test('built-in answers never name the word they are about', () {
+    for (final question in oldWordQuestions) {
+      final word = RegExp('“(.+?)”').firstMatch(question.prompt)![1]!;
+      expect(foldMizo(question.answer), isNot(contains(foldMizo(word))));
+      expect(question.options, contains(question.answer));
+      expect(question.options.toSet(), hasLength(4));
+    }
+  });
 }

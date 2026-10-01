@@ -15,7 +15,7 @@
       "difficulty": 1
     },
     {
-      "prompt_mizo": "“Zawlbuk” chu eng nge ni?",
+      "prompt_mizo": "“Zawlbuk” tih hian eng nge a kawh?",
       "options": [
         "Hmanlai tlangvalte awmkhawmna in",
         "Buh sengna hmun",
@@ -28,41 +28,41 @@
       "difficulty": 1
     },
     {
-      "prompt_mizo": "“Hnial” tih awmzia eng nge?",
+      "prompt_mizo": "“Hnial” tih hian eng nge a kawh?",
       "options": [
-        "Thu sawi inpersan",
+        "Mi thusawi pawm lova dodal",
         "Hla sak",
         "Tlan chak",
         "Chaw ei"
       ],
-      "answer": "Thu sawi inpersan",
-      "explanation_mizo": "Hnial tih chu thu sawi inpawm lo va inhnial tihna a ni.",
+      "answer": "Mi thusawi pawm lova dodal",
+      "explanation_mizo": "Hnial tih chu mi thusawi pawm lova dodal tihna a ni.",
       "emoji": "🗣️",
       "difficulty": 1
     },
     {
-      "prompt_mizo": "“Tlawh” tih chu eng nge?",
+      "prompt_mizo": "“Tlawh” tih hian eng nge a kawh?",
       "options": [
-        "Mi emaw hmun emaw va tlawh",
+        "Mi emaw hmun emaw va kan",
         "Mut",
         "In lam pan",
         "Lehkha ziak"
       ],
-      "answer": "Mi emaw hmun emaw va tlawh",
+      "answer": "Mi emaw hmun emaw va kan",
       "explanation_mizo": "Tlawh tih chu mi emaw hmun emaw va kan tihna a ni.",
       "emoji": "📍",
       "difficulty": 1
     },
     {
-      "prompt_mizo": "“Thufing” chu eng nge?",
+      "prompt_mizo": "“Thufing” tih hian eng nge a kawh?",
       "options": [
         "Finna thu tawi",
         "Thawnthu sei",
         "Hla thu",
-        "Hmingthang"
+        "Thu hriattîrna"
       ],
       "answer": "Finna thu tawi",
-      "explanation_mizo": "Thufing chu nunna zirtîrna leh finna thu tawi a ni.",
+      "explanation_mizo": "Thufing chu nun kawng zirtîrna leh finna thu tawi a ni.",
       "emoji": "💡",
       "difficulty": 1
     }

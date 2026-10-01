@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' show min;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -624,7 +625,10 @@ class _OldWordQuizGameState extends State<OldWordQuizGame> {
         restorePayload: (snapshot) {
           _buildRound();
           index = snapshot.currentIndex.clamp(0, questions.length - 1).toInt();
-          selected = snapshot.payload['selected'] as String?;
+          final saved = snapshot.payload['selected'] as String?;
+          // Content synced since the save can change the options.
+          selected =
+              questions[index].options.contains(saved) ? saved : null;
         },
       ),
     );
@@ -692,16 +696,16 @@ class _OldWordQuizGameState extends State<OldWordQuizGame> {
   Widget build(BuildContext context) {
     final question = questions[index];
     final correct = selected == question.answer;
-    // The hint takes away two wrong meanings rather than naming the answer.
+    // The hint takes away two wrong meanings rather than naming the answer,
+    // always leaving at least one wrong one beside it.
+    final wrong =
+        question.options.where((option) => option != question.answer);
     final ruledOut = runtime.hintRevealed
-        ? question.options
-            .where((option) => option != question.answer)
-            .take(2)
-            .toSet()
+        ? wrong.take(min(2, wrong.length - 1)).toSet()
         : const <String>{};
     return QuestPage(
       title: GameText.of('tawng_upa').title,
-      subtitle: 'Meaning challenge',
+      subtitle: GameText.of('tawng_upa').subtitle,
       hud: GameHud(
           session: session,
           progress: (index + 1) / questions.length,

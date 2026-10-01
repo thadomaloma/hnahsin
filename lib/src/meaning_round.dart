@@ -25,9 +25,15 @@ List<ChoiceQuestion> buildMeaningRound({
   final distinctMeanings = {
     for (final entry in pool) _meaningOf(entry, english: english)
   };
-  if (pool.isEmpty || distinctMeanings.length < 4) {
-    return <ChoiceQuestion>[...written, ...oldWordQuestions]..shuffle(random);
-  }
+  // Without enough words to make four different meanings (or none tagged
+  // for this game) the round is the written and built-in questions.
+  List<ChoiceQuestion> fallback() => (<ChoiceQuestion>[
+        ...written,
+        ...oldWordQuestions.where((q) => ContentPolicy.playable(q.review)),
+      ]..shuffle(random))
+          .take(10)
+          .toList();
+  if (pool.isEmpty || distinctMeanings.length < 4) return fallback();
   // A Mizo meaning several words share (“Kan taksa chhiah pakhat.”) can't
   // tell them apart, so those words are asked with English meanings.
   final mizoUses = <String, int>{};
@@ -51,6 +57,7 @@ List<ChoiceQuestion> buildMeaningRound({
       .where((entry) => entry.supportsGame('tawng_upa'))
       .where((entry) => asked.add(foldMizo(entry.word)))
       .toList();
+  if (askable.isEmpty) return fallback();
   final generated = [
     for (final entry in pick(askable, 10))
       _questionFor(entry, pool,
@@ -74,7 +81,7 @@ String _meaningOf(WordEntry entry, {required bool english}) => english
     : meaningWithoutWord(entry.meaningMizo, entry.word);
 
 /// The separate senses in an English gloss: “to tease / pester” → {to tease, pester}.
-Set<String> _senses(String gloss) => {
+Set<String> glossSenses(String gloss) => {
       for (final sense in gloss
           .toLowerCase()
           .replaceAll(RegExp(r'\(.*?\)'), ' ')
@@ -92,13 +99,13 @@ ChoiceQuestion _questionFor(
 }) {
   final correct = _meaningOf(entry, english: english);
   final word = foldMizo(entry.word);
-  final senses = _senses(entry.englishGloss);
+  final senses = glossSenses(entry.englishGloss);
   final seen = <String>{correct};
   // A wrong option must really be wrong: not another sense of the same
   // spelling (kut, kut-2) and not a word that shares an English meaning.
   final candidates = pool.where((other) {
     if (foldMizo(other.word) == word) return false;
-    if (_senses(other.englishGloss).intersection(senses).isNotEmpty)
+    if (glossSenses(other.englishGloss).intersection(senses).isNotEmpty)
       return false;
     if (english && other.englishGloss.trim().isEmpty) return false;
     return seen.add(_meaningOf(other, english: english));
