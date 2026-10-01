@@ -25,4 +25,20 @@ Future<void> main() async {
   }
   runApp(HnahsinApp(controller: controller));
   unawaited(controller.refreshContent());
+  WidgetsBinding.instance.addObserver(ContentRefreshOnResume(controller));
+}
+
+/// Picks up content published from the Sheet while the app sat in the
+/// background, without the learner having to restart it.
+class ContentRefreshOnResume with WidgetsBindingObserver {
+  ContentRefreshOnResume(this.controller);
+
+  final QuestController controller;
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(controller.refreshContentIfStale());
+    }
+  }
 }
