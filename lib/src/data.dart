@@ -113,7 +113,8 @@ class ChoiceQuestion {
       this.emoji = '💬',
       this.review = ContentReview.prototypeChecked,
       this.difficulty = 1,
-      this.contentId});
+      this.contentId,
+      this.word});
   final String prompt;
   final List<String> options;
   final String answer;
@@ -122,8 +123,12 @@ class ChoiceQuestion {
   final ContentReview review;
   final int difficulty;
 
-  /// Studio stable id of the word or question this was built from.
+  /// Stable id of the word or question this was built from.
   final String? contentId;
+
+  /// The word asked about, for questions built from a word (null for
+  /// written questions), so the game can remember how it went.
+  final String? word;
 }
 
 class SpellingQuestion {

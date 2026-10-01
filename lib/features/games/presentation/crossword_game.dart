@@ -278,7 +278,8 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
         } else {
           wrongCells.addAll(slot.cells.where((c) => letters[c] != solution[c]));
         }
-        runtime.answer(correct);
+        final entry = widget.controller.wordCatalog.where((e) => e.id == slot.id).firstOrNull;
+        runtime.answer(correct, wordId: entry?.id, word: entry?.word);
       });
       unawaited(correct ? HapticFeedback.selectionClick() : HapticFeedback.mediumImpact());
     }
@@ -374,7 +375,7 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
     final slot = activeSlot;
     return QuestPage(
       title: copy.title,
-      subtitle: 'Solve each clue',
+      subtitle: GameText.of('crossword').subtitle,
       hud: GameHud(
         session: session,
         progress: solved.length / layout.slots.length,

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import '../features/games/engine/game_difficulty.dart';
+import '../features/learning/domain/learning_state.dart';
 import 'controller.dart';
 import 'data.dart';
 
@@ -17,18 +18,36 @@ double wordSimilarity(WordEntry a, WordEntry b) {
 }
 
 /// Words for one round of [gameId], centred on the learner's adaptive level
-/// for that game and ordered easiest first.
+/// for that game and ordered easiest first. What the player remembers
+/// steers the pick ([wordMemoryBoost]), so playing is also practising.
 List<WordEntry> pickWordsForLevel(
   QuestController controller,
   String gameId,
   Iterable<WordEntry> pool,
   int count,
   Random random,
-) =>
-    GameDifficulty.pick(
-      pool.toList(),
-      rating: controller.gameSkill(gameId),
-      count: count,
-      difficultyOf: (entry) => entry.difficulty,
-      random: random,
-    );
+) {
+  final now = DateTime.now().toUtc();
+  final masteries = controller.learningState.masteries;
+  return GameDifficulty.pick(
+    pool.toList(),
+    rating: controller.gameSkill(gameId),
+    count: count,
+    difficultyOf: (entry) => entry.difficulty,
+    random: random,
+    boost: (entry) => wordMemoryBoost(masteries[entry.id], now),
+  );
+}
+
+/// How much more (or less) likely a word is to come up, from what the
+/// player remembers: a word they missed comes back soon, one due for a
+/// refresh a little more often, and one they know well rarely.
+double wordMemoryBoost(ItemMastery? memory, DateTime now) {
+  if (memory == null || memory.stage == MasteryStage.unseen) return 1;
+  if (memory.stage == MasteryStage.learning && memory.lapses > 0) return 3;
+  if (memory.isDue(now)) return 2;
+  return switch (memory.stage) {
+    MasteryStage.strong || MasteryStage.mastered => .35,
+    _ => .7,
+  };
+}

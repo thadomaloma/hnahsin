@@ -170,7 +170,7 @@ class _ThumalKawpGameState extends State<ThumalKawpGame> {
         matched.add(first.pairId);
         flipped.clear();
         seen.addAll([first.id, second.id]);
-        runtime.answer(true);
+        runtime.answer(true, wordId: first.entry.id, word: first.entry.word);
       });
       if (matched.length == pairCount) {
         await _finish();
@@ -187,7 +187,7 @@ class _ThumalKawpGameState extends State<ThumalKawpGame> {
     busy = true;
     if (forgot) {
       HapticFeedback.lightImpact();
-      runtime.answer(false);
+      runtime.answer(false, wordId: first.entry.id, word: first.entry.word);
     } else {
       unawaited(runtime.persist());
     }

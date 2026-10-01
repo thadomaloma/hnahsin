@@ -369,6 +369,31 @@ class QuestController extends ChangeNotifier {
     ]);
   }
 
+  /// Remembers how a game round went for each word it asked about, so
+  /// later rounds bring missed words back and show mastered ones less (see
+  /// pickWordsForLevel). Only the words' memory changes; the learner's level
+  /// and journey still come from lessons.
+  Future<void> recordWordsPlayed(List<WordPlay> words) async {
+    if (words.isEmpty) return;
+    final now = DateTime.now().toUtc();
+    final masteries = <String, ItemMastery>{...learningState.masteries};
+    for (final play in words) {
+      masteries[play.id] = _scheduler.review(
+        itemId: play.id,
+        rating: play.missed
+            ? ReviewRating.again
+            : play.hinted
+                ? ReviewRating.hard
+                : ReviewRating.good,
+        now: now,
+        current: masteries[play.id],
+      );
+    }
+    learningState = learningState.copyWith(masteries: masteries);
+    notifyListeners();
+    await _repository.saveLearningState(learningState);
+  }
+
   Future<bool> completeJourneyStory({
     required String nodeId,
     required int choicesMade,

@@ -675,8 +675,10 @@ class FeedbackCard extends StatelessWidget {
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(correct ? GameText.common.correctFeedback : GameText.common.retryFeedback, style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: accent)),
-                  const SizedBox(height: 3),
-                  Text(message, style: const TextStyle(fontWeight: FontWeight.w600, height: 1.4)),
+                  if (message.isNotEmpty) ...[
+                    const SizedBox(height: 3),
+                    Text(message, style: const TextStyle(fontWeight: FontWeight.w600, height: 1.4)),
+                  ],
                 ]),
               ),
             ]),
@@ -687,7 +689,10 @@ class FeedbackCard extends StatelessWidget {
   }
 }
 
+/// [context] is the game's own State context: “Khelh leh” starts its widget
+/// again as a fresh round.
 Future<void> showGameResult(BuildContext context, QuestController controller, String gameId, GameResult result) async {
+  final game = context.widget;
   final outcome = await controller.reward(gameId, result);
   await controller.clearSession(result.sessionId);
   if (!context.mounted) return;
@@ -755,17 +760,73 @@ Future<void> showGameResult(BuildContext context, QuestController controller, St
               const SizedBox(width: 10),
               Expanded(child: _ResultStat(icon: Icons.bolt_rounded, color: QuestColors.indigo, label: 'XP', value: '+${outcome.xp}')),
             ]),
+            if (result.words.isNotEmpty) ...[
+              const SizedBox(height: 18),
+              _RoundWords(words: result.words),
+            ],
             const SizedBox(height: 18),
-            SizedBox(width: double.infinity, child: FilledButton.icon(
-              onPressed: () { Navigator.of(sheetContext).pop(); Navigator.of(context).pop(); },
-              icon: const Icon(Icons.arrow_forward_rounded),
-              label: const Text('Continue'),
-            )),
+            Row(children: [
+              Expanded(child: OutlinedButton(
+                onPressed: () { Navigator.of(sheetContext).pop(); Navigator.of(context).pop(); },
+                child: const Text('Continue'),
+              )),
+              const SizedBox(width: 10),
+              Expanded(child: FilledButton.icon(
+                onPressed: () {
+                  Navigator.of(sheetContext).pop();
+                  Navigator.of(context).pushReplacement(MaterialPageRoute<void>(builder: (_) => game));
+                },
+                icon: const Icon(Icons.replay_rounded),
+                label: const Text('Khelh leh'),
+              )),
+            ]),
           ]),
         ),
       ]),
     ),
   );
+}
+
+/// The words a round asked about: missed ones first (they come back in later
+/// rounds), so the result quietly doubles as a recap.
+class _RoundWords extends StatelessWidget {
+  const _RoundWords({required this.words});
+  final List<WordPlay> words;
+
+  static const _shown = 12;
+
+  @override
+  Widget build(BuildContext context) {
+    final ordered = [...words.where((w) => w.missed), ...words.where((w) => !w.missed)];
+    final missed = words.where((w) => w.missed).length;
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const Text('Thumal i hmuh te', style: TextStyle(fontWeight: FontWeight.w800, color: QuestColors.navy)),
+      const SizedBox(height: 8),
+      Wrap(spacing: 6, runSpacing: 6, children: [
+        for (final play in ordered.take(_shown))
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(
+              color: play.missed ? const Color(0xFFFCE4EC) : const Color(0xFFE6F5E2),
+              borderRadius: BorderRadius.circular(99),
+            ),
+            child: Text(play.word, style: TextStyle(
+              fontWeight: FontWeight.w700,
+              color: play.missed ? QuestColors.coral : QuestColors.successInk,
+            )),
+          ),
+        if (ordered.length > _shown)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            child: Text('+${ordered.length - _shown}', style: const TextStyle(color: QuestColors.slate, fontWeight: FontWeight.w700)),
+          ),
+      ]),
+      if (missed > 0) ...[
+        const SizedBox(height: 6),
+        const Text('A sen te hi i khelh leh hunah an lo lang leh ang.', style: TextStyle(color: QuestColors.slate, fontSize: 13)),
+      ],
+    ]);
+  }
 }
 
 /// The learner's adaptive level for one game, with progress to the next.

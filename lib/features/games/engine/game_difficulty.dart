@@ -38,13 +38,15 @@ abstract final class GameDifficulty {
 
   /// Picks [count] items weighted towards the rating (slightly above it, so
   /// every round stretches a little), then orders them easiest first so a
-  /// round warms up before it gets hard.
+  /// round warms up before it gets hard. [boost] multiplies an item's weight
+  /// (e.g. more for a word the player missed, less for one they know well).
   static List<T> pick<T>(
     List<T> pool, {
     required double rating,
     required int count,
     required int Function(T item) difficultyOf,
     required Random random,
+    double Function(T item)? boost,
   }) {
     if (pool.length <= count) {
       return [...pool]
@@ -57,7 +59,7 @@ abstract final class GameDifficulty {
         (
           // Efraimidis–Spirakis weighted sampling without replacement.
           pow(random.nextDouble(),
-                  1 / _weight(difficultyOf(item), centre, spread))
+                  1 / (_weight(difficultyOf(item), centre, spread) * (boost?.call(item) ?? 1)))
               .toDouble(),
           item,
         ),

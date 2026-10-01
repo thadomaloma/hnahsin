@@ -36,6 +36,10 @@ class GameRuntime with WidgetsBindingObserver {
   bool restoredSession = false;
   bool ready = false;
 
+  /// Words this round asked about, in the order they came up.
+  final Map<String, WordPlay> _played = <String, WordPlay>{};
+  List<WordPlay> get playedWords => List<WordPlay>.unmodifiable(_played.values);
+
   Timer? _timer;
   Future<void> _saveQueue = Future<void>.value();
   bool _disposed = false;
@@ -73,6 +77,10 @@ class GameRuntime with WidgetsBindingObserver {
               timedSeconds;
       hintsUsed = (snapshot.payload['_hintsUsed'] as num?)?.toInt() ?? 0;
       hintRevealed = snapshot.payload['_hintRevealed'] as bool? ?? false;
+      for (final raw in snapshot.payload['_played'] as List<Object?>? ?? const <Object?>[]) {
+        final play = WordPlay.fromJson(raw);
+        if (play != null) _played[play.id] = play;
+      }
       restoredSession = true;
       _restorePayload(snapshot);
       session.resume();
@@ -83,8 +91,19 @@ class GameRuntime with WidgetsBindingObserver {
     onChanged();
   }
 
-  bool answer(bool isCorrect) {
+  /// Scores an answer. Pass the word it was about ([wordId], [word]) so the
+  /// game remembers it: a missed word comes back in later rounds.
+  bool answer(bool isCorrect, {String? wordId, String? word}) {
     if (!ready) return false;
+    if (wordId != null && word != null) {
+      final before = _played[wordId];
+      _played[wordId] = WordPlay(
+        id: wordId,
+        word: word,
+        missed: (before?.missed ?? false) || !isCorrect,
+        hinted: (before?.hinted ?? false) || (isCorrect && hintRevealed),
+      );
+    }
     final accepted = session.registerAnswer(
       isCorrect,
       usedHint: hintRevealed,
@@ -111,7 +130,9 @@ class GameRuntime with WidgetsBindingObserver {
     _timer?.cancel();
     final result = session.finish(baseXp: baseXp, reason: reason);
     await _saveQueue;
-    return result;
+    final words = playedWords;
+    await controller.recordWordsPlayed(words);
+    return result.withWords(words);
   }
 
   Future<void> persist() {
@@ -127,6 +148,7 @@ class GameRuntime with WidgetsBindingObserver {
         '_remainingSeconds': remainingSeconds,
         '_hintsUsed': hintsUsed,
         '_hintRevealed': hintRevealed,
+        '_played': [for (final play in _played.values) play.toJson()],
       },
     );
     _saveQueue = _saveQueue.then((_) async {

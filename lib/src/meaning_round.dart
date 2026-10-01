@@ -135,5 +135,6 @@ ChoiceQuestion _questionFor(
     emoji: entry.emoji.trim().isEmpty || rating >= 4 ? '💬' : entry.emoji,
     review: entry.review,
     contentId: entry.id,
+    word: entry.word,
   );
 }

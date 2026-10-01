@@ -18,6 +18,21 @@ import 'meaning_round.dart';
 import 'theme.dart';
 import 'widgets.dart';
 
+/// How long a right answer stays on screen before the round moves on.
+const rightAnswerPause = Duration(milliseconds: 1100);
+
+/// A right answer moves the round on by itself after [rightAnswerPause], so
+/// play keeps its pace; a wrong one waits for Next so the player can take
+/// in the right answer. Not with a screen reader, which needs the time.
+void advanceAfterRightAnswer(State<StatefulWidget> state,
+    {required bool Function() stillWaiting,
+    required Future<void> Function() next}) {
+  if (MediaQuery.of(state.context).accessibleNavigation) return;
+  Future<void>.delayed(rightAnswerPause, () {
+    if (state.mounted && stillWaiting()) next();
+  });
+}
+
 class GameLaunchScreen extends StatefulWidget {
   const GameLaunchScreen({
     super.key,
@@ -157,19 +172,19 @@ class _GameLaunchScreenState extends State<GameLaunchScreen> {
             const SectionTitle('Choose a mode'),
             const SizedBox(height: 12),
             AnswerButton(
-              label: 'Relaxed — Learn without losing hearts',
+              label: 'Relaxed — Heart chân lovin khel',
               selected: mode == GameMode.relaxed,
               onTap: () => setState(() => mode = GameMode.relaxed),
             ),
             const SizedBox(height: 10),
             AnswerButton(
-              label: 'Standard — Three-heart challenge',
+              label: 'Standard — Heart 3 nen',
               selected: mode == GameMode.standard,
               onTap: () => setState(() => mode = GameMode.standard),
             ),
             const SizedBox(height: 10),
             AnswerButton(
-              label: 'Timed — 90-second challenge',
+              label: 'Timed — Second 90 chhungin',
               selected: mode == GameMode.timed,
               onTap: () => setState(() => mode = GameMode.timed),
             ),
@@ -292,12 +307,18 @@ class _PictureMatchGameState extends State<PictureMatchGame> {
 
   void choose(String value) {
     if (!runtime.ready || selected != null || finishing) return;
-    final correct = value == questions[index].word;
+    final entry = questions[index];
+    final correct = value == entry.word;
     HapticFeedback.selectionClick();
     setState(() {
       selected = value;
-      runtime.answer(correct);
+      runtime.answer(correct, wordId: entry.id, word: entry.word);
     });
+    final at = index;
+    if (correct) {
+      advanceAfterRightAnswer(this,
+          stillWaiting: () => !finishing && index == at, next: next);
+    }
   }
 
   Future<void> next() async {
@@ -327,7 +348,7 @@ class _PictureMatchGameState extends State<PictureMatchGame> {
     final correct = selected == entry.word;
     return QuestPage(
       title: GameText.of('picture_match').title,
-      subtitle: 'Picture vocabulary',
+      subtitle: GameText.of('picture_match').subtitle,
       hud: GameHud(
           session: session,
           progress: (index + 1) / questions.length,
@@ -368,8 +389,9 @@ class _PictureMatchGameState extends State<PictureMatchGame> {
           FeedbackCard(
               correct: correct,
               message: correct
-                  ? '${entry.word}: ${entry.meaningMizo}\n“${entry.exampleMizo}”'
-                  : 'Chhanna dik chu “${entry.word}” a ni.'),
+                  ? '${entry.word} — ${entry.englishGloss}'
+                  : 'Chhanna dik chu “${entry.word}” a ni.\n'
+                      '${entry.meaningMizo}\n“${entry.exampleMizo}”'),
           const SizedBox(height: 16),
           SizedBox(
               width: double.infinity,
@@ -468,8 +490,15 @@ class _SpellingGameState extends State<SpellingGame> {
     HapticFeedback.selectionClick();
     setState(() {
       selected = value;
-      runtime.answer(value == questions[index].answer);
+      final question = questions[index];
+      runtime.answer(value == question.answer,
+          wordId: question.contentId, word: question.word);
     });
+    final at = index;
+    if (value == questions[index].answer) {
+      advanceAfterRightAnswer(this,
+          stillWaiting: () => !finishing && index == at, next: next);
+    }
   }
 
   Future<void> next() async {
@@ -501,7 +530,7 @@ class _SpellingGameState extends State<SpellingGame> {
         : const <String>{};
     return QuestPage(
       title: GameText.of('spelling').title,
-      subtitle: 'Complete the Mizo word',
+      subtitle: GameText.of('spelling').subtitle,
       hud: GameHud(
           session: session,
           progress: (index + 1) / questions.length,
@@ -669,8 +698,16 @@ class _OldWordQuizGameState extends State<OldWordQuizGame> {
     HapticFeedback.selectionClick();
     setState(() {
       selected = value;
-      runtime.answer(value == questions[index].answer);
+      final question = questions[index];
+      runtime.answer(value == question.answer,
+          wordId: question.word == null ? null : question.contentId,
+          word: question.word);
     });
+    final at = index;
+    if (value == questions[index].answer) {
+      advanceAfterRightAnswer(this,
+          stillWaiting: () => !finishing && index == at, next: next);
+    }
   }
 
   Future<void> next() async {
@@ -740,8 +777,9 @@ class _OldWordQuizGameState extends State<OldWordQuizGame> {
           const SizedBox(height: 8),
           FeedbackCard(
               correct: correct,
+              // A right answer already was the meaning; a wrong one shows it.
               message: correct
-                  ? question.explanation
+                  ? ''
                   : 'Chhanna dik chu “${question.answer}” a ni.\n${question.explanation}'),
           const SizedBox(height: 16),
           SizedBox(
@@ -972,7 +1010,8 @@ class _WordChainGameState extends State<WordChainGame> {
           ? _withMeaning(word)
           : '${_withMeaning(word)}\n“${lastMizoUnit(word)}” hmanga zawm leh rawh.';
       messageIsError = false;
-      runtime.answer(true);
+      final entry = entries[word];
+      runtime.answer(true, wordId: entry?.id, word: entry?.word);
     });
     if (chain.length == 6) {
       finishing = true;
@@ -987,7 +1026,7 @@ class _WordChainGameState extends State<WordChainGame> {
     final needed = lastMizoUnit(chain.last);
     return QuestPage(
       title: GameText.of('word_chain').title,
-      subtitle: 'Build a Mizo word sequence',
+      subtitle: GameText.of('word_chain').subtitle,
       hud: GameHud(
           session: session,
           progress: (chain.length - 1) / 5,
@@ -1097,6 +1136,12 @@ class _WordSearchGameState extends State<WordSearchGame> {
   late final Map<String, String> glosses = {
     for (final entry in widget.controller.wordCatalog.reversed)
       entry.word.trim().toUpperCase(): entry.englishGloss.trim(),
+  };
+
+  /// The catalog's words by their grid spelling, to remember found words.
+  late final Map<String, WordEntry> wordEntries = {
+    for (final entry in widget.controller.wordCatalog.reversed)
+      entry.word.trim().toUpperCase(): entry,
   };
 
   void _buildBoard() {
@@ -1237,7 +1282,8 @@ class _WordSearchGameState extends State<WordSearchGame> {
         selected.clear();
         final gloss = glosses[word] ?? '';
         message = '“$word” i hmu ta!${gloss.isEmpty ? '' : ' ($gloss)'}';
-        runtime.answer(true);
+        final entry = wordEntries[word];
+        runtime.answer(true, wordId: entry?.id, word: entry?.word);
       });
       if (found.length == targets.length) {
         finishing = true;
@@ -1264,7 +1310,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
   @override
   Widget build(BuildContext context) => QuestPage(
         title: GameText.of('word_search').title,
-        subtitle: 'Find Mizo words in the grid',
+        subtitle: GameText.of('word_search').subtitle,
         hud: GameHud(
             session: session,
             progress: found.length / targets.length,

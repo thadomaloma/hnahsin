@@ -53,8 +53,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.ensureVisible(find.text('Timed — 90-second challenge'));
-    await tester.tap(find.text('Timed — 90-second challenge'));
+    await tester.ensureVisible(find.text('Timed — Second 90 chhungin'));
+    await tester.tap(find.text('Timed — Second 90 chhungin'));
     await tester.ensureVisible(find.text('Start Game'));
     await tester.tap(find.text('Start Game'));
     await tester.pumpAndSettle();

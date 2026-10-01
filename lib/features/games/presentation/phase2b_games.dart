@@ -268,7 +268,7 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
     }
     return QuestPage(
       title: GameText.of('sentence_builder').title,
-      subtitle: 'Arrange the tiles into natural Mizo',
+      subtitle: GameText.of('sentence_builder').subtitle,
       hud: GameHud(
         session: session,
         progress: (index + (isCorrect == true ? 1 : 0)) / questions.length,
