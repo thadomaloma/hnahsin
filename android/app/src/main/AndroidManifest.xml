@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Downloads the published content pack (THUMAL_QUEST_API_BASE_URL). -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="Hnahsin"
         android:name="${applicationName}"
