@@ -1,4 +1,4 @@
-name: Flutter CI
+name: Hnahsin
 
 on:
   push:
@@ -11,8 +11,8 @@ env:
   FLUTTER_VERSION: "3.47.4"
 
 jobs:
-  validate-phase-1c-mac-gate:
-    name: Validate Phase 1C Mac gate
+  test-and-macos-build:
+    name: Test leh macOS build
     runs-on: macos-latest
     steps:
       - name: Checkout
