@@ -208,4 +208,7 @@ fi
 
 echo ""
 echo "Hnahsin macOS app hawn mek..."
-flutter run -d macos
+# The published content from the Google Sheet; without it the app plays
+# with its built-in starter words only.
+content_url="${THUMAL_QUEST_API_BASE_URL:-https://thadomaloma.github.io/hnahsin-content}"
+flutter run -d macos --dart-define=THUMAL_QUEST_API_BASE_URL="$content_url"
