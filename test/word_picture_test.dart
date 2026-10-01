@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:thumal_quest/src/data.dart';
+import 'package:thumal_quest/src/widgets.dart';
 
 WordEntry _word(String id, String word, {String emoji = ''}) => WordEntry(
       id: id,
@@ -21,5 +23,11 @@ void main() {
     expect(hasWordPicture(_word('word.tlawmngai', 'Tlawmngai')), isFalse);
     expect(hasWordPicture(_word('word.ar-2', 'Âr', emoji: '🐔')), isTrue);
     expect(hasWordPicture(_word('word.favah', 'Favah')), isTrue);
+  });
+
+  testWidgets('a word without a picture shows its topic icon', (tester) async {
+    await tester.pumpWidget(MaterialApp(home: WordPicture(entry: _word('word.tlawmngai', 'Tlawmngai'))));
+    expect(find.byIcon(categoryIcon(WordCategory.khawvel)), findsOneWidget);
+    expect(find.text('T'), findsNothing);
   });
 }

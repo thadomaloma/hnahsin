@@ -891,7 +891,9 @@ class WordPicture extends StatelessWidget {
     if (entry.emoji.trim().isNotEmpty) {
       return Text(entry.emoji, style: TextStyle(fontSize: size * 0.92, height: 1.1));
     }
-    final initial = entry.word.trim().isEmpty ? '?' : entry.word.trim().characters.first.toUpperCase();
+    // No picture or emoji depicts the word (abstract words, many verbs): its
+    // topic's icon stands in. hasWordPicture stays false, so picture games
+    // never ask about it.
     return Container(
       width: size,
       height: size,
@@ -900,7 +902,17 @@ class WordPicture extends StatelessWidget {
         gradient: const LinearGradient(colors: [Color(0xFFDDF3FF), Color(0xFFEAF6FF)]),
         borderRadius: BorderRadius.circular(size * 0.3),
       ),
-      child: Text(initial, style: TextStyle(fontSize: size * 0.48, fontWeight: FontWeight.w800, color: QuestColors.tealDark)),
+      child: Icon(categoryIcon(entry.category), size: size * 0.56, color: QuestColors.tealDark),
     );
   }
 }
+
+/// The icon a word without its own picture shows, by topic.
+IconData categoryIcon(WordCategory category) => switch (category) {
+      WordCategory.chhungkua => Icons.family_restroom_rounded,
+      WordCategory.sikul => Icons.school_rounded,
+      WordCategory.nungcha => Icons.pets_rounded,
+      WordCategory.khawvel => Icons.eco_rounded,
+      WordCategory.nunphung => Icons.auto_stories_rounded,
+      WordCategory.thiltih => Icons.directions_run_rounded,
+    };

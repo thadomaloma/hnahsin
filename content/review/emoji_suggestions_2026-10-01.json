@@ -1,0 +1,17 @@
+{
+  "_comment": "Emoji suggested by Claude (2026-10-01) only for words that are a visible thing (or a plainly visible action) one emoji shows without doubt. Abstract words get no emoji; visible things with no emoji of their own need an uploaded picture (see emoji_coverage_2026-10-01.csv). Apply after a Mizo reviewer confirms: EMOJI_CORRECTIONS=content/review/emoji_suggestions_2026-10-01.json bin/rails editorial:apply_emoji_corrections",
+  "corrections": {
+    "word.chul": "🥀",
+    "word.ditip": "👜",
+    "word.hawng-2": "🔓",
+    "word.hniak": "🦶",
+    "word.inkalhtlat": "🔒",
+    "word.kang": "🔥",
+    "word.khawfingchahlai": "🌄",
+    "word.paiper": "🧺",
+    "word.phaipheng": "🪦",
+    "word.rualbanlo": "♿",
+    "word.thawmmawl": "👝",
+    "word.tohlawt": "🪨"
+  }
+}
