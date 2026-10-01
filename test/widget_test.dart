@@ -32,7 +32,7 @@ void main() {
 
     expect(controller.profile.onboardingCompleted, isTrue);
     expect(find.text('VAWIIN GAME'), findsOneWidget);
-    expect(find.text('Khelh rawh'), findsOneWidget);
+    expect(find.text('Khel rawh'), findsOneWidget);
     expect(find.text('Home'), findsOneWidget);
     expect(find.text('Learn'), findsWidgets);
     expect(find.text('Games'), findsWidgets);

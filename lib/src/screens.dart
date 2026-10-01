@@ -263,7 +263,7 @@ class _DailyHero extends StatelessWidget {
               const SizedBox(height: 18),
               _GoldButton(
                 icon: Icons.play_arrow_rounded,
-                label: 'Khelh rawh',
+                label: 'Khel rawh',
                 onPressed: () =>
                     _open(context, game.builder(GameMode.standard)),
               ),
