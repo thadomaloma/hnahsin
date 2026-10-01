@@ -1,0 +1,394 @@
+{
+ "id": "00000000-0000-4000-8000-000000000000",
+ "version": "2.20261001.120000",
+ "checksum": "21915ff3df3aff3a29c3386d58fac16fa2211b28967048946a93444c44d38d55",
+ "published_at": "2026-10-01T12:00:00Z",
+ "manifest": {
+  "schema_version": "1.0",
+  "language": "lus",
+  "pack_version": "2.20261001.120000",
+  "generated_at": "2026-10-01T12:00:00Z",
+  "items": [
+   {
+    "stable_id": "game.common",
+    "content_type": "game_copy",
+    "checksum": "96b409f4dae532eb35644378d4298d3b201a1e8f658254d63d3e5dc8372dd368",
+    "body": {
+     "game_id": "common",
+     "correct_feedback": "A dik e!",
+     "instructions": []
+    }
+   },
+   {
+    "stable_id": "question.thufingtihhianengngeakawh",
+    "content_type": "question",
+    "checksum": "73c212478c35ab235e7f9a849f3f48e3038acb2e220deed143a6db403e97a9d0",
+    "body": {
+     "prompt_mizo": "“Thufing” tih hian eng nge a kawh?",
+     "options": [
+      "Finna thu tawi",
+      "Thawnthu sei",
+      "Hla thu",
+      "Thu hriattîrna"
+     ],
+     "answer": "Finna thu tawi",
+     "explanation_mizo": "Thufing chu finna thu tawi a ni.",
+     "emoji": "💬",
+     "difficulty": 1
+    }
+   },
+   {
+    "stable_id": "sentence.001",
+    "content_type": "sentence",
+    "checksum": "38a0d55789931261b7fe4d4fc6c6b2cbd8120f46e96f6c738111561c4e414a1d",
+    "body": {
+     "content": {
+      "text_mizo": "Ka nu chu a hlim.",
+      "english_support": "My mother is happy."
+     },
+     "learning": {
+      "difficulty": 1
+     }
+    }
+   },
+   {
+    "stable_id": "word.lu",
+    "content_type": "word",
+    "checksum": "7827a923e4309b1d14f34df9805ee3bd7100d89c5c1989dc508b4fb39c0fd5b5",
+    "body": {
+     "word": "Lû",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 22",
+     "example_mizo": "Thumal22 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 3,
+     "game_modes": [
+      "picture_match",
+      "thumal_kawp"
+     ],
+     "image": {
+      "checksum": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "content_type": "image/png",
+      "byte_size": 1200
+     }
+    }
+   },
+   {
+    "stable_id": "word.w1",
+    "content_type": "word",
+    "checksum": "7a49724d4fdeecad474526c844efb298e50fd9ec7ef1bdbc3ce184e27a520f14",
+    "body": {
+     "word": "thumal1",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 1",
+     "example_mizo": "Thumal1 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 1,
+     "game_modes": []
+    }
+   },
+   {
+    "stable_id": "word.w10",
+    "content_type": "word",
+    "checksum": "34964fc2007036ec79758ee4285ec852ef7e497bcc0643323c284e9df0e0a2b6",
+    "body": {
+     "word": "thumal10",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 10",
+     "example_mizo": "Thumal10 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 3,
+     "game_modes": []
+    }
+   },
+   {
+    "stable_id": "word.w11",
+    "content_type": "word",
+    "checksum": "ee00f9a6d9b295f768e2ed9ab9622baf6a88cb776aa25cff0fdd19809b9d2b7e",
+    "body": {
+     "word": "thumal11",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 11",
+     "example_mizo": "Thumal11 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 3,
+     "game_modes": []
+    }
+   },
+   {
+    "stable_id": "word.w12",
+    "content_type": "word",
+    "checksum": "10338c73b4a8d9e5e6e8f6e768de953b173f545122cdd35e21b5c5eef923182c",
+    "body": {
+     "word": "thumal12",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 12",
+     "example_mizo": "Thumal12 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 3,
+     "game_modes": []
+    }
+   },
+   {
+    "stable_id": "word.w13",
+    "content_type": "word",
+    "checksum": "472c96ebf0bb5ef7ec2d6d72451cb927eb1d4fb8bbf7154d1fadf0fa1dd30460",
+    "body": {
+     "word": "thumal13",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 13",
+     "example_mizo": "Thumal13 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 3,
+     "game_modes": []
+    }
+   },
+   {
+    "stable_id": "word.w14",
+    "content_type": "word",
+    "checksum": "3bddedaf23af886008e1ac0b0cc0f19aae7c0ac109e90a17429a1978043ba074",
+    "body": {
+     "word": "thumal14",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 14",
+     "example_mizo": "Thumal14 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 3,
+     "game_modes": []
+    }
+   },
+   {
+    "stable_id": "word.w15",
+    "content_type": "word",
+    "checksum": "081074054a047c30fec9424a3da97620e0fe86a3d80f8100a1375aaf99099f80",
+    "body": {
+     "word": "thumal15",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 15",
+     "example_mizo": "Thumal15 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 3,
+     "game_modes": []
+    }
+   },
+   {
+    "stable_id": "word.w16",
+    "content_type": "word",
+    "checksum": "959b726290a3ef731336dd8112d8bcac7a5c281a3fbf913020fff7cf2722983c",
+    "body": {
+     "word": "thumal16",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 16",
+     "example_mizo": "Thumal16 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 3,
+     "game_modes": []
+    }
+   },
+   {
+    "stable_id": "word.w17",
+    "content_type": "word",
+    "checksum": "b0c344346fa1910f3e8ebee3365e20ce6233aeb8be704ed882bc98cc9feba513",
+    "body": {
+     "word": "thumal17",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 17",
+     "example_mizo": "Thumal17 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 3,
+     "game_modes": []
+    }
+   },
+   {
+    "stable_id": "word.w18",
+    "content_type": "word",
+    "checksum": "c4a55e912de8ee228cbee7a1c59ccc929354924ad1098b96ca75454c64fc2164",
+    "body": {
+     "word": "thumal18",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 18",
+     "example_mizo": "Thumal18 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 3,
+     "game_modes": []
+    }
+   },
+   {
+    "stable_id": "word.w19",
+    "content_type": "word",
+    "checksum": "079e2a778cb9ded3061abbfa639da336a21bdb2e69dc4edbe353a1cfbd284457",
+    "body": {
+     "word": "thumal19",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 19",
+     "example_mizo": "Thumal19 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 3,
+     "game_modes": []
+    }
+   },
+   {
+    "stable_id": "word.w2",
+    "content_type": "word",
+    "checksum": "5fb3fc680cfad1b276ee1719db06dbd7463fcc284eca531fbbb5c81fd608f34d",
+    "body": {
+     "word": "thumal2",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 2",
+     "example_mizo": "Thumal2 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 1,
+     "game_modes": []
+    }
+   },
+   {
+    "stable_id": "word.w20",
+    "content_type": "word",
+    "checksum": "8be2aa191f96af970fd2508b1abacb124cdb56d03c1d88fe072eaaf0106e7cb7",
+    "body": {
+     "word": "thumal20",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 20",
+     "example_mizo": "Thumal20 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 3,
+     "game_modes": []
+    }
+   },
+   {
+    "stable_id": "word.w21",
+    "content_type": "word",
+    "checksum": "2d4efb4069ebc62cebb2987472f3169c1aaa9b2819aa31dadfed6ddeb265cea4",
+    "body": {
+     "word": "thumal21",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 21",
+     "example_mizo": "Thumal21 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 3,
+     "game_modes": []
+    }
+   },
+   {
+    "stable_id": "word.w3",
+    "content_type": "word",
+    "checksum": "2cf0004c0400c1e606c36e5009d3493496c2334ef61c9bee73d21b9cf2004c63",
+    "body": {
+     "word": "thumal3",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 3",
+     "example_mizo": "Thumal3 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 1,
+     "game_modes": []
+    }
+   },
+   {
+    "stable_id": "word.w4",
+    "content_type": "word",
+    "checksum": "1a5a10581a4910338edd0b63712de5b04416f8743b7c4b47d560f49727e183d6",
+    "body": {
+     "word": "thumal4",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 4",
+     "example_mizo": "Thumal4 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 1,
+     "game_modes": []
+    }
+   },
+   {
+    "stable_id": "word.w5",
+    "content_type": "word",
+    "checksum": "992187361e0d62911b1d03c0eddf09e2195e7abcf1a741458149854e5f336829",
+    "body": {
+     "word": "thumal5",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 5",
+     "example_mizo": "Thumal5 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 1,
+     "game_modes": []
+    }
+   },
+   {
+    "stable_id": "word.w6",
+    "content_type": "word",
+    "checksum": "92e0f549d0855ae31a9236a91cb301b5a3698964d7fafdf879c0239790e12bb8",
+    "body": {
+     "word": "thumal6",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 6",
+     "example_mizo": "Thumal6 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 3,
+     "game_modes": []
+    }
+   },
+   {
+    "stable_id": "word.w7",
+    "content_type": "word",
+    "checksum": "19ed20539bee1711957d83fc00b6b8ed0b0049fad4c6b09c70f8584e37cd9554",
+    "body": {
+     "word": "thumal7",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 7",
+     "example_mizo": "Thumal7 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 3,
+     "game_modes": []
+    }
+   },
+   {
+    "stable_id": "word.w8",
+    "content_type": "word",
+    "checksum": "316809e9fc901b6fcd337a6a26c0046fc0fbbcc3783175f4b0d6e0a939b7dac2",
+    "body": {
+     "word": "thumal8",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 8",
+     "example_mizo": "Thumal8 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 3,
+     "game_modes": []
+    }
+   },
+   {
+    "stable_id": "word.w9",
+    "content_type": "word",
+    "checksum": "5be4b15dbaeb2d9b21f7ba59a7b8c76359a35ebe6848d1b21d2fb7381070ff59",
+    "body": {
+     "word": "thumal9",
+     "meaning_mizo": "Awmzia a ni.",
+     "english_gloss": "meaning 9",
+     "example_mizo": "Thumal9 hi a ṭha.",
+     "emoji": "",
+     "category": "khawvel",
+     "difficulty": 3,
+     "game_modes": []
+    }
+   }
+  ]
+ }
+}

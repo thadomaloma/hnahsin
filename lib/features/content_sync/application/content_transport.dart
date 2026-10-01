@@ -35,9 +35,16 @@ class HttpContentTransport implements ContentTransport {
   final http.Client _client;
   static const maximumPackBytes = 5 * 1024 * 1024;
 
+  /// [path] under the base URL, keeping the base's own folder: packs on
+  /// GitHub Pages live under https://owner.github.io/<repo>/api/v1/….
+  Uri _resolve(String path) {
+    final folder = baseUri.path.endsWith('/') ? baseUri.path : '${baseUri.path}/';
+    return baseUri.replace(path: folder).resolve(path.replaceFirst(RegExp(r'^/+'), ''));
+  }
+
   @override
   Future<PackResponse> fetchLatest(String path, {String? etag}) async {
-    final request = http.Request('GET', baseUri.resolve(path));
+    final request = http.Request('GET', _resolve(path));
     // On web a manual If-None-Match forces a CORS preflight; the browser's
     // HTTP cache already revalidates with the ETag on its own.
     if (etag != null && !kIsWeb) request.headers['If-None-Match'] = etag;
@@ -73,7 +80,7 @@ class HttpContentTransport implements ContentTransport {
 
   @override
   Future<List<int>> download(String path, {required int maximumBytes}) async {
-    final request = http.Request('GET', baseUri.resolve(path));
+    final request = http.Request('GET', _resolve(path));
     final response = await _client.send(request).timeout(const Duration(seconds: 15));
     if (response.statusCode != 200) {
       await response.stream.drain<void>();

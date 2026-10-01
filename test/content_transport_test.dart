@@ -48,4 +48,24 @@ void main() {
     );
     transport.close();
   });
+
+  test('paths stay under the base URL\'s folder (GitHub Pages)', () async {
+    final requested = <Uri>[];
+    final client = MockClient((request) async {
+      requested.add(request.url);
+      return http.Response('', 404);
+    });
+    for (final base in ['https://owner.github.io/hnahsin-content', 'https://owner.github.io/hnahsin-content/']) {
+      final transport = HttpContentTransport(baseUri: Uri.parse(base), client: client);
+      await transport.fetchLatest('/api/v1/content_packs/latest');
+    }
+    await HttpContentTransport(baseUri: Uri.parse('https://studio.example.test'), client: client)
+        .fetchLatest('/api/v1/content_packs/latest');
+
+    expect(requested.map((url) => url.toString()), [
+      'https://owner.github.io/hnahsin-content/api/v1/content_packs/latest',
+      'https://owner.github.io/hnahsin-content/api/v1/content_packs/latest',
+      'https://studio.example.test/api/v1/content_packs/latest',
+    ]);
+  });
 }
