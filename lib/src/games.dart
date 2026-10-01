@@ -9,7 +9,6 @@ import '../features/games/engine/game_difficulty.dart';
 import '../features/games/engine/game_engine.dart';
 import 'controller.dart';
 import 'data.dart';
-import 'editor_tools.dart';
 import 'spelling_round.dart';
 import 'word_search_board.dart';
 import 'game_session.dart';
@@ -371,7 +370,6 @@ class _PictureMatchGameState extends State<PictureMatchGame> {
               message: correct
                   ? '${entry.word}: ${entry.meaningMizo}\n“${entry.exampleMizo}”'
                   : 'Chhanna dik chu “${entry.word}” a ni.'),
-          StudioFixButton(contentId: entry.id),
           const SizedBox(height: 16),
           SizedBox(
               width: double.infinity,
@@ -570,7 +568,6 @@ class _SpellingGameState extends State<SpellingGame> {
                   ? '“${question.word}” a kim ta.${question.gloss.isEmpty ? '' : '\n${question.gloss}'}'
                   : 'Chhanna dik chu “${question.answer}” a ni: “${question.word}”.'
                       '${question.gloss.isEmpty ? '' : '\n${question.gloss}'}'),
-          StudioFixButton(contentId: question.contentId),
           const SizedBox(height: 16),
           SizedBox(
               width: double.infinity,
@@ -746,7 +743,6 @@ class _OldWordQuizGameState extends State<OldWordQuizGame> {
               message: correct
                   ? question.explanation
                   : 'Chhanna dik chu “${question.answer}” a ni.\n${question.explanation}'),
-          StudioFixButton(contentId: question.contentId),
           const SizedBox(height: 16),
           SizedBox(
               width: double.infinity,

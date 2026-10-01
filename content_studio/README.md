@@ -23,12 +23,13 @@ changing the pack format, then `flutter test test/sheet_pack_test.dart`).
 2. **Token.** On GitHub go to Settings → Developer settings → Fine-grained
    tokens. Give the token access to that repo only, with
    *Contents: Read and write*.
-3. **Sheet.** Signed in as the content account, upload
-   `Hnahsin content.xlsx` (from `python3 scripts/export_studio_to_sheet.py OUT_DIR`)
-   to Drive, then open it with **Google Sheets** (File → Save as Google
-   Sheets).
-4. **Pictures.** Upload the `Hnahsin thlalak` folder from the export into the
-   same Drive folder as the sheet.
+3. **Sheet.** Signed in as the content account, open a blank Google Sheet
+   and import the content (File → Import → Replace spreadsheet). The live
+   sheet was made this way on 2026-10-01 from the retired Rails Studio's
+   export; a backup of that database is outside the repo.
+4. **Pictures.** After step 6, put the picture files (PNG, JPEG or WebP,
+   512 KB at most) into the `Hnahsin thlalak` Drive folder that setup makes
+   next to the sheet. Drag the files in, not a folder.
 5. **Script.** In the sheet, open Extensions → Apps Script. Make the files
    `Pack.gs` and `Code.gs` and paste in `Pack.js` and `Code.js`. Paste the
    manifest into `appsscript.json` (turn on *Show "appsscript.json"* in

@@ -158,7 +158,7 @@ class DeliveredWord {
   /// visible everywhere rather than disappearing from every game.
   final Set<String> gameModes;
 
-  /// Reviewed picture uploaded in Editorial Studio, if any.
+  /// Reviewed picture from the content Sheet, if any.
   final DeliveredImage? image;
 
   static const categories = <String>{
@@ -171,11 +171,11 @@ class DeliveredWord {
   };
 
   /// Maps a free-text `seed_category` (from the nested Content Schema V2
-  /// shape produced by the CSV/rake content importer, e.g.
-  /// `backend/lib/tasks/import_pilot_content.rake`) down to one of the six
-  /// fixed delivery categories above. Content authored directly in the flat
-  /// delivery shape (e.g. via the editorial web form, which already sets
-  /// `category` explicitly) never consults this table.
+  /// shape the retired Rails Studio's importer produced, which packs
+  /// published before the content Sheet still carry) down to one of the six
+  /// fixed delivery categories above. Content in the flat delivery shape
+  /// (everything the content Sheet publishes, which sets `category`
+  /// explicitly) never consults this table.
   static const _seedCategoryFallback = <String, String>{
     // chhungkua -- family / home
     'family': 'chhungkua', 'home': 'chhungkua', 'household': 'chhungkua',
@@ -352,7 +352,7 @@ class DeliveredImage {
   }
 }
 
-/// A reviewed Tawng Upa question from Editorial Studio.
+/// A reviewed Tawng Upa question from the content Sheet.
 class DeliveredQuestion {
   const DeliveredQuestion({
     required this.id,

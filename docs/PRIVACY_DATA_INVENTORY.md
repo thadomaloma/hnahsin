@@ -54,6 +54,11 @@ Phase 3C adds only an on-device gentle-mode boolean. Reviewer and pilot-owner
 identifiers in source must be opaque; the identity register, signed consent and
 contact details stay in controlled organisational storage outside the project.
 
+Update 2026-10-01: the Editorial Studio and its database are retired. Content
+is edited in a Google Sheet owned by the project's content account and
+published as a static content pack on GitHub Pages; there is no project server
+or staff database any more. The paragraph below is kept for history.
+
 Phase 4A adds an internal Editorial Studio database containing staff email,
 password digest, minimum role, active status, content authorship/review records,
 request IDs and append-only audit metadata. This operational data is not learner

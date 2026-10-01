@@ -59,14 +59,14 @@ on_error() {
 trap on_error ERR
 
 echo ""
-echo "Hnahsin — Phase 4C Mac verification"
+echo "Hnahsin — Mac check"
 echo "========================================="
 echo "Project: $project_dir"
 echo "Mode: $run_mode"
 
 case "$run_mode" in
-  run|check|doctor|report|learner-report|journey-report|culture-report|engagement-report|review-report|pilot-report|mac-report|phase3-report) ;;
-  *) fail_with_help "Mode hriat loh: $run_mode (run, check, doctor, report leh gate report modes chauh hmang rawh)." ;;
+  run|check|doctor|report) ;;
+  *) fail_with_help "Mode hriat loh: $run_mode (run, check, doctor emaw report chauh hmang rawh)." ;;
 esac
 
 if [ "$run_mode" = "report" ]; then
@@ -76,53 +76,13 @@ if [ "$run_mode" = "report" ]; then
   exit 0
 fi
 
-if [ "$run_mode" = "learner-report" ]; then
-  python3 scripts/learner_validation_gate.py
-  pause_before_exit
-  exit 0
-fi
 
-if [ "$run_mode" = "journey-report" ]; then
-  python3 scripts/journey_release_gate.py
-  pause_before_exit
-  exit 0
-fi
 
-if [ "$run_mode" = "culture-report" ]; then
-  python3 scripts/culture_release_gate.py
-  pause_before_exit
-  exit 0
-fi
 
-if [ "$run_mode" = "engagement-report" ]; then
-  python3 scripts/engagement_validation_gate.py
-  pause_before_exit
-  exit 0
-fi
 
-if [ "$run_mode" = "review-report" ]; then
-  python3 scripts/phase3_review_workflow.py
-  pause_before_exit
-  exit 0
-fi
 
-if [ "$run_mode" = "pilot-report" ]; then
-  python3 scripts/pilot_readiness_gate.py
-  pause_before_exit
-  exit 0
-fi
 
-if [ "$run_mode" = "mac-report" ]; then
-  python3 scripts/mac_verification_gate.py
-  pause_before_exit
-  exit 0
-fi
 
-if [ "$run_mode" = "phase3-report" ]; then
-  python3 scripts/phase3_exit_gate.py
-  pause_before_exit
-  exit 0
-fi
 
 if [ "$(uname -s)" != "Darwin" ]; then
   fail_with_help "run_mac.command hi macOS atan chauh a ni."
@@ -175,7 +135,7 @@ if ! xcrun --find clang >/dev/null 2>&1; then
   fail_with_help "Xcode toolchain is incomplete. Open Xcode once and install its components."
 fi
 
-xcode_version_line="$(xcodebuild -version | tr '\n' ' ' | sed 's/[[:space:]]*$//')"
+echo "Xcode: $(xcodebuild -version | tr '\n' ' ' | sed 's/[[:space:]]*$//')"
 
 if ! command -v pod >/dev/null 2>&1; then
   echo "CocoaPods ka hmu lo. Flutter plugin build nan a ngai."
@@ -197,26 +157,6 @@ if [ "$run_mode" = "doctor" ]; then
   echo "Doctor mode zawh ta. Diagnostic file: $diagnostic_file"
   pause_before_exit
   exit 0
-fi
-
-echo ""
-echo "Project artifacts verify mek..."
-if command -v python3 >/dev/null 2>&1; then
-  python3 scripts/validate_phase0.py
-  python3 scripts/validate_phase1.py
-  python3 scripts/validate_phase1b.py
-  python3 scripts/validate_phase1c.py
-  python3 scripts/validate_phase2a.py
-  python3 scripts/validate_phase2b.py
-  python3 scripts/validate_phase2c.py
-  python3 scripts/validate_phase3a.py
-  python3 scripts/validate_phase3b.py
-  python3 scripts/validate_phase3c.py
-  python3 scripts/validate_phase4a.py
-  python3 scripts/validate_phase4b.py
-  python3 scripts/validate_phase4c.py
-else
-  echo "WARNING: python3 a awm lo; dependency-free artifact validators skip a ni."
 fi
 
 flutter config --enable-macos-desktop >/dev/null
@@ -257,25 +197,9 @@ echo ""
 echo "macOS debug build verify mek..."
 flutter build macos --debug
 
-python3 scripts/write_mac_verification.py \
-  --macos "$(sw_vers -productVersion)" \
-  --arch "$(uname -m)" \
-  --flutter "$flutter_version_line" \
-  --xcode "$xcode_version_line"
-python3 scripts/mac_verification_gate.py --strict
-
 if [ "$run_mode" = "check" ]; then
   write_diagnostics
   echo ""
-  echo "PHASE 1C MAC CHECK PASSED"
-  echo "PHASE 2B MAC CHECK PASSED"
-  echo "PHASE 2C TECHNICAL CHECK PASSED"
-  echo "PHASE 3A TECHNICAL CHECK PASSED"
-  echo "PHASE 3B TECHNICAL CHECK PASSED"
-  echo "PHASE 3C TECHNICAL CHECK PASSED"
-  echo "PHASE 4A APP CONTRACT CHECK PASSED"
-  echo "PHASE 4B CONTENT DELIVERY CHECK PASSED"
-  echo "PHASE 4C STAGING CONTRACT CHECK PASSED"
   echo "Format, analyze, tests leh macOS debug build an pass vek."
   echo "App hawn tur chuan: ./run_mac.command"
   pause_before_exit

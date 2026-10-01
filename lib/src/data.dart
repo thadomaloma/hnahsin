@@ -94,7 +94,7 @@ class WordEntry {
   final ContentReview review;
   final Set<String> gameModes;
 
-  /// SHA-256 of the picture uploaded in Editorial Studio, if any.
+  /// SHA-256 of the picture from the content Sheet, if any.
   final String? imageChecksum;
 
   /// Untagged words (`gameModes.isEmpty`, e.g. the hardcoded prototype
@@ -588,7 +588,7 @@ const wordIllustrationsById = <String, String>{
   'word.len': 'assets/illustrations/word.len.png',
 };
 
-/// SHA-256 of the reviewed picture uploaded in Editorial Studio, if any.
+/// SHA-256 of the reviewed picture from the content Sheet, if any.
 extension WordEntryPicture on WordEntry {
   bool get hasUploadedPicture => WordImages.of(imageChecksum) != null;
 }

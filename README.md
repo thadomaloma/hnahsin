@@ -6,8 +6,7 @@
 
 Hnahsin (*Mizo Thumal Infiamna*) is a game-first app for learning the **Mizo language** (lus), for
 learners from age 5 to adults. It works offline on phones, and every word,
-question and picture is written and reviewed by people in a web-based
-**Editorial Studio**.
+question and picture is written and reviewed by people in a **Google Sheet**.
 
 <p align="center">
   <img src="docs/screenshots/home.png" width="200" alt="Home screen with the daily lesson">
@@ -25,88 +24,61 @@ question and picture is written and reviewed by people in a web-based
 - **1,600+ Mizo words** with original meanings, example sentences and pictures.
 - **Offline first** — content packs are verified by SHA-256 and cached on the
   device; progress stays on the device.
-- **Editorial Studio** (Rails) — edit words, pictures, questions and all game
-  text with simple forms; independent review before anything is published.
+- **Content Sheet** — words, pictures, questions and all game text are edited
+  in a Google Sheet with Mizo headings; its **Hnahsin → 🚀 Chhuah** menu checks
+  every row and publishes the content pack. No server to run.
 - Phone-first design that also adapts to tablets and desktop browsers.
-
-<p align="center">
-  <img src="docs/screenshots/studio-word-form.png" width="420" alt="Editorial Studio word form with picture">
-  <img src="docs/screenshots/studio-coverage.png" width="420" alt="Editorial Studio game coverage page">
-</p>
 
 ## Quick start (macOS)
 
-You need **Flutter 3.x**, **Ruby 3.3+** with Bundler, and **PostgreSQL 16**
-(`brew install postgresql@16 && brew services start postgresql@16`).
+You need **Flutter 3.x**.
 
 ```bash
 git clone https://github.com/thadomaloma/hnahsin.git
-cd hnahsin/backend
-
-# 1. First time only: gems, database and an admin account
-bundle install
-EDITORIAL_ADMIN_EMAIL=you@example.org EDITORIAL_ADMIN_PASSWORD='choose-a-strong-password' \
-  bin/rails db:prepare db:seed
-
-# 2. Optional: load the Mizo word lists and game text as drafts for review
-EMAIL=editor@example.org PASSWORD='another-strong-password' ROLE=editor bin/rails editorial:upsert_user
-IMPORT_EDITOR_EMAIL=editor@example.org bin/rails editorial:import_pilot_content editorial:import_game_content
-cd ..
-
-# 3. Run the Editorial Studio and the app together
-./run_local.command
+cd hnahsin
+./run_mac.command            # checks the Mac, runs analyze + tests, opens the app
 ```
 
-Imported content waits for review. Until a reviewed pack is published (see
-*Editing content*), the app plays with its built-in starter words.
+Without a content URL the app plays with its built-in starter words. To use
+the published content, pass the content pack's location:
 
-Then open:
+```bash
+flutter run --dart-define=THUMAL_QUEST_API_BASE_URL=https://thadomaloma.github.io/hnahsin-content
+```
 
-| What | URL |
-|---|---|
-| App (web preview, hot reload) | http://localhost:5050 |
-| Editorial Studio | http://localhost:3000 |
-| Game test (the app, served by the Studio) | http://localhost:3000/game-test/ |
-
-To run only the Studio, use `./run_backend.command`. It also builds the app
-into `backend/public/game-test/` (development only, not committed) whenever
-the app's code changed, so the Studio's **Game test** link works without the
-5050 preview; `scripts/build_game_test.sh` rebuilds it by hand.
-
-Press **Ctrl + C** to stop both. To run the app on a phone or simulator
-instead, use `flutter run` (add
-`--dart-define=THUMAL_QUEST_API_BASE_URL=http://<your-computer>:3000` to sync
-content from your Studio).
+Release builds for the App Store and Play Store need the same `--dart-define`.
 
 ## Editing content
 
-1. Sign in to the Studio and open **Content → New content item**.
-2. Pick **Word**, **Tawng Upa question**, **Game text** or **Sentence** and fill
-   in the form. Words can have an emoji or an uploaded picture.
-3. **Submit for review** — a different person (language reviewer) approves it.
-4. A publisher creates a **content pack** under **Releases**; the app picks it
-   up on its next sync.
+Content lives in the **Hnahsin content** Google Sheet (tabs Thumal, Zawhna,
+Sentence, Game thu; how-to in Mizo on its Kaihhruaina tab):
 
-**Coverage** shows how many words each game has at every level. See
-[`backend/README.md`](backend/README.md) for roles and details.
+1. Add or change rows. Only rows whose **Dinhmun** is *Chhuah* reach the app.
+2. **Hnahsin → ✅ Endik** lists anything wrong, in Mizo, with links to the rows.
+3. **Hnahsin → 🚀 Chhuah** publishes the pack to
+   [hnahsin-content](https://github.com/thadomaloma/hnahsin-content) on GitHub
+   Pages; apps pick it up on their next sync, without an app update.
+
+Setup and the sheet's script: [`content_studio/README.md`](content_studio/README.md).
+The pack format is [`docs/API_CONTENT_PACK_V1.md`](docs/API_CONTENT_PACK_V1.md).
 
 ## Tests
 
 ```bash
 flutter analyze && flutter test          # app
-cd backend && bin/rails test             # Editorial Studio
+node --test content_studio/test          # content Sheet's pack builder
 ```
 
 ## Project structure
 
 ```text
-lib/        Flutter app (screens, games, adaptive engine, content sync)
-backend/    Rails 8 Editorial Studio and public content API
-content/    Word lists, game text and questions (CSV/JSON sources)
-assets/     Branding, fonts and bundled illustrations
-design/     Hnahsin logo and icon source art
-docs/       Design system, runbooks and project history
-scripts/    Release and validation checks
+lib/            Flutter app (screens, games, adaptive engine, content sync)
+content_studio/ Apps Script for the content Google Sheet (check + publish)
+content/        Source word lists from the Kumtluang and Vartian primers
+assets/         Branding, fonts and bundled illustrations
+design/         Hnahsin logo and icon source art
+docs/           Design system, product notes and project history
+scripts/        Mac diagnostics
 ```
 
 ## Credits

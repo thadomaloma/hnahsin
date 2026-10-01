@@ -186,7 +186,7 @@ class QuestController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Reviewed Tawng Upa questions written in Editorial Studio.
+  /// Reviewed Tawng Upa questions written in the content Sheet.
   List<ChoiceQuestion> get deliveredQuestions => [
         for (final question in _contentSyncService?.activeQuestions ?? const <DeliveredQuestion>[])
           ChoiceQuestion(
@@ -201,7 +201,7 @@ class QuestController extends ChangeNotifier {
           ),
       ];
 
-  /// Reviewed Sentence Builder sentences written in Editorial Studio.
+  /// Reviewed Sentence Builder sentences written in the content Sheet.
   List<DeliveredSentence> get deliveredSentences =>
       _contentSyncService?.activeSentences ?? const <DeliveredSentence>[];
 

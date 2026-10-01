@@ -2,10 +2,9 @@ import 'dart:typed_data';
 
 import '../features/content_sync/domain/delivery_models.dart';
 
-/// Mizo text for one game. Every field can be overridden per game in
-/// Editorial Studio (content type "Game text"); anything left empty there
-/// falls back to these built-in defaults, which mirror
-/// `content/game_copy/default_game_copy.json`.
+/// Mizo text for one game. Every field can be overridden per game on the
+/// content Sheet's “Game thu” tab; anything left empty there falls back to
+/// these built-in defaults.
 class GameCopy {
   const GameCopy({
     this.title = '',
@@ -127,7 +126,7 @@ const _defaultGameCopy = <String, GameCopy>{
 };
 
 /// App-wide game text: built-in defaults overridden by the reviewed
-/// Editorial Studio text from the active content pack.
+/// content Sheet text from the active content pack.
 abstract final class GameText {
   static Map<String, DeliveredGameCopy> _delivered =
       const <String, DeliveredGameCopy>{};

@@ -1,8 +1,0 @@
-inherit_gem:
-  rubocop-rails-omakase: rubocop.yml
-
-AllCops:
-  NewCops: enable
-  Exclude:
-    - "db/schema.rb"
-    - "vendor/**/*"

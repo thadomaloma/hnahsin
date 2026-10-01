@@ -7,7 +7,7 @@ import 'game_words.dart';
 
 /// Builds a Tawng Upa round: “what does this word mean?” with one right
 /// meaning and three wrong ones. Levels 1–2 answer with English meanings,
-/// level 3 up with Mizo ones. Questions written in Editorial Studio
+/// level 3 up with Mizo ones. Questions written in the content Sheet
 /// ([written]) join the round, picked by level alongside the generated ones.
 List<ChoiceQuestion> buildMeaningRound({
   required List<WordEntry> catalog,

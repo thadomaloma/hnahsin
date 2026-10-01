@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 
 import '../../../src/controller.dart';
 import '../../../src/data.dart';
-import '../../../src/editor_tools.dart';
 import '../../../src/game_session.dart';
 import '../../../src/game_text.dart';
 import '../../../src/game_words.dart';
@@ -418,7 +417,6 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
                 null => '${done.answer}: ${done.clue}',
               },
             ),
-            StudioFixButton(contentId: done.id),
           ],
           const SizedBox(height: 14),
           _Keyboard(onLetter: _type, onErase: _erase, enabled: runtime.ready && !finishing),

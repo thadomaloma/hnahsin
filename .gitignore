@@ -49,5 +49,3 @@ __pycache__/
 !.env.example
 *.key
 
-# Game build served by Editorial Studio in development (scripts/build_game_test.sh)
-backend/public/game-test/

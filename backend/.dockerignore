@@ -1,9 +1,0 @@
-.git
-.env*
-log/*
-tmp/*
-test
-vendor/bundle
-
-# Development-only game build (scripts/build_game_test.sh)
-/public/game-test
