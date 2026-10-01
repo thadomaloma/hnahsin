@@ -142,9 +142,39 @@ function publishPack() {
   gitHubPut(settings, 'api/v1/content_packs/' + result.envelope.version + '.json', base64, 'Content pack ' + result.envelope.version);
   gitHubPut(settings, PACK_PATH, base64, 'Publish content pack ' + result.envelope.version);
 
-  ui.alert('Chhuah a ni e! 🎉',
-    'Version ' + result.envelope.version + ' chu chhuah a ni ta (thlalak thar ' + uploaded + ').\n\n' +
-    'Minute 10 vel hnuah app hawngtu zawng zawngin an hmu ang.', ui.ButtonSet.OK);
+  SpreadsheetApp.getActive().toast('GitHub-in a dah chhuah mek… (minute 1 vel)', 'Hnahsin', 180);
+  var live = waitUntilLive(settings, result.envelope.version);
+  SpreadsheetApp.getActive().toast('', 'Hnahsin', 1);
+  ui.alert(live ? 'App-ah a thleng ta! ✅' : 'Chhuah a ni e 🎉',
+    'Version ' + result.envelope.version + ' (thlalak thar ' + uploaded + ').\n\n' +
+    (live
+      ? 'App hawng mek te chuan minute 1 chhungin an hmu ang, game round thar aṭangin.'
+      : 'GitHub-in a la dah chhuah mek. Minute 2–3 hnuah app-ah a lang ang.'),
+    ui.ButtonSet.OK);
+}
+
+/** The address the app downloads the pack from (GitHub Pages). */
+function pagesPackUrl(settings) {
+  var parts = settings.repo.split('/');
+  return 'https://' + parts[0].toLowerCase() + '.github.io/' + parts[1] + '/' + PACK_PATH;
+}
+
+/**
+ * Waits (up to about 3 minutes) until GitHub Pages serves [version], which
+ * is when apps can download it. Pages clears its cache on each deploy.
+ */
+function waitUntilLive(settings, version) {
+  var url = pagesPackUrl(settings);
+  for (var i = 0; i < 18; i++) {
+    Utilities.sleep(10000);
+    try {
+      var response = UrlFetchApp.fetch(url + '?check=' + Date.now(), { muteHttpExceptions: true });
+      if (response.getResponseCode() === 200 && JSON.parse(response.getContentText()).version === version) return true;
+    } catch (e) {
+      // not there yet
+    }
+  }
+  return false;
 }
 
 /** Writes the IDs Publish gave to new rows back into their ID cells. */
@@ -318,7 +348,7 @@ function writeHelp(ss) {
     ['App-ah thlen dan'],
     ['1. Menu “Hnahsin → ✅ Endik” hmet rawh. Dik lo awm chu row number nen a lang ang. “(en rawh)” hmet la, siam ṭha rawh.'],
     ['2. Dik lo a awm tawh loh chuan “Hnahsin → 🚀 Chhuah” hmet rawh.'],
-    ['3. Minute 10 vel hnuah app hawngtu zawng zawngin an hmu ang. App hi update a ngai lo.'],
+    ['3. “App-ah a thleng ta ✅” a lan hunah, app hawng mek te chuan minute 1 chhungin game round thar aṭangin an hmu ang. App hi update a ngai lo.'],
     [''],
     ['Thil dik lo i tih palh chuan'],
     ['File → Version history → See version history aṭangin a hma lam version-ah kîr leh la, “🚀 Chhuah” leh rawh.'],

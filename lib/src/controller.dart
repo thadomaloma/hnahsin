@@ -212,17 +212,20 @@ class QuestController extends ChangeNotifier {
     WordImages.update(service.activeImages);
   }
 
-  /// How long a sync stays fresh: coming back to the app sooner than this
-  /// doesn't check again.
-  static const contentRecheckAfter = Duration(minutes: 5);
+  /// How long a sync stays fresh. The app checks again this often while it
+  /// is open, so content published from the Sheet reaches the next game
+  /// round within about a minute of going live.
+  static const contentRecheckAfter = Duration(minutes: 1);
 
-  /// Checks for newly published content when the app comes back to the
-  /// foreground, unless it checked within [contentRecheckAfter]. An
-  /// unchanged pack costs one small 304 response.
+  /// Checks for newly published content unless it checked within
+  /// [contentRecheckAfter]. An unchanged pack costs one small 304 response.
   Future<void> refreshContentIfStale({DateTime? now}) async {
     final last = _contentSyncService?.state.lastAttemptAt;
     final current = (now ?? DateTime.now()).toUtc();
-    if (last != null && current.difference(last) < contentRecheckAfter) return;
+    // A little slack, so the once-a-minute timer isn't skipped for firing
+    // a few milliseconds before a full minute has passed.
+    const slack = Duration(seconds: 5);
+    if (last != null && current.difference(last) < contentRecheckAfter - slack) return;
     await refreshContent();
   }
 

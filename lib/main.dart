@@ -25,20 +25,35 @@ Future<void> main() async {
   }
   runApp(HnahsinApp(controller: controller));
   unawaited(controller.refreshContent());
-  WidgetsBinding.instance.addObserver(ContentRefreshOnResume(controller));
+  WidgetsBinding.instance.addObserver(ContentRefresher(controller));
 }
 
-/// Picks up content published from the Sheet while the app sat in the
-/// background, without the learner having to restart it.
-class ContentRefreshOnResume with WidgetsBindingObserver {
-  ContentRefreshOnResume(this.controller);
+/// Picks up content published from the Sheet without the learner having to
+/// restart the app: every [QuestController.contentRecheckAfter] while the app
+/// is in front, and when it comes back from the background.
+class ContentRefresher with WidgetsBindingObserver {
+  ContentRefresher(this.controller) {
+    _start();
+  }
 
   final QuestController controller;
+  Timer? _timer;
+
+  void _start() {
+    _timer?.cancel();
+    _timer = Timer.periodic(QuestController.contentRecheckAfter,
+        (_) => unawaited(controller.refreshContentIfStale()));
+  }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       unawaited(controller.refreshContentIfStale());
+      _start();
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.hidden ||
+        state == AppLifecycleState.detached) {
+      _timer?.cancel(); // no network use in the background
     }
   }
 }

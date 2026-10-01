@@ -24,7 +24,7 @@ class _CountingTransport implements ContentTransport {
 }
 
 void main() {
-  test('coming back to the app checks for new content at most every 5 minutes', () async {
+  test('the app checks for new content at most once a minute', () async {
     final transport = _CountingTransport();
     final controller = QuestController(
       repository: InMemoryQuestRepository(),
@@ -35,11 +35,11 @@ void main() {
     expect(transport.requests, 1, reason: 'never checked yet');
 
     final checked = DateTime.now().toUtc();
-    await controller.refreshContentIfStale(now: checked.add(const Duration(minutes: 2)));
-    expect(transport.requests, 1, reason: 'checked 2 minutes ago');
+    await controller.refreshContentIfStale(now: checked.add(const Duration(seconds: 30)));
+    expect(transport.requests, 1, reason: 'checked 30 seconds ago');
 
     await controller.refreshContentIfStale(now: checked.add(QuestController.contentRecheckAfter));
-    expect(transport.requests, 2, reason: '5 minutes have passed');
+    expect(transport.requests, 2, reason: 'a minute has passed');
   });
 
   test('without a content URL there is nothing to check', () async {
