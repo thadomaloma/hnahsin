@@ -25,12 +25,13 @@ enum WordCategory { chhungkua, sikul, nungcha, khawvel, nunphung, thiltih }
 enum ContentReview { draft, prototypeChecked, approved, reviewRequired }
 
 /// Public builds can opt into the release gate with
-/// `--dart-define=THUMAL_QUEST_PRODUCTION=true`. Until qualified reviewers
-/// approve the corpus, that build fails closed instead of serving draft text.
+/// `--dart-define=HNAHSIN_PRODUCTION=true` (THUMAL_QUEST_PRODUCTION, its name
+/// before the rename, still works). Until qualified reviewers approve the
+/// corpus, that build fails closed instead of serving draft text.
 abstract final class ContentPolicy {
   static const isProduction = bool.fromEnvironment(
-    'THUMAL_QUEST_PRODUCTION',
-    defaultValue: false,
+    'HNAHSIN_PRODUCTION',
+    defaultValue: bool.fromEnvironment('THUMAL_QUEST_PRODUCTION'),
   );
 
   static bool get releaseReady =>

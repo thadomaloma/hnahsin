@@ -28,7 +28,7 @@
   "variants": [],
   "provenance": {
     "source_type": "author",
-    "source_title": "Thumal Quest Phase 0 candidate pack",
+    "source_title": "Hnahsin Phase 0 candidate pack",
     "source_locator": "pilot_candidates.csv",
     "contributor_id": "contributor.phase0",
     "machine_assisted": true,
@@ -38,7 +38,7 @@
   },
   "rights": {
     "license": "project-owned-draft",
-    "copyright_holder": "Thumal Quest project",
+    "copyright_holder": "Hnahsin project",
     "consent_record_id": null,
     "commercial_use_allowed": false,
     "derivatives_allowed": true,

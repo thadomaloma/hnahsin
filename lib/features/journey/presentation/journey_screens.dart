@@ -507,7 +507,7 @@ class _JourneyNodeTile extends StatelessWidget {
               ),
               Text(
                 locked
-                    ? 'TQ${node.minimumLevel}'
+                    ? 'Level ${node.minimumLevel + 1}'
                     : complete
                         ? 'REPLAY'
                         : 'START',

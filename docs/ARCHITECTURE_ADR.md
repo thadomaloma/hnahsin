@@ -1,4 +1,4 @@
-# ADR-001 — Thumal Quest Production Architecture
+# ADR-001 — Hnahsin Production Architecture
 
 **Status:** Product boundary accepted; engineering implementation review pending  
 **Date:** 13 September 2026  

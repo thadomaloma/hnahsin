@@ -1,4 +1,4 @@
-# Thumal Quest — Game Session Engine V2 Specification
+# Hnahsin — Game Session Engine V2 Specification
 
 **Status:** Phase 1B implementation; device verification pending  
 **Goal:** Game tin professional, testable, resumable leh learning-aware siam

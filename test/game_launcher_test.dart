@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/data/quest_repository.dart';
-import 'package:thumal_quest/features/games/engine/game_engine.dart';
-import 'package:thumal_quest/src/controller.dart';
-import 'package:thumal_quest/src/games.dart';
+import 'package:hnahsin/data/quest_repository.dart';
+import 'package:hnahsin/features/games/engine/game_engine.dart';
+import 'package:hnahsin/src/controller.dart';
+import 'package:hnahsin/src/games.dart';
 
 void main() {
   testWidgets('launcher shows resume choice for a saved game', (tester) async {

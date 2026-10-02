@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/data/quest_repository.dart';
-import 'package:thumal_quest/features/journey/presentation/journey_screens.dart';
-import 'package:thumal_quest/features/learning/domain/learning_state.dart';
-import 'package:thumal_quest/src/controller.dart';
+import 'package:hnahsin/data/quest_repository.dart';
+import 'package:hnahsin/features/journey/presentation/journey_screens.dart';
+import 'package:hnahsin/features/learning/domain/learning_state.dart';
+import 'package:hnahsin/src/controller.dart';
 
 void main() {
   testWidgets('journey map exposes the first story and locks the next',
@@ -11,7 +11,7 @@ void main() {
     final controller = QuestController(
       repository: InMemoryQuestRepository(
         learningState: LearningState.fresh().copyWith(
-          level: LearningLevel.tq1,
+          level: LearningLevel.level2,
         ),
       ),
     );
@@ -25,7 +25,7 @@ void main() {
     expect(find.text('OPTIONAL WEEKLY • NO DEADLINE'), findsOneWidget);
     expect(find.text('Coming Home'), findsOneWidget);
     expect(find.text('START'), findsOneWidget);
-    expect(find.text('TQ1'), findsOneWidget);
+    expect(find.text('Level 2'), findsOneWidget);
   });
 
   testWidgets('story requires a natural reply before continuing',
@@ -33,7 +33,7 @@ void main() {
     final controller = QuestController(
       repository: InMemoryQuestRepository(
         learningState: LearningState.fresh().copyWith(
-          level: LearningLevel.tq1,
+          level: LearningLevel.level2,
         ),
       ),
     );

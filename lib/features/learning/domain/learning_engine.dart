@@ -6,13 +6,13 @@ class PlacementEngine {
   const PlacementEngine();
 
   LearningLevel levelForScore({required int correct, required int total}) {
-    if (total <= 0) return LearningLevel.tq0;
+    if (total <= 0) return LearningLevel.level1;
     final ratio = correct.clamp(0, total) / total;
-    if (ratio < .2) return LearningLevel.tq0;
-    if (ratio < .4) return LearningLevel.tq1;
-    if (ratio < .6) return LearningLevel.tq2;
-    if (ratio < .8) return LearningLevel.tq3;
-    return LearningLevel.tq4;
+    if (ratio < .2) return LearningLevel.level1;
+    if (ratio < .4) return LearningLevel.level2;
+    if (ratio < .6) return LearningLevel.level3;
+    if (ratio < .8) return LearningLevel.level4;
+    return LearningLevel.level5;
   }
 }
 

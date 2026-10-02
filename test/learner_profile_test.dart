@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/features/onboarding/domain/learner_profile.dart';
+import 'package:hnahsin/features/onboarding/domain/learner_profile.dart';
 
 void main() {
   test('learner profile survives a JSON round-trip', () {

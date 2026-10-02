@@ -28,6 +28,16 @@ abstract interface class OfflinePackStore {
   Future<void> writeImage(String checksum, List<int> bytes);
 }
 
+/// Moves packs and pictures saved under the app's old name (Thumal Quest)
+/// into the `hnahsin` folder, so a learner keeps them offline after the
+/// rename. Files are stored by relative path, so a move is enough.
+Future<void> moveLegacyPackFolder(String supportPath) async {
+  final current = Directory(path.join(supportPath, 'hnahsin'));
+  final legacy = Directory(path.join(supportPath, 'thumal_quest'));
+  if (await current.exists() || !await legacy.exists()) return;
+  await legacy.rename(current.path);
+}
+
 class FileOfflinePackStore implements OfflinePackStore {
   FileOfflinePackStore._(this._root, this._preferences);
 
@@ -37,8 +47,8 @@ class FileOfflinePackStore implements OfflinePackStore {
   static Future<FileOfflinePackStore> open(
       {SharedPreferencesAsync? preferences}) async {
     final support = await getApplicationSupportDirectory();
-    final root =
-        Directory(path.join(support.path, 'thumal_quest', 'delivery_v1'));
+    await moveLegacyPackFolder(support.path);
+    final root = Directory(path.join(support.path, 'hnahsin', 'delivery_v1'));
     await root.create(recursive: true);
     return FileOfflinePackStore._(
         root, preferences ?? SharedPreferencesAsync());

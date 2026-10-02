@@ -1,15 +1,15 @@
-# Thumal Quest
+# Hnahsin
 
 **Khelh la, zir la, thiam rawh.**
 
-Thumal Quest is a premium, game-first Mizo language-learning Flutter app for
+Hnahsin is a premium, game-first Mizo language-learning Flutter app for
 learners from age 5 through adults. Version 0.12 adds production staging,
 real-audio pilot evidence and live sync validation while preserving the
 game-first offline experience and local learner progress.
 
 > **2026-09-27 — audio removed.** Pronunciation audio, Listen & Pick and the
 > backend audio pipeline (upload, review, audio packs, S3 media storage) were
-> removed from the app and Editorial Studio. Thumal Quest is now text- and
+> removed from the app and Editorial Studio. Hnahsin is now text- and
 > picture-based; the **Thumal Kawp** memory game replaced Listen & Pick. The
 > audio-related release notes below are kept as project history.
 
@@ -168,7 +168,7 @@ Double-click `run_mac.command` also works. For checks without opening the app:
 ```
 
 The check now includes formatting, analysis, tests and a macOS debug build. If
-it fails, send `thumal_quest_diagnostics.txt`; the launcher creates it
+it fails, send `hnahsin_diagnostics.txt`; the launcher creates it
 automatically. You can regenerate it with `./run_mac.command report`.
 
 See [`docs/MAC_SETUP.md`](docs/MAC_SETUP.md) for Flutter/Xcode troubleshooting.

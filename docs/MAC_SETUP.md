@@ -1,4 +1,4 @@
-# Run Thumal Quest on a Mac
+# Run Hnahsin on a Mac
 
 ## Fast path
 
@@ -27,7 +27,7 @@ awlsam zâwk.
 - Dart formatting, `flutter pub get`, `flutter analyze`, `flutter test`
 - macOS debug build in both `check` and normal run modes
 
-Log file chu project folder-a `thumal_quest_run.log` a ni.
+Log file chu project folder-a `hnahsin_run.log` a ni.
 
 ## Useful modes
 
@@ -96,7 +96,7 @@ Run:
 Then send these two things:
 
 1. Terminal-a `ERROR:` line hnuhnung ber
-2. `thumal_quest_diagnostics.txt`
+2. `hnahsin_diagnostics.txt`
 
 Diagnostic report-in home-folder path chu `~`-ah a thlak a; mahse computer name
 i lantir duh loh chuan thawn hmaa en phawt rawh. API key, environment variable

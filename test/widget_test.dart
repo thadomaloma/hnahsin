@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/data/quest_repository.dart';
-import 'package:thumal_quest/features/onboarding/domain/learner_profile.dart';
-import 'package:thumal_quest/features/learning/presentation/learning_screens.dart';
-import 'package:thumal_quest/src/app.dart';
-import 'package:thumal_quest/src/controller.dart';
-import 'package:thumal_quest/src/widgets.dart';
+import 'package:hnahsin/data/quest_repository.dart';
+import 'package:hnahsin/features/onboarding/domain/learner_profile.dart';
+import 'package:hnahsin/features/learning/presentation/learning_screens.dart';
+import 'package:hnahsin/src/app.dart';
+import 'package:hnahsin/src/controller.dart';
+import 'package:hnahsin/src/widgets.dart';
 
 void main() {
   testWidgets('opens personalized onboarding for a new learner', (tester) async {
@@ -68,7 +68,7 @@ void main() {
       ),
     );
 
-    expect(find.text('TQ0'), findsOneWidget);
+    expect(find.text('Level 1'), findsOneWidget);
     expect(find.text('Find My Mizo Level'), findsOneWidget);
     await tester.tap(find.text('Find My Mizo Level'));
     await tester.pumpAndSettle();

@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/features/games/engine/crossword_layout.dart';
-import 'package:thumal_quest/features/games/presentation/crossword_game.dart';
-import 'package:thumal_quest/src/data.dart';
+import 'package:hnahsin/features/games/engine/crossword_layout.dart';
+import 'package:hnahsin/features/games/presentation/crossword_game.dart';
+import 'package:hnahsin/src/data.dart';
 
 List<CrosswordCandidate> _candidates() => [
       for (final entry in wordEntries)

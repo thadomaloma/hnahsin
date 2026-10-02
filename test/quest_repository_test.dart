@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/data/quest_repository.dart';
-import 'package:thumal_quest/features/games/engine/game_engine.dart';
-import 'package:thumal_quest/src/controller.dart';
-import 'package:thumal_quest/src/game_session.dart';
+import 'package:hnahsin/data/quest_repository.dart';
+import 'package:hnahsin/features/games/engine/game_engine.dart';
+import 'package:hnahsin/src/controller.dart';
+import 'package:hnahsin/src/game_session.dart';
 
 void main() {
   test('duplicate reward transaction is committed only once', () async {

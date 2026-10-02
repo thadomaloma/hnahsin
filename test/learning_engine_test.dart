@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/features/learning/domain/learning_engine.dart';
-import 'package:thumal_quest/features/learning/domain/learning_state.dart';
+import 'package:hnahsin/features/learning/domain/learning_engine.dart';
+import 'package:hnahsin/features/learning/domain/learning_state.dart';
 
 void main() {
   const placement = PlacementEngine();
@@ -9,12 +9,12 @@ void main() {
   const planner = DailyLessonPlanner();
   final now = DateTime.utc(2026, 9, 13, 9);
 
-  test('placement maps a ten-question score across TQ0 to TQ4', () {
-    expect(placement.levelForScore(correct: 0, total: 10), LearningLevel.tq0);
-    expect(placement.levelForScore(correct: 2, total: 10), LearningLevel.tq1);
-    expect(placement.levelForScore(correct: 4, total: 10), LearningLevel.tq2);
-    expect(placement.levelForScore(correct: 6, total: 10), LearningLevel.tq3);
-    expect(placement.levelForScore(correct: 8, total: 10), LearningLevel.tq4);
+  test('placement maps a ten-question score across Level 1 to Level 5', () {
+    expect(placement.levelForScore(correct: 0, total: 10), LearningLevel.level1);
+    expect(placement.levelForScore(correct: 2, total: 10), LearningLevel.level2);
+    expect(placement.levelForScore(correct: 4, total: 10), LearningLevel.level3);
+    expect(placement.levelForScore(correct: 6, total: 10), LearningLevel.level4);
+    expect(placement.levelForScore(correct: 8, total: 10), LearningLevel.level5);
   });
 
   test('spaced repetition advances and resets an item deterministically', () {
@@ -47,24 +47,24 @@ void main() {
   test('adaptive difficulty moves only after enough recent evidence', () {
     expect(
       adaptive.recommend(
-        current: LearningLevel.tq1,
+        current: LearningLevel.level2,
         recentOutcomes: const <bool>[true, true, true, true],
       ),
-      LearningLevel.tq1,
+      LearningLevel.level2,
     );
     expect(
       adaptive.recommend(
-        current: LearningLevel.tq1,
+        current: LearningLevel.level2,
         recentOutcomes: const <bool>[true, true, true, true, false],
       ),
-      LearningLevel.tq2,
+      LearningLevel.level3,
     );
     expect(
       adaptive.recommend(
-        current: LearningLevel.tq1,
+        current: LearningLevel.level2,
         recentOutcomes: const <bool>[false, false, true, false, false],
       ),
-      LearningLevel.tq0,
+      LearningLevel.level1,
     );
   });
 
@@ -80,7 +80,7 @@ void main() {
       now: now,
     );
     final state = LearningState.fresh().copyWith(
-      level: LearningLevel.tq1,
+      level: LearningLevel.level2,
       masteries: <String, ItemMastery>{
         due.itemId: due,
         future.itemId: future,
@@ -111,7 +111,7 @@ void main() {
       now: now,
     );
     final original = LearningState.fresh().copyWith(
-      level: LearningLevel.tq2,
+      level: LearningLevel.level3,
       placementCompleted: true,
       placementCorrect: 5,
       placementTotal: 10,
@@ -122,11 +122,30 @@ void main() {
 
     final restored = LearningState.fromJson(original.toJson());
 
-    expect(restored.level, LearningLevel.tq2);
+    expect(restored.level, LearningLevel.level3);
     expect(restored.placementCompleted, isTrue);
     expect(restored.masteries['word.in']!.intervalDays, 1);
     expect(restored.recentOutcomes, <bool>[true, false]);
     expect(restored.reportedContentIds, <String>['word.in']);
     expect(restored.contentReports['word.in'], 'wrong meaning');
+  });
+
+  test('a level saved before the rename as tq0–tq7 is read back', () {
+    expect(
+      LearningState.fromJson(const <String, Object?>{'level': 'tq0'}).level,
+      LearningLevel.level1,
+    );
+    expect(
+      LearningState.fromJson(const <String, Object?>{'level': 'tq3'}).level,
+      LearningLevel.level4,
+    );
+    expect(
+      LearningState.fromJson(const <String, Object?>{'level': 'tq7'}).level,
+      LearningLevel.level8,
+    );
+    expect(
+      LearningState.fromJson(const <String, Object?>{'level': 'tq8'}).level,
+      LearningLevel.level1,
+    );
   });
 }

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/src/data.dart';
+import 'package:hnahsin/src/data.dart';
 
 void main() {
   test('draft content is never playable', () {

@@ -1,4 +1,4 @@
-# Thumal Quest UI design system
+# Hnahsin UI design system
 
 Version 0.4 (2026-09-27) refreshes the visual layer; version 0.3 defined a production-oriented mobile system that can be recreated
 as Figma components without changing the Flutter information architecture.
@@ -9,7 +9,7 @@ as Figma components without changing the Flutter information architecture.
   status labels use natural English.
 - Mizo remains the primary language for lesson prompts, examples, meanings,
   feedback, and cultural content.
-- Product names such as **Thumal Quest** and **Tawng Upa** remain unchanged.
+- Product names such as **Hnahsin** and **Tawng Upa** remain unchanged.
 
 ## Core tokens
 

@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/data/quest_repository.dart';
-import 'package:thumal_quest/features/journey/domain/journey_state.dart';
-import 'package:thumal_quest/features/learning/domain/learning_state.dart';
-import 'package:thumal_quest/src/controller.dart';
+import 'package:hnahsin/data/quest_repository.dart';
+import 'package:hnahsin/features/journey/domain/journey_state.dart';
+import 'package:hnahsin/features/learning/domain/learning_state.dart';
+import 'package:hnahsin/src/controller.dart';
 
 void main() {
   test('controller persists a reviewed culture-card read', () async {
@@ -22,7 +22,7 @@ void main() {
     );
   });
 
-  test('TQ lock prevents collecting an advanced culture card', () async {
+  test('level lock prevents collecting an advanced culture card', () async {
     final controller = QuestController(repository: InMemoryQuestRepository());
 
     expect(await controller.collectCultureCard('culture.kut'), isFalse);
@@ -38,7 +38,7 @@ void main() {
         trailMarks: 2,
       ),
       learningState: LearningState.fresh().copyWith(
-        level: LearningLevel.tq2,
+        level: LearningLevel.level3,
       ),
     );
     final controller = QuestController(repository: repository);

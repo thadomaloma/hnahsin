@@ -1,4 +1,4 @@
-# THUMAL QUEST — MASTER ROADMAP
+# HNAHSIN — MASTER ROADMAP
 
 **Document version:** 1.0  
 **Roadmap date:** 13 September 2026  
@@ -6,7 +6,7 @@
 **Roadmap horizon:** 9–12 months to a credible public V1; continuous growth thereafter  
 **Status:** Living document — phase gate tin zawhah update tûr
 
-> **North-star vision:** Thumal Quest chu word-puzzle app mai ni lovin, Mizo tawng
+> **North-star vision:** Hnahsin chu word-puzzle app mai ni lovin, Mizo tawng
 > zirna, hman ṭhatna leh thangthar hnêna thlen chhawnna atâna **Mizo
 > community-owned, game-first learning platform** a ni ang.
 
@@ -14,7 +14,7 @@
 
 ## 1. Kan thil tum
 
-Thumal Quest-in heng thil pali hi a tih hlawhtlin tum ang:
+Hnahsin-in heng thil pali hi a tih hlawhtlin tum ang:
 
 1. **Mizo tawng dik leh nung vawn:** Standard Mizo thumal, spelling, sentence,
    pronunciation, tawng upa leh culture chu mihring thiamte review hmangin dah.
@@ -316,7 +316,7 @@ release date sawn aia unreviewed content publish loh hi kan thlang ang.
 ### Google Cloud hman dân
 
 Google Cloud Translation documentation-in **Mizo (`lus`)** a support tih a ziak.
-Thumal Quest-ah:
+Hnahsin-ah:
 
 - English support gloss draft siam nân backend-a optional tool angin hmang
 - Canonical spelling, definition, sentence emaw pronunciation source-ah hmang lo
@@ -908,7 +908,7 @@ document-a a hranin dah tûr.
 
 ### Already decided
 
-- Product name: **Thumal Quest**
+- Product name: **Hnahsin**
 - Flutter mobile app; Android + iOS first
 - English primary navigation labels; Mizo learning content
 - Learners from age 5 through adults, diaspora included

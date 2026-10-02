@@ -3,8 +3,8 @@
 set -u
 
 project_dir="$(cd "$(dirname "$0")/.." && pwd)"
-log_file="${1:-$project_dir/thumal_quest_run.log}"
-output_file="${2:-$project_dir/thumal_quest_diagnostics.txt}"
+log_file="${1:-$project_dir/hnahsin_run.log}"
+output_file="${2:-$project_dir/hnahsin_diagnostics.txt}"
 temporary_file="${output_file}.tmp"
 
 redact() {

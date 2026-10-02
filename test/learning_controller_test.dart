@@ -1,18 +1,18 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/data/quest_repository.dart';
-import 'package:thumal_quest/features/learning/domain/learning_state.dart';
-import 'package:thumal_quest/src/controller.dart';
-import 'package:thumal_quest/src/data.dart';
+import 'package:hnahsin/data/quest_repository.dart';
+import 'package:hnahsin/features/learning/domain/learning_state.dart';
+import 'package:hnahsin/src/controller.dart';
+import 'package:hnahsin/src/data.dart';
 
 void main() {
-  test('placement persists TQ level and aligns the learning track', () async {
+  test('placement persists the level and aligns the learning track', () async {
     final repository = InMemoryQuestRepository();
     final controller = QuestController(repository: repository);
 
     final level = await controller.completePlacement(correct: 7, total: 10);
     final stored = await repository.loadLearningState();
 
-    expect(level, LearningLevel.tq3);
+    expect(level, LearningLevel.level4);
     expect(controller.track, LearningTrack.explorer);
     expect(stored.placementCompleted, isTrue);
     expect(stored.placementCorrect, 7);

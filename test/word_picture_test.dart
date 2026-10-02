@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/src/data.dart';
-import 'package:thumal_quest/src/widgets.dart';
+import 'package:hnahsin/src/data.dart';
+import 'package:hnahsin/src/widgets.dart';
 
 WordEntry _word(String id, String word, {String emoji = ''}) => WordEntry(
       id: id,

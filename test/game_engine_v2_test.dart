@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/features/games/engine/game_engine.dart';
+import 'package:hnahsin/features/games/engine/game_engine.dart';
 
 void main() {
   test('seed makes round randomness reproducible', () {

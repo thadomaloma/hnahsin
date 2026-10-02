@@ -1,13 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/data/quest_repository.dart';
-import 'package:thumal_quest/features/learning/domain/learning_state.dart';
-import 'package:thumal_quest/src/controller.dart';
+import 'package:hnahsin/data/quest_repository.dart';
+import 'package:hnahsin/features/learning/domain/learning_state.dart';
+import 'package:hnahsin/src/controller.dart';
 
 void main() {
   test('controller persists story completion and reward exactly once', () async {
     final repository = InMemoryQuestRepository(
       learningState: LearningState.fresh().copyWith(
-        level: LearningLevel.tq1,
+        level: LearningLevel.level2,
       ),
     );
     final controller = QuestController(repository: repository);
@@ -43,7 +43,7 @@ void main() {
   test('locked story cannot be completed out of order', () async {
     final repository = InMemoryQuestRepository(
       learningState: LearningState.fresh().copyWith(
-        level: LearningLevel.tq4,
+        level: LearningLevel.level5,
       ),
     );
     final controller = QuestController(repository: repository);

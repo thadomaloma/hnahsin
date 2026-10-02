@@ -1,13 +1,13 @@
-# Thumal Quest — Product Requirements Document
+# Hnahsin — Product Requirements Document
 
 **Version:** 0.2 / Phase 0 product-approved  
 **Date:** 13 September 2026  
-**Product:** Thumal Quest  
+**Product:** Hnahsin  
 **Platforms:** Android and iOS first; macOS/web for development and selected use
 
 ## 1. Product summary
 
-Thumal Quest chu Mizo tawng zirna atâna premium mobile game a ni. A core value
+Hnahsin chu Mizo tawng zirna atâna premium mobile game a ni. A core value
 chu Mizo thumal, ngaihthlakna, chhiarna, spelling, sentence leh culture chu
 session tawi leh nuam hmanga zir chhohtîr a ni. Mizoram chhûnga naupang chauh ni
 lovin India ram dang leh foreign-a Mizo family, heritage learner, adult

@@ -1,4 +1,4 @@
-# Thumal Quest — Learner Personas
+# Hnahsin — Learner Personas
 
 **Version:** 0.1 / Phase 0 draft  
 **Purpose:** Product, UX, content and learner-testing decision siam nân

@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/features/content_sync/domain/delivery_models.dart';
-import 'package:thumal_quest/src/data.dart';
-import 'package:thumal_quest/src/game_text.dart';
+import 'package:hnahsin/features/content_sync/domain/delivery_models.dart';
+import 'package:hnahsin/src/data.dart';
+import 'package:hnahsin/src/game_text.dart';
 
 void main() {
   tearDown(() {

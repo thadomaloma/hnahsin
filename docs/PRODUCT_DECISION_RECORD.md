@@ -2,7 +2,7 @@
 
 **Decision ID:** PDR-001  
 **Date:** 13 September 2026  
-**Decision owner:** Thumal Quest product owner  
+**Decision owner:** Hnahsin product owner  
 **Status:** **APPROVED**  
 **Approval statement:** “Phase 0 recommended defaults approve.”
 

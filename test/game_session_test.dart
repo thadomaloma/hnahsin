@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/src/game_session.dart';
+import 'package:hnahsin/src/game_session.dart';
 
 void main() {
   test('combo increases score and wrong answer removes a heart', () {

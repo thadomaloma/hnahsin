@@ -1,28 +1,29 @@
-enum LearningLevel { tq0, tq1, tq2, tq3, tq4, tq5, tq6, tq7 }
+enum LearningLevel { level1, level2, level3, level4, level5, level6, level7, level8 }
 
 extension LearningLevelText on LearningLevel {
-  String get code => name.toUpperCase();
+  /// What learners see: Level 1 to Level 8.
+  String get code => 'Level ${index + 1}';
 
   String get title => switch (this) {
-        LearningLevel.tq0 => 'First Steps',
-        LearningLevel.tq1 => 'Everyday Words',
-        LearningLevel.tq2 => 'Growing Speaker',
-        LearningLevel.tq3 => 'Confident Reader',
-        LearningLevel.tq4 => 'Storyteller',
-        LearningLevel.tq5 => 'Explorer',
-        LearningLevel.tq6 => 'Culture Apprentice',
-        LearningLevel.tq7 => 'Culture & Fluency',
+        LearningLevel.level1 => 'First Steps',
+        LearningLevel.level2 => 'Everyday Words',
+        LearningLevel.level3 => 'Growing Speaker',
+        LearningLevel.level4 => 'Confident Reader',
+        LearningLevel.level5 => 'Storyteller',
+        LearningLevel.level6 => 'Explorer',
+        LearningLevel.level7 => 'Culture Apprentice',
+        LearningLevel.level8 => 'Culture & Fluency',
       };
 
   String get mizoDescription => switch (this) {
-        LearningLevel.tq0 => 'Thumal bul leh thlalak hmanga bulṭan',
-        LearningLevel.tq1 => 'Nitin thumal leh sentence tawi zirna',
-        LearningLevel.tq2 => 'Conversation, spelling leh chhiarna',
-        LearningLevel.tq3 => 'Sentence sei leh thu awmzia hriatna',
-        LearningLevel.tq4 => 'Thawnthu leh chanchin zirna',
-        LearningLevel.tq5 => 'Ram hmuhna leh nunphung zirna',
-        LearningLevel.tq6 => 'Tawng upa leh grammar zirna',
-        LearningLevel.tq7 => 'Tawng upa, hnam ziarang leh tawng thiamna famkim',
+        LearningLevel.level1 => 'Thumal bul leh thlalak hmanga bulṭan',
+        LearningLevel.level2 => 'Nitin thumal leh sentence tawi zirna',
+        LearningLevel.level3 => 'Conversation, spelling leh chhiarna',
+        LearningLevel.level4 => 'Sentence sei leh thu awmzia hriatna',
+        LearningLevel.level5 => 'Thawnthu leh chanchin zirna',
+        LearningLevel.level6 => 'Ram hmuhna leh nunphung zirna',
+        LearningLevel.level7 => 'Tawng upa leh grammar zirna',
+        LearningLevel.level8 => 'Tawng upa, hnam ziarang leh tawng thiamna famkim',
       };
 }
 
@@ -128,7 +129,7 @@ class LearningState {
   });
 
   factory LearningState.fresh() => const LearningState(
-        level: LearningLevel.tq0,
+        level: LearningLevel.level1,
         placementCompleted: false,
         placementCorrect: 0,
         placementTotal: 0,
@@ -197,7 +198,11 @@ class LearningState {
 
   factory LearningState.fromJson(Map<String, Object?> json) {
     final rawLevel = json['level'];
-    final levels = LearningLevel.values.where((value) => value.name == rawLevel);
+    // Saved before the rename from Thumal Quest as tq0–tq7.
+    final legacy = RegExp(r'^tq([0-7])$').firstMatch('${rawLevel ?? ''}');
+    final levels = legacy != null
+        ? [LearningLevel.values[int.parse(legacy[1]!)]]
+        : LearningLevel.values.where((value) => value.name == rawLevel);
     final rawMasteries = json['masteries'];
     final masteries = <String, ItemMastery>{};
     if (rawMasteries is Map) {
@@ -211,7 +216,7 @@ class LearningState {
       }
     }
     return LearningState(
-      level: levels.isEmpty ? LearningLevel.tq0 : levels.first,
+      level: levels.isEmpty ? LearningLevel.level1 : levels.first,
       placementCompleted: json['placementCompleted'] as bool? ?? false,
       placementCorrect: (json['placementCorrect'] as num?)?.toInt() ?? 0,
       placementTotal: (json['placementTotal'] as num?)?.toInt() ?? 0,

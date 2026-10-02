@@ -30,11 +30,14 @@ macos/Runner.xcworkspace/xcuserdata/
 macos/Runner.xcodeproj/xcuserdata/
 **/Flutter/GeneratedPluginRegistrant.*
 !**/Flutter/GeneratedPluginRegistrant.swift
+hnahsin/
 thumal_quest/
 
 # --- Local tooling, logs and diagnostics ---
 .DS_Store
 *.log
+hnahsin_diagnostics.txt
+# Names from before the rename to Hnahsin.
 thumal_quest_diagnostics.txt
 thumal_quest_backend_diagnostics.txt
 .playwright-mcp/

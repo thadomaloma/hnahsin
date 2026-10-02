@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/features/games/engine/phase2b_engine.dart';
+import 'package:hnahsin/features/games/engine/phase2b_engine.dart';
 
 void main() {
   test('sentence builder preserves duplicate-safe tiles and validates order', () {

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/features/analytics/domain/analytics_event.dart';
+import 'package:hnahsin/features/analytics/domain/analytics_event.dart';
 
 void main() {
   test('local analytics record contains no free-form learner data', () {

@@ -1,4 +1,4 @@
-# Thumal Quest — Mizo Content Editorial Guide
+# Hnahsin — Mizo Content Editorial Guide
 
 **Version:** 0.1 / Phase 0 draft  
 **Approval required from:** Mizo language lead + educator  

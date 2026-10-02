@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/data/quest_repository.dart';
-import 'package:thumal_quest/features/games/engine/game_engine.dart';
-import 'package:thumal_quest/features/games/presentation/phase2b_games.dart';
-import 'package:thumal_quest/features/games/presentation/thumal_kawp_game.dart';
-import 'package:thumal_quest/src/controller.dart';
+import 'package:hnahsin/data/quest_repository.dart';
+import 'package:hnahsin/features/games/engine/game_engine.dart';
+import 'package:hnahsin/features/games/presentation/phase2b_games.dart';
+import 'package:hnahsin/features/games/presentation/thumal_kawp_game.dart';
+import 'package:hnahsin/src/controller.dart';
 
 void main() {
   testWidgets('Thumal Kawp deals hidden pairs sized to the learner level',

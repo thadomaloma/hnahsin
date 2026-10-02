@@ -1,4 +1,4 @@
-# Thumal Quest — UX Product Flow
+# Hnahsin — UX Product Flow
 
 **Version:** 0.1 / Phase 0 design handoff  
 **Visual direction:** Premium, warm, game-first, age-responsive  

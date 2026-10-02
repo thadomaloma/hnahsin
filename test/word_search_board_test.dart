@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/src/data.dart';
-import 'package:thumal_quest/src/word_search_board.dart';
+import 'package:hnahsin/src/data.dart';
+import 'package:hnahsin/src/word_search_board.dart';
 
 WordEntry _word(String word) => WordEntry(
       id: 'w.$word',

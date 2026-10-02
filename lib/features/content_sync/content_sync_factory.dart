@@ -5,7 +5,12 @@ import 'application/content_transport.dart';
 import 'data/offline_pack_store.dart';
 
 Future<ContentSyncService?> createContentSyncService() async {
-  const configured = String.fromEnvironment('THUMAL_QUEST_API_BASE_URL');
+  // THUMAL_QUEST_API_BASE_URL is the name used before the rename; builds
+  // that still pass it keep getting content.
+  const configured = String.fromEnvironment(
+    'HNAHSIN_API_BASE_URL',
+    defaultValue: String.fromEnvironment('THUMAL_QUEST_API_BASE_URL'),
+  );
   if (configured.trim().isEmpty) return null;
   final baseUri = Uri.tryParse(configured);
   if (baseUri == null || !baseUri.hasScheme || baseUri.host.isEmpty)

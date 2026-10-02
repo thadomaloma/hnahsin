@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/features/content_sync/application/content_sync_service.dart';
-import 'package:thumal_quest/features/content_sync/application/content_transport.dart';
-import 'package:thumal_quest/features/content_sync/data/offline_pack_store.dart';
-import 'package:thumal_quest/features/content_sync/domain/delivery_models.dart';
+import 'package:hnahsin/features/content_sync/application/content_sync_service.dart';
+import 'package:hnahsin/features/content_sync/application/content_transport.dart';
+import 'package:hnahsin/features/content_sync/data/offline_pack_store.dart';
+import 'package:hnahsin/features/content_sync/domain/delivery_models.dart';
 
 void main() {
   test('a verified content pack activates and feeds the word catalog', () async {

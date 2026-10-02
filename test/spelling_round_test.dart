@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/src/data.dart';
-import 'package:thumal_quest/src/spelling_round.dart';
+import 'package:hnahsin/src/data.dart';
+import 'package:hnahsin/src/spelling_round.dart';
 
 WordEntry _word(String id, String word, {String meaning = '', String gloss = ''}) => WordEntry(
       id: id,

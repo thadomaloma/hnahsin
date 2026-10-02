@@ -320,10 +320,10 @@ class QuestController extends ChangeNotifier {
     };
     if (!learningState.placementCompleted) {
       final provisionalLevel = switch (profile.proficiency) {
-        MizoProficiency.newLearner => LearningLevel.tq0,
-        MizoProficiency.understandsSome => LearningLevel.tq1,
-        MizoProficiency.speaks => LearningLevel.tq2,
-        MizoProficiency.readsAndWrites => LearningLevel.tq3,
+        MizoProficiency.newLearner => LearningLevel.level1,
+        MizoProficiency.understandsSome => LearningLevel.level2,
+        MizoProficiency.speaks => LearningLevel.level3,
+        MizoProficiency.readsAndWrites => LearningLevel.level4,
       };
       learningState = learningState.copyWith(level: provisionalLevel);
     }
@@ -353,14 +353,14 @@ class QuestController extends ChangeNotifier {
       recentOutcomes: const <bool>[],
     );
     track = switch (placedLevel) {
-      LearningLevel.tq0 || LearningLevel.tq1 => LearningTrack.beginner,
-      LearningLevel.tq2 ||
-      LearningLevel.tq3 ||
-      LearningLevel.tq4 =>
+      LearningLevel.level1 || LearningLevel.level2 => LearningTrack.beginner,
+      LearningLevel.level3 ||
+      LearningLevel.level4 ||
+      LearningLevel.level5 =>
         LearningTrack.explorer,
-      LearningLevel.tq5 ||
-      LearningLevel.tq6 ||
-      LearningLevel.tq7 =>
+      LearningLevel.level6 ||
+      LearningLevel.level7 ||
+      LearningLevel.level8 =>
         LearningTrack.master,
     };
     notifyListeners();

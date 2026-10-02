@@ -215,7 +215,7 @@ class _CultureCardTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  unlocked ? card.titleMizo : 'Unlock at TQ${card.minimumLevel}',
+                  unlocked ? card.titleMizo : 'Unlock at Level ${card.minimumLevel + 1}',
                   style: const TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w900,

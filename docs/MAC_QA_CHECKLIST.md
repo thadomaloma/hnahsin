@@ -90,5 +90,5 @@ If any automated step fails:
 ./run_mac.command report
 ```
 
-Send `thumal_quest_diagnostics.txt` with the last visible `ERROR:` line. Review
+Send `hnahsin_diagnostics.txt` with the last visible `ERROR:` line. Review
 the report first if the Mac's computer name should remain private.

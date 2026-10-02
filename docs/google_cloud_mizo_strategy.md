@@ -19,7 +19,7 @@ Sources:
 ## Safe architecture
 
 Cloud Translation is an API, not a downloadable authoritative Mizo dictionary.
-Thumal Quest therefore keeps canonical spelling, meaning, example, age level,
+Hnahsin therefore keeps canonical spelling, meaning, example, age level,
 and cultural notes in a reviewed offline corpus.
 
 ```text

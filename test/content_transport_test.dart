@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:thumal_quest/features/content_sync/application/content_transport.dart';
+import 'package:hnahsin/features/content_sync/application/content_transport.dart';
 
 void main() {
   test('production transport rejects an insecure non-local origin', () {

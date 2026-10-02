@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/data/quest_repository.dart';
-import 'package:thumal_quest/features/content_sync/application/content_sync_service.dart';
-import 'package:thumal_quest/features/content_sync/application/content_transport.dart';
-import 'package:thumal_quest/features/content_sync/data/offline_pack_store.dart';
-import 'package:thumal_quest/src/controller.dart';
+import 'package:hnahsin/data/quest_repository.dart';
+import 'package:hnahsin/features/content_sync/application/content_sync_service.dart';
+import 'package:hnahsin/features/content_sync/application/content_transport.dart';
+import 'package:hnahsin/features/content_sync/data/offline_pack_store.dart';
+import 'package:hnahsin/src/controller.dart';
 
 /// Counts pack requests; answers as if offline, which still records a sync
 /// attempt.

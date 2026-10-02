@@ -272,7 +272,7 @@ class _DailyHero extends StatelessWidget {
                 onPressed: openGames,
                 style: TextButton.styleFrom(
                     foregroundColor: const Color(0xFFDDF3FF)),
-                child: const Text('Game dang khelh rawh'),
+                child: const Text('Game dang khel rawh'),
               ),
             ]),
           ),

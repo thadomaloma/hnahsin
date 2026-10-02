@@ -206,7 +206,7 @@ class _PlacementScreenState extends State<PlacementScreen> {
     });
   }
 
-  Future<void> _startAtTq0() async {
+  Future<void> _startAtLevel1() async {
     if (saving) return;
     setState(() => saving = true);
     await widget.controller.completePlacement(
@@ -287,8 +287,8 @@ class _PlacementScreenState extends State<PlacementScreen> {
           Align(
             alignment: Alignment.center,
             child: TextButton(
-              onPressed: saving ? null : _startAtTq0,
-              child: const Text('Skip and start at TQ0'),
+              onPressed: saving ? null : _startAtLevel1,
+              child: const Text('Skip and start at Level 1'),
             ),
           ),
         ],

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/data/quest_repository.dart';
-import 'package:thumal_quest/features/games/engine/game_engine.dart';
-import 'package:thumal_quest/src/controller.dart';
-import 'package:thumal_quest/features/games/presentation/crossword_game.dart';
-import 'package:thumal_quest/src/games.dart';
-import 'package:thumal_quest/src/widgets.dart';
+import 'package:hnahsin/data/quest_repository.dart';
+import 'package:hnahsin/features/games/engine/game_engine.dart';
+import 'package:hnahsin/src/controller.dart';
+import 'package:hnahsin/features/games/presentation/crossword_game.dart';
+import 'package:hnahsin/src/games.dart';
+import 'package:hnahsin/src/widgets.dart';
 
 Finder _hearts(int left) => find.bySemanticsLabel(RegExp('^$left of 3 hearts'));
 

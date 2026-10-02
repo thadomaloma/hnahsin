@@ -2,16 +2,16 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/data/quest_repository.dart';
-import 'package:thumal_quest/features/games/application/game_runtime.dart';
-import 'package:thumal_quest/features/games/engine/game_difficulty.dart';
-import 'package:thumal_quest/features/games/engine/game_engine.dart';
-import 'package:thumal_quest/features/learning/domain/learning_state.dart';
-import 'package:thumal_quest/src/controller.dart';
-import 'package:thumal_quest/src/game_session.dart';
-import 'package:thumal_quest/src/game_words.dart';
-import 'package:thumal_quest/src/games.dart';
-import 'package:thumal_quest/src/widgets.dart';
+import 'package:hnahsin/data/quest_repository.dart';
+import 'package:hnahsin/features/games/application/game_runtime.dart';
+import 'package:hnahsin/features/games/engine/game_difficulty.dart';
+import 'package:hnahsin/features/games/engine/game_engine.dart';
+import 'package:hnahsin/features/learning/domain/learning_state.dart';
+import 'package:hnahsin/src/controller.dart';
+import 'package:hnahsin/src/game_session.dart';
+import 'package:hnahsin/src/game_words.dart';
+import 'package:hnahsin/src/games.dart';
+import 'package:hnahsin/src/widgets.dart';
 
 GameRuntime _runtime(QuestController controller) => GameRuntime(
       controller: controller,

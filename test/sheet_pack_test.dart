@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/features/content_sync/domain/delivery_models.dart';
+import 'package:hnahsin/features/content_sync/domain/delivery_models.dart';
 
 /// test/fixtures/sheet_pack.json is built by content_studio/Pack.js (the
 /// Google Sheet's Publish) in content_studio/test/pack.test.mjs, so this

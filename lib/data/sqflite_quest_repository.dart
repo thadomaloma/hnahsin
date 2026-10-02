@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart';
@@ -10,16 +11,28 @@ import '../features/onboarding/domain/learner_profile.dart';
 import '../features/progress/domain/quest_progress.dart';
 import 'quest_repository.dart';
 
+/// Moves the database saved under the app's old name (Thumal Quest) to
+/// [databasePath], with its journal files, so progress survives the rename.
+/// Does nothing once the new one exists.
+Future<void> moveLegacyDatabase(String directory, String databasePath) async {
+  if (await File(databasePath).exists()) return;
+  final legacy = path.join(directory, 'thumal_quest.sqlite');
+  if (!await File(legacy).exists()) return;
+  for (final suffix in const ['', '-wal', '-shm', '-journal']) {
+    final file = File('$legacy$suffix');
+    if (await file.exists()) await file.rename('$databasePath$suffix');
+  }
+}
+
 class SqfliteQuestRepository implements QuestRepository {
   SqfliteQuestRepository._(this._database);
 
   final Database _database;
 
   static Future<SqfliteQuestRepository> open() async {
-    final databasePath = path.join(
-      await getDatabasesPath(),
-      'thumal_quest.sqlite',
-    );
+    final directory = await getDatabasesPath();
+    final databasePath = path.join(directory, 'hnahsin.sqlite');
+    await moveLegacyDatabase(directory, databasePath);
     final database = await openDatabase(
       databasePath,
       version: 3,

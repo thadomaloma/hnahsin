@@ -5,8 +5,8 @@ set -Eeuo pipefail
 project_dir="$(cd "$(dirname "$0")" && pwd)"
 cd "$project_dir"
 
-log_file="$project_dir/thumal_quest_run.log"
-diagnostic_file="$project_dir/thumal_quest_diagnostics.txt"
+log_file="$project_dir/hnahsin_run.log"
+diagnostic_file="$project_dir/hnahsin_diagnostics.txt"
 run_mode="${1:-run}"
 interactive="true"
 if [ ! -t 0 ]; then interactive="false"; fi
@@ -172,7 +172,7 @@ if [ "$needs_hosts" = "true" ]; then
   flutter create \
     --platforms=android,ios,macos,web \
     --org com.hnahsin \
-    --project-name thumal_quest \
+    --project-name hnahsin \
     --no-pub \
     .
 fi
@@ -210,5 +210,5 @@ echo ""
 echo "Hnahsin macOS app hawn mek..."
 # The published content from the Google Sheet; without it the app plays
 # with its built-in starter words only.
-content_url="${THUMAL_QUEST_API_BASE_URL:-https://thadomaloma.github.io/hnahsin-content}"
-flutter run -d macos --dart-define=THUMAL_QUEST_API_BASE_URL="$content_url"
+content_url="${HNAHSIN_API_BASE_URL:-${THUMAL_QUEST_API_BASE_URL:-https://thadomaloma.github.io/hnahsin-content}}"
+flutter run -d macos --dart-define=HNAHSIN_API_BASE_URL="$content_url"

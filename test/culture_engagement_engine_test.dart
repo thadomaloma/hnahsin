@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:thumal_quest/features/journey/domain/journey_content.dart';
-import 'package:thumal_quest/features/journey/domain/journey_engine.dart';
-import 'package:thumal_quest/features/journey/domain/journey_models.dart';
-import 'package:thumal_quest/features/journey/domain/journey_state.dart';
+import 'package:hnahsin/features/journey/domain/journey_content.dart';
+import 'package:hnahsin/features/journey/domain/journey_engine.dart';
+import 'package:hnahsin/features/journey/domain/journey_models.dart';
+import 'package:hnahsin/features/journey/domain/journey_state.dart';
 
 void main() {
   const engine = JourneyEngine();

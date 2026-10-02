@@ -189,7 +189,7 @@ below is retained for future revisions only.
 Copy and complete:
 
 ```text
-Thumal Quest Phase 0 product decisions
+Hnahsin Phase 0 product decisions
 Date:
 Owner:
 

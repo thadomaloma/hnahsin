@@ -2,8 +2,8 @@ import 'journey_models.dart';
 
 abstract final class JourneyContentPolicy {
   static const isProduction = bool.fromEnvironment(
-    'THUMAL_QUEST_PRODUCTION',
-    defaultValue: false,
+    'HNAHSIN_PRODUCTION',
+    defaultValue: bool.fromEnvironment('THUMAL_QUEST_PRODUCTION'),
   );
 
   static bool get releaseReady => journeyStories.isNotEmpty &&

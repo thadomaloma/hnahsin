@@ -11,7 +11,7 @@ abstract final class GameDifficulty {
   static const targetAccuracy = .78;
 
   /// Where a game starts before the learner has played it: their placement
-  /// level (TQ0 → 1.0, TQ3 → 4.0 …).
+  /// level (Level 1 → 1.0, Level 4 → 4.0 …).
   static double initialRating(int levelIndex) =>
       (levelIndex + 1).clamp(minRating, maxRating).toDouble();
 

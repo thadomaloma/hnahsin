@@ -1,4 +1,4 @@
-# Thumal Quest — Privacy & Child-Safety Data Inventory
+# Hnahsin — Privacy & Child-Safety Data Inventory
 
 **Version:** 0.10.0 / Phase 4A  
 **Scope:** Current local-first app and planned V1  
@@ -6,7 +6,7 @@
 
 ## 1. Default position
 
-Thumal Quest is guest-first, offline-first and ads-free through V1. Data chu
+Hnahsin is guest-first, offline-first and ads-free through V1. Data chu
 zirna thawk thei tûr chauh khawn; child public identity, precise location,
 contacts, advertising identifier or open communication a mamawh lo.
 

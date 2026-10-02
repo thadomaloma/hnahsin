@@ -40,7 +40,7 @@ changing the pack format, then `flutter test test/sheet_pack_test.dart`).
 7. **Hnahsin → ⚙️ Developer → GitHub settings**: enter `owner/hnahsin-content`
    and the token.
 8. **Hnahsin → 🚀 Chhuah** once, then build the app with
-   `--dart-define=THUMAL_QUEST_API_BASE_URL=https://<owner>.github.io/hnahsin-content`.
+   `--dart-define=HNAHSIN_API_BASE_URL=https://<owner>.github.io/hnahsin-content`.
 
 The editor's how-to is the sheet's **Kaihhruaina** tab (in Mizo).
 
