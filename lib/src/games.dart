@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../features/games/application/game_runtime.dart';
-import '../features/games/engine/game_difficulty.dart';
 import '../features/games/engine/game_engine.dart';
 import 'controller.dart';
 import 'data.dart';
@@ -275,16 +274,9 @@ class _PictureMatchGameState extends State<PictureMatchGame> {
         widget.controller, 'picture_match', pool, 5, session.random);
     final rating = widget.controller.gameSkill('picture_match');
     optionSets = questions.map((question) {
-      final seen = <String>{normalizeMizo(question.word)};
-      final others = widget.controller.wordCatalog
-          .where((word) => ContentPolicy.playable(word.review))
-          .where((word) => seen.add(normalizeMizo(word.word)))
-          .toList();
-      final wrong = GameDifficulty.distractors(question, others,
-          rating: rating,
-          count: 3,
-          similarity: wordSimilarity,
-          random: session.random);
+      final wrong = pictureMatchDistractors(
+          question, widget.controller.wordCatalog,
+          rating: rating, random: session.random);
       return <String>[question.word, ...wrong.map((word) => word.word)]
         ..shuffle(session.random);
     }).toList();

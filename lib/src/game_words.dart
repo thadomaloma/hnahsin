@@ -17,6 +17,47 @@ double wordSimilarity(WordEntry a, WordEntry b) {
   return score;
 }
 
+/// The separate senses in an English gloss: “to tease / pester” → {to tease, pester}.
+Set<String> glossSenses(String gloss) => {
+      for (final sense in gloss
+          .toLowerCase()
+          .replaceAll(RegExp(r'\(.*?\)'), ' ')
+          .split(RegExp(r'[/,;]|\bor\b')))
+        if (sense.trim().isNotEmpty)
+          sense.trim().replaceFirst(RegExp(r'^to '), ''),
+    };
+
+/// What a word's picture shows, in [WordPicture]'s order (uploaded
+/// picture, built-in illustration, emoji): two words with the same key look
+/// the same on screen.
+String pictureKey(WordEntry entry) => entry.hasUploadedPicture
+    ? 'upload:${entry.imageChecksum}'
+    : (illustrationFor(entry) ?? entry.emoji.trim());
+
+/// Wrong answers for a Picture Match question: never a word that shows the
+/// same picture or shares a meaning with [question], since that would make
+/// it right too (🥁 is khuang and khaûm; both mean drum).
+List<WordEntry> pictureMatchDistractors(
+  WordEntry question,
+  Iterable<WordEntry> catalog, {
+  required double rating,
+  required Random random,
+  int count = 3,
+}) {
+  final picture = pictureKey(question);
+  final senses = glossSenses(question.englishGloss);
+  final seen = <String>{normalizeMizo(question.word)};
+  final others = catalog
+      .where((word) => ContentPolicy.playable(word.review))
+      .where((word) => pictureKey(word) != picture)
+      .where(
+          (word) => glossSenses(word.englishGloss).intersection(senses).isEmpty)
+      .where((word) => seen.add(normalizeMizo(word.word)))
+      .toList();
+  return GameDifficulty.distractors(question, others,
+      rating: rating, count: count, similarity: wordSimilarity, random: random);
+}
+
 /// Words for one round of [gameId], centred on the learner's adaptive level
 /// for that game and ordered easiest first. What the player remembers
 /// steers the pick ([wordMemoryBoost]), so playing is also practising.

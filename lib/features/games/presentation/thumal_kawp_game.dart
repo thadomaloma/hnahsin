@@ -8,7 +8,6 @@ import '../../../src/data.dart';
 import '../../../src/game_session.dart';
 import '../../../src/game_text.dart';
 import '../../../src/game_words.dart';
-import '../../../src/meaning_round.dart';
 import '../../../src/theme.dart';
 import '../../../src/widgets.dart';
 import '../application/game_runtime.dart';
@@ -123,10 +122,7 @@ class _ThumalKawpGameState extends State<ThumalKawpGame> {
       return kept;
     }
 
-    // The picture a card actually shows, in WordPicture's order.
-    Set<String> pictureOf(WordEntry entry) => {
-          entry.hasUploadedPicture ? 'upload:${entry.imageChecksum}' : (illustrationFor(entry) ?? entry.emoji.trim()),
-        };
+    Set<String> pictureOf(WordEntry entry) => {pictureKey(entry)};
     // “fun / happiness” and “happiness” would both match a happiness card.
     Set<String> sensesOf(WordEntry entry) => glossSenses(entry.englishGloss);
 

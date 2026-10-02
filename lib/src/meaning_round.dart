@@ -80,16 +80,6 @@ String _meaningOf(WordEntry entry, {required bool english}) => english
     ? maskWordInClue(entry.englishGloss.trim(), entry.word)
     : meaningWithoutWord(entry.meaningMizo, entry.word);
 
-/// The separate senses in an English gloss: “to tease / pester” → {to tease, pester}.
-Set<String> glossSenses(String gloss) => {
-      for (final sense in gloss
-          .toLowerCase()
-          .replaceAll(RegExp(r'\(.*?\)'), ' ')
-          .split(RegExp(r'[/,;]|\bor\b')))
-        if (sense.trim().isNotEmpty)
-          sense.trim().replaceFirst(RegExp(r'^to '), ''),
-    };
-
 ChoiceQuestion _questionFor(
   WordEntry entry,
   List<WordEntry> pool, {
