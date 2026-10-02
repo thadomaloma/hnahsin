@@ -46,7 +46,15 @@ the published content, pass the content pack's location:
 flutter run --dart-define=HNAHSIN_API_BASE_URL=https://thadomaloma.github.io/hnahsin-content
 ```
 
-Release builds for the App Store and Play Store need the same `--dart-define`.
+Release builds for the App Store and Play Store need the same `--dart-define`;
+`scripts/build_release.sh` passes it for you:
+
+```bash
+scripts/build_release.sh          # App Store .ipa and Play Store .aab
+scripts/build_release.sh ios      # App Store only
+scripts/build_release.sh android  # Play Store only
+```
+
 The old name, `THUMAL_QUEST_API_BASE_URL`, still works.
 
 ## Editing content
