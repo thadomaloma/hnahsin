@@ -16,6 +16,7 @@ import 'game_text.dart';
 import 'games.dart';
 import 'theme.dart';
 import 'widgets.dart';
+import 'app_text.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen(
@@ -35,9 +36,9 @@ class HomeScreen extends StatelessWidget {
             _HomeJourney(controller: controller),
             const SizedBox(height: 28),
           ],
-          SectionTitle('Games',
+          SectionTitle(AppText.of('home.games'),
               trailing: TextButton(
-                  onPressed: openGames, child: const Text('View All'))),
+                  onPressed: openGames, child: Text(AppText.of('home.viewAll')))),
           const SizedBox(height: 12),
           _GameGrid(
               controller: controller,
@@ -59,25 +60,28 @@ class _HomeJourney extends StatelessWidget {
   Widget build(BuildContext context) =>
       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         SectionTitle(
-          'Mizo Journey',
+          AppText.of('home.journey'),
           trailing: TextButton(
             onPressed: () =>
                 _open(context, JourneyScreen(controller: controller)),
-            child: const Text('View Map'),
+            child: Text(AppText.of('home.viewMap')),
           ),
         ),
         const SizedBox(height: 8),
         _FeatureCard(
           icon: Icons.route_rounded,
           colors: const [Color(0xFF7569E8), Color(0xFF5B4FD0)],
-          eyebrow: 'STORY PATH',
+          eyebrow: AppText.of('home.storyPath'),
           title: controller.nextJourneyNode?.titleEnglish ??
               (controller.journeyState.completedNodeIds.length ==
                       journeyNodes.length
-                  ? 'Journey Complete'
-                  : 'Continue Your Journey'),
+                  ? AppText.of('home.journeyComplete')
+                  : AppText.of('home.journeyContinue')),
           subtitle: controller.nextJourneyNode?.subtitleMizo ??
-              '${controller.journeyState.completedNodeIds.length}/${journeyNodes.length} story stops • Daily quests',
+              AppText.of('home.journeyProgress', {
+                'done': controller.journeyState.completedNodeIds.length,
+                'total': journeyNodes.length,
+              }),
           onTap: () => _open(context, JourneyScreen(controller: controller)),
         ),
       ]);
@@ -108,12 +112,12 @@ class _BrandHeader extends StatelessWidget {
         Expanded(
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text('Chibai! 👋',
-              style: TextStyle(
+          Text(AppText.of('home.greeting'),
+              style: const TextStyle(
                   color: QuestColors.slate,
                   fontWeight: FontWeight.w600,
                   fontSize: 13.5)),
-          Text('Hnahsin',
+          Text(AppText.of('app.name'),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.headlineSmall),
@@ -135,7 +139,7 @@ class _BrandHeader extends StatelessWidget {
                   size: 17, color: QuestColors.midnight),
             ),
             const SizedBox(width: 7),
-            Text('Lv ${controller.level}',
+            Text(AppText.of('home.xpLevel', {'level': controller.level}),
                 style: const TextStyle(
                     fontWeight: FontWeight.w800, color: QuestColors.navy)),
           ]),
@@ -200,9 +204,9 @@ class _DailyHero extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      const Text('VAWIIN GAME',
-                          style: TextStyle(
-                              color: Color(0xFFDDF3FF),
+                      Text(AppText.of('home.todaysGame'),
+                          style: const TextStyle(
+                              color: const Color(0xFFDDF3FF),
                               fontSize: 11,
                               fontWeight: FontWeight.w800,
                               letterSpacing: 1.1)),
@@ -221,7 +225,7 @@ class _DailyHero extends StatelessWidget {
                       Text(
                           [
                             game.subtitle,
-                            if (best > 0) 'Best $best',
+                            if (best > 0) AppText.of('home.best', {'score': best}),
                           ].join(' • '),
                           style: const TextStyle(
                               color: Color(0xFFDDF3FF),
@@ -229,7 +233,7 @@ class _DailyHero extends StatelessWidget {
                               fontSize: 13)),
                       if (replay > 0) ...[
                         const SizedBox(height: 4),
-                        Text('Thumal $replay i hmuh leh tur a awm',
+                        Text(AppText.of('home.replay', {'n': replay}),
                             style: const TextStyle(
                                 color: QuestColors.gold,
                                 fontWeight: FontWeight.w700,
@@ -240,18 +244,20 @@ class _DailyHero extends StatelessWidget {
                 ProgressRing(
                     size: compact ? 74 : 88,
                     value: controller.dailyGoalProgress,
-                    label:
-                        '${controller.roundsToday}/${controller.profile.dailyGoalMinutes}\nKHELH'),
+                    label: AppText.of('home.roundsToday', {
+                      'done': controller.roundsToday,
+                      'goal': controller.profile.dailyGoalMinutes,
+                    })),
               ]),
               const SizedBox(height: 18),
               Wrap(spacing: 8, runSpacing: 8, children: [
                 Pill(
                     icon: Icons.local_fire_department_rounded,
                     label: controller.profile.gentleMode
-                        ? 'Learning rhythm'
+                        ? AppText.of('home.rhythm')
                         : streak > 0
-                            ? '$streak day streak'
-                            : 'Vawiin ṭan rawh',
+                            ? AppText.of('home.streak', {'n': streak})
+                            : AppText.of('home.startToday'),
                     color: const Color(0x26FFC94A),
                     foreground: QuestColors.gold),
                 Pill(
@@ -263,7 +269,7 @@ class _DailyHero extends StatelessWidget {
               const SizedBox(height: 18),
               _GoldButton(
                 icon: Icons.play_arrow_rounded,
-                label: 'Khel rawh',
+                label: AppText.of('home.play'),
                 onPressed: () =>
                     _open(context, game.builder(GameMode.standard)),
               ),
@@ -272,7 +278,7 @@ class _DailyHero extends StatelessWidget {
                 onPressed: openGames,
                 style: TextButton.styleFrom(
                     foregroundColor: const Color(0xFFDDF3FF)),
-                child: const Text('Game dang khel rawh'),
+                child: Text(AppText.of('home.otherGame')),
               ),
             ]),
           ),
@@ -463,15 +469,17 @@ class LearnScreen extends StatelessWidget {
               (step) => !controller.completedGames.contains(step.$1));
           return QuestTabPage(children: [
             PageIntro(
-              eyebrow: 'I zirna',
-              title: 'Learn',
-              subtitle:
-                  '${controller.learningState.level.code} ${controller.learningState.level.title} • Mahni chak zawngin zir chhunzawm rawh.',
+              eyebrow: AppText.of('learn.eyebrow'),
+              title: AppText.of('learn.title'),
+              subtitle: AppText.of('learn.subtitle', {
+                'level': controller.learningState.level.code,
+                'title': controller.learningState.level.title,
+              }),
             ),
             const SizedBox(height: 20),
             LearningOverviewCard(controller: controller),
             const SizedBox(height: 26),
-            const SectionTitle('Word Library'),
+            SectionTitle(AppText.of('learn.library')),
             const SizedBox(height: 12),
             PremiumCard(
               onTap: () => _open(context, WordBankScreen(controller: controller)),
@@ -487,12 +495,15 @@ class LearnScreen extends StatelessWidget {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                      const Text('Word Library',
-                          style: TextStyle(
+                      Text(AppText.of('learn.library'),
+                          style: const TextStyle(
                               fontWeight: FontWeight.w800, fontSize: 17)),
                       const SizedBox(height: 3),
                       Text(
-                          'Thumal $playableWords • Chi ${WordCategory.values.length}',
+                          AppText.of('learn.libraryCount', {
+                            'words': playableWords,
+                            'categories': WordCategory.values.length,
+                          }),
                           style: const TextStyle(color: QuestColors.slate)),
                     ])),
                 const Icon(Icons.arrow_forward_rounded,
@@ -675,9 +686,9 @@ class GamesScreen extends StatelessWidget {
               .length;
           return QuestTabPage(children: [
             PageIntro(
-              eyebrow: 'Practice arena',
-              title: 'Games',
-              subtitle: 'I duh zawng thlang la, i score sang ber siam rawh.',
+              eyebrow: AppText.of('games.eyebrow'),
+              title: AppText.of('games.title'),
+              subtitle: AppText.of('games.subtitle'),
               trailing: _CompletionBadge(done: completed, total: games.length),
             ),
             const SizedBox(height: 22),
@@ -708,9 +719,9 @@ class _CompletionBadge extends StatelessWidget {
                   color: Colors.white,
                   fontWeight: FontWeight.w800,
                   fontSize: 16)),
-          const Text('PLAYED',
-              style: TextStyle(
-                  color: Color(0xFF8FD0FA),
+          Text(AppText.of('games.played'),
+              style: const TextStyle(
+                  color: const Color(0xFF8FD0FA),
                   fontSize: 9,
                   fontWeight: FontWeight.w800,
                   letterSpacing: .8)),
@@ -843,7 +854,7 @@ class _GameCard extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: .85),
                       borderRadius: BorderRadius.circular(99)),
-                  child: Text('Lv $level',
+                  child: Text(AppText.of('games.level', {'level': level}),
                       style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w800,
@@ -885,7 +896,7 @@ class _GameCard extends StatelessWidget {
                           : const Color(0xFFEAF6FF),
                       borderRadius: BorderRadius.circular(99)),
                   child: Text(
-                    best > 0 ? '★ $best' : 'PLAY',
+                    best > 0 ? AppText.of('games.best', {'score': best}) : AppText.of('games.play'),
                     style: TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 11,
@@ -918,10 +929,10 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) => AnimatedBuilder(
       animation: controller,
       builder: (context, _) => QuestTabPage(children: [
-            const PageIntro(
-              eyebrow: 'Your journey',
-              title: 'Profile',
-              subtitle: 'I zirna progress leh level-te hetah en rawh.',
+            PageIntro(
+              eyebrow: AppText.of('profile.eyebrow'),
+              title: AppText.of('profile.title'),
+              subtitle: AppText.of('profile.subtitle'),
             ),
             const SizedBox(height: 20),
             PremiumCard(
@@ -937,7 +948,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  Text('Thumal ${controller.profile.experienceLabel}',
+                  Text(AppText.of('profile.name', {'experience': controller.profile.experienceLabel}),
                       style: const TextStyle(
                           color: Colors.white,
                           fontSize: 21,
@@ -957,7 +968,7 @@ class ProfileScreen extends StatelessWidget {
                       valueColor:
                           const AlwaysStoppedAnimation(QuestColors.gold)),
                   const SizedBox(height: 8),
-                  Text('${controller.xp % 250}/250 XP level thar atan',
+                  Text(AppText.of('profile.xpToNext', {'xp': controller.xp % 250}),
                       style: const TextStyle(color: Color(0xFFDDF3FF))),
                 ])),
             const SizedBox(height: 14),
@@ -965,25 +976,25 @@ class ProfileScreen extends StatelessWidget {
               Expanded(
                   child: _StatCard(
                       value: controller.profile.gentleMode
-                          ? 'Calm'
+                          ? AppText.of('profile.calm')
                           : '${controller.streak}',
                       label: controller.profile.gentleMode
-                          ? 'My Pace'
-                          : 'Day Streak',
+                          ? AppText.of('profile.myPace')
+                          : AppText.of('profile.dayStreak'),
                       icon: Icons.local_fire_department_rounded,
                       color: QuestColors.coral)),
               const SizedBox(width: 10),
               Expanded(
                   child: _StatCard(
                       value: '${controller.completedGames.length}',
-                      label: 'Games',
+                      label: AppText.of('profile.games'),
                       icon: Icons.emoji_events_rounded,
                       color: const Color(0xFFB47A00))),
               const SizedBox(width: 10),
               Expanded(
                   child: _StatCard(
                       value: '${controller.completedLessons}',
-                      label: 'Lessons',
+                      label: AppText.of('profile.lessons'),
                       icon: Icons.auto_stories_rounded,
                       color: QuestColors.tealDark)),
             ]),
@@ -1000,11 +1011,15 @@ class ProfileScreen extends StatelessWidget {
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                        const Text('Mizo Journey Collection',
-                            style: TextStyle(fontWeight: FontWeight.w900)),
+                        Text(AppText.of('profile.journey'),
+                            style: const TextStyle(fontWeight: FontWeight.w900)),
                         const SizedBox(height: 3),
                         Text(
-                          '${controller.journeyState.completedNodeIds.length}/${journeyNodes.length} stories • ${controller.journeyState.unlockedRewardIds.length} rewards',
+                          AppText.of('profile.journeyCount', {
+                            'stories': controller.journeyState.completedNodeIds.length,
+                            'total': journeyNodes.length,
+                            'rewards': controller.journeyState.unlockedRewardIds.length,
+                          }),
                           style: const TextStyle(
                               color: QuestColors.slate, fontSize: 12),
                         ),
@@ -1015,7 +1030,7 @@ class ProfileScreen extends StatelessWidget {
               ),
             ],
             const SizedBox(height: 28),
-            const SectionTitle('Learning Level'),
+            SectionTitle(AppText.of('profile.track')),
             const SizedBox(height: 12),
             ...LearningTrack.values.map((track) => Padding(
                 padding: const EdgeInsets.only(bottom: 10),
@@ -1025,20 +1040,20 @@ class ProfileScreen extends StatelessWidget {
                     selected: controller.track == track,
                     onTap: () => controller.selectTrack(track)))),
             const SizedBox(height: 14),
-            const PremiumCard(
+            PremiumCard(
                 child: Row(children: [
-              Icon(Icons.verified_user_rounded, color: QuestColors.tealDark),
-              SizedBox(width: 12),
+              const Icon(Icons.verified_user_rounded, color: QuestColors.tealDark),
+              const SizedBox(width: 12),
               Expanded(
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                    Text('Family-friendly',
-                        style: TextStyle(fontWeight: FontWeight.w800)),
-                    SizedBox(height: 3),
-                    Text('No public chat • Progress saved on this device',
+                    Text(AppText.of('profile.family'),
+                        style: const TextStyle(fontWeight: FontWeight.w800)),
+                    const SizedBox(height: 3),
+                    Text(AppText.of('profile.familyNote'),
                         style:
-                            TextStyle(color: QuestColors.slate, fontSize: 12))
+                            const TextStyle(color: QuestColors.slate, fontSize: 12))
                   ]))
             ])),
             const SizedBox(height: 14),
@@ -1048,9 +1063,9 @@ class ProfileScreen extends StatelessWidget {
               padding: EdgeInsets.zero,
               child: Column(children: [
                 SwitchListTile(
-                  title: const Text('Reduce motion',
-                      style: TextStyle(fontWeight: FontWeight.w800)),
-                  subtitle: const Text('Use fewer interface animations'),
+                  title: Text(AppText.of('profile.reduceMotion'),
+                      style: const TextStyle(fontWeight: FontWeight.w800)),
+                  subtitle: Text(AppText.of('profile.reduceMotionNote')),
                   secondary: const Icon(Icons.motion_photos_off_rounded,
                       color: QuestColors.indigo),
                   value: controller.profile.reducedMotion,
@@ -1059,10 +1074,9 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 SwitchListTile(
-                  title: const Text('Gentle engagement',
-                      style: TextStyle(fontWeight: FontWeight.w800)),
-                  subtitle: const Text(
-                      'Keep quests optional and hide streak pressure'),
+                  title: Text(AppText.of('profile.gentle'),
+                      style: const TextStyle(fontWeight: FontWeight.w800)),
+                  subtitle: Text(AppText.of('profile.gentleNote')),
                   secondary: const Icon(Icons.self_improvement_rounded,
                       color: QuestColors.indigo),
                   value: controller.profile.gentleMode,
@@ -1076,22 +1090,21 @@ class ProfileScreen extends StatelessWidget {
               width: double.infinity,
               child: OutlinedButton.icon(
                 icon: const Icon(Icons.delete_outline_rounded),
-                label: const Text('Reset Local Progress'),
+                label: Text(AppText.of('profile.reset')),
                 onPressed: () async {
                   final confirmed = await showDialog<bool>(
                     context: context,
                     builder: (dialogContext) => AlertDialog(
-                      title: const Text('Reset local progress?'),
-                      content: const Text(
-                          'Your XP, scores, settings and saved game sessions on this device will be deleted. This cannot be undone.'),
+                      title: Text(AppText.of('profile.resetTitle')),
+                      content: Text(AppText.of('profile.resetBody')),
                       actions: [
                         TextButton(
                             onPressed: () =>
                                 Navigator.pop(dialogContext, false),
-                            child: const Text('Cancel')),
+                            child: Text(AppText.of('common.cancel'))),
                         FilledButton(
                             onPressed: () => Navigator.pop(dialogContext, true),
-                            child: const Text('Reset')),
+                            child: Text(AppText.of('profile.resetConfirm'))),
                       ],
                     ),
                   );
@@ -1121,8 +1134,8 @@ class _WordBankScreenState extends State<WordBankScreen> {
         ? playableEntries
         : playableEntries.where((entry) => entry.category == category).toList();
     return QuestPage(
-      title: 'Word Library',
-      subtitle: 'Thumal ${entries.length}',
+      title: AppText.of('learn.library'),
+      subtitle: AppText.of('library.count', {'n': entries.length}),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         SizedBox(
             height: 42,
@@ -1130,7 +1143,7 @@ class _WordBankScreenState extends State<WordBankScreen> {
               Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: ChoiceChip(
-                      label: const Text('Zawng zawng'),
+                      label: Text(AppText.of('library.all')),
                       selected: category == null,
                       onSelected: (_) => setState(() => category = null))),
               ...WordCategory.values.map((item) => Padding(

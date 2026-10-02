@@ -4,6 +4,7 @@ import '../../../src/controller.dart';
 import '../../../src/theme.dart';
 import '../../../src/widgets.dart';
 import '../domain/learner_profile.dart';
+import '../../../src/app_text.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key, required this.controller});
@@ -83,7 +84,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     children: <Widget>[
                       if (step > 0)
                         IconButton(
-                          tooltip: 'Back',
+                          tooltip: AppText.of('common.back'),
                           onPressed: saving ? null : _back,
                           icon: const Icon(Icons.arrow_back_rounded),
                         )
@@ -102,10 +103,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           ),
                         ),
                       const SizedBox(width: 12),
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          'HNAHSIN',
-                          style: TextStyle(
+                          AppText.of('onboarding.brand'),
+                          style: const TextStyle(
                             color: QuestColors.navy,
                             fontWeight: FontWeight.w900,
                             letterSpacing: .7,
@@ -114,7 +115,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ),
                       Text(
                         '${step + 1}/$stepCount',
-                        semanticsLabel: 'Step ${step + 1} of $stepCount',
+                        semanticsLabel: AppText.of('onboarding.stepSpoken', {'n': step + 1, 'total': stepCount}),
                         style: const TextStyle(
                           color: QuestColors.slate,
                           fontWeight: FontWeight.w800,
@@ -163,8 +164,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           goals.add(goal);
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Choose up to two learning goals.'),
+                            SnackBar(
+                              content: Text(AppText.of('onboarding.goalLimit')),
                             ),
                           );
                         }
@@ -202,10 +203,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             ),
                       label: Text(
                         step == 0
-                            ? 'Start My Journey'
+                            ? AppText.of('onboarding.start')
                             : step == stepCount - 1
-                                ? 'Build My Learning Path'
-                                : 'Continue',
+                                ? AppText.of('onboarding.finish')
+                                : AppText.of('common.continue'),
                       ),
                     ),
                   ),
@@ -271,11 +272,10 @@ class _WelcomeStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _StepFrame(
-      eyebrow: 'Mizo learning, made joyful',
-      title: 'Your Mizo journey starts here.',
-      subtitle:
-          'Khelh pahin thumal, spelling, chhiarna leh Mizo nunphung zir rawh.',
+    return _StepFrame(
+      eyebrow: AppText.of('welcome.eyebrow'),
+      title: AppText.of('welcome.title'),
+      subtitle: AppText.of('welcome.subtitle'),
       child: PremiumCard(
         padding: const EdgeInsets.all(22),
         gradient: const LinearGradient(
@@ -284,23 +284,23 @@ class _WelcomeStep extends StatelessWidget {
           colors: <Color>[QuestColors.midnight, QuestColors.indigo],
         ),
         child: Column(
-          children: const <Widget>[
+          children: <Widget>[
             _BenefitRow(
               icon: Icons.route_rounded,
-              title: 'A path built for you',
-              detail: 'I thiamna leh i tum dân ang zêlin.',
+              title: AppText.of('welcome.path'),
+              detail: AppText.of('welcome.pathNote'),
             ),
-            SizedBox(height: 18),
+            const SizedBox(height: 18),
             _BenefitRow(
               icon: Icons.offline_bolt_rounded,
-              title: 'Learn anywhere',
-              detail: 'Core games work offline on your device.',
+              title: AppText.of('welcome.offline'),
+              detail: AppText.of('welcome.offlineNote'),
             ),
-            SizedBox(height: 18),
+            const SizedBox(height: 18),
             _BenefitRow(
               icon: Icons.family_restroom_rounded,
-              title: 'Safe for families',
-              detail: 'No public chat, ads, or child leaderboard.',
+              title: AppText.of('welcome.safe'),
+              detail: AppText.of('welcome.safeNote'),
             ),
           ],
         ),
@@ -356,9 +356,9 @@ class _AgeStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _StepFrame(
-        eyebrow: 'Personalize your path',
-        title: 'Who is learning?',
-        subtitle: 'Age range chauh kan mamawh—birthday emaw hming emaw kan dil lo.',
+        eyebrow: AppText.of('age.eyebrow'),
+        title: AppText.of('age.title'),
+        subtitle: AppText.of('age.subtitle'),
         child: Column(
           children: LearnerAgeBand.values
               .map(
@@ -387,9 +387,9 @@ class _LevelStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _StepFrame(
-        eyebrow: 'Find your starting point',
-        title: 'How much Mizo do you know?',
-        subtitle: 'A dik tak thlang rawh—eng hunah pawh Profile-ah i thlâk thei.',
+        eyebrow: AppText.of('proficiency.eyebrow'),
+        title: AppText.of('proficiency.title'),
+        subtitle: AppText.of('proficiency.subtitle'),
         child: Column(
           children: MizoProficiency.values
               .map(
@@ -413,9 +413,9 @@ class _GoalStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _StepFrame(
-        eyebrow: 'Choose up to two',
-        title: 'What would you like to learn?',
-        subtitle: 'I zir duh ber thlang la, daily quest-ah kan dah hmasa ang.',
+        eyebrow: AppText.of('goal.eyebrow'),
+        title: AppText.of('goal.title'),
+        subtitle: AppText.of('goal.subtitle'),
         child: Wrap(
           spacing: 10,
           runSpacing: 10,
@@ -453,22 +453,22 @@ class _PreferencesStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _StepFrame(
-        eyebrow: 'Ready for your first quest',
-        title: 'Set your daily rhythm.',
-        subtitle: 'Tlem tê tê, ni tin zir hi rei tak zirna kawng tha ber a ni.',
+        eyebrow: AppText.of('rhythm.eyebrow'),
+        title: AppText.of('rhythm.title'),
+        subtitle: AppText.of('rhythm.subtitle'),
         child: Column(
           children: <Widget>[
             PremiumCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text('DAILY GOAL', style: TextStyle(color: QuestColors.slate, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1)),
+                  Text(AppText.of('rhythm.goal'), style: const TextStyle(color: QuestColors.slate, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1)),
                   const SizedBox(height: 12),
                   SegmentedButton<int>(
-                    segments: const <ButtonSegment<int>>[
-                      ButtonSegment<int>(value: 5, label: Text('5 min')),
-                      ButtonSegment<int>(value: 10, label: Text('10 min')),
-                      ButtonSegment<int>(value: 15, label: Text('15 min')),
+                    segments: <ButtonSegment<int>>[
+                      ButtonSegment<int>(value: 5, label: Text(AppText.of('rhythm.minutes', {'n': 5}))),
+                      ButtonSegment<int>(value: 10, label: Text(AppText.of('rhythm.minutes', {'n': 10}))),
+                      ButtonSegment<int>(value: 15, label: Text(AppText.of('rhythm.minutes', {'n': 15}))),
                     ],
                     selected: <int>{profile.dailyGoalMinutes},
                     onSelectionChanged: (value) => onChanged(
@@ -484,8 +484,8 @@ class _PreferencesStep extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   SwitchListTile(
-                    title: const Text('Reduce motion', style: TextStyle(fontWeight: FontWeight.w800)),
-                    subtitle: const Text('Use fewer interface animations'),
+                    title: Text(AppText.of('profile.reduceMotion'), style: const TextStyle(fontWeight: FontWeight.w800)),
+                    subtitle: Text(AppText.of('profile.reduceMotionNote')),
                     secondary: const Icon(Icons.motion_photos_off_rounded, color: QuestColors.indigo),
                     value: profile.reducedMotion,
                     onChanged: (value) => onChanged(profile.copyWith(reducedMotion: value)),
@@ -494,14 +494,14 @@ class _PreferencesStep extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            const Row(
+            Row(
               children: <Widget>[
-                Icon(Icons.lock_rounded, color: QuestColors.tealDark, size: 18),
-                SizedBox(width: 8),
+                const Icon(Icons.lock_rounded, color: QuestColors.tealDark, size: 18),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'Guest-first • Progress stays on this device',
-                    style: TextStyle(color: QuestColors.slate, fontSize: 12),
+                    AppText.of('rhythm.privacy'),
+                    style: const TextStyle(color: QuestColors.slate, fontSize: 12),
                   ),
                 ),
               ],

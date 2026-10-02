@@ -1,18 +1,20 @@
+import '../../../src/app_text.dart';
+
 enum LearnerAgeBand { early, young, teen, adult }
 
 extension LearnerAgeBandText on LearnerAgeBand {
   String get label => switch (this) {
-        LearnerAgeBand.early => 'Ages 5–7',
-        LearnerAgeBand.young => 'Ages 8–13',
-        LearnerAgeBand.teen => 'Ages 14–17',
-        LearnerAgeBand.adult => 'Adult',
+        LearnerAgeBand.early => AppText.of('age.early'),
+        LearnerAgeBand.young => AppText.of('age.young'),
+        LearnerAgeBand.teen => AppText.of('age.teen'),
+        LearnerAgeBand.adult => AppText.of('age.adult'),
       };
 
   String get description => switch (this) {
-        LearnerAgeBand.early => 'Picture leh game hmanga bulṭan',
-        LearnerAgeBand.young => 'Words, spelling leh story hmanga zir',
-        LearnerAgeBand.teen => 'Reading, conversation leh culture',
-        LearnerAgeBand.adult => 'Mahni pace-a Mizo tawng zir leh',
+        LearnerAgeBand.early => AppText.of('age.early.note'),
+        LearnerAgeBand.young => AppText.of('age.young.note'),
+        LearnerAgeBand.teen => AppText.of('age.teen.note'),
+        LearnerAgeBand.adult => AppText.of('age.adult.note'),
       };
 }
 
@@ -20,17 +22,17 @@ enum MizoProficiency { newLearner, understandsSome, speaks, readsAndWrites }
 
 extension MizoProficiencyText on MizoProficiency {
   String get label => switch (this) {
-        MizoProficiency.newLearner => "I'm new to Mizo",
-        MizoProficiency.understandsSome => 'I understand some',
-        MizoProficiency.speaks => 'I can speak Mizo',
-        MizoProficiency.readsAndWrites => 'I can read and write',
+        MizoProficiency.newLearner => AppText.of('proficiency.new'),
+        MizoProficiency.understandsSome => AppText.of('proficiency.some'),
+        MizoProficiency.speaks => AppText.of('proficiency.speaks'),
+        MizoProficiency.readsAndWrites => AppText.of('proficiency.reads'),
       };
 
   String get description => switch (this) {
-        MizoProficiency.newLearner => 'Thumal bul aṭangin min kaihhruai rawh',
-        MizoProficiency.understandsSome => 'Ka hria deuh, sawi leh chhiar ka zir duh',
-        MizoProficiency.speaks => 'Spelling leh reading ka tihpun duh',
-        MizoProficiency.readsAndWrites => 'Tawng upa leh thiamna sang zâwk ka duh',
+        MizoProficiency.newLearner => AppText.of('proficiency.new.note'),
+        MizoProficiency.understandsSome => AppText.of('proficiency.some.note'),
+        MizoProficiency.speaks => AppText.of('proficiency.speaks.note'),
+        MizoProficiency.readsAndWrites => AppText.of('proficiency.reads.note'),
       };
 }
 
@@ -38,11 +40,11 @@ enum LearningGoal { conversation, vocabulary, reading, culture, refresh }
 
 extension LearningGoalText on LearningGoal {
   String get label => switch (this) {
-        LearningGoal.conversation => 'Home Conversation',
-        LearningGoal.vocabulary => 'Words & Spelling',
-        LearningGoal.reading => 'Reading',
-        LearningGoal.culture => 'Culture',
-        LearningGoal.refresh => 'Refresh My Mizo',
+        LearningGoal.conversation => AppText.of('goal.conversation'),
+        LearningGoal.vocabulary => AppText.of('goal.vocabulary'),
+        LearningGoal.reading => AppText.of('goal.reading'),
+        LearningGoal.culture => AppText.of('goal.culture'),
+        LearningGoal.refresh => AppText.of('goal.refresh'),
       };
 }
 
@@ -50,8 +52,8 @@ enum SupportLanguage { english, mizoOnly }
 
 extension SupportLanguageText on SupportLanguage {
   String get label => switch (this) {
-        SupportLanguage.english => 'English support',
-        SupportLanguage.mizoOnly => 'Mizo only',
+        SupportLanguage.english => AppText.of('support.english'),
+        SupportLanguage.mizoOnly => AppText.of('support.mizoOnly'),
       };
 }
 
@@ -93,10 +95,10 @@ class LearnerProfile {
   bool get isChild => ageBand != LearnerAgeBand.adult;
 
   String get experienceLabel => switch (ageBand) {
-        LearnerAgeBand.early => 'Sprout',
-        LearnerAgeBand.young => 'Explorer',
-        LearnerAgeBand.teen => 'Journey',
-        LearnerAgeBand.adult => 'Journey',
+        LearnerAgeBand.early => AppText.of('profile.badge.early'),
+        LearnerAgeBand.young => AppText.of('profile.badge.young'),
+        LearnerAgeBand.teen => AppText.of('profile.badge.older'),
+        LearnerAgeBand.adult => AppText.of('profile.badge.older'),
       };
 
   LearnerProfile copyWith({

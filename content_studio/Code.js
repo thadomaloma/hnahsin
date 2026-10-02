@@ -13,11 +13,11 @@ var PACK_PATH = 'api/v1/content_packs/latest';
 
 function onOpen() {
   SpreadsheetApp.getUi().createMenu('Hnahsin')
-    .addItem('✅ Endik (dik lo awm em?)', 'checkRows')
-    .addItem('🚀 Chhuah (app-ah thlen)', 'publishPack')
+    .addItem('✅ Check for problems', 'checkRows')
+    .addItem('🚀 Publish to the app', 'publishPack')
     .addSeparator()
     .addSubMenu(SpreadsheetApp.getUi().createMenu('⚙️ Developer')
-      .addItem('Sheet siam ṭha (format, dropdown)', 'setUpSheet')
+      .addItem('Set up the sheet (format, dropdowns)', 'setUpSheet')
       .addItem('GitHub settings', 'askGitHubSettings'))
     .addToUi();
 }
@@ -38,7 +38,10 @@ function readTab(key) {
 }
 
 function readTabs() {
-  return { words: readTab('words'), questions: readTab('questions'), sentences: readTab('sentences'), gameText: readTab('gameText') };
+  return {
+    words: readTab('words'), questions: readTab('questions'), sentences: readTab('sentences'),
+    gameText: readTab('gameText'), appText: readTab('appText'),
+  };
 }
 
 function hex(bytes) {
@@ -49,7 +52,7 @@ function sha256Hex(string) {
   return hex(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, string, Utilities.Charset.UTF_8));
 }
 
-/** Pictures in the “Hnahsin thlalak” folder by file name, read on demand. */
+/** Pictures in the “Hnahsin thlalak” (pictures) folder by file name, read on demand. */
 function pictureReader() {
   var folder = pictureFolder(false);
   var cache = {};
@@ -100,12 +103,17 @@ function build(pictures) {
 
 // --- Menu actions -----------------------------------------------------------
 
+/** What a publish holds, e.g. “1147 words, 5 questions, …”. */
+function summary(counts) {
+  return counts.words + ' words, ' + counts.questions + ' questions, ' + counts.sentences + ' sentences, ' +
+    counts.gameText + ' game texts and ' + counts.appText + ' changed app texts';
+}
+
 function checkRows() {
   var result = build(pictureReader());
   if (result.problems.length) return showProblems(result.problems);
-  SpreadsheetApp.getUi().alert('A dik vek e! ✅',
-    'Thumal ' + result.counts.words + ', zawhna ' + result.counts.questions + ', sentence ' + result.counts.sentences +
-    ', game thu ' + result.counts.gameText + ' chhuah theih a ni.\n\nApp-ah thlen tur chuan “🚀 Chhuah” hmet rawh.',
+  SpreadsheetApp.getUi().alert('No problems ✅',
+    summary(result.counts) + ' are ready.\n\nTo send them to the app, use “🚀 Publish to the app”.',
     SpreadsheetApp.getUi().ButtonSet.OK);
 }
 
@@ -113,16 +121,15 @@ function publishPack() {
   var ui = SpreadsheetApp.getUi();
   var settings = gitHubSettings();
   if (!settings) {
-    ui.alert('GitHub settings a la awm lo. Developer-in “⚙️ Developer → GitHub settings” a dah phawt tur a ni.');
+    ui.alert('GitHub is not set up yet. A developer needs to fill in “⚙️ Developer → GitHub settings” first.');
     return;
   }
   var pictures = pictureReader();
   var result = build(pictures);
   if (result.problems.length) return showProblems(result.problems);
 
-  var answer = ui.alert('App-ah thlen dawn',
-    'Thumal ' + result.counts.words + ', zawhna ' + result.counts.questions + ', sentence ' + result.counts.sentences +
-    ', game thu ' + result.counts.gameText + ' app-ah thlen a ni dawn.\n\nI chhuah ngei dawn em?',
+  var answer = ui.alert('Publish to the app?',
+    summary(result.counts) + ' will go to the app.\n\nPublish now?',
     ui.ButtonSet.YES_NO);
   if (answer !== ui.Button.YES) return;
 
@@ -142,14 +149,14 @@ function publishPack() {
   gitHubPut(settings, 'api/v1/content_packs/' + result.envelope.version + '.json', base64, 'Content pack ' + result.envelope.version);
   gitHubPut(settings, PACK_PATH, base64, 'Publish content pack ' + result.envelope.version);
 
-  SpreadsheetApp.getActive().toast('GitHub-in a dah chhuah mek… (minute 1 vel)', 'Hnahsin', 180);
+  SpreadsheetApp.getActive().toast('GitHub is publishing it… (about 1 minute)', 'Hnahsin', 180);
   var live = waitUntilLive(settings, result.envelope.version);
   SpreadsheetApp.getActive().toast('', 'Hnahsin', 1);
-  ui.alert(live ? 'App-ah a thleng ta! ✅' : 'Chhuah a ni e 🎉',
-    'Version ' + result.envelope.version + ' (thlalak thar ' + uploaded + ').\n\n' +
+  ui.alert(live ? 'It is in the app ✅' : 'Published 🎉',
+    'Version ' + result.envelope.version + ' (' + uploaded + ' new pictures).\n\n' +
     (live
-      ? 'App hawng mek te chuan minute 1 chhungin an hmu ang, game round thar aṭangin.'
-      : 'GitHub-in a la dah chhuah mek. Minute 2–3 hnuah app-ah a lang ang.'),
+      ? 'Open apps get it within 1 minute, from their next game round.'
+      : 'GitHub is still publishing it. It reaches the app in 2–3 minutes.'),
     ui.ButtonSet.OK);
 }
 
@@ -192,16 +199,16 @@ function showProblems(problems) {
     var sheet = ss.getSheetByName(p.tab);
     var where = p.tab + (p.row ? ', row ' + p.row : '');
     var link = sheet && p.row ? ss.getUrl() + '#gid=' + sheet.getSheetId() + '&range=A' + p.row + ':Z' + p.row : null;
-    return '<li><b>' + escapeHtml(where) + '</b>' + (link ? ' <a href="' + link + '" target="_blank">(en rawh)</a>' : '') +
+    return '<li><b>' + escapeHtml(where) + '</b>' + (link ? ' <a href="' + link + '" target="_blank">(open)</a>' : '') +
       '<br>' + escapeHtml(p.message) + '</li>';
   }).join('');
-  var more = problems.length > 150 ? '<p>… leh ' + (problems.length - 150) + ' dang.</p>' : '';
+  var more = problems.length > 150 ? '<p>… and ' + (problems.length - 150) + ' more.</p>' : '';
   var html = HtmlService.createHtmlOutput(
     '<div style="font-family:sans-serif;font-size:14px;line-height:1.45">' +
-    '<p>Dik lo <b>' + problems.length + '</b> a awm. Siam ṭha la, “✅ Endik” leh rawh. ' +
-    'Engmah app-ah thlen a la ni lo.</p><ol>' + items + '</ol>' + more + '</div>')
+    '<p>Found <b>' + problems.length + '</b> problems. Fix them, then use “✅ Check for problems” again. ' +
+    'Nothing was sent to the app.</p><ol>' + items + '</ol>' + more + '</div>')
     .setWidth(560).setHeight(520);
-  SpreadsheetApp.getUi().showModalDialog(html, 'Siam ṭhat ngai');
+  SpreadsheetApp.getUi().showModalDialog(html, 'Problems to fix');
 }
 
 function escapeHtml(value) {
@@ -215,14 +222,14 @@ function askGitHubSettings() {
   var props = PropertiesService.getScriptProperties();
   var repo = ui.prompt('GitHub repo', 'owner/name (e.g. thadomaloma/hnahsin-content):', ui.ButtonSet.OK_CANCEL);
   if (repo.getSelectedButton() !== ui.Button.OK) return;
-  var token = ui.prompt('GitHub token', 'Fine-grained token, Contents: Read and write, he repo chauh:', ui.ButtonSet.OK_CANCEL);
+  var token = ui.prompt('GitHub token', 'Fine-grained token with Contents: Read and write, for this repo only:', ui.ButtonSet.OK_CANCEL);
   if (token.getSelectedButton() !== ui.Button.OK) return;
   props.setProperties({
     GITHUB_REPO: repo.getResponseText().trim(),
     GITHUB_TOKEN: token.getResponseText().trim(),
     GITHUB_BRANCH: props.getProperty('GITHUB_BRANCH') || 'main',
   });
-  ui.alert('Dah a ni e.');
+  ui.alert('Saved.');
 }
 
 function gitHubSettings() {
@@ -260,7 +267,7 @@ function gitHubPut(settings, path, base64, message) {
   if (sha) payload.sha = sha;
   var response = gitHubRequest(settings, 'put', path, payload);
   if (response.getResponseCode() !== 200 && response.getResponseCode() !== 201) {
-    throw new Error('GitHub-ah dah theih a ni lo (' + response.getResponseCode() + '). Developer hrilh rawh.\n' + response.getContentText());
+    throw new Error('Could not save to GitHub (' + response.getResponseCode() + '). Please tell a developer.\n' + response.getContentText());
   }
 }
 
@@ -286,7 +293,7 @@ function setUpSheet() {
     sheet.setFrozenColumns(Math.min(2, present.length));
     sheet.getRange(1, 1, 1, present.length).setFontWeight('bold').setBackground('#1f4e5f').setFontColor('#ffffff').setWrap(true);
     if (whole('Level')) whole('Level').setDataValidation(levels);
-    if (whole('Dinhmun')) whole('Dinhmun').setDataValidation(statuses);
+    if (whole('Status')) whole('Status').setDataValidation(statuses);
     if (whole('ID')) {
       whole('ID').setBackground('#eeeeee').setFontColor('#777777');
       sheet.getProtections(SpreadsheetApp.ProtectionType.RANGE).forEach(function (old) {
@@ -294,12 +301,12 @@ function setUpSheet() {
       });
       whole('ID').protect().setDescription('ID').setWarningOnly(true);
     }
-    ['Awmzia (Mizo)', 'Entirna', 'Hrilhfiahna', 'Hriattirna', 'Sentence (Mizo)'].forEach(function (heading) {
+    ['Meaning (Mizo)', 'Example (Mizo)', 'Question (Mizo)', 'Explanation (Mizo)', 'Note', 'Sentence (Mizo)'].forEach(function (heading) {
       if (column(heading) > 0) sheet.setColumnWidth(column(heading), 280);
     });
     if (key === 'words') {
       sheet.setColumnWidth(column('English'), 200);
-      whole('Pawl').setDataValidation(SpreadsheetApp.newDataValidation()
+      whole('Category').setDataValidation(SpreadsheetApp.newDataValidation()
         .requireValueInList(CATEGORIES.map(function (c) { return c[1]; }), true).build());
       GAMES.forEach(function (game) {
         if (column(game[1]) > 0) {
@@ -307,8 +314,8 @@ function setUpSheet() {
           sheet.setColumnWidth(column(game[1]), 90);
         }
       });
-      var status = sheet.getRange(2, column('Dinhmun')).getA1Notation().replace(/\d+/, '');
-      var rules = ['Thumal', 'Awmzia (Mizo)', 'English', 'Entirna', 'Pawl', 'Level'].map(function (heading) {
+      var status = sheet.getRange(2, column('Status')).getA1Notation().replace(/\d+/, '');
+      var rules = ['Word', 'Meaning (Mizo)', 'English', 'Example (Mizo)', 'Category', 'Level'].map(function (heading) {
         var cell = sheet.getRange(2, column(heading)).getA1Notation();
         return SpreadsheetApp.newConditionalFormatRule()
           .whenFormulaSatisfied('=AND($' + status + '2="' + STATUS.live + '",' + cell + '="")')
@@ -317,48 +324,64 @@ function setUpSheet() {
       sheet.setConditionalFormatRules(rules);
     }
     if (key === 'questions') {
-      whole('Chhanna dik (1-4)').setDataValidation(SpreadsheetApp.newDataValidation()
+      whole('Right answer (1-4)').setDataValidation(SpreadsheetApp.newDataValidation()
         .requireValueInList(['1', '2', '3', '4'], true).build());
     }
     if (key === 'gameText') {
       whole('Game').setDataValidation(SpreadsheetApp.newDataValidation().requireValueInList(GAME_TEXT_IDS, true).build());
     }
+    if (key === 'appText') {
+      // Where it shows and the built-in text come from the app: read only.
+      ['Where', 'Built-in text'].forEach(function (heading) {
+        if (!whole(heading)) return;
+        whole(heading).setBackground('#eeeeee').setFontColor('#555555');
+        sheet.getProtections(SpreadsheetApp.ProtectionType.RANGE).forEach(function (old) {
+          if (old.getDescription() === heading) old.remove();
+        });
+        whole(heading).protect().setDescription(heading).setWarningOnly(true);
+      });
+      ['Built-in text', 'Text'].forEach(function (heading) {
+        if (column(heading) > 0) sheet.setColumnWidth(column(heading), 320);
+      });
+    }
   });
 
   pictureFolder(true);
   writeHelp(ss);
-  SpreadsheetApp.getUi().alert('Sheet siam ṭhat a ni e. Thlalak folder: “' + PICTURE_FOLDER + '”.');
+  SpreadsheetApp.getUi().alert('The sheet is set up. Pictures folder: “' + PICTURE_FOLDER + '”.');
 }
 
 function writeHelp(ss) {
   var sheet = ss.getSheetByName(TABS.help) || ss.insertSheet(TABS.help, 0);
   sheet.clear();
   var lines = [
-    ['Hnahsin content enkawl dan'],
+    ['How to edit Hnahsin content'],
     [''],
-    ['Thumal thar dah dan'],
-    ['1. “Thumal” tab-ah a hnuai berah row thar ziak rawh. ID chu ruak takin dah rawh: Chhuah hunah a inziak ang.'],
-    ['2. Thumal, Awmzia (Mizo), English leh Entirna (sentence entirna) ziak vek rawh.'],
-    ['3. Pawl leh Level (1 = awlsam ber, 7 = har ber) dropdown aṭangin thlang rawh.'],
-    ['4. Emoji: thil hmuh theih a nih chauhin dah rawh (🐕, 🌳). Thil hmuh theih loh (hlimna, rilru) chu ruak takin dah rawh.'],
-    ['5. Thlalak: “Hnahsin thlalak” folder-ah PNG/JPEG dah la, a file hming (e.g. word.lu.png) he column-ah ziak rawh. Thlalak hi emoji aiin a hmasa.'],
-    ['6. Game: thumal hi engteng game-ah nge a lan ang tih tick rawh. Pakhatmah i tick loh chuan game zawng zawngah a lang ang.'],
-    ['7. Dinhmun: “Chhuah” = app-ah a lang ang. “Endik mek” = la ziak mek, app-ah a la lang lo. “Paih” = app aṭanga paih.'],
+    ['Adding a new word'],
+    ['1. On the “Words” tab, write a new row at the bottom. Leave ID empty: it is filled in when you publish.'],
+    ['2. Fill in Word, Meaning (Mizo), English and Example (Mizo) (an example sentence).'],
+    ['3. Pick Category and Level (1 = easiest, 7 = hardest) from the dropdowns.'],
+    ['4. Emoji: only for things you can see (🐕, 🌳). Leave it empty for things you cannot see (happiness, thoughts).'],
+    ['5. Picture: put a PNG/JPEG in the “Hnahsin thlalak” (pictures) folder and write its file name here (e.g. word.lu.png). A picture is shown instead of the emoji.'],
+    ['6. Games: tick the games the word should appear in. If you tick none, it appears in every game.'],
+    ['7. Status: “Live” = shown in the app. “In review” = still being written, not shown. “Removed” = taken out of the app.'],
     [''],
-    ['App-ah thlen dan'],
-    ['1. Menu “Hnahsin → ✅ Endik” hmet rawh. Dik lo awm chu row number nen a lang ang. “(en rawh)” hmet la, siam ṭha rawh.'],
-    ['2. Dik lo a awm tawh loh chuan “Hnahsin → 🚀 Chhuah” hmet rawh.'],
-    ['3. “App-ah a thleng ta ✅” a lan hunah, app hawng mek te chuan minute 1 chhungin game round thar aṭangin an hmu ang. App hi update a ngai lo.'],
+    ['Sending changes to the app'],
+    ['1. Use the menu “Hnahsin → ✅ Check for problems”. Any problems are listed with their row. Click “(open)” and fix them.'],
+    ['2. When there are no problems, use “Hnahsin → 🚀 Publish to the app”.'],
+    ['3. When it says “It is in the app ✅”, open apps get the changes within 1 minute, from their next game round. The app does not need an update.'],
     [''],
-    ['Thil dik lo i tih palh chuan'],
-    ['File → Version history → See version history aṭangin a hma lam version-ah kîr leh la, “🚀 Chhuah” leh rawh.'],
+    ['If you make a mistake'],
+    ['Go back to an earlier version with File → Version history → See version history, then publish again.'],
     [''],
-    ['Row sen (pink) awmzia'],
-    ['“Chhuah” row-ah a ruak theih loh column a ruak tihna a ni. Dah khat rawh.'],
+    ['Pink cells'],
+    ['A required cell is empty in a “Live” row. Please fill it in.'],
     [''],
-    ['Zawhna tab: Tawng Upa game zawhna. Chhanna 4 ziak la, a dik zawk number (1–4) “Chhanna dik”-ah thlang rawh.'],
-    ['Sentence tab: Sentence Builder sentence. Mizo sentence leh a English awmzia.'],
-    ['Game thu tab: game tina thupui leh khelh dan. A ruak chuan app-a thu awm sa a hmang.'],
+    ['Questions tab: questions for the Tawng Upa game. Write 4 answers and pick the number (1–4) of the right one in “Right answer”.'],
+    ['Sentences tab: sentences for Sentence Builder. A Mizo sentence and its English meaning.'],
+    ['Game text tab: each game’s title and how to play. An empty cell keeps the app’s own text.'],
+    ['App text tab: every label, button and message in the app. Change the “Text” column, then publish. “Built-in text” is the app’s own wording: if Text is empty or the same, that is shown.'],
+    ['In App text, {n}, {word} and the like are filled in by the app with a number or a word. “Text” must have exactly the same ones as “Built-in text”.'],
   ];
   sheet.getRange(1, 1, lines.length, 1).setValues(lines).setWrap(true);
   sheet.setColumnWidth(1, 820);

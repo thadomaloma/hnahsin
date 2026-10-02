@@ -1,3 +1,5 @@
+import '../../../src/app_text.dart';
+
 enum JourneyReviewState { draft, reviewRequired, approved }
 
 enum JourneyAction { story, review, culture }
@@ -147,8 +149,7 @@ class JourneyReward {
 class EngagementQuest {
   const EngagementQuest({
     required this.id,
-    required this.title,
-    required this.instructionMizo,
+    required this.textId,
     required this.action,
     required this.target,
     required this.cadence,
@@ -156,8 +157,12 @@ class EngagementQuest {
   });
 
   final String id;
-  final String title;
-  final String instructionMizo;
+
+  /// Its name is the App text [textId] and its instruction
+  /// `[textId].note`, so both can be edited on the content Sheet.
+  final String textId;
+  String get title => AppText.of(textId);
+  String get instructionMizo => AppText.of('$textId.note');
   final JourneyAction action;
   final int target;
   final QuestCadence cadence;

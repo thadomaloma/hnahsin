@@ -17,6 +17,7 @@ import 'game_words.dart';
 import 'meaning_round.dart';
 import 'theme.dart';
 import 'widgets.dart';
+import 'app_text.dart';
 
 /// How long a right answer stays on screen before the round moves on.
 const rightAnswerPause = Duration(milliseconds: 1100);
@@ -101,8 +102,8 @@ class _GameLaunchScreenState extends State<GameLaunchScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text('HOW TO PLAY',
-                      style: TextStyle(
+                  Text(AppText.of('launcher.howToPlay'),
+                      style: const TextStyle(
                           color: QuestColors.teal,
                           fontSize: 11,
                           fontWeight: FontWeight.w900,
@@ -153,11 +154,14 @@ class _GameLaunchScreenState extends State<GameLaunchScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          const Text('Saved game available',
-                              style: TextStyle(fontWeight: FontWeight.w900)),
+                          Text(AppText.of('launcher.saved'),
+                              style: const TextStyle(fontWeight: FontWeight.w900)),
                           const SizedBox(height: 3),
                           Text(
-                              '${savedSession!.mode.name} mode • ${savedSession!.attempts} attempts',
+                              AppText.of('launcher.savedDetail', {
+                                'mode': AppText.of('launcher.modeName.${savedSession!.mode.name}'),
+                                'attempts': savedSession!.attempts,
+                              }),
                               style: const TextStyle(color: QuestColors.slate)),
                         ],
                       ),
@@ -169,22 +173,22 @@ class _GameLaunchScreenState extends State<GameLaunchScreen> {
             ],
             GameLevelCard(skill: widget.controller.gameSkill(widget.gameId)),
             const SizedBox(height: 18),
-            const SectionTitle('Choose a mode'),
+            SectionTitle(AppText.of('launcher.chooseMode')),
             const SizedBox(height: 12),
             AnswerButton(
-              label: 'Relaxed — Heart chân lovin khel',
+              label: AppText.of('launcher.relaxed'),
               selected: mode == GameMode.relaxed,
               onTap: () => setState(() => mode = GameMode.relaxed),
             ),
             const SizedBox(height: 10),
             AnswerButton(
-              label: 'Standard — Heart 3 nen',
+              label: AppText.of('launcher.standard'),
               selected: mode == GameMode.standard,
               onTap: () => setState(() => mode = GameMode.standard),
             ),
             const SizedBox(height: 10),
             AnswerButton(
-              label: 'Timed — Second 90 chhungin',
+              label: AppText.of('launcher.timed'),
               selected: mode == GameMode.timed,
               onTap: () => setState(() => mode = GameMode.timed),
             ),
@@ -196,8 +200,9 @@ class _GameLaunchScreenState extends State<GameLaunchScreen> {
                 icon: Icon(savedSession == null
                     ? Icons.play_arrow_rounded
                     : Icons.restore_rounded),
-                label:
-                    Text(savedSession == null ? 'Start Game' : 'Resume Game'),
+                label: Text(savedSession == null
+                    ? AppText.of('launcher.start')
+                    : AppText.of('launcher.resume')),
               ),
             ),
             if (savedSession != null) ...<Widget>[
@@ -206,7 +211,7 @@ class _GameLaunchScreenState extends State<GameLaunchScreen> {
                 width: double.infinity,
                 child: TextButton(
                   onPressed: () => _launch(resume: false),
-                  child: const Text('Start New Game'),
+                  child: Text(AppText.of('launcher.startNew')),
                 ),
               ),
             ],
@@ -389,9 +394,12 @@ class _PictureMatchGameState extends State<PictureMatchGame> {
           FeedbackCard(
               correct: correct,
               message: correct
-                  ? '${entry.word} — ${entry.englishGloss}'
-                  : 'Chhanna dik chu “${entry.word}” a ni.\n'
-                      '${entry.meaningMizo}\n“${entry.exampleMizo}”'),
+                  ? AppText.of('picture.right', {'word': entry.word, 'gloss': entry.englishGloss})
+                  : AppText.of('picture.wrong', {
+                      'word': entry.word,
+                      'meaning': entry.meaningMizo,
+                      'example': entry.exampleMizo,
+                    })),
           const SizedBox(height: 16),
           SizedBox(
               width: double.infinity,
@@ -399,8 +407,8 @@ class _PictureMatchGameState extends State<PictureMatchGame> {
                   onPressed: next,
                   child: Text(
                       !session.hasHearts || index == questions.length - 1
-                          ? 'View Results'
-                          : 'Next'))),
+                          ? AppText.of('common.viewResults')
+                          : AppText.of('common.next')))),
         ],
       ]),
     );
@@ -552,7 +560,7 @@ class _SpellingGameState extends State<SpellingGame> {
                       fontWeight: FontWeight.w900,
                       color: QuestColors.navy))),
           const SizedBox(height: 14),
-          Text('CLUE  •  ${question.hint}',
+          Text(AppText.of('spelling.clue', {'hint': question.hint}),
               textAlign: TextAlign.center,
               style: const TextStyle(
                   color: QuestColors.slate,
@@ -594,8 +602,9 @@ class _SpellingGameState extends State<SpellingGame> {
           FeedbackCard(
               correct: correct,
               message: correct
-                  ? '“${question.word}” a kim ta.${question.gloss.isEmpty ? '' : '\n${question.gloss}'}'
-                  : 'Chhanna dik chu “${question.answer}” a ni: “${question.word}”.'
+                  ? '${AppText.of('spelling.right', {'word': question.word})}'
+                      '${question.gloss.isEmpty ? '' : '\n${question.gloss}'}'
+                  : '${AppText.of('spelling.wrong', {'answer': question.answer, 'word': question.word})}'
                       '${question.gloss.isEmpty ? '' : '\n${question.gloss}'}'),
           const SizedBox(height: 16),
           SizedBox(
@@ -604,8 +613,8 @@ class _SpellingGameState extends State<SpellingGame> {
                   onPressed: next,
                   child: Text(
                       !session.hasHearts || index == questions.length - 1
-                          ? 'View Results'
-                          : 'Next'))),
+                          ? AppText.of('common.viewResults')
+                          : AppText.of('common.next')))),
         ],
       ]),
     );
@@ -780,7 +789,10 @@ class _OldWordQuizGameState extends State<OldWordQuizGame> {
               // A right answer already was the meaning; a wrong one shows it.
               message: correct
                   ? ''
-                  : 'Chhanna dik chu “${question.answer}” a ni.\n${question.explanation}'),
+                  : AppText.of('tawngUpa.wrong', {
+                      'answer': question.answer,
+                      'explanation': question.explanation,
+                    })),
           const SizedBox(height: 16),
           SizedBox(
               width: double.infinity,
@@ -788,8 +800,8 @@ class _OldWordQuizGameState extends State<OldWordQuizGame> {
                   onPressed: next,
                   child: Text(
                       !session.hasHearts || index == questions.length - 1
-                          ? 'View Results'
-                          : 'Next'))),
+                          ? AppText.of('common.viewResults')
+                          : AppText.of('common.next')))),
         ],
       ]),
     );
@@ -925,8 +937,8 @@ class _WordChainGameState extends State<WordChainGame> {
         return byLevel != 0 ? byLevel : a.compareTo(b);
       });
     return matches.isEmpty
-        ? 'A thumal dang ngaihtuah rawh.'
-        : '“${matches.first}” i hmang thei.';
+        ? AppText.of('chain.hintNone')
+        : AppText.of('chain.hint', {'word': matches.first});
   }
 
   /// “nula (young woman)” — what a word means, when the catalog knows.
@@ -937,7 +949,9 @@ class _WordChainGameState extends State<WordChainGame> {
         : (entry.englishGloss.trim().isNotEmpty
             ? entry.englishGloss.trim()
             : entry.meaningMizo.trim());
-    return meaning.isEmpty ? '“$word”' : '“$word” ($meaning)';
+    return meaning.isEmpty
+        ? AppText.of('chain.word', {'word': word})
+        : AppText.of('chain.wordMeaning', {'word': word, 'meaning': meaning});
   }
 
   /// The vocabulary spelling of what was typed; â, ṭ and friends are
@@ -959,14 +973,12 @@ class _WordChainGameState extends State<WordChainGame> {
     // can follow would leave the learner stuck; neither costs a heart.
     String? notice;
     if (resolved == null) {
-      notice = 'He thumal hi kan thumal dahkhâwmnaah a la awm lo. '
-          'Thumal dang ziak rawh.';
+      notice = AppText.of('chain.unknown');
     } else if (!chain.contains(resolved) &&
         _links(chain.last, resolved) &&
         chain.length < 5 &&
         _nextWords(resolved).isEmpty) {
-      notice = '“$resolved” a dik, mahse “${lastMizoUnit(resolved)}” hmanga '
-          'bulṭan thumal kan la nei lo. Thumal dang ziak rawh.';
+      notice = AppText.of('chain.deadEnd', {'word': resolved, 'unit': lastMizoUnit(resolved)});
     }
     if (notice != null) {
       setState(() {
@@ -980,10 +992,13 @@ class _WordChainGameState extends State<WordChainGame> {
     final word = resolved!;
     String? error;
     if (chain.contains(word)) {
-      error = 'He thumal hi i hmang tawh.';
+      error = AppText.of('chain.used');
     } else if (!_links(chain.last, word)) {
-      error = '“$word” chu “${firstMizoUnit(word)}” hmangin a inṭan; '
-          '“$needed” hmanga bulṭan tûr a ni.';
+      error = AppText.of('chain.wrongStart', {
+        'word': word,
+        'start': firstMizoUnit(word),
+        'needed': needed,
+      });
     }
     if (error != null) {
       HapticFeedback.mediumImpact();
@@ -1008,7 +1023,7 @@ class _WordChainGameState extends State<WordChainGame> {
       // The card's own heading already says “A dik e!”.
       message = chain.length == 6
           ? _withMeaning(word)
-          : '${_withMeaning(word)}\n“${lastMizoUnit(word)}” hmanga zawm leh rawh.';
+          : AppText.of('chain.linked', {'word': _withMeaning(word), 'unit': lastMizoUnit(word)});
       messageIsError = false;
       final entry = entries[word];
       runtime.answer(true, wordId: entry?.id, word: entry?.word);
@@ -1033,30 +1048,29 @@ class _WordChainGameState extends State<WordChainGame> {
           secondsRemaining: runtime.isTimed ? runtime.remainingSeconds : null),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         if (runtime.restoredSession) const GameResumeBanner(),
-        const PremiumCard(
-            gradient: LinearGradient(
-                colors: [QuestColors.midnight, QuestColors.indigo]),
+        PremiumCard(
+            gradient: const LinearGradient(
+                colors: const [QuestColors.midnight, QuestColors.indigo]),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Text('HOW TO PLAY',
-                  style: TextStyle(
+              Text(AppText.of('chain.howToPlay'),
+                  style: const TextStyle(
                       color: QuestColors.teal,
                       fontSize: 11,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 1.2)),
               const SizedBox(height: 7),
-              const Text(
-                  'Thumal tawpna hawrawp inzawm hmangin thumal dang bulṭan rawh.',
-                  style: TextStyle(
+              Text(AppText.of('chain.rule'),
+                  style: const TextStyle(
                       color: Colors.white,
                       fontSize: 17,
                       fontWeight: FontWeight.w800)),
               const SizedBox(height: 10),
-              const Text('Entîrna: In → Nula → Aizawl → Lal',
-                  style: TextStyle(color: Color(0xFFDDF3FF))),
+              Text(AppText.of('chain.example'),
+                  style: const TextStyle(color: Color(0xFFDDF3FF))),
             ])),
         const SizedBox(height: 22),
-        const SectionTitle('Kan chain'),
+        SectionTitle(AppText.of('chain.title')),
         const SizedBox(height: 12),
         Wrap(
             spacing: 8,
@@ -1070,12 +1084,12 @@ class _WordChainGameState extends State<WordChainGame> {
                 .toList()),
         if (chain.length == 1) ...[
           const SizedBox(height: 8),
-          Text('Inṭanna: ${_withMeaning(chain.single)}',
+          Text(AppText.of('chain.start', {'word': _withMeaning(chain.single)}),
               style: const TextStyle(
                   color: QuestColors.slate, fontWeight: FontWeight.w600)),
         ],
         const SizedBox(height: 24),
-        Text('“$needed” hmanga bulṭan rawh',
+        Text(AppText.of('chain.needed', {'unit': needed}),
             style: Theme.of(context).textTheme.titleLarge),
         GameHintButton(
             revealed: runtime.hintRevealed, onPressed: runtime.revealHint),
@@ -1090,7 +1104,7 @@ class _WordChainGameState extends State<WordChainGame> {
             autocorrect: false,
             onSubmitted: (_) => submit(),
             decoration: InputDecoration(
-                hintText: 'Mizo thumal ziak rawh…',
+                hintText: AppText.of('chain.input'),
                 suffixIcon: IconButton(
                     onPressed: submit,
                     icon: const Icon(Icons.arrow_upward_rounded)))),
@@ -1100,7 +1114,7 @@ class _WordChainGameState extends State<WordChainGame> {
         ],
         const SizedBox(height: 14),
         Text(
-            'TIP  •  “$needed” hmanga bulṭan thumal ${_playable.length} kan nei.',
+            AppText.of('chain.tip', {'unit': needed, 'n': _playable.length}),
             style: const TextStyle(
                 color: QuestColors.slate,
                 fontSize: 12,
@@ -1127,7 +1141,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
   GameSession get session => runtime.session;
   final List<(int, int)> selected = [];
   final Set<String> found = {};
-  String message = 'Letter-te indawtin tap rawh.';
+  String message = AppText.of('search.start');
   bool finishing = false;
   String get current =>
       selected.map((position) => grid[position.$1][position.$2]).join();
@@ -1243,7 +1257,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
     for (final word in targets) {
       if (!found.contains(word)) return word;
     }
-    return 'Thumal zawng zawng i hmu tawh.';
+    return AppText.of('search.allFound');
   }
 
   /// Whether (row, col) continues the selection in a straight line: next
@@ -1264,7 +1278,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
     if (selected.contains(position)) {
       setState(() {
         selected.clear();
-        message = 'Letter bul hnai indawtin thlang rawh.';
+        message = AppText.of('search.adjacent');
       });
       await runtime.persist();
       return;
@@ -1281,7 +1295,9 @@ class _WordSearchGameState extends State<WordSearchGame> {
         found.add(word);
         selected.clear();
         final gloss = glosses[word] ?? '';
-        message = '“$word” i hmu ta!${gloss.isEmpty ? '' : ' ($gloss)'}';
+        message = gloss.isEmpty
+            ? AppText.of('search.found', {'word': word})
+            : AppText.of('search.foundGloss', {'word': word, 'gloss': gloss});
         final entry = wordEntries[word];
         runtime.answer(true, wordId: entry?.id, word: entry?.word);
       });
@@ -1301,7 +1317,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
       if (!mounted) return;
       setState(() {
         selected.clear();
-        message = 'A rem lo. Bulṭan nawn leh rawh.';
+        message = AppText.of('search.noMatch');
       });
       await runtime.persist();
     }
@@ -1347,7 +1363,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
                           placements[_hintWord]?.first == (row, col);
                       return Semantics(
                           label:
-                              'Row ${row + 1}, column ${col + 1}, letter ${grid[row][col]}',
+                              AppText.of('search.cellSpoken', {'row': row + 1, 'column': col + 1, 'letter': grid[row][col]}),
                           button: true,
                           selected: active,
                           child: InkWell(

@@ -13,6 +13,7 @@ import '../../../src/theme.dart';
 import '../../../src/widgets.dart';
 import '../application/game_runtime.dart';
 import '../engine/game_engine.dart';
+import '../../../src/app_text.dart';
 
 enum _Face { word, picture, gloss }
 
@@ -243,7 +244,7 @@ class _ThumalKawpGameState extends State<ThumalKawpGame> {
           Row(children: [
             Expanded(
               child: Text(
-                'Kawp ${matched.length}/$pairCount i hmu tawh • Vawi $turns i let tawh',
+                AppText.of('kawp.progress', {'found': matched.length, 'pairs': pairCount, 'turns': turns}),
                 style: const TextStyle(fontWeight: FontWeight.w700, color: QuestColors.slate),
               ),
             ),
@@ -251,12 +252,12 @@ class _ThumalKawpGameState extends State<ThumalKawpGame> {
                 revealed: runtime.hintRevealed || peeking.isNotEmpty, onPressed: pairCount < 2 ? null : _useHint),
           ]),
           if (pairCount < 2)
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 32),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 32),
               child: Text(
-                'Card kawp tûr thumal a tâwk lo. Content thar a lo thlen hunah tum leh rawh.',
+                AppText.of('kawp.notEnough'),
                 textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.w700, color: QuestColors.slate),
+                style: const TextStyle(fontWeight: FontWeight.w700, color: QuestColors.slate),
               ),
             ),
           const SizedBox(height: 10),
@@ -303,15 +304,15 @@ class _CardTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final label = !faceUp
-        ? 'Hidden card'
+        ? AppText.of('kawp.hiddenSpoken')
         : switch (card.face) {
             _Face.word => card.entry.word,
             _Face.gloss => card.entry.englishGloss,
-            _Face.picture => 'Picture of ${card.entry.englishGloss}',
+            _Face.picture => AppText.of('kawp.pictureSpoken', {'gloss': card.entry.englishGloss}),
           };
     return Semantics(
       button: !faceUp,
-      label: matched ? '$label, matched' : label,
+      label: matched ? AppText.of('kawp.matchedSpoken', {'card': label}) : label,
       child: ExcludeSemantics(
         child: GestureDetector(
           onTap: onTap,

@@ -1,17 +1,18 @@
 import 'game_text.dart';
+import 'app_text.dart';
 
 enum LearningTrack { beginner, explorer, master }
 
 extension LearningTrackText on LearningTrack {
   String get title => switch (this) {
-        LearningTrack.beginner => 'Bulṭan',
-        LearningTrack.explorer => 'Zirchho',
-        LearningTrack.master => 'Thiamna',
+        LearningTrack.beginner => AppText.of('track.beginner'),
+        LearningTrack.explorer => AppText.of('track.explorer'),
+        LearningTrack.master => AppText.of('track.master'),
       };
   String get audience => switch (this) {
-        LearningTrack.beginner => 'Thlalak leh thumal awlsam hmanga bulṭan',
-        LearningTrack.explorer => 'Spelling leh puzzle hmanga zir chhunzawm',
-        LearningTrack.master => 'Tawng upa leh thufing zirna',
+        LearningTrack.beginner => AppText.of('track.beginner.note'),
+        LearningTrack.explorer => AppText.of('track.explorer.note'),
+        LearningTrack.master => AppText.of('track.master.note'),
       };
   String get symbol => switch (this) {
         LearningTrack.beginner => '🌱',
@@ -53,21 +54,12 @@ abstract final class ContentPolicy {
 
 extension WordCategoryText on WordCategory {
   String get label => switch (this) {
-        WordCategory.chhungkua => 'Chhungkua',
-        WordCategory.sikul => 'Sikul',
-        WordCategory.nungcha => 'Nungcha',
-        WordCategory.khawvel => 'Khawvel',
-        WordCategory.nunphung => 'Nunphung',
-        WordCategory.thiltih => 'Thiltih',
-      };
-
-  String get englishLabel => switch (this) {
-        WordCategory.chhungkua => 'Family',
-        WordCategory.sikul => 'School',
-        WordCategory.nungcha => 'Animals',
-        WordCategory.khawvel => 'Nature',
-        WordCategory.nunphung => 'Culture',
-        WordCategory.thiltih => 'Actions',
+        WordCategory.chhungkua => AppText.of('category.chhungkua'),
+        WordCategory.sikul => AppText.of('category.sikul'),
+        WordCategory.nungcha => AppText.of('category.nungcha'),
+        WordCategory.khawvel => AppText.of('category.khawvel'),
+        WordCategory.nunphung => AppText.of('category.nunphung'),
+        WordCategory.thiltih => AppText.of('category.thiltih'),
       };
 }
 

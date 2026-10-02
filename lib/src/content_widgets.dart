@@ -4,6 +4,7 @@ import '../features/content_sync/domain/delivery_models.dart';
 import 'controller.dart';
 import 'theme.dart';
 import 'widgets.dart';
+import 'app_text.dart';
 
 class ContentDeliveryStatusCard extends StatelessWidget {
   const ContentDeliveryStatusCard({super.key, required this.controller});
@@ -30,10 +31,10 @@ class ContentDeliveryStatusCard extends StatelessWidget {
                 color: safe ? QuestColors.tealDark : QuestColors.coral,
               ),
               const SizedBox(width: 10),
-              const Expanded(
+              Expanded(
                 child: Text(
-                  'Offline content',
-                  style: TextStyle(fontWeight: FontWeight.w900, fontSize: 17),
+                  AppText.of('content.offline'),
+                  style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 17),
                 ),
               ),
               if (state.isChecking)
@@ -45,12 +46,16 @@ class ContentDeliveryStatusCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 7),
-          Text(state.message, style: const TextStyle(color: QuestColors.slate)),
+          Text(
+            // No message yet: only the built-in words, no pack checked.
+            state.message.isEmpty ? AppText.of('sync.builtInReady') : state.message,
+            style: const TextStyle(color: QuestColors.slate),
+          ),
           if (state.hasRemotePack) ...<Widget>[
             const SizedBox(height: 8),
             Text(
               <String>[
-                if (state.contentVersion != null) 'Content ${state.contentVersion}',
+                if (state.contentVersion != null) AppText.of('content.version', {'version': state.contentVersion}),
               ].join(' • '),
               style: const TextStyle(
                 color: QuestColors.tealDark,
@@ -66,7 +71,7 @@ class ContentDeliveryStatusCard extends StatelessWidget {
                 : controller.refreshContent,
             icon: const Icon(Icons.sync_rounded),
             label: Text(
-              controller.contentSyncEnabled ? 'Check for Updates' : 'Built-in Pack',
+              controller.contentSyncEnabled ? AppText.of('content.check') : AppText.of('content.builtIn'),
             ),
           ),
         ],
@@ -103,7 +108,7 @@ class ContentReportButton extends StatelessWidget {
           icon: Icon(
             reported ? Icons.flag_rounded : Icons.outlined_flag_rounded,
           ),
-          label: Text(reported ? 'Issue reported' : 'Report content issue'),
+          label: Text(reported ? AppText.of('report.done') : AppText.of('report.open')),
         );
       },
     );
@@ -129,27 +134,28 @@ Future<void> showContentReportSheet(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                'Report a content issue',
+                AppText.of('report.title'),
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: 6),
-              const Text(
-                'No personal message is collected. The content reference and reason stay on this device for the review queue.',
-                style: TextStyle(color: QuestColors.slate),
+              Text(
+                AppText.of('report.privacy'),
+                style: const TextStyle(color: QuestColors.slate),
               ),
               const SizedBox(height: 12),
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
                 children: <Widget>[
-                  for (final option in const <String>[
-                    'Mizo spelling or wording',
-                    'Meaning or translation',
-                    'Picture does not match',
-                    'Cultural context',
+                  // The saved reason is the English key; the label can change.
+                  for (final (option, textId) in const <(String, String)>[
+                    ('Mizo spelling or wording', 'report.spelling'),
+                    ('Meaning or translation', 'report.meaning'),
+                    ('Picture does not match', 'report.picture'),
+                    ('Cultural context', 'report.culture'),
                   ])
                     ChoiceChip(
-                      label: Text(option),
+                      label: Text(AppText.of(textId)),
                       selected: reason == option,
                       onSelected: (_) =>
                           setSheetState(() => reason = option),
@@ -165,7 +171,7 @@ Future<void> showContentReportSheet(
                     if (context.mounted) Navigator.pop(context, true);
                   },
                   icon: const Icon(Icons.send_rounded),
-                  label: const Text('Save Report'),
+                  label: Text(AppText.of('report.save')),
                 ),
               ),
             ],
@@ -176,7 +182,7 @@ Future<void> showContentReportSheet(
   );
   if (submitted == true && context.mounted) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Report saved to the local review queue.')),
+      SnackBar(content: Text(AppText.of('report.saved'))),
     );
   }
 }

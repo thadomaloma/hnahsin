@@ -1,29 +1,31 @@
+import '../../../src/app_text.dart';
+
 enum LearningLevel { level1, level2, level3, level4, level5, level6, level7, level8 }
 
 extension LearningLevelText on LearningLevel {
   /// What learners see: Level 1 to Level 8.
-  String get code => 'Level ${index + 1}';
+  String get code => AppText.of('level.code', {'n': index + 1});
 
   String get title => switch (this) {
-        LearningLevel.level1 => 'First Steps',
-        LearningLevel.level2 => 'Everyday Words',
-        LearningLevel.level3 => 'Growing Speaker',
-        LearningLevel.level4 => 'Confident Reader',
-        LearningLevel.level5 => 'Storyteller',
-        LearningLevel.level6 => 'Explorer',
-        LearningLevel.level7 => 'Culture Apprentice',
-        LearningLevel.level8 => 'Culture & Fluency',
+        LearningLevel.level1 => AppText.of('level.1.title'),
+        LearningLevel.level2 => AppText.of('level.2.title'),
+        LearningLevel.level3 => AppText.of('level.3.title'),
+        LearningLevel.level4 => AppText.of('level.4.title'),
+        LearningLevel.level5 => AppText.of('level.5.title'),
+        LearningLevel.level6 => AppText.of('level.6.title'),
+        LearningLevel.level7 => AppText.of('level.7.title'),
+        LearningLevel.level8 => AppText.of('level.8.title'),
       };
 
   String get mizoDescription => switch (this) {
-        LearningLevel.level1 => 'Thumal bul leh thlalak hmanga bulṭan',
-        LearningLevel.level2 => 'Nitin thumal leh sentence tawi zirna',
-        LearningLevel.level3 => 'Conversation, spelling leh chhiarna',
-        LearningLevel.level4 => 'Sentence sei leh thu awmzia hriatna',
-        LearningLevel.level5 => 'Thawnthu leh chanchin zirna',
-        LearningLevel.level6 => 'Ram hmuhna leh nunphung zirna',
-        LearningLevel.level7 => 'Tawng upa leh grammar zirna',
-        LearningLevel.level8 => 'Tawng upa, hnam ziarang leh tawng thiamna famkim',
+        LearningLevel.level1 => AppText.of('level.1.description'),
+        LearningLevel.level2 => AppText.of('level.2.description'),
+        LearningLevel.level3 => AppText.of('level.3.description'),
+        LearningLevel.level4 => AppText.of('level.4.description'),
+        LearningLevel.level5 => AppText.of('level.5.description'),
+        LearningLevel.level6 => AppText.of('level.6.description'),
+        LearningLevel.level7 => AppText.of('level.7.description'),
+        LearningLevel.level8 => AppText.of('level.8.description'),
       };
 }
 
@@ -31,11 +33,11 @@ enum MasteryStage { unseen, learning, familiar, strong, mastered }
 
 extension MasteryStageText on MasteryStage {
   String get label => switch (this) {
-        MasteryStage.unseen => 'New',
-        MasteryStage.learning => 'Learning',
-        MasteryStage.familiar => 'Familiar',
-        MasteryStage.strong => 'Strong',
-        MasteryStage.mastered => 'Mastered',
+        MasteryStage.unseen => AppText.of('mastery.unseen'),
+        MasteryStage.learning => AppText.of('mastery.learning'),
+        MasteryStage.familiar => AppText.of('mastery.familiar'),
+        MasteryStage.strong => AppText.of('mastery.strong'),
+        MasteryStage.mastered => AppText.of('mastery.mastered'),
       };
 }
 

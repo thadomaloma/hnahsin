@@ -8,6 +8,7 @@ import '../domain/journey_content.dart';
 import '../domain/journey_engine.dart';
 import '../domain/journey_models.dart';
 import 'culture_screens.dart';
+import '../../../src/app_text.dart';
 
 class JourneyScreen extends StatelessWidget {
   const JourneyScreen({super.key, required this.controller});
@@ -18,8 +19,8 @@ class JourneyScreen extends StatelessWidget {
   Widget build(BuildContext context) => AnimatedBuilder(
         animation: controller,
         builder: (context, _) => QuestPage(
-          title: 'Mizo Journey',
-          subtitle: 'Story, conversation & culture',
+          title: AppText.of('journey.title'),
+          subtitle: AppText.of('journey.subtitle'),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -29,11 +30,11 @@ class JourneyScreen extends StatelessWidget {
                 const _ComebackCard(),
               ],
               const SizedBox(height: 24),
-              const SectionTitle('Today’s Quests'),
+              SectionTitle(AppText.of('journey.todaysQuests')),
               const SizedBox(height: 12),
               _DailyQuestCard(controller: controller),
               const SizedBox(height: 26),
-              const SectionTitle('Journey Map'),
+              SectionTitle(AppText.of('journey.map')),
               const SizedBox(height: 12),
               if (!JourneyContentPolicy.releaseReady)
                 const _ReviewNotice(),
@@ -46,7 +47,7 @@ class JourneyScreen extends StatelessWidget {
               if (!CultureTrailPolicy.isProduction ||
                   CultureTrailPolicy.releaseReady) ...<Widget>[
                 const SizedBox(height: 8),
-                const SectionTitle('Culture Trail'),
+                SectionTitle(AppText.of('journey.cultureTrail')),
                 const SizedBox(height: 12),
                 PremiumCard(
                   onTap: () => Navigator.of(context).push(
@@ -66,13 +67,13 @@ class JourneyScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            const Text(
-                              'Words, values & living culture',
-                              style: TextStyle(fontWeight: FontWeight.w900),
+                            Text(
+                              AppText.of('journey.cultureTrailNote'),
+                              style: const TextStyle(fontWeight: FontWeight.w900),
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              '${controller.journeyState.collectedCultureCardIds.where((id) => id.startsWith('culture.')).length}/${cultureCards.length} cards • Tawng Upa context',
+                              AppText.of('journey.cultureCount', {'collected': controller.journeyState.collectedCultureCardIds.where((id) => id.startsWith('culture.')).length, 'total': cultureCards.length}),
                               style: const TextStyle(
                                 color: QuestColors.slate,
                                 fontSize: 12,
@@ -136,9 +137,9 @@ class _JourneyHero extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    const Text(
-                      'YOUR MIZO JOURNEY',
-                      style: TextStyle(
+                    Text(
+                      AppText.of('journey.eyebrow'),
+                      style: const TextStyle(
                         color: QuestColors.teal,
                         fontSize: 11,
                         fontWeight: FontWeight.w900,
@@ -147,7 +148,7 @@ class _JourneyHero extends StatelessWidget {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      '$complete of $total story stops complete',
+                      AppText.of('journey.progress', {'done': complete, 'total': total}),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 19,
@@ -175,25 +176,25 @@ class _JourneyHero extends StatelessWidget {
               Pill(
                 icon: Icons.local_fire_department_rounded,
                 label: controller.profile.gentleMode
-                    ? 'Learning rhythm'
-                    : '${controller.journeyState.streakDays} day rhythm',
+                    ? AppText.of('journey.rhythm')
+                    : AppText.of('journey.rhythmDays', {'n': controller.journeyState.streakDays}),
                 color: const Color(0xFFFFF0BD),
               ),
               Pill(
                 icon: Icons.shield_moon_rounded,
                 label: controller.journeyState.graceAvailable
-                    ? 'Grace ready'
-                    : 'Grace used',
+                    ? AppText.of('journey.graceReady')
+                    : AppText.of('journey.graceUsed'),
                 color: const Color(0xFFDDF3FF),
               ),
               Pill(
                 icon: Icons.calendar_view_week_rounded,
-                label: '${controller.weeklyStoryCount}/3 this week',
+                label: AppText.of('journey.thisWeek', {'n': controller.weeklyStoryCount}),
                 color: Colors.white,
               ),
               Pill(
                 icon: Icons.stars_rounded,
-                label: '${controller.journeyState.trailMarks} Trail Marks',
+                label: AppText.of('journey.trailMarks', {'n': controller.journeyState.trailMarks}),
                 color: const Color(0xFFE9E4FF),
               ),
             ],
@@ -208,24 +209,24 @@ class _ComebackCard extends StatelessWidget {
   const _ComebackCard();
 
   @override
-  Widget build(BuildContext context) => const PremiumCard(
+  Widget build(BuildContext context) => PremiumCard(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Icon(Icons.waving_hand_rounded, color: QuestColors.gold),
-            SizedBox(width: 12),
+            const Icon(Icons.waving_hand_rounded, color: QuestColors.gold),
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    'Welcome back',
-                    style: TextStyle(fontWeight: FontWeight.w900),
+                    AppText.of('journey.welcomeBack'),
+                    style: const TextStyle(fontWeight: FontWeight.w900),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
-                    'I kalna hmasa a bo lo. Minute tlem chauh hmangin story chhunzawm rawh.',
-                    style: TextStyle(color: QuestColors.slate),
+                    AppText.of('journey.welcomeBackNote'),
+                    style: const TextStyle(color: QuestColors.slate),
                   ),
                 ],
               ),
@@ -250,8 +251,8 @@ class _DailyQuestCard extends StatelessWidget {
         children: <Widget>[
           Text(
             controller.profile.gentleMode
-                ? 'OPTIONAL DAILY • NO PENALTY'
-                : 'DAILY',
+                ? AppText.of('journey.dailyGentle')
+                : AppText.of('journey.daily'),
             style: const TextStyle(
               color: QuestColors.tealDark,
               fontSize: 10,
@@ -264,8 +265,8 @@ class _DailyQuestCard extends StatelessWidget {
           const Divider(height: 30),
           Text(
             controller.profile.gentleMode
-                ? 'OPTIONAL WEEKLY • NO DEADLINE'
-                : 'WEEKLY • NO COUNTDOWN',
+                ? AppText.of('journey.weeklyGentle')
+                : AppText.of('journey.weekly'),
             style: const TextStyle(
               color: QuestColors.tealDark,
               fontSize: 10,
@@ -316,7 +317,7 @@ class _DailyQuestCard extends StatelessWidget {
             else if (item.completed)
               TextButton(
                 onPressed: () => controller.claimJourneyQuest(item.claimKey),
-                child: Text('Claim +${item.quest.rewardMarks}'),
+                child: Text(AppText.of('journey.claim', {'n': item.quest.rewardMarks})),
               )
             else
               Text(
@@ -349,15 +350,15 @@ class _ReviewNotice extends StatelessWidget {
           color: const Color(0xFFFFF5D8),
           borderRadius: BorderRadius.circular(16),
         ),
-        child: const Row(
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Icon(Icons.rate_review_rounded, color: Color(0xFF9A6800)),
-            SizedBox(width: 10),
+            const Icon(Icons.rate_review_rounded, color: const Color(0xFF9A6800)),
+            const SizedBox(width: 10),
             Expanded(
               child: Text(
-                'Preview content — Mizo language reviewer pawmna a la nghah mêk.',
-                style: TextStyle(fontWeight: FontWeight.w800),
+                AppText.of('journey.preview'),
+                style: const TextStyle(fontWeight: FontWeight.w800),
               ),
             ),
           ],
@@ -440,7 +441,7 @@ class _JourneyNodeTile extends StatelessWidget {
     return Semantics(
       button: !locked,
       enabled: !locked,
-      label: '${node.titleEnglish}, ${status.name}',
+      label: AppText.of('journey.nodeSpoken', {'title': node.titleEnglish, 'status': status.name}),
       child: InkWell(
         onTap: locked
             ? null
@@ -507,10 +508,10 @@ class _JourneyNodeTile extends StatelessWidget {
               ),
               Text(
                 locked
-                    ? 'Level ${node.minimumLevel + 1}'
+                    ? AppText.of('journey.nodeLevel', {'n': node.minimumLevel + 1})
                     : complete
-                        ? 'REPLAY'
-                        : 'START',
+                        ? AppText.of('journey.replay')
+                        : AppText.of('journey.start'),
                 style: const TextStyle(
                   color: QuestColors.indigo,
                   fontSize: 10,
@@ -543,27 +544,27 @@ class _CollectionCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         SectionTitle(
-          'My Collection',
+          AppText.of('journey.collection'),
           trailing: TextButton(
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
                 builder: (_) => CollectionScreen(controller: controller),
               ),
             ),
-            child: const Text('View All'),
+            child: Text(AppText.of('journey.viewAll')),
           ),
         ),
         const SizedBox(height: 12),
         PremiumCard(
           child: unlocked.isEmpty
-              ? const Row(
+              ? Row(
                   children: <Widget>[
-                    Icon(Icons.lock_open_rounded, color: QuestColors.indigo),
-                    SizedBox(width: 12),
+                    const Icon(Icons.lock_open_rounded, color: QuestColors.indigo),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        'Story Quest zawh hmasak berah reward i hmu ang.',
-                        style: TextStyle(color: QuestColors.slate),
+                        AppText.of('journey.firstReward'),
+                        style: const TextStyle(color: QuestColors.slate),
                       ),
                     ),
                   ],
@@ -666,7 +667,7 @@ class _StoryQuestScreenState extends State<StoryQuestScreen> {
         .where((choice) => choice.id == selectedChoiceId)
         .firstOrNull;
     return QuestPage(
-      title: 'Story Quest',
+      title: AppText.of('story.title'),
       subtitle: '${widget.story.titleMizo} • ${widget.story.titleEnglish}',
       hud: _StoryProgress(
         current: beatIndex + 1,
@@ -735,9 +736,9 @@ class _StoryQuestScreenState extends State<StoryQuestScreen> {
             ),
           ),
           const SizedBox(height: 22),
-          const Text(
-            'Choose a natural reply',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+          Text(
+            AppText.of('story.chooseReply'),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
           ),
           const SizedBox(height: 12),
           ...beat.choices.map(
@@ -777,8 +778,8 @@ class _StoryQuestScreenState extends State<StoryQuestScreen> {
               onPressed: selected?.isNatural == true ? _continue : null,
               child: Text(
                 beatIndex == widget.story.beats.length - 1
-                    ? 'Complete Story'
-                    : 'Continue',
+                    ? AppText.of('story.complete')
+                    : AppText.of('common.continue'),
               ),
             ),
           ),
@@ -790,7 +791,7 @@ class _StoryQuestScreenState extends State<StoryQuestScreen> {
   Widget _buildCompletion(BuildContext context) {
     final reward = journeyRewardById(widget.node.rewardId);
     return QuestPage(
-      title: 'Story Complete',
+      title: AppText.of('story.completeTitle'),
       subtitle: widget.story.titleMizo,
       child: Column(
         children: <Widget>[
@@ -798,13 +799,13 @@ class _StoryQuestScreenState extends State<StoryQuestScreen> {
           Text(reward?.emoji ?? '✨', style: const TextStyle(fontSize: 58)),
           const SizedBox(height: 12),
           Text(
-            'I ti ṭha e!',
+            AppText.of('story.wellDone'),
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: 6),
           Text(
             reward?.labelFor(isChild: widget.controller.profile.isChild) ??
-                'Story reward',
+                AppText.of('story.reward'),
             textAlign: TextAlign.center,
             style: const TextStyle(
               color: QuestColors.tealDark,
@@ -819,14 +820,14 @@ class _StoryQuestScreenState extends State<StoryQuestScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const Row(
+                Row(
                   children: <Widget>[
-                    Icon(Icons.museum_rounded, color: Color(0xFF9A6800)),
-                    SizedBox(width: 8),
+                    const Icon(Icons.museum_rounded, color: const Color(0xFF9A6800)),
+                    const SizedBox(width: 8),
                     Text(
-                      'CULTURE MOMENT',
-                      style: TextStyle(
-                        color: Color(0xFF9A6800),
+                      AppText.of('story.cultureMoment'),
+                      style: const TextStyle(
+                        color: const Color(0xFF9A6800),
                         fontSize: 11,
                         fontWeight: FontWeight.w900,
                         letterSpacing: 1,
@@ -854,7 +855,7 @@ class _StoryQuestScreenState extends State<StoryQuestScreen> {
                         ? Icons.check_circle_rounded
                         : Icons.bookmark_add_rounded,
                   ),
-                  label: Text(cultureRecorded ? 'Saved' : 'I read this'),
+                  label: Text(cultureRecorded ? AppText.of('story.saved') : AppText.of('story.read')),
                 ),
               ],
             ),
@@ -868,15 +869,15 @@ class _StoryQuestScreenState extends State<StoryQuestScreen> {
                   color: QuestColors.indigo,
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'A good stopping point',
-                  style: TextStyle(fontWeight: FontWeight.w900),
+                Text(
+                  AppText.of('story.stop'),
+                  style: const TextStyle(fontWeight: FontWeight.w900),
                 ),
                 const SizedBox(height: 5),
-                const Text(
-                  'Vawiin tâna i zirna a tâwk tawh. Naktûkah hlim takin i chhunzawm leh thei e.',
+                Text(
+                  AppText.of('story.stopNote'),
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: QuestColors.slate),
+                  style: const TextStyle(color: QuestColors.slate),
                 ),
                 const SizedBox(height: 14),
                 SizedBox(
@@ -886,7 +887,7 @@ class _StoryQuestScreenState extends State<StoryQuestScreen> {
                       await widget.controller.acknowledgeHealthyStop();
                       if (context.mounted) Navigator.of(context).pop();
                     },
-                    child: const Text('Finish for Now'),
+                    child: Text(AppText.of('story.finish')),
                   ),
                 ),
               ],
@@ -906,7 +907,7 @@ class _StoryProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Semantics(
-        label: 'Story step $current of $total',
+        label: AppText.of('story.stepSpoken', {'n': current, 'total': total}),
         child: ExcludeSemantics(
           child: PremiumCard(
             padding: const EdgeInsets.all(14),
@@ -921,7 +922,7 @@ class _StoryProgress extends StatelessWidget {
                     const SizedBox(width: 9),
                     Expanded(
                       child: Text(
-                        'Conversation $current of $total',
+                        AppText.of('story.conversation', {'n': current, 'total': total}),
                         style: const TextStyle(fontWeight: FontWeight.w900),
                       ),
                     ),

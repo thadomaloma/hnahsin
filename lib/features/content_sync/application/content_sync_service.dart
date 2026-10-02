@@ -5,6 +5,7 @@ import 'package:crypto/crypto.dart';
 import '../data/offline_pack_store.dart';
 import '../domain/delivery_models.dart';
 import 'content_transport.dart';
+import '../../../src/app_text.dart';
 
 class ContentSyncService {
   ContentSyncService({required ContentTransport transport, required OfflinePackStore store})
@@ -18,6 +19,7 @@ class ContentSyncService {
   List<DeliveredQuestion> activeQuestions = const <DeliveredQuestion>[];
   List<DeliveredSentence> activeSentences = const <DeliveredSentence>[];
   Map<String, DeliveredGameCopy> activeGameCopy = const <String, DeliveredGameCopy>{};
+  Map<String, String> activeAppText = const <String, String>{};
 
   /// Verified picture bytes by SHA-256, for words that have an uploaded picture.
   Map<String, Uint8List> activeImages = const <String, Uint8List>{};
@@ -28,8 +30,8 @@ class ContentSyncService {
     state = ContentSyncState(
       contentVersion: content?.envelope.version,
       message: content == null
-          ? 'Built-in learning content is ready offline.'
-          : 'Verified offline packs are ready.',
+          ? AppText.of('sync.builtInReady')
+          : AppText.of('sync.packsReady'),
     );
   }
 
@@ -39,7 +41,7 @@ class ContentSyncService {
     state = previous.copyWith(
       outcome: ContentSyncOutcome.checking,
       lastAttemptAt: attemptedAt,
-      message: 'Checking reviewed content packs…',
+      message: AppText.of('sync.checking'),
     );
     try {
       final updated = await _syncContentPack();
@@ -51,19 +53,19 @@ class ContentSyncService {
         contentVersion: content?.envelope.version,
         lastAttemptAt: attemptedAt,
         lastSuccessAt: attemptedAt,
-        message: updated ? 'Reviewed offline packs updated safely.' : 'Offline packs are up to date.',
+        message: updated ? AppText.of('sync.updated') : AppText.of('sync.upToDate'),
       );
     } on FormatException catch (error) {
       await _restorePreservedState(
         outcome: ContentSyncOutcome.invalidRejected,
         attemptedAt: attemptedAt,
-        message: 'Unsafe update rejected. Verified compatible offline content remains available. ${error.message}',
+        message: AppText.of('sync.rejected', {'error': error.message}),
       );
     } catch (_) {
       await _restorePreservedState(
         outcome: ContentSyncOutcome.offlinePreserved,
         attemptedAt: attemptedAt,
-        message: 'Update unavailable. Verified compatible offline content remains available.',
+        message: AppText.of('sync.unavailable'),
       );
     }
     return state;
@@ -75,6 +77,7 @@ class ContentSyncService {
     activeQuestions = DeliveredQuestion.parseAll(items);
     activeSentences = DeliveredSentence.parseAll(items);
     activeGameCopy = DeliveredGameCopy.parseAll(items);
+    activeAppText = DeliveredAppText.parseAll(items);
     final images = <String, Uint8List>{};
     for (final image in activeWords.map((word) => word.image).whereType<DeliveredImage>()) {
       final bytes = await _store.readImage(image.checksum);

@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import '../features/content_sync/domain/delivery_models.dart';
 
 /// Mizo text for one game. Every field can be overridden per game on the
-/// content Sheet's “Game thu” tab; anything left empty there falls back to
+/// content Sheet's “Game text” tab; anything left empty there falls back to
 /// these built-in defaults.
 class GameCopy {
   const GameCopy({

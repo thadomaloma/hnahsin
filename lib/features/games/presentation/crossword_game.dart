@@ -13,6 +13,7 @@ import '../../../src/widgets.dart';
 import '../application/game_runtime.dart';
 import '../engine/crossword_layout.dart';
 import '../engine/game_engine.dart';
+import '../../../src/app_text.dart';
 
 typedef _Cell = (int, int);
 
@@ -368,10 +369,10 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
     ].join(', ');
     // Right letter, missing circumflex or dot: say so, it's what learners miss.
     final accentOnly = wrongCells.every((cell) => foldMizo(letters[cell] ?? '') == foldMizo(solution[cell]!));
-    final subject = words.isEmpty ? 'I chhanna' : 'Thumal $words';
-    return accentOnly
-        ? '$subject a hnaih hle! Hawrawp sen chu â, ê, î, ô, û emaw ṭ emaw a ni ang.'
-        : '$subject a dik lo. Hawrawp sen te thlak la, tum leh rawh.';
+    final subject = words.isEmpty
+        ? AppText.of('crossword.yourAnswer')
+        : AppText.of('crossword.words', {'words': words});
+    return AppText.of(accentOnly ? 'crossword.nearly' : 'crossword.wrong', {'subject': subject});
   }
 
   WordEntry? _entryFor(CrosswordSlot slot) =>
@@ -432,7 +433,7 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
           const SizedBox(height: 22),
           for (final direction in const [true, false])
             if (layout.slots.any((slot) => slot.across == direction)) ...[
-              SectionTitle(direction ? 'Across →' : 'Down ↓'),
+              SectionTitle(AppText.of(direction ? 'crossword.across' : 'crossword.down')),
               const SizedBox(height: 8),
               for (final item in layout.slots.where((slot) => slot.across == direction))
                 _ClueTile(
@@ -467,7 +468,7 @@ class _ClueBar extends StatelessWidget {
         child: Row(children: [
           IconButton(
             onPressed: onPrevious,
-            tooltip: 'Previous clue',
+            tooltip: AppText.of('crossword.previous'),
             icon: const Icon(Icons.chevron_left_rounded, color: Colors.white),
           ),
           Expanded(
@@ -475,7 +476,7 @@ class _ClueBar extends StatelessWidget {
               liveRegion: true,
               child: Column(children: [
                 Text(
-                  '${slot.number} ${slot.across ? 'ACROSS →' : 'DOWN ↓'}  •  ${slot.answer.length} HAWRAWP',
+                  AppText.of(slot.across ? 'crossword.clueAcross' : 'crossword.clueDown', {'n': slot.number, 'letters': slot.answer.length}),
                   style: const TextStyle(color: QuestColors.teal, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1),
                 ),
                 const SizedBox(height: 6),
@@ -489,7 +490,7 @@ class _ClueBar extends StatelessWidget {
           ),
           IconButton(
             onPressed: onNext,
-            tooltip: 'Next clue',
+            tooltip: AppText.of('crossword.next'),
             icon: const Icon(Icons.chevron_right_rounded, color: Colors.white),
           ),
         ]),
@@ -565,7 +566,9 @@ class _Board extends StatelessWidget {
     return Semantics(
       button: true,
       selected: cell == active,
-      label: 'Row ${cell.$1 + 1}, column ${cell.$2 + 1}, ${letter == null ? 'empty' : 'letter $letter'}',
+      label: letter == null
+          ? AppText.of('crossword.cellEmptySpoken', {'row': cell.$1 + 1, 'column': cell.$2 + 1})
+          : AppText.of('crossword.cellSpoken', {'row': cell.$1 + 1, 'column': cell.$2 + 1, 'letter': letter}),
       child: GestureDetector(
         onTap: () => onTap(cell),
         child: AnimatedContainer(
@@ -620,7 +623,7 @@ class _Keyboard extends StatelessWidget {
                 _Key(label: letter, onTap: enabled ? () => onLetter(letter) : null),
               if (index == MiniCrosswordGame.keyRows.length - 1)
                 _Key(
-                  label: 'Erase',
+                  label: AppText.of('crossword.erase'),
                   icon: Icons.backspace_outlined,
                   onTap: enabled ? onErase : null,
                 ),

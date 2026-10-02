@@ -7,6 +7,7 @@ import 'controller.dart';
 import 'data.dart';
 import 'screens.dart';
 import 'theme.dart';
+import 'app_text.dart';
 
 class HnahsinApp extends StatelessWidget {
   const HnahsinApp({super.key, required this.controller});
@@ -58,15 +59,15 @@ class _ReleaseContentGate extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Content review in progress',
+                      AppText.of('review.title'),
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                     const SizedBox(height: 10),
-                    const Text(
-                      'Mizo tawng content hi qualified reviewer-te pawmna kan nghah mêk a ni. Public release-ah draft content kan lantîr lo.',
+                    Text(
+                      AppText.of('review.body'),
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: QuestColors.slate),
+                      style: const TextStyle(color: QuestColors.slate),
                     ),
                   ],
                 ),
@@ -86,17 +87,18 @@ class QuestShell extends StatefulWidget {
 }
 
 class _Destination {
-  const _Destination(this.label, this.icon, this.selectedIcon);
-  final String label;
+  const _Destination(this.textId, this.icon, this.selectedIcon);
+  final String textId;
+  String get label => AppText.of(textId);
   final IconData icon;
   final IconData selectedIcon;
 }
 
 const _destinations = <_Destination>[
-  _Destination('Home', Icons.home_outlined, Icons.home_rounded),
-  _Destination('Learn', Icons.auto_stories_outlined, Icons.auto_stories_rounded),
-  _Destination('Games', Icons.sports_esports_outlined, Icons.sports_esports_rounded),
-  _Destination('Profile', Icons.person_outline_rounded, Icons.person_rounded),
+  _Destination('nav.home', Icons.home_outlined, Icons.home_rounded),
+  _Destination('nav.learn', Icons.auto_stories_outlined, Icons.auto_stories_rounded),
+  _Destination('nav.games', Icons.sports_esports_outlined, Icons.sports_esports_rounded),
+  _Destination('nav.profile', Icons.person_outline_rounded, Icons.person_rounded),
 ];
 
 class _QuestShellState extends State<QuestShell> {

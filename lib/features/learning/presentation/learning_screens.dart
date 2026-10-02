@@ -7,6 +7,7 @@ import '../../../src/data.dart';
 import '../../../src/theme.dart';
 import '../../../src/widgets.dart';
 import '../domain/learning_state.dart';
+import '../../../src/app_text.dart';
 
 class LearningOverviewCard extends StatelessWidget {
   const LearningOverviewCard({super.key, required this.controller});
@@ -65,15 +66,15 @@ class LearningOverviewCard extends StatelessWidget {
             runSpacing: 8,
             children: <Widget>[
               _LearningMetric(
-                label: 'EN LEH TUR',
+                label: AppText.of('learn.due'),
                 value: '${plan.reviewItemIds.length}',
               ),
               _LearningMetric(
-                label: 'THAR',
+                label: AppText.of('learn.new'),
                 value: '${plan.newItemIds.length}',
               ),
               _LearningMetric(
-                label: 'THIAM TAWH',
+                label: AppText.of('learn.mastered'),
                 value: '${state.masteredCount}',
               ),
             ],
@@ -100,8 +101,8 @@ class LearningOverviewCard extends StatelessWidget {
               ),
               label: Text(
                 state.placementCompleted
-                    ? 'Vawiin zirna ṭan rawh'
-                    : 'I level hre chhuak rawh',
+                    ? AppText.of('learn.startLesson')
+                    : AppText.of('learn.findLevel'),
               ),
             ),
           ),
@@ -115,7 +116,7 @@ class LearningOverviewCard extends StatelessWidget {
                   ),
                 ),
                 style: TextButton.styleFrom(foregroundColor: Colors.white),
-                child: const Text('Level en leh rawh'),
+                child: Text(AppText.of('learn.retakeLevel')),
               ),
             ),
         ],
@@ -227,10 +228,10 @@ class _PlacementScreenState extends State<PlacementScreen> {
   @override
   Widget build(BuildContext context) {
     if (questions.isEmpty) {
-      return const QuestPage(
-        title: 'Level enna',
+      return QuestPage(
+        title: AppText.of('placement.title'),
         child: PremiumCard(
-          child: Text('Zirna tur thumal a la awm lo.'),
+          child: Text(AppText.of('placement.empty')),
         ),
       );
     }
@@ -238,8 +239,8 @@ class _PlacementScreenState extends State<PlacementScreen> {
     final question = questions[index];
     final answered = selected != null;
     return QuestPage(
-      title: 'Level enna',
-      subtitle: 'Zawhna ${index + 1}/${questions.length}',
+      title: AppText.of('placement.title'),
+      subtitle: AppText.of('placement.question', {'n': index + 1, 'total': questions.length}),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -254,9 +255,9 @@ class _PlacementScreenState extends State<PlacementScreen> {
               children: <Widget>[
                 WordPicture(entry: question.item, size: 48),
                 const SizedBox(height: 10),
-                const Text(
-                  'A awmzia hnai ber thlang rawh',
-                  style: TextStyle(color: QuestColors.slate),
+                Text(
+                  AppText.of('placement.prompt'),
+                  style: const TextStyle(color: QuestColors.slate),
                 ),
                 const SizedBox(height: 6),
                 Text(
@@ -285,7 +286,7 @@ class _PlacementScreenState extends State<PlacementScreen> {
             child: FilledButton(
               onPressed: selected == null || saving ? null : _next,
               child: Text(
-                index == questions.length - 1 ? 'I level en rawh' : 'A dawt',
+                index == questions.length - 1 ? AppText.of('placement.seeLevel') : AppText.of('common.next.mizo'),
               ),
             ),
           ),
@@ -293,7 +294,7 @@ class _PlacementScreenState extends State<PlacementScreen> {
             alignment: Alignment.center,
             child: TextButton(
               onPressed: saving ? null : _startAtLevel1,
-              child: const Text('Level 1 atangin ṭan nghal rawh'),
+              child: Text(AppText.of('placement.skip')),
             ),
           ),
         ],
@@ -304,7 +305,7 @@ class _PlacementScreenState extends State<PlacementScreen> {
   Widget _result(BuildContext context) {
     final level = widget.controller.learningState.level;
     return QuestPage(
-      title: 'I ṭanna level',
+      title: AppText.of('placement.result'),
       child: Column(
         children: <Widget>[
           PremiumCard(
@@ -339,7 +340,7 @@ class _PlacementScreenState extends State<PlacementScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '${questions.length} zingah $correct i chhang dik • ${level.mizoDescription}',
+                  AppText.of('placement.score', {'total': questions.length, 'correct': correct, 'description': level.mizoDescription}),
                   textAlign: TextAlign.center,
                   style: const TextStyle(color: Color(0xFFDDF3FF), height: 1.4),
                 ),
@@ -352,7 +353,7 @@ class _PlacementScreenState extends State<PlacementScreen> {
             child: FilledButton.icon(
               onPressed: () => Navigator.of(context).pop(),
               icon: const Icon(Icons.arrow_forward_rounded),
-              label: const Text('Zir chhunzawm rawh'),
+              label: Text(AppText.of('learn.continue')),
             ),
           ),
         ],
@@ -429,7 +430,7 @@ class _DailyReviewScreenState extends State<DailyReviewScreen> {
     final question = questions[index];
     final answered = selected != null;
     return QuestPage(
-      title: 'Vawiin zirna',
+      title: AppText.of('lesson.title'),
       subtitle: '${index + 1}/${questions.length}',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -460,7 +461,7 @@ class _DailyReviewScreenState extends State<DailyReviewScreen> {
                 Text(
                   question.isNew || answered
                       ? question.item.meaningMizo
-                      : 'A awmzia thlang rawh',
+                      : AppText.of('lesson.prompt'),
                   textAlign: TextAlign.center,
                   style: const TextStyle(color: QuestColors.slate),
                 ),
@@ -490,8 +491,8 @@ class _DailyReviewScreenState extends State<DailyReviewScreen> {
             FeedbackCard(
               correct: selected == question.answer,
               message: selected == question.answer
-                  ? 'A dik e! “${question.item.exampleMizo}”'
-                  : 'A dik chu “${question.answer}” a ni. ${question.item.exampleMizo}',
+                  ? AppText.of('lesson.right', {'example': question.item.exampleMizo})
+                  : AppText.of('lesson.wrong', {'answer': question.answer, 'example': question.item.exampleMizo}),
             ),
             const SizedBox(height: 12),
           ],
@@ -500,7 +501,7 @@ class _DailyReviewScreenState extends State<DailyReviewScreen> {
             child: FilledButton(
               onPressed: selected == null || saving ? null : _continue,
               child: Text(
-                index == questions.length - 1 ? 'Zirna tihfel rawh' : 'A dawt',
+                index == questions.length - 1 ? AppText.of('lesson.finish') : AppText.of('common.next.mizo'),
               ),
             ),
           ),
@@ -510,20 +511,20 @@ class _DailyReviewScreenState extends State<DailyReviewScreen> {
   }
 
   Widget _empty(BuildContext context) => QuestPage(
-        title: 'Vawiin zirna',
+        title: AppText.of('lesson.title'),
         child: Column(
           children: <Widget>[
-            const PremiumCard(
+            PremiumCard(
               child: Column(
                 children: <Widget>[
-                  Icon(Icons.task_alt_rounded,
+                  const Icon(Icons.task_alt_rounded,
                       color: QuestColors.success, size: 50),
-                  SizedBox(height: 10),
-                  Text('I zo vek tawh e!',
+                  const SizedBox(height: 10),
+                  Text(AppText.of('lesson.caughtUp'),
                       style:
-                          TextStyle(fontSize: 22, fontWeight: FontWeight.w900)),
-                  SizedBox(height: 6),
-                  Text('Tunah hian en leh tur thumal a awm lo.',
+                          const TextStyle(fontSize: 22, fontWeight: FontWeight.w900)),
+                  const SizedBox(height: 6),
+                  Text(AppText.of('lesson.caughtUpNote'),
                       textAlign: TextAlign.center),
                 ],
               ),
@@ -531,14 +532,14 @@ class _DailyReviewScreenState extends State<DailyReviewScreen> {
             const SizedBox(height: 16),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Kir leh rawh'),
+              child: Text(AppText.of('lesson.back')),
             ),
           ],
         ),
       );
 
   Widget _complete(BuildContext context) => QuestPage(
-        title: 'Zirna zo',
+        title: AppText.of('lesson.completeTitle'),
         child: Column(
           children: <Widget>[
             PremiumCard(
@@ -550,17 +551,17 @@ class _DailyReviewScreenState extends State<DailyReviewScreen> {
                   const Icon(Icons.verified_rounded,
                       color: QuestColors.gold, size: 52),
                   const SizedBox(height: 10),
-                  const Text(
-                    'Vawiin zirna i zo ta!',
+                  Text(
+                    AppText.of('lesson.complete'),
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.white,
                         fontSize: 24,
                         fontWeight: FontWeight.w900),
                   ),
                   const SizedBox(height: 7),
                   Text(
-                    '${questions.length} zingah $correct i chhang dik • Heng thumalte hi a hun takah kan rawn tilang leh ang.',
+                    AppText.of('lesson.score', {'total': questions.length, 'correct': correct}),
                     textAlign: TextAlign.center,
                     style:
                         const TextStyle(color: Color(0xFFDDF3FF), height: 1.4),
@@ -573,7 +574,7 @@ class _DailyReviewScreenState extends State<DailyReviewScreen> {
               width: double.infinity,
               child: FilledButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Zir chhunzawm rawh'),
+                child: Text(AppText.of('learn.continue')),
               ),
             ),
           ],
@@ -591,9 +592,9 @@ class _NewWordChip extends StatelessWidget {
           color: QuestColors.gold,
           borderRadius: BorderRadius.circular(99),
         ),
-        child: const Text(
-          'THUMAL THAR',
-          style: TextStyle(
+        child: Text(
+          AppText.of('lesson.newWord'),
+          style: const TextStyle(
             color: QuestColors.midnight,
             fontSize: 11,
             fontWeight: FontWeight.w900,

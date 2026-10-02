@@ -1,7 +1,7 @@
 {
  "id": "00000000-0000-4000-8000-000000000000",
  "version": "2.20261001.120000",
- "checksum": "21915ff3df3aff3a29c3386d58fac16fa2211b28967048946a93444c44d38d55",
+ "checksum": "f1809e0ef767d1ef9e6689127fba68d37d1a8d8cbe1186ad01351288d6ff4f69",
  "published_at": "2026-10-01T12:00:00Z",
  "manifest": {
   "schema_version": "1.0",
@@ -9,6 +9,24 @@
   "pack_version": "2.20261001.120000",
   "generated_at": "2026-10-01T12:00:00Z",
   "items": [
+   {
+    "stable_id": "app.home.play",
+    "content_type": "app_text",
+    "checksum": "72460ed38652eceaebf8aaa8f42a59c790f915cad459076a83fbb29c072a0e2d",
+    "body": {
+     "text_id": "home.play",
+     "text": "Khel nghal rawh"
+    }
+   },
+   {
+    "stable_id": "app.home.streak",
+    "content_type": "app_text",
+    "checksum": "e2b7b4770f1f59ea02cf4195f0b260775bcb213e5edd8735225d6571a5294425",
+    "body": {
+     "text_id": "home.streak",
+     "text": "Ni {n} indawt"
+    }
+   },
    {
     "stable_id": "game.common",
     "content_type": "game_copy",

@@ -27,5 +27,9 @@ void main() {
     expect(DeliveredSentence.parseAll(items).single.textMizo, 'Ka nu chu a hlim.');
     final common = DeliveredGameCopy.parseAll(items)['common']!;
     expect(common.fields, {'correct_feedback': 'A dik e!'});
+    expect(DeliveredAppText.parseAll(items), {
+      'home.play': 'Khel nghal rawh',
+      'home.streak': 'Ni {n} indawt',
+    });
   });
 }

@@ -15,6 +15,7 @@ import '../application/game_runtime.dart';
 import '../engine/game_engine.dart';
 import '../engine/game_difficulty.dart';
 import '../engine/phase2b_engine.dart';
+import '../../../src/app_text.dart';
 
 class SentenceBuilderGame extends StatefulWidget {
   const SentenceBuilderGame({
@@ -261,9 +262,9 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
   @override
   Widget build(BuildContext context) {
     if (questions.isEmpty) {
-      return const QuestPage(
-        title: 'Sentence Builder',
-        child: PremiumCard(child: Text('Sentence content is not available.')),
+      return QuestPage(
+        title: AppText.of('sentence.title'),
+        child: PremiumCard(child: Text(AppText.of('sentence.empty'))),
       );
     }
     return QuestPage(
@@ -289,7 +290,7 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
                   // the word it is there to teach.
                   question.keyWord == null
                       ? GameText.of('sentence_builder').prompt
-                      : 'SENTENCE USING THIS WORD',
+                      : AppText.of('sentence.usingWord'),
                   style: const TextStyle(
                     color: QuestColors.teal,
                     fontSize: 11,
@@ -329,9 +330,9 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
           if (runtime.hintRevealed)
             GameHintCard(message: GameText.of('sentence_builder').hint),
           const SizedBox(height: 8),
-          const Text(
-            'YOUR SENTENCE',
-            style: TextStyle(
+          Text(
+            AppText.of('sentence.yours'),
+            style: const TextStyle(
               color: QuestColors.slate,
               fontSize: 10,
               fontWeight: FontWeight.w900,
@@ -391,8 +392,8 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
             FeedbackCard(
               correct: isCorrect!,
               message: isCorrect!
-                  ? '${question.textMizo} — A rem dik e.'
-                  : 'A indawt a la dik lo. “${question.textMizo}” tih hi en la, tum leh rawh.',
+                  ? AppText.of('sentence.right', {'sentence': question.textMizo})
+                  : AppText.of('sentence.wrong', {'sentence': question.textMizo}),
             ),
             ContentReportButton(
               controller: widget.controller,
@@ -406,10 +407,10 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
                 : _continue,
             child: Text(
               isCorrect == null
-                  ? 'Check Sentence'
+                  ? AppText.of('sentence.check')
                   : isCorrect == true
-                      ? (index == questions.length - 1 ? 'Finish' : 'Next Sentence')
-                      : 'Try Again',
+                      ? AppText.of(index == questions.length - 1 ? 'sentence.finish' : 'sentence.next')
+                      : AppText.of('sentence.retry'),
             ),
           ),
         ],

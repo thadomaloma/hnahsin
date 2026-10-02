@@ -56,3 +56,12 @@ integer `difficulty` from 1–5. Supported categories are `chhungkua`, `sikul`,
 `nungcha`, `khawvel`, `nunphung`, and `thiltih`. The client switches from its
 bundled fallback only when a reviewed pack provides at least 20 valid words,
 including five beginner (`difficulty: 1`) words.
+
+## App text
+
+For `content_type: "app_text"`, `body` is `{"text_id": "home.play", "text":
+"Khel rawh"}`: the wording for one of the app's labels, buttons or messages
+(the content Sheet's “App text” tab). IDs are the keys of `appTextDefaults` in
+`lib/src/app_text.dart`. The app uses the text only when its `{name}`
+placeholders match the built-in text's; otherwise, and for any ID the pack
+leaves out, it shows the built-in text.

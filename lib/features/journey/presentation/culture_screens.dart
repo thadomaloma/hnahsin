@@ -6,6 +6,7 @@ import '../../../src/widgets.dart';
 import '../../onboarding/domain/learner_profile.dart';
 import '../domain/journey_content.dart';
 import '../domain/journey_models.dart';
+import '../../../src/app_text.dart';
 
 class CultureTrailScreen extends StatelessWidget {
   const CultureTrailScreen({super.key, required this.controller});
@@ -26,8 +27,8 @@ class CultureTrailScreen extends StatelessWidget {
               )
               .length;
           return QuestPage(
-            title: 'Culture Trail',
-            subtitle: '$collected/${playable.length} cards collected',
+            title: AppText.of('culture.title'),
+            subtitle: AppText.of('culture.collected', {'n': collected, 'total': playable.length}),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -43,9 +44,9 @@ class CultureTrailScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            const Text(
-                              'MIZO CULTURE TRAIL',
-                              style: TextStyle(
+                            Text(
+                              AppText.of('culture.eyebrow'),
+                              style: const TextStyle(
                                 color: QuestColors.teal,
                                 fontSize: 11,
                                 fontWeight: FontWeight.w900,
@@ -53,9 +54,9 @@ class CultureTrailScreen extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 5),
-                            const Text(
-                              'Thumal, hnam nun leh a hman dân zir rawh.',
-                              style: TextStyle(
+                            Text(
+                              AppText.of('culture.intro'),
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 19,
                                 fontWeight: FontWeight.w900,
@@ -63,7 +64,7 @@ class CultureTrailScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 7),
                             Text(
-                              '${controller.journeyState.trailMarks} Trail Marks • Lessons stay open',
+                              AppText.of('culture.marks', {'n': controller.journeyState.trailMarks}),
                               style: const TextStyle(color: Color(0xFFDDF3FF)),
                             ),
                           ],
@@ -83,7 +84,7 @@ class CultureTrailScreen extends StatelessWidget {
                     )
                     .map((trail) => _SeasonalArchiveCard(trail: trail)),
                 const SizedBox(height: 22),
-                const SectionTitle('Culture Cards'),
+                SectionTitle(AppText.of('culture.cards')),
                 const SizedBox(height: 12),
                 ...playable.map(
                   (card) => Padding(
@@ -112,15 +113,15 @@ class _CultureReviewNotice extends StatelessWidget {
           color: const Color(0xFFFFF5D8),
           borderRadius: BorderRadius.circular(16),
         ),
-        child: const Row(
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Icon(Icons.rate_review_rounded, color: Color(0xFF9A6800)),
-            SizedBox(width: 10),
+            const Icon(Icons.rate_review_rounded, color: const Color(0xFF9A6800)),
+            const SizedBox(width: 10),
             Expanded(
               child: Text(
-                'Preview content — language leh culture reviewer pawmna a la nghah mêk.',
-                style: TextStyle(fontWeight: FontWeight.w800),
+                AppText.of('culture.preview'),
+                style: const TextStyle(fontWeight: FontWeight.w800),
               ),
             ),
           ],
@@ -156,7 +157,7 @@ class _SeasonalArchiveCard extends StatelessWidget {
                         ),
                       ),
                       if (trail.archiveAvailable)
-                        const Chip(label: Text('NO DEADLINE')),
+                        Chip(label: Text(AppText.of('culture.noDeadline'))),
                     ],
                   ),
                   const SizedBox(height: 5),
@@ -215,7 +216,7 @@ class _CultureCardTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  unlocked ? card.titleMizo : 'Unlock at Level ${card.minimumLevel + 1}',
+                  unlocked ? card.titleMizo : AppText.of('culture.unlockAt', {'n': card.minimumLevel + 1}),
                   style: const TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w900,
@@ -223,7 +224,7 @@ class _CultureCardTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  unlocked ? card.shortMeaningMizo : 'Zirna level chhunzawm rawh.',
+                  unlocked ? card.shortMeaningMizo : AppText.of('culture.keepLearning'),
                   style: const TextStyle(
                     color: QuestColors.slate,
                     fontSize: 12,
@@ -278,7 +279,7 @@ class _CultureCardScreenState extends State<CultureCardScreen> {
     final collected = widget.controller.journeyState.collectedCultureCardIds
         .contains(widget.card.id);
     return QuestPage(
-      title: 'Culture Card',
+      title: AppText.of('culture.cardTitle'),
       subtitle: widget.card.titleEnglish,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -317,9 +318,9 @@ class _CultureCardScreenState extends State<CultureCardScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const Text(
-                  'A hman dân leh a nihna',
-                  style: TextStyle(fontWeight: FontWeight.w900),
+                Text(
+                  AppText.of('culture.usage'),
+                  style: const TextStyle(fontWeight: FontWeight.w900),
                 ),
                 const SizedBox(height: 8),
                 Text(widget.card.contextMizo),
@@ -341,10 +342,10 @@ class _CultureCardScreenState extends State<CultureCardScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const Text(
-                  'Example',
-                  style: TextStyle(
-                    color: Color(0xFF9A6800),
+                Text(
+                  AppText.of('culture.example'),
+                  style: const TextStyle(
+                    color: const Color(0xFF9A6800),
                     fontSize: 11,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 1,
@@ -373,10 +374,10 @@ class _CultureCardScreenState extends State<CultureCardScreen> {
               ),
               label: Text(
                 recordedThisVisit
-                    ? 'Read Today'
+                    ? AppText.of('culture.readToday')
                     : collected
-                        ? 'Read Again'
-                        : 'Add to Collection',
+                        ? AppText.of('culture.readAgain')
+                        : AppText.of('culture.add'),
               ),
             ),
           ),
@@ -388,7 +389,7 @@ class _CultureCardScreenState extends State<CultureCardScreen> {
                 reason: 'culture wording or context',
               ),
               icon: const Icon(Icons.flag_outlined),
-              label: const Text('Report a Content Issue'),
+              label: Text(AppText.of('culture.report')),
             ),
           ),
         ],
@@ -420,9 +421,9 @@ class CollectionScreen extends StatelessWidget {
               )
               .toList(growable: false);
           return QuestPage(
-            title: 'My Collection',
+            title: AppText.of('collection.title'),
             subtitle:
-                '${collectedCards.length}/${cultureCards.length} culture cards',
+                AppText.of('collection.count', {'n': collectedCards.length, 'total': cultureCards.length}),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -453,14 +454,14 @@ class CollectionScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              '${controller.journeyState.trailMarks} Trail Marks',
+                              AppText.of('collection.marks', {'n': controller.journeyState.trailMarks}),
                               style: const TextStyle(color: QuestColors.teal),
                             ),
                             const SizedBox(height: 4),
-                            const Text(
-                              'Recognition only • No lesson is locked',
-                              style: TextStyle(
-                                color: Color(0xFFDDF3FF),
+                            Text(
+                              AppText.of('collection.note'),
+                              style: const TextStyle(
+                                color: const Color(0xFFDDF3FF),
                                 fontSize: 11,
                               ),
                             ),
@@ -471,7 +472,7 @@ class CollectionScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-                const SectionTitle('Choose My Style'),
+                SectionTitle(AppText.of('collection.style')),
                 const SizedBox(height: 12),
                 ...avatarStyles.map(
                   (avatar) => Padding(
@@ -483,7 +484,7 @@ class CollectionScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 18),
-                const SectionTitle('Milestones'),
+                SectionTitle(AppText.of('collection.milestones')),
                 const SizedBox(height: 12),
                 PremiumCard(
                   child: Column(
@@ -526,13 +527,13 @@ class CollectionScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-                const SectionTitle('Culture Cards'),
+                SectionTitle(AppText.of('culture.cards')),
                 const SizedBox(height: 12),
                 PremiumCard(
                   child: collectedCards.isEmpty
-                      ? const Text(
-                          'Culture Trail-ah card pakhat chhiar hmasa rawh.',
-                          style: TextStyle(color: QuestColors.slate),
+                      ? Text(
+                          AppText.of('collection.firstCard'),
+                          style: const TextStyle(color: QuestColors.slate),
                         )
                       : Wrap(
                           spacing: 10,
@@ -548,13 +549,13 @@ class CollectionScreen extends StatelessWidget {
                         ),
                 ),
                 const SizedBox(height: 24),
-                const SectionTitle('Story Rewards'),
+                SectionTitle(AppText.of('collection.rewards')),
                 const SizedBox(height: 12),
                 PremiumCard(
                   child: storyRewards.isEmpty
-                      ? const Text(
-                          'Story Quest zawh hmasak berah reward i hmu ang.',
-                          style: TextStyle(color: QuestColors.slate),
+                      ? Text(
+                          AppText.of('collection.firstReward'),
+                          style: const TextStyle(color: QuestColors.slate),
                         )
                       : Wrap(
                           spacing: 10,
@@ -592,7 +593,7 @@ class _AvatarOption extends StatelessWidget {
     final selected = controller.journeyState.selectedAvatarId == avatar.id;
     return AnswerButton(
       label:
-          '${unlocked ? avatar.emoji : '🔒'}  ${avatar.labelFor(isChild: controller.profile.isChild)}${unlocked ? '' : ' • ${avatar.requiredMarks} marks'}',
+          '${unlocked ? avatar.emoji : '🔒'}  ${unlocked ? avatar.labelFor(isChild: controller.profile.isChild) : AppText.of('collection.avatarLocked', {'avatar': avatar.labelFor(isChild: controller.profile.isChild), 'marks': avatar.requiredMarks})}',
       selected: selected,
       correct: selected ? true : null,
       onTap: unlocked ? () => controller.selectJourneyAvatar(avatar.id) : null,

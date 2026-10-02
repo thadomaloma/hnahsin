@@ -278,8 +278,7 @@ class _StreakResult {
 const dailyQuestCatalog = <EngagementQuest>[
   EngagementQuest(
     id: 'daily.story',
-    title: 'Story Step',
-    instructionMizo: 'Story Quest pakhat zawh rawh.',
+    textId: 'quest.story',
     action: JourneyAction.story,
     target: 1,
     cadence: QuestCadence.daily,
@@ -287,8 +286,7 @@ const dailyQuestCatalog = <EngagementQuest>[
   ),
   EngagementQuest(
     id: 'daily.review',
-    title: 'Word Keeper',
-    instructionMizo: 'Thumal pathum review rawh.',
+    textId: 'quest.words',
     action: JourneyAction.review,
     target: 3,
     cadence: QuestCadence.daily,
@@ -296,8 +294,7 @@ const dailyQuestCatalog = <EngagementQuest>[
   ),
   EngagementQuest(
     id: 'daily.culture',
-    title: 'Culture Moment',
-    instructionMizo: 'Culture note pakhat chhiar rawh.',
+    textId: 'quest.culture',
     action: JourneyAction.culture,
     target: 1,
     cadence: QuestCadence.daily,
@@ -308,8 +305,7 @@ const dailyQuestCatalog = <EngagementQuest>[
 const weeklyQuestCatalog = <EngagementQuest>[
   EngagementQuest(
     id: 'weekly.story',
-    title: 'Story Week',
-    instructionMizo: 'Kar khat chhûngin Story Quest pathum zawh rawh.',
+    textId: 'quest.storyWeek',
     action: JourneyAction.story,
     target: 3,
     cadence: QuestCadence.weekly,
@@ -317,8 +313,7 @@ const weeklyQuestCatalog = <EngagementQuest>[
   ),
   EngagementQuest(
     id: 'weekly.culture',
-    title: 'Culture Trail Week',
-    instructionMizo: 'Kar khat chhûngin Culture Card pathum chhiar rawh.',
+    textId: 'quest.cultureWeek',
     action: JourneyAction.culture,
     target: 3,
     cadence: QuestCadence.weekly,

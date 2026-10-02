@@ -13,6 +13,7 @@ import '../features/learning/domain/learning_engine.dart';
 import '../features/learning/domain/learning_state.dart';
 import '../features/onboarding/domain/learner_profile.dart';
 import '../features/progress/domain/quest_progress.dart';
+import 'app_text.dart';
 import 'data.dart';
 import 'game_session.dart';
 import 'game_text.dart';
@@ -245,6 +246,7 @@ class QuestController extends ChangeNotifier {
     final service = _contentSyncService;
     if (service == null) return;
     GameText.update(service.activeGameCopy);
+    AppText.update(service.activeAppText);
     WordImages.update(service.activeImages);
   }
 

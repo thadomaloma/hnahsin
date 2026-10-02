@@ -25,7 +25,7 @@ question and picture is written and reviewed by people in a **Google Sheet**.
 - **Offline first** — content packs are verified by SHA-256 and cached on the
   device; progress stays on the device.
 - **Content Sheet** — words, pictures, questions and all game text are edited
-  in a Google Sheet with Mizo headings; its **Hnahsin → 🚀 Chhuah** menu checks
+  in a Google Sheet; its **Hnahsin → 🚀 Publish to the app** menu checks
   every row and publishes the content pack. No server to run.
 - Phone-first design that also adapts to tablets and desktop browsers.
 
@@ -59,12 +59,12 @@ The old name, `THUMAL_QUEST_API_BASE_URL`, still works.
 
 ## Editing content
 
-Content lives in the **Hnahsin content** Google Sheet (tabs Thumal, Zawhna,
-Sentence, Game thu; how-to in Mizo on its Kaihhruaina tab):
+Content lives in the **Hnahsin content** Google Sheet (tabs Words, Questions,
+Sentences, Game text, App text; the how-to is on its Help tab):
 
-1. Add or change rows. Only rows whose **Dinhmun** is *Chhuah* reach the app.
-2. **Hnahsin → ✅ Endik** lists anything wrong, in Mizo, with links to the rows.
-3. **Hnahsin → 🚀 Chhuah** publishes the pack to
+1. Add or change rows. Only rows whose **Status** is *Live* reach the app.
+2. **Hnahsin → ✅ Check for problems** lists anything wrong, with links to the rows.
+3. **Hnahsin → 🚀 Publish to the app** publishes the pack to
    [hnahsin-content](https://github.com/thadomaloma/hnahsin-content) on GitHub
    Pages; apps pick it up on their next sync, without an app update.
 

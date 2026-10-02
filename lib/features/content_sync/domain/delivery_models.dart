@@ -20,7 +20,7 @@ class ContentSyncState {
     this.contentVersion,
     this.lastAttemptAt,
     this.lastSuccessAt,
-    this.message = 'Built-in learning content is ready offline.',
+    this.message = '',
   });
 
   final ContentSyncOutcome outcome;
@@ -430,6 +430,22 @@ class DeliveredGameCopy {
       );
     }
     return Map<String, DeliveredGameCopy>.unmodifiable(copies);
+  }
+}
+
+/// The content Sheet's “App text” tab: wording for the app's labels, buttons
+/// and messages, by text ID (lib/src/app_text.dart).
+abstract final class DeliveredAppText {
+  static Map<String, String> parseAll(Object? items) {
+    final texts = <String, String>{};
+    for (final item in _itemsOfType(items, 'app_text')) {
+      final body = item['body'] as Map;
+      final id = body['text_id'];
+      final text = body['text'];
+      if (id is! String || id.isEmpty || text is! String || text.trim().isEmpty) continue;
+      texts[id] = text.trim();
+    }
+    return Map<String, String>.unmodifiable(texts);
   }
 }
 

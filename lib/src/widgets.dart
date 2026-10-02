@@ -6,6 +6,7 @@ import 'data.dart';
 import 'game_session.dart';
 import 'game_text.dart';
 import 'theme.dart';
+import 'app_text.dart';
 
 class QuestPage extends StatelessWidget {
   const QuestPage({super.key, required this.title, required this.child, this.subtitle, this.hud});
@@ -65,7 +66,7 @@ class _BackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Semantics(
         button: true,
-        label: 'Back',
+        label: AppText.of('common.back'),
         child: ExcludeSemantics(
           child: Material(
             color: Colors.white,
@@ -328,8 +329,12 @@ class GameHud extends StatelessWidget {
     final lowTime = secondsRemaining != null && secondsRemaining! <= 15;
     return Semantics(
       label: relaxed
-          ? 'Relaxed mode. Score ${session.score}. Progress ${(progress * 100).round()} percent.'
-          : '${session.hearts} of ${session.startingHearts} hearts. ${secondsRemaining == null ? '' : '$secondsRemaining seconds remaining. '}Score ${session.score}. Progress ${(progress * 100).round()} percent.',
+          ? AppText.of('hud.relaxedSpoken', {'score': session.score, 'percent': (progress * 100).round()})
+          : [
+              AppText.of('hud.heartsSpoken', {'hearts': session.hearts, 'total': session.startingHearts}),
+              if (secondsRemaining != null) AppText.of('hud.secondsSpoken', {'seconds': secondsRemaining}),
+              AppText.of('hud.scoreSpoken', {'score': session.score, 'percent': (progress * 100).round()}),
+            ].join(' '),
       child: ExcludeSemantics(
         child: Container(
           padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
@@ -341,7 +346,7 @@ class GameHud extends StatelessWidget {
           child: Column(children: [
             Row(children: [
               if (relaxed)
-                const _HudChip(icon: Icons.eco_rounded, label: 'Relaxed', iconColor: QuestColors.teal)
+                _HudChip(icon: Icons.eco_rounded, label: AppText.of('hud.relaxed'), iconColor: QuestColors.teal)
               else
                 Row(mainAxisSize: MainAxisSize.min, children: [
                   for (var i = 0; i < session.startingHearts; i++)
@@ -459,14 +464,14 @@ class GameResumeBanner extends StatelessWidget {
             borderRadius: BorderRadius.circular(18),
             border: Border.all(color: const Color(0xFF8FD0FA)),
           ),
-          child: const Row(
+          child: Row(
             children: <Widget>[
-              Icon(Icons.restore_rounded, color: QuestColors.tealDark),
-              SizedBox(width: 10),
+              const Icon(Icons.restore_rounded, color: QuestColors.tealDark),
+              const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  'Saved game restored — i khelhna hmasa kha kan chhunzawm e.',
-                  style: TextStyle(fontWeight: FontWeight.w700),
+                  AppText.of('game.restored'),
+                  style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
               ),
             ],
@@ -499,7 +504,7 @@ class GameHintButton extends StatelessWidget {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
             ),
             icon: Icon(revealed ? Icons.lightbulb_rounded : Icons.lightbulb_outline_rounded, size: 19),
-            label: Text(revealed ? 'Hint used' : 'Use a hint'),
+            label: Text(revealed ? AppText.of('game.hintUsed') : AppText.of('game.useHint')),
           ),
         ),
       );
@@ -581,9 +586,9 @@ class _AnswerButtonState extends State<AnswerButton> {
       button: true,
       selected: widget.selected,
       label: widget.correct == true
-          ? '${widget.label}, correct'
+          ? AppText.of('answer.correctSpoken', {'answer': widget.label})
           : widget.correct == false
-              ? '${widget.label}, incorrect'
+              ? AppText.of('answer.incorrectSpoken', {'answer': widget.label})
               : widget.label,
       child: ExcludeSemantics(
         child: GestureDetector(
@@ -649,7 +654,7 @@ class FeedbackCard extends StatelessWidget {
     final accent = correct ? QuestColors.successInk : QuestColors.coral;
     return Semantics(
       liveRegion: true,
-      label: '${correct ? 'Correct' : 'Try again'}. $message',
+      label: '${correct ? AppText.of('feedback.correctSpoken') : AppText.of('feedback.retrySpoken')}. $message',
       child: ExcludeSemantics(
         child: TweenAnimationBuilder<double>(
           tween: Tween(begin: 0, end: 1),
@@ -736,13 +741,13 @@ Future<void> showGameResult(BuildContext context, QuestController controller, St
             ),
             const SizedBox(height: 12),
             Text(
-              switch (result.endReason) { GameEndReason.timedOut => 'Time is up!', GameEndReason.heartsExhausted => 'Tunah chuan a tâwk e!', _ => 'I ti thei e!' },
+              AppText.of(switch (result.endReason) { GameEndReason.timedOut => 'result.timeUp', GameEndReason.heartsExhausted => 'result.outOfHearts', _ => 'result.done' }),
               textAlign: TextAlign.center,
               style: const TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.w800, letterSpacing: -.5),
             ),
             const SizedBox(height: 6),
             Text(
-              switch (result.endReason) { GameEndReason.timedOut => 'Hun a tâwp ta. I chhân tawhte chu a save vek e.', GameEndReason.heartsExhausted => 'I score chu a save tawh. Tum leh la, i thiam chho ang.', _ => 'Khelh pahin Mizo tawng i thiam chho zêl e.' },
+              AppText.of(switch (result.endReason) { GameEndReason.timedOut => 'result.timeUpNote', GameEndReason.heartsExhausted => 'result.outOfHeartsNote', _ => 'result.doneNote' }),
               textAlign: TextAlign.center,
               style: const TextStyle(color: Color(0xFFDDF3FF), fontWeight: FontWeight.w500),
             ),
@@ -754,11 +759,11 @@ Future<void> showGameResult(BuildContext context, QuestController controller, St
           padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + MediaQuery.of(sheetContext).padding.bottom),
           child: Column(children: [
             Row(children: [
-              Expanded(child: _ResultStat(icon: Icons.star_rounded, color: QuestColors.goldDeep, label: 'SCORE', value: '${result.score}')),
+              Expanded(child: _ResultStat(icon: Icons.star_rounded, color: QuestColors.goldDeep, label: AppText.of('result.score'), value: '${result.score}')),
               const SizedBox(width: 10),
-              Expanded(child: _ResultStat(icon: Icons.track_changes_rounded, color: QuestColors.tealDark, label: 'ACCURACY', value: '${(result.accuracy * 100).round()}%')),
+              Expanded(child: _ResultStat(icon: Icons.track_changes_rounded, color: QuestColors.tealDark, label: AppText.of('result.accuracy'), value: '${(result.accuracy * 100).round()}%')),
               const SizedBox(width: 10),
-              Expanded(child: _ResultStat(icon: Icons.bolt_rounded, color: QuestColors.indigo, label: 'XP', value: '+${outcome.xp}')),
+              Expanded(child: _ResultStat(icon: Icons.bolt_rounded, color: QuestColors.indigo, label: AppText.of('result.xp'), value: '+${outcome.xp}')),
             ]),
             if (result.words.isNotEmpty) ...[
               const SizedBox(height: 18),
@@ -768,7 +773,7 @@ Future<void> showGameResult(BuildContext context, QuestController controller, St
             Row(children: [
               Expanded(child: OutlinedButton(
                 onPressed: () { Navigator.of(sheetContext).pop(); Navigator.of(context).pop(); },
-                child: const Text('Continue'),
+                child: Text(AppText.of('common.continue')),
               )),
               const SizedBox(width: 10),
               Expanded(child: FilledButton.icon(
@@ -777,7 +782,7 @@ Future<void> showGameResult(BuildContext context, QuestController controller, St
                   Navigator.of(context).pushReplacement(MaterialPageRoute<void>(builder: (_) => game));
                 },
                 icon: const Icon(Icons.replay_rounded),
-                label: const Text('Khelh leh'),
+                label: Text(AppText.of('result.playAgain')),
               )),
             ]),
           ]),
@@ -800,7 +805,7 @@ class _RoundWords extends StatelessWidget {
     final ordered = [...words.where((w) => w.missed), ...words.where((w) => !w.missed)];
     final missed = words.where((w) => w.missed).length;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const Text('Thumal i hmuh te', style: TextStyle(fontWeight: FontWeight.w800, color: QuestColors.navy)),
+      Text(AppText.of('result.words'), style: const TextStyle(fontWeight: FontWeight.w800, color: QuestColors.navy)),
       const SizedBox(height: 8),
       Wrap(spacing: 6, runSpacing: 6, children: [
         for (final play in ordered.take(_shown))
@@ -823,7 +828,7 @@ class _RoundWords extends StatelessWidget {
       ]),
       if (missed > 0) ...[
         const SizedBox(height: 6),
-        const Text('A sen te hi i khelh leh hunah an lo lang leh ang.', style: TextStyle(color: QuestColors.slate, fontSize: 13)),
+        Text(AppText.of('result.missedNote'), style: const TextStyle(color: QuestColors.slate, fontSize: 13)),
       ],
     ]);
   }
@@ -839,7 +844,7 @@ class GameLevelCard extends StatelessWidget {
     final level = skill.floor();
     final toNext = level >= 7 ? 1.0 : skill - level;
     return Semantics(
-      label: 'Level $level of 7',
+      label: AppText.of('gameLevel.spoken', {'level': level}),
       child: ExcludeSemantics(
         child: PremiumCard(
           padding: const EdgeInsets.all(16),
@@ -854,9 +859,9 @@ class GameLevelCard extends StatelessWidget {
             const SizedBox(width: 14),
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(level >= 7 ? 'Level 7 • Master' : 'Level $level', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
+                Text(level >= 7 ? AppText.of('gameLevel.master') : AppText.of('gameLevel.level', {'level': level}), style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
                 const SizedBox(height: 2),
-                const Text('I thiam chhoh dan zirin thumal a harsa chho zel ang.', style: TextStyle(color: QuestColors.slate, fontSize: 12.5)),
+                Text(AppText.of('gameLevel.note'), style: const TextStyle(color: QuestColors.slate, fontSize: 12.5)),
                 const SizedBox(height: 8),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(99),
@@ -879,10 +884,13 @@ class _LevelBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final up = outcome.levelledUp;
     final label = up
-        ? 'Level up! ${outcome.previousLevel} → ${outcome.level}'
+        ? AppText.of('result.levelUp', {'from': outcome.previousLevel, 'to': outcome.level})
         : outcome.levelledDown
-            ? 'Level ${outcome.level} — awlsam deuhvin kan tan leh ang'
-            : 'Level ${outcome.level} • ${((outcome.skill - outcome.level) * 100).round()}% level thar thlengin';
+            ? AppText.of('result.levelDown', {'level': outcome.level})
+            : AppText.of('result.levelProgress', {
+                'level': outcome.level,
+                'percent': ((outcome.skill - outcome.level) * 100).round(),
+              });
     return Semantics(
       liveRegion: true,
       label: label,
