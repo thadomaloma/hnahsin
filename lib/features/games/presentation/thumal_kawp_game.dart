@@ -17,7 +17,11 @@ import '../../../src/app_text.dart';
 enum _Face { word, picture, gloss }
 
 class _KawpCard {
-  const _KawpCard({required this.id, required this.pairId, required this.face, required this.entry});
+  const _KawpCard(
+      {required this.id,
+      required this.pairId,
+      required this.face,
+      required this.entry});
 
   final String id;
   final String pairId;
@@ -30,7 +34,8 @@ class _KawpCard {
 /// at a card is free; only forgetting a partner you've already seen counts
 /// as a miss, so the score reflects memory and vocabulary, not luck.
 class ThumalKawpGame extends StatefulWidget {
-  const ThumalKawpGame({super.key, required this.controller, this.mode = GameMode.standard});
+  const ThumalKawpGame(
+      {super.key, required this.controller, this.mode = GameMode.standard});
 
   static const gameId = 'thumal_kawp';
 
@@ -83,12 +88,14 @@ class _ThumalKawpGameState extends State<ThumalKawpGame> {
           final validCards = cards.map((card) => card.id).toSet();
           matched
             ..clear()
-            ..addAll((snapshot.payload['matched'] as List<Object?>? ?? const <Object?>[])
+            ..addAll((snapshot.payload['matched'] as List<Object?>? ??
+                    const <Object?>[])
                 .whereType<String>()
                 .where(validPairs.contains));
           seen
             ..clear()
-            ..addAll((snapshot.payload['seen'] as List<Object?>? ?? const <Object?>[])
+            ..addAll((snapshot.payload['seen'] as List<Object?>? ??
+                    const <Object?>[])
                 .whereType<String>()
                 .where(validCards.contains));
           turns = (snapshot.payload['turns'] as num?)?.toInt() ?? 0;
@@ -108,13 +115,15 @@ class _ThumalKawpGameState extends State<ThumalKawpGame> {
 
     // Each pair must be unambiguous: one word per spelling, and no partner
     // that could also belong to another word on the board.
-    List<WordEntry> unique(Iterable<WordEntry> pool, Set<String> Function(WordEntry) partnerKeys) {
+    List<WordEntry> unique(
+        Iterable<WordEntry> pool, Set<String> Function(WordEntry) partnerKeys) {
       final words = <String>{};
       final partners = <String>{};
       final kept = <WordEntry>[];
       for (final entry in pool) {
         final keys = partnerKeys(entry);
-        if (words.contains(foldMizo(entry.word)) || keys.any(partners.contains)) continue;
+        if (words.contains(foldMizo(entry.word)) || keys.any(partners.contains))
+          continue;
         words.add(foldMizo(entry.word));
         partners.addAll(keys);
         kept.add(entry);
@@ -126,17 +135,30 @@ class _ThumalKawpGameState extends State<ThumalKawpGame> {
     // “fun / happiness” and “happiness” would both match a happiness card.
     Set<String> sensesOf(WordEntry entry) => glossSenses(entry.englishGloss);
 
-    final pictures = rating < 3 ? unique(playable.where(hasWordPicture), pictureOf) : const <WordEntry>[];
+    // A picture card only for words whose picture really shows them: the
+    // ones ticked for Picture Match. Meaning cards can be any word.
+    final pictures = rating < 3
+        ? unique(
+            playable
+                .where(hasWordPicture)
+                .where((entry) => entry.supportsGame('picture_match')),
+            pictureOf,
+          )
+        : const <WordEntry>[];
     final glosses = unique(
-      playable.where((entry) => entry.englishGloss.trim().isNotEmpty && entry.englishGloss.trim().length <= 22),
+      playable.where((entry) =>
+          entry.englishGloss.trim().isNotEmpty &&
+          entry.englishGloss.trim().length <= 22),
       sensesOf,
     );
     // Pictures at levels 1–2 when there are enough; otherwise meanings, or
     // whichever of the two can fill more of the board.
-    final usePictures = pictures.length >= pairs || (pictures.length > glosses.length);
+    final usePictures =
+        pictures.length >= pairs || (pictures.length > glosses.length);
     final face = usePictures ? _Face.picture : _Face.gloss;
     final pool = usePictures ? pictures : glosses;
-    final chosen = pickWordsForLevel(widget.controller, ThumalKawpGame.gameId, pool, pairs, random);
+    final chosen = pickWordsForLevel(
+        widget.controller, ThumalKawpGame.gameId, pool, pairs, random);
     // A single pair is no memory game; the page says there aren't enough words.
     if (chosen.length < 2) {
       cards = const <_KawpCard>[];
@@ -144,14 +166,21 @@ class _ThumalKawpGameState extends State<ThumalKawpGame> {
     }
     cards = [
       for (final entry in chosen) ...[
-        _KawpCard(id: '${entry.id}#w', pairId: entry.id, face: _Face.word, entry: entry),
-        _KawpCard(id: '${entry.id}#p', pairId: entry.id, face: face, entry: entry),
+        _KawpCard(
+            id: '${entry.id}#w',
+            pairId: entry.id,
+            face: _Face.word,
+            entry: entry),
+        _KawpCard(
+            id: '${entry.id}#p', pairId: entry.id, face: face, entry: entry),
       ],
     ]..shuffle(random);
   }
 
   bool _faceUp(_KawpCard card) =>
-      matched.contains(card.pairId) || flipped.contains(card.id) || peeking.contains(card.id);
+      matched.contains(card.pairId) ||
+      flipped.contains(card.id) ||
+      peeking.contains(card.id);
 
   Future<void> _tap(_KawpCard card) async {
     if (!runtime.ready || busy || finishing || _faceUp(card)) return;
@@ -178,7 +207,8 @@ class _ThumalKawpGameState extends State<ThumalKawpGame> {
     // A miss only counts if the first card's partner had already been seen:
     // the learner could have turned it. Turning a new second card whose
     // partner was seen earlier is just discovering it, not forgetting.
-    String partnerOf(_KawpCard c) => cards.firstWhere((o) => o.pairId == c.pairId && o.id != c.id).id;
+    String partnerOf(_KawpCard c) =>
+        cards.firstWhere((o) => o.pairId == c.pairId && o.id != c.id).id;
     final forgot = seen.contains(partnerOf(first));
     seen.addAll([first.id, second.id]);
     busy = true;
@@ -194,18 +224,23 @@ class _ThumalKawpGameState extends State<ThumalKawpGame> {
       flipped.clear();
       busy = false;
     });
-    if (!session.hasHearts) await _finish(reason: GameEndReason.heartsExhausted);
+    if (!session.hasHearts)
+      await _finish(reason: GameEndReason.heartsExhausted);
   }
 
   Future<void> _useHint() async {
-    if (!runtime.ready || busy || finishing || matched.length == pairCount) return;
+    if (!runtime.ready || busy || finishing || matched.length == pairCount)
+      return;
     // With one card turned, the hint shows where its partner is.
     final pair = flipped.isNotEmpty
         ? cards.firstWhere((card) => card.id == flipped.first).pairId
         : cards.firstWhere((card) => !matched.contains(card.pairId)).pairId;
     await runtime.revealHint();
     if (!mounted) return;
-    setState(() => peeking = cards.where((card) => card.pairId == pair).map((card) => card.id).toSet());
+    setState(() => peeking = cards
+        .where((card) => card.pairId == pair)
+        .map((card) => card.id)
+        .toSet());
     await Future<void>.delayed(const Duration(milliseconds: 1400));
     if (mounted) setState(() => peeking = const <String>{});
   }
@@ -215,7 +250,8 @@ class _ThumalKawpGameState extends State<ThumalKawpGame> {
     finishing = true;
     final result = await runtime.finish(baseXp: 45, reason: reason);
     if (!mounted) return;
-    await showGameResult(context, widget.controller, ThumalKawpGame.gameId, result);
+    await showGameResult(
+        context, widget.controller, ThumalKawpGame.gameId, result);
   }
 
   Future<void> _timedOut() => _finish(reason: GameEndReason.timedOut);
@@ -240,12 +276,18 @@ class _ThumalKawpGameState extends State<ThumalKawpGame> {
           Row(children: [
             Expanded(
               child: Text(
-                AppText.of('kawp.progress', {'found': matched.length, 'pairs': pairCount, 'turns': turns}),
-                style: const TextStyle(fontWeight: FontWeight.w700, color: QuestColors.slate),
+                AppText.of('kawp.progress', {
+                  'found': matched.length,
+                  'pairs': pairCount,
+                  'turns': turns
+                }),
+                style: const TextStyle(
+                    fontWeight: FontWeight.w700, color: QuestColors.slate),
               ),
             ),
             GameHintButton(
-                revealed: runtime.hintRevealed || peeking.isNotEmpty, onPressed: pairCount < 2 ? null : _useHint),
+                revealed: runtime.hintRevealed || peeking.isNotEmpty,
+                onPressed: pairCount < 2 ? null : _useHint),
           ]),
           if (pairCount < 2)
             Padding(
@@ -253,12 +295,14 @@ class _ThumalKawpGameState extends State<ThumalKawpGame> {
               child: Text(
                 AppText.of('kawp.notEnough'),
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontWeight: FontWeight.w700, color: QuestColors.slate),
+                style: const TextStyle(
+                    fontWeight: FontWeight.w700, color: QuestColors.slate),
               ),
             ),
           const SizedBox(height: 10),
           LayoutBuilder(builder: (context, constraints) {
-            final columns = cards.length <= 8 ? 4 : (constraints.maxWidth >= 520 ? 6 : 4);
+            final columns =
+                cards.length <= 8 ? 4 : (constraints.maxWidth >= 520 ? 6 : 4);
             const gap = 10.0;
             final size = (constraints.maxWidth - gap * (columns - 1)) / columns;
             return Wrap(
@@ -283,14 +327,19 @@ class _ThumalKawpGameState extends State<ThumalKawpGame> {
           Text(
             GameText.of(ThumalKawpGame.gameId).prompt,
             textAlign: TextAlign.center,
-            style: const TextStyle(color: QuestColors.slate, fontWeight: FontWeight.w600),
+            style: const TextStyle(
+                color: QuestColors.slate, fontWeight: FontWeight.w600),
           ),
         ]),
       );
 }
 
 class _CardTile extends StatelessWidget {
-  const _CardTile({required this.card, required this.faceUp, required this.matched, required this.onTap});
+  const _CardTile(
+      {required this.card,
+      required this.faceUp,
+      required this.matched,
+      required this.onTap});
 
   final _KawpCard card;
   final bool faceUp;
@@ -304,11 +353,13 @@ class _CardTile extends StatelessWidget {
         : switch (card.face) {
             _Face.word => card.entry.word,
             _Face.gloss => card.entry.englishGloss,
-            _Face.picture => AppText.of('kawp.pictureSpoken', {'gloss': card.entry.englishGloss}),
+            _Face.picture => AppText.of(
+                'kawp.pictureSpoken', {'gloss': card.entry.englishGloss}),
           };
     return Semantics(
       button: !faceUp,
-      label: matched ? AppText.of('kawp.matchedSpoken', {'card': label}) : label,
+      label:
+          matched ? AppText.of('kawp.matchedSpoken', {'card': label}) : label,
       child: ExcludeSemantics(
         child: GestureDetector(
           onTap: onTap,
@@ -340,7 +391,8 @@ class _CardTile extends StatelessWidget {
           boxShadow: QuestShadows.card,
         ),
         alignment: Alignment.center,
-        child: const Icon(Icons.auto_awesome_rounded, color: QuestColors.gold, size: 26),
+        child: const Icon(Icons.auto_awesome_rounded,
+            color: QuestColors.gold, size: 26),
       );
 
   Widget _front() {
@@ -351,14 +403,20 @@ class _CardTile extends StatelessWidget {
           textAlign: TextAlign.center,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15, color: QuestColors.navy),
+          style: const TextStyle(
+              fontWeight: FontWeight.w800,
+              fontSize: 15,
+              color: QuestColors.navy),
         ),
       _Face.gloss => Text(
           card.entry.englishGloss,
           textAlign: TextAlign.center,
           maxLines: 3,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12.5, color: QuestColors.tealDark),
+          style: const TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 12.5,
+              color: QuestColors.tealDark),
         ),
     };
     return AnimatedContainer(
@@ -368,12 +426,17 @@ class _CardTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: matched ? const Color(0xFFE6F5E2) : Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: matched ? QuestColors.success : const Color(0xFFD6E6F2), width: matched ? 2 : 1.5),
-        boxShadow: matched ? QuestShadows.glow(QuestColors.success) : QuestShadows.card,
+        border: Border.all(
+            color: matched ? QuestColors.success : const Color(0xFFD6E6F2),
+            width: matched ? 2 : 1.5),
+        boxShadow: matched
+            ? QuestShadows.glow(QuestColors.success)
+            : QuestShadows.card,
       ),
       child: FittedBox(
           fit: BoxFit.scaleDown,
-          child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 90), child: content)),
+          child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 90), child: content)),
     );
   }
 }

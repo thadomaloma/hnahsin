@@ -107,7 +107,8 @@ class ChoiceQuestion {
       this.review = ContentReview.prototypeChecked,
       this.difficulty = 1,
       this.contentId,
-      this.word});
+      this.word,
+      this.instruction = ''});
   final String prompt;
   final List<String> options;
   final String answer;
@@ -122,6 +123,10 @@ class ChoiceQuestion {
   /// The word asked about, for questions built from a word (null for
   /// written questions), so the game can remember how it went.
   final String? word;
+
+  /// What to do, shown above [prompt] when the prompt alone doesn't say
+  /// (a sentence with a blank to fill).
+  final String instruction;
 }
 
 class SpellingQuestion {
@@ -439,19 +444,19 @@ const oldWordQuestions = <ChoiceQuestion>[
       review: ContentReview.reviewRequired),
   ChoiceQuestion(
       prompt: '“Hnial” tih hian eng nge a kawh?',
-      options: ['Mi thusawi pawm lova dodal', 'Hla sak', 'Tlan chak', 'Chaw ei'],
+      options: [
+        'Mi thusawi pawm lova dodal',
+        'Hla sak',
+        'Tlan chak',
+        'Chaw ei'
+      ],
       answer: 'Mi thusawi pawm lova dodal',
       explanation: 'Hnial tih chu mi thusawi pawm lova dodal tihna a ni.',
       emoji: '🗣️',
       review: ContentReview.reviewRequired),
   ChoiceQuestion(
       prompt: '“Tlawh” tih hian eng nge a kawh?',
-      options: [
-        'Mi emaw hmun emaw va kan',
-        'Mut',
-        'In lam pan',
-        'Lehkha ziak'
-      ],
+      options: ['Mi emaw hmun emaw va kan', 'Mut', 'In lam pan', 'Lehkha ziak'],
       answer: 'Mi emaw hmun emaw va kan',
       explanation: 'Tlawh tih chu mi emaw hmun emaw va kan tihna a ni.',
       emoji: '📍',
@@ -592,7 +597,8 @@ extension WordEntryPicture on WordEntry {
 }
 
 String? illustrationFor(WordEntry entry) =>
-    wordIllustrationsById[entry.id] ?? wordIllustrations[normalizeMizo(entry.word)];
+    wordIllustrationsById[entry.id] ??
+    wordIllustrations[normalizeMizo(entry.word)];
 
 /// True when the word has a picture that actually depicts it, so picture
 /// games never ask learners to name a word from an unrelated symbol.
@@ -628,14 +634,21 @@ String meaningWithoutWord(String meaning, String word) {
   final tokens = RegExp(r'\p{L}+', unicode: true).allMatches(text).toList();
   final parts = foldMizo(word).split(RegExp(r'\s+'));
   final opensWithWord = tokens.length > parts.length + 1 &&
-      [for (var i = 0; i < parts.length; i++) foldMizo(tokens[i][0]!) == parts[i]]
-          .every((same) => same);
+      [
+        for (var i = 0; i < parts.length; i++)
+          foldMizo(tokens[i][0]!) == parts[i]
+      ].every((same) => same);
   if (opensWithWord) {
     var next = parts.length;
     if (foldMizo(tokens[next][0]!) == 'tih') next += 1;
-    if (next < tokens.length && const {'chu', 'hi'}.contains(foldMizo(tokens[next][0]!))) {
-      final rest = text.substring(tokens[next].end).trimLeft().replaceFirst(RegExp(r'^[,:]\s*'), '');
-      if (rest.isNotEmpty) text = '${rest[0].toUpperCase()}${rest.substring(1)}';
+    if (next < tokens.length &&
+        const {'chu', 'hi'}.contains(foldMizo(tokens[next][0]!))) {
+      final rest = text
+          .substring(tokens[next].end)
+          .trimLeft()
+          .replaceFirst(RegExp(r'^[,:]\s*'), '');
+      if (rest.isNotEmpty)
+        text = '${rest[0].toUpperCase()}${rest.substring(1)}';
     }
   }
   return maskWordInClue(text, word);
@@ -659,7 +672,8 @@ List<String> mizoLetters(String value) {
   final text = normalizeMizo(value);
   final plain = text
       .split('')
-      .map((letter) => letter == 'ṭ' ? letter : (_plainLetters[letter] ?? letter))
+      .map((letter) =>
+          letter == 'ṭ' ? letter : (_plainLetters[letter] ?? letter))
       .join();
   final letters = <String>[];
   var index = 0;

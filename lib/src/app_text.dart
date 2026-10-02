@@ -247,6 +247,8 @@ const appTextDefaults = <String, AppTextDefault>{
   'spelling.wrong':
       AppTextDefault('Spelling', 'Chhanna dik chu “{answer}” a ni: “{word}”.'),
   // Tawng Upa
+  'tawngUpa.blank':
+      AppTextDefault('Tawng Upa', 'A ruak-ah eng thumal nge a lut ang?'),
   'tawngUpa.wrong': AppTextDefault(
       'Tawng Upa', 'Chhanna dik chu “{answer}” a ni.\n{explanation}'),
   // Word Chain

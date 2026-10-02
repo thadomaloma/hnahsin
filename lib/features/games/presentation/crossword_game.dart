@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' show min;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -122,8 +123,9 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
   void _buildPuzzle() {
     final random = session.random;
     final rating = widget.controller.gameSkill(MiniCrosswordGame.gameId);
-    // Small grids of short words first; bigger, longer ones as the level rises.
-    final (target, longest) = rating < 2 ? (4, 5) : (rating < 3.5 ? (5, 6) : (6, 7));
+    // Small grids of short words first; bigger, longer ones as the level
+    // rises, up to 8 letters on an 8×8 grid.
+    final (target, longest) = rating < 2 ? (4, 5) : (rating < 3.5 ? (5, 6) : (6, 8));
     final english = rating < 3;
     // Only words the on-screen keyboard can spell.
     final typeable = MiniCrosswordGame.keyRows.join().split('').toSet();
@@ -132,15 +134,16 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
         .where((entry) => ContentPolicy.playable(entry.review))
         .where((entry) => entry.supportsGame(MiniCrosswordGame.gameId))
         .where((entry) {
-      final answer = entry.word.trim().toUpperCase();
+      // A phrase goes in without its spaces, as in printed crosswords.
+      final answer = _answerOf(entry);
       return answer.length >= 3 && answer.length <= longest && answer.split('').every(typeable.contains) && spellings.add(answer);
     });
     final candidates = [
       for (final entry in pickWordsForLevel(widget.controller, MiniCrosswordGame.gameId, pool, 40, random))
         if (_clueFor(entry, english: english) case final clue when clue.isNotEmpty)
-          CrosswordCandidate(id: entry.id, answer: entry.word.trim().toUpperCase(), clue: clue),
+          CrosswordCandidate(id: entry.id, answer: _answerOf(entry), clue: clue),
     ];
-    final built = CrosswordBuilder.build(candidates, target: target, maxSize: longest + 1, random: random);
+    final built = CrosswordBuilder.build(candidates, target: target, maxSize: min(longest + 1, 8), random: random);
     layout = built != null && built.slots.length >= 3
         ? built
         : CrosswordBuilder.build(_fallback, target: 5, random: random)!;
@@ -151,6 +154,16 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
     lastSolved = null;
     across = layout.slots.first.across;
     active = (layout.slots.first.row, layout.slots.first.col);
+  }
+
+  static String _answerOf(WordEntry entry) => entry.word.trim().toUpperCase().replaceAll(RegExp(r'\s+'), '');
+
+  /// The word as written (“AITE CHHIN”) and its letter count per word
+  /// (“4, 5”), for the clue list; a single word is just its length.
+  (String, String) _labelOf(CrosswordSlot slot) {
+    final words = _entryFor(slot)?.word.trim().toUpperCase().split(RegExp(r'\s+')) ?? const <String>[];
+    if (words.length < 2) return (slot.answer, '${slot.answer.length}');
+    return (words.join(' '), words.map((word) => word.length).join(', '));
   }
 
   static String _clueFor(WordEntry entry, {required bool english}) {
@@ -398,6 +411,7 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
           if (runtime.restoredSession) const GameResumeBanner(),
           _ClueBar(
             slot: slot,
+            label: _labelOf(slot).$1,
             solved: solved.contains(slot.key),
             onPrevious: () => _stepSlot(-1),
             onNext: () => _stepSlot(1),
@@ -438,6 +452,7 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
               for (final item in layout.slots.where((slot) => slot.across == direction))
                 _ClueTile(
                   slot: item,
+                  label: _labelOf(item),
                   active: item.key == slot.key,
                   solved: solved.contains(item.key),
                   onTap: () => _selectSlot(item),
@@ -451,9 +466,12 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
 }
 
 class _ClueBar extends StatelessWidget {
-  const _ClueBar({required this.slot, required this.solved, required this.onPrevious, required this.onNext});
+  const _ClueBar({required this.slot, required this.label, required this.solved, required this.onPrevious, required this.onNext});
 
   final CrosswordSlot slot;
+
+  /// The answer as written, with a phrase's spaces.
+  final String label;
   final bool solved;
   final VoidCallback onPrevious;
   final VoidCallback onNext;
@@ -481,7 +499,7 @@ class _ClueBar extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  solved ? '${slot.answer} ✓' : slot.clue,
+                  solved ? '$label ✓' : slot.clue,
                   textAlign: TextAlign.center,
                   style: const TextStyle(color: Colors.white, fontSize: 17, height: 1.3, fontWeight: FontWeight.w800),
                 ),
@@ -664,9 +682,12 @@ class _Key extends StatelessWidget {
 }
 
 class _ClueTile extends StatelessWidget {
-  const _ClueTile({required this.slot, required this.active, required this.solved, required this.onTap});
+  const _ClueTile({required this.slot, required this.label, required this.active, required this.solved, required this.onTap});
 
   final CrosswordSlot slot;
+
+  /// The answer as written and its letter counts (see _labelOf).
+  final (String, String) label;
   final bool active;
   final bool solved;
   final VoidCallback onTap;
@@ -688,7 +709,7 @@ class _ClueTile extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                solved ? '${slot.clue} — ${slot.answer}' : '${slot.clue} (${slot.answer.length})',
+                solved ? '${slot.clue} — ${label.$1}' : '${slot.clue} (${label.$2})',
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   color: solved ? QuestColors.successInk : QuestColors.ink,

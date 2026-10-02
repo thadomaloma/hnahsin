@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import '../features/games/engine/game_difficulty.dart';
+import 'app_text.dart';
 import 'data.dart';
 import 'game_text.dart';
 import 'game_words.dart';
@@ -58,10 +59,16 @@ List<ChoiceQuestion> buildMeaningRound({
       .where((entry) => asked.add(foldMizo(entry.word)))
       .toList();
   if (askable.isEmpty) return fallback();
+  // About half the words are asked in their own example sentence instead,
+  // which shows how the word is used (most useful for words no picture can
+  // show).
   final generated = [
     for (final entry in pick(askable, 10))
-      _questionFor(entry, pool,
-          rating: rating, english: askInEnglish(entry), random: random),
+      (random.nextBool()
+              ? _blankQuestionFor(entry, pool, rating: rating, random: random)
+              : null) ??
+          _questionFor(entry, pool,
+              rating: rating, english: askInEnglish(entry), random: random),
   ];
   if (written.isEmpty) return generated;
   return GameDifficulty.pick(
@@ -79,6 +86,61 @@ List<ChoiceQuestion> buildMeaningRound({
 String _meaningOf(WordEntry entry, {required bool english}) => english
     ? maskWordInClue(entry.englishGloss.trim(), entry.word)
     : meaningWithoutWord(entry.meaningMizo, entry.word);
+
+/// [example] with [word] (as a whole word, accents optional) replaced by a
+/// blank, or null when the example doesn't use the word as it is spelt.
+String? blankOutWord(String example, String word) {
+  final text = example.trim();
+  final folded = foldMizo(text);
+  final target = foldMizo(word);
+  // foldMizo maps letter for letter, so positions in [folded] are in [text].
+  if (target.isEmpty || folded.length != text.length) return null;
+  final match =
+      RegExp('(?<!\\p{L})${RegExp.escape(target)}(?!\\p{L})', unicode: true)
+          .firstMatch(folded);
+  if (match == null) return null;
+  return text.replaceRange(match.start, match.end, '____');
+}
+
+/// “Ka pa hnenah pawisa ka ____ a.”: which word fills the blank in
+/// [entry]'s example sentence. Wrong options are words of the same kind
+/// (actions with actions) that don't share a meaning with it, since a
+/// synonym would fit the sentence too.
+ChoiceQuestion? _blankQuestionFor(
+  WordEntry entry,
+  List<WordEntry> pool, {
+  required double rating,
+  required Random random,
+}) {
+  final sentence = blankOutWord(entry.exampleMizo, entry.word);
+  if (sentence == null) return null;
+  bool isAction(WordEntry word) =>
+      word.englishGloss.trim().toLowerCase().startsWith('to ');
+  final senses = glossSenses(entry.englishGloss);
+  final seen = <String>{foldMizo(entry.word)};
+  final candidates = pool
+      .where((other) => isAction(other) == isAction(entry))
+      .where((other) =>
+          glossSenses(other.englishGloss).intersection(senses).isEmpty)
+      .where((other) => seen.add(foldMizo(other.word)))
+      .toList();
+  final distractors = GameDifficulty.distractors(entry, candidates,
+      rating: rating, count: 3, similarity: wordSimilarity, random: random);
+  if (distractors.length < 3) return null;
+  return ChoiceQuestion(
+    instruction: AppText.of('tawngUpa.blank'),
+    prompt: sentence,
+    options: [entry.word, ...distractors.map((other) => other.word)]
+      ..shuffle(random),
+    answer: entry.word,
+    explanation: '“${entry.exampleMizo.trim()}”\n${entry.meaningMizo.trim()}',
+    difficulty: entry.difficulty,
+    emoji: '✍️',
+    review: entry.review,
+    contentId: entry.id,
+    word: entry.word,
+  );
+}
 
 ChoiceQuestion _questionFor(
   WordEntry entry,

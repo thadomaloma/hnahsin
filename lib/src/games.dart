@@ -749,6 +749,13 @@ class _OldWordQuizGameState extends State<OldWordQuizGame> {
         if (runtime.restoredSession) const GameResumeBanner(),
         Text(question.emoji, style: const TextStyle(fontSize: 60)),
         const SizedBox(height: 14),
+        if (question.instruction.isNotEmpty) ...[
+          Text(question.instruction,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: QuestColors.slate, fontWeight: FontWeight.w700)),
+          const SizedBox(height: 8),
+        ],
         Text(question.prompt,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headlineSmall),
@@ -1128,7 +1135,9 @@ class WordSearchGame extends StatefulWidget {
 class _WordSearchGameState extends State<WordSearchGame> {
   late List<String> grid;
   late Map<String, List<(int, int)>> placements;
+  late Map<String, String> labels;
   Iterable<String> get targets => placements.keys;
+  String _label(String word) => labels[word] ?? word;
   late final GameRuntime runtime;
   GameSession get session => runtime.session;
   final List<(int, int)> selected = [];
@@ -1138,16 +1147,17 @@ class _WordSearchGameState extends State<WordSearchGame> {
   String get current =>
       selected.map((position) => grid[position.$1][position.$2]).join();
 
-  /// English meanings of the catalog's words, shown when one is found.
+  /// English meanings of the catalog's words by their grid letters, shown
+  /// when one is found.
   late final Map<String, String> glosses = {
     for (final entry in widget.controller.wordCatalog.reversed)
-      entry.word.trim().toUpperCase(): entry.englishGloss.trim(),
+      wordSearchLetters(entry.word): entry.englishGloss.trim(),
   };
 
-  /// The catalog's words by their grid spelling, to remember found words.
+  /// The catalog's words by their grid letters, to remember found words.
   late final Map<String, WordEntry> wordEntries = {
     for (final entry in widget.controller.wordCatalog.reversed)
-      entry.word.trim().toUpperCase(): entry,
+      wordSearchLetters(entry.word): entry,
   };
 
   void _buildBoard() {
@@ -1160,6 +1170,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
     );
     grid = board.rows;
     placements = board.placements;
+    labels = board.labels;
   }
 
   @override
@@ -1217,9 +1228,9 @@ class _WordSearchGameState extends State<WordSearchGame> {
     if (row == null ||
         col == null ||
         row < 0 ||
-        row > 5 ||
+        row >= grid.length ||
         col < 0 ||
-        col > 5) {
+        col >= grid.length) {
       return null;
     }
     return (row, col);
@@ -1288,8 +1299,9 @@ class _WordSearchGameState extends State<WordSearchGame> {
         selected.clear();
         final gloss = glosses[word] ?? '';
         message = gloss.isEmpty
-            ? AppText.of('search.found', {'word': word})
-            : AppText.of('search.foundGloss', {'word': word, 'gloss': gloss});
+            ? AppText.of('search.found', {'word': _label(word)})
+            : AppText.of('search.foundGloss',
+                {'word': _label(word), 'gloss': gloss});
         final entry = wordEntries[word];
         runtime.answer(true, wordId: entry?.id, word: entry?.word);
       });
@@ -1331,7 +1343,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
           if (runtime.hintRevealed)
             GameHintCard(
                 message: fillGameText(GameText.of('word_search').hint,
-                    word: _hintWord)),
+                    word: _label(_hintWord))),
           PremiumCard(
               padding: const EdgeInsets.all(12),
               child: AspectRatio(
@@ -1339,14 +1351,14 @@ class _WordSearchGameState extends State<WordSearchGame> {
                   child: GridView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 6,
-                            mainAxisSpacing: 5,
-                            crossAxisSpacing: 5),
-                    itemCount: 36,
+                        SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: grid.length,
+                            mainAxisSpacing: grid.length > 6 ? 4 : 5,
+                            crossAxisSpacing: grid.length > 6 ? 4 : 5),
+                    itemCount: grid.length * grid.length,
                     itemBuilder: (context, cell) {
-                      final row = cell ~/ 6;
-                      final col = cell % 6;
+                      final row = cell ~/ grid.length;
+                      final col = cell % grid.length;
                       final active = selected.contains((row, col));
                       final isFound = found.any(
                           (word) => placements[word]!.contains((row, col)));
@@ -1380,7 +1392,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
                                       child: Text(grid[row][col],
                                           style: TextStyle(
                                               fontWeight: FontWeight.w900,
-                                              fontSize: 19,
+                                              fontSize: grid.length > 6 ? 15 : 19,
                                               color: isFound && !active
                                                   ? QuestColors.successInk
                                                   : QuestColors.navy))))));
@@ -1409,7 +1421,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
                               ? Icons.check_rounded
                               : Icons.search_rounded,
                           size: 17),
-                      label: Text(word,
+                      label: Text(_label(word),
                           style: TextStyle(
                               decoration: found.contains(word)
                                   ? TextDecoration.lineThrough
