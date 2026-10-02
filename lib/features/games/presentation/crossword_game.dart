@@ -193,7 +193,7 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
   void _selectSlot(CrosswordSlot slot) {
     setState(() {
       across = slot.across;
-      active = slot.cells.firstWhere((cell) => letters[cell] == null && !_locked(cell), orElse: () => slot.cells.first);
+      active = _startCell(slot);
     });
     focus.requestFocus();
   }
@@ -230,6 +230,14 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
     }
   }
 
+  /// Where typing into [slot] starts: its first empty cell, else its first
+  /// cell not shared with a solved word (a locked cell takes no letter, so
+  /// the first one typed would be lost).
+  _Cell _startCell(CrosswordSlot slot) =>
+      slot.cells.where((cell) => letters[cell] == null && !_locked(cell)).firstOrNull ??
+      slot.cells.where((cell) => !_locked(cell)).firstOrNull ??
+      slot.cells.first;
+
   /// Moves to the next unlocked cell of [slot], preferring an empty one.
   void _advance(CrosswordSlot slot) {
     final cells = slot.cells;
@@ -243,7 +251,7 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
     if (open.isEmpty) return;
     final next = open.firstWhere((slot) => slot.cells.any((cell) => letters[cell] == null), orElse: () => open.first);
     across = next.across;
-    active = next.cells.firstWhere((cell) => letters[cell] == null && !_locked(cell), orElse: () => next.cells.first);
+    active = _startCell(next);
   }
 
   Future<void> _erase() async {

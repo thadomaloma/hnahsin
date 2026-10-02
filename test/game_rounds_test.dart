@@ -120,12 +120,44 @@ void main() {
         home: MiniCrosswordGame(controller: controller, mode: GameMode.standard)));
     await tester.pump();
 
+    // Tap the on-screen keyboard's keys, not a grid square showing the same
+    // letter (that would move to another word).
+    final keyboard = find.byWidgetPredicate(
+        (widget) => widget.runtimeType.toString() == '_Keyboard');
     Future<void> typeWord(String word) async {
       for (final letter in word.split('')) {
         await tester.tap(find.ancestor(
-            of: find.text(letter), matching: find.byType(InkWell)).first);
+            of: find.descendant(of: keyboard, matching: find.text(letter)),
+            matching: find.byType(InkWell)));
         await tester.pump();
       }
+    }
+
+    /// The letters of [answer] that the active word doesn't show yet, read
+    /// from the grid's cells (the cursor is on its first open cell).
+    String redLetters(String answer) {
+      final cells = <(int, int), String?>{};
+      late (int, int) cursor;
+      for (final semantics in tester.widgetList<Semantics>(find.byWidgetPredicate(
+          (widget) => widget is Semantics && (widget.properties.label ?? '').startsWith('Row ')))) {
+        final match = RegExp(r'^Row (\d+), column (\d+), (?:empty|letter (.+))$')
+            .firstMatch(semantics.properties.label!)!;
+        final cell = (int.parse(match[1]!), int.parse(match[2]!));
+        cells[cell] = match[3];
+        if (semantics.properties.selected ?? false) cursor = cell;
+      }
+      final down = tester
+          .widgetList<Text>(find.byType(Text))
+          .any((text) => (text.data ?? '').contains('DOWN') && (text.data ?? '').contains('HAWRAWP'));
+      final (dr, dc) = down ? (1, 0) : (0, 1);
+      var start = cursor;
+      while (cells.containsKey((start.$1 - dr, start.$2 - dc))) {
+        start = (start.$1 - dr, start.$2 - dc);
+      }
+      return [
+        for (var index = 0; index < answer.length; index += 1)
+          if (cells[(start.$1 + dr * index, start.$2 + dc * index)] != answer[index]) answer[index],
+      ].join();
     }
 
     String activeAnswer() {
@@ -153,7 +185,9 @@ void main() {
 
     // A wrong word costs a heart and is marked for another try.
     final next = activeAnswer();
-    final wrongWord = next.split('').map((letter) => letter == 'Z' ? 'A' : 'Z').join();
+    // One wrong letter per open cell; a letter shared with the solved word
+    // is already there.
+    final wrongWord = redLetters(next).split('').map((letter) => letter == 'Z' ? 'A' : 'Z').join();
     await typeWord(wrongWord);
     expect(_hearts(2), findsOneWidget);
     expect(find.textContaining('a dik lo'), findsOneWidget);
@@ -166,7 +200,9 @@ void main() {
         .trim();
     await tester.tap(find.text('$gloss (${next.length})'));
     await tester.pump();
-    await typeWord(next);
+    // Retype only the red letters: a letter shared with the solved word is
+    // locked and the cursor steps over it.
+    await typeWord(redLetters(next));
     expect(_hearts(2), findsOneWidget);
     expect(find.byIcon(Icons.check_circle_rounded), findsNWidgets(2));
   });
