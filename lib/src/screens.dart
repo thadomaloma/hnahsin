@@ -429,133 +429,93 @@ class _IconTile extends StatelessWidget {
 class LearnScreen extends StatelessWidget {
   const LearnScreen({super.key, required this.controller});
   final QuestController controller;
+
+  /// The course's games in order, with their icon colours.
+  static const _steps = <(String, IconData, Color, Color)>[
+    ('picture_match', Icons.image_rounded, Color(0xFFFFF0BD), Color(0xFF9A6800)),
+    ('spelling', Icons.spellcheck_rounded, Color(0xFFDDF3FF), QuestColors.tealDark),
+    ('word_search', Icons.search_rounded, Color(0xFFE9E4FF), QuestColors.violet),
+    ('tawng_upa', Icons.forum_rounded, Color(0xFFDCF0FF), QuestColors.indigo),
+    ('crossword', Icons.grid_on_rounded, Color(0xFFE6F4D9), QuestColors.success),
+    (ThumalKawpGame.gameId, Icons.style_rounded, Color(0xFFFFE6F0), Color(0xFFD6457A)),
+    ('sentence_builder', Icons.view_stream_rounded, Color(0xFFE9E4FF), QuestColors.violet),
+  ];
+
+  Widget _game(String gameId) => switch (gameId) {
+        'picture_match' => PictureMatchGame(controller: controller),
+        'spelling' => SpellingGame(controller: controller),
+        'word_search' => WordSearchGame(controller: controller),
+        'tawng_upa' => OldWordQuizGame(controller: controller),
+        'crossword' => MiniCrosswordGame(controller: controller),
+        'sentence_builder' => SentenceBuilderGame(controller: controller),
+        _ => ThumalKawpGame(controller: controller),
+      };
+
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
         animation: controller,
-        builder: (context, _) => QuestTabPage(children: [
-          PageIntro(
-            eyebrow: 'Your course',
-            title: 'Learn',
-            subtitle:
-                '${controller.learningState.level.code} ${controller.learningState.level.title} • Mahni chak zawngin zir chhunzawm rawh.',
-          ),
-          const SizedBox(height: 20),
-          LearningOverviewCard(controller: controller),
-          const SizedBox(height: 26),
-          const SectionTitle('Word Library'),
-          const SizedBox(height: 12),
-          PremiumCard(
-            onTap: () => _open(context, WordBankScreen(controller: controller)),
-            gradient: const LinearGradient(
-                colors: [Color(0xFFDDF3FF), Color(0xFFF5FBFA)]),
-            child: Row(children: [
-              const _IconTile(
-                  icon: Icons.menu_book_rounded,
-                  color: Colors.white,
-                  foreground: QuestColors.tealDark),
-              const SizedBox(width: 14),
-              Expanded(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                    const Text('Word Library',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w800, fontSize: 17)),
-                    const SizedBox(height: 3),
-                    Text(
-                        '${controller.wordCatalog.where((entry) => ContentPolicy.playable(entry.review)).length} words • ${WordCategory.values.length} categories',
-                        style: const TextStyle(color: QuestColors.slate)),
-                  ])),
-              const Icon(Icons.arrow_forward_rounded,
-                  color: QuestColors.tealDark),
-            ]),
-          ),
-          const SizedBox(height: 26),
-          _LessonStep(
-              number: 1,
-              icon: Icons.image_rounded,
-              color: const Color(0xFFFFF0BD),
-              foreground: const Color(0xFF9A6800),
-              title: 'Picture & Words',
-              subtitle: 'Thumal bul leh a awmzia',
-              state: controller.completedGames.contains('picture_match')
-                  ? _LessonState.done
-                  : _LessonState.current,
-              onTap: () =>
-                  _open(context, PictureMatchGame(controller: controller))),
-          _LessonStep(
-              number: 2,
-              icon: Icons.spellcheck_rounded,
-              color: const Color(0xFFDDF3FF),
-              foreground: QuestColors.tealDark,
-              title: 'Spelling',
-              subtitle: 'Hawrawp ruak dah khat',
-              state: controller.completedGames.contains('spelling')
-                  ? _LessonState.done
-                  : _LessonState.open,
-              onTap: () =>
-                  _open(context, SpellingGame(controller: controller))),
-          _LessonStep(
-              number: 3,
-              icon: Icons.search_rounded,
-              color: const Color(0xFFE9E4FF),
-              foreground: QuestColors.violet,
-              title: 'Word Search',
-              subtitle: 'Grid chhunga thumal zawn',
-              state: controller.completedGames.contains('word_search')
-                  ? _LessonState.done
-                  : _LessonState.open,
-              onTap: () =>
-                  _open(context, WordSearchGame(controller: controller))),
-          _LessonStep(
-              number: 4,
-              icon: Icons.forum_rounded,
-              color: const Color(0xFFDCF0FF),
-              foreground: QuestColors.indigo,
-              title: 'Tawng Upa',
-              subtitle: 'Awmzia leh hman dân',
-              state: controller.completedGames.contains('tawng_upa')
-                  ? _LessonState.done
-                  : _LessonState.open,
-              onTap: () =>
-                  _open(context, OldWordQuizGame(controller: controller))),
-          _LessonStep(
-              number: 5,
-              icon: Icons.emoji_events_rounded,
-              color: const Color(0xFFE6F4D9),
-              foreground: QuestColors.success,
-              title: 'Final Quest',
-              subtitle: 'Crossword challenge',
-              state: controller.completedGames.contains('crossword')
-                  ? _LessonState.done
-                  : _LessonState.open,
-              onTap: () =>
-                  _open(context, MiniCrosswordGame(controller: controller))),
-          _LessonStep(
-              number: 6,
-              icon: Icons.style_rounded,
-              color: const Color(0xFFFFE6F0),
-              foreground: const Color(0xFFD6457A),
-              title: 'Thumal Kawp',
-              subtitle: 'Card let la, thumal leh a kawp zawng rawh',
-              state: controller.completedGames.contains(ThumalKawpGame.gameId)
-                  ? _LessonState.done
-                  : _LessonState.open,
-              onTap: () =>
-                  _open(context, ThumalKawpGame(controller: controller))),
-          _LessonStep(
-              number: 7,
-              icon: Icons.view_stream_rounded,
-              color: const Color(0xFFE9E4FF),
-              foreground: QuestColors.violet,
-              title: 'Sentence Builder',
-              subtitle: 'Thumal tiles rem khâwm la, sentence siam rawh',
-              state: controller.completedGames.contains('sentence_builder')
-                  ? _LessonState.done
-                  : _LessonState.open,
-              onTap: () =>
-                  _open(context, SentenceBuilderGame(controller: controller))),
-        ]),
+        builder: (context, _) {
+          final playableWords = controller.wordCatalog
+              .where((entry) => ContentPolicy.playable(entry.review))
+              .length;
+          // The first game not yet played is the one to do next.
+          final next = _steps.indexWhere(
+              (step) => !controller.completedGames.contains(step.$1));
+          return QuestTabPage(children: [
+            PageIntro(
+              eyebrow: 'I zirna',
+              title: 'Learn',
+              subtitle:
+                  '${controller.learningState.level.code} ${controller.learningState.level.title} • Mahni chak zawngin zir chhunzawm rawh.',
+            ),
+            const SizedBox(height: 20),
+            LearningOverviewCard(controller: controller),
+            const SizedBox(height: 26),
+            const SectionTitle('Word Library'),
+            const SizedBox(height: 12),
+            PremiumCard(
+              onTap: () => _open(context, WordBankScreen(controller: controller)),
+              gradient: const LinearGradient(
+                  colors: [Color(0xFFDDF3FF), Color(0xFFF5FBFA)]),
+              child: Row(children: [
+                const _IconTile(
+                    icon: Icons.menu_book_rounded,
+                    color: Colors.white,
+                    foreground: QuestColors.tealDark),
+                const SizedBox(width: 14),
+                Expanded(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                      const Text('Word Library',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w800, fontSize: 17)),
+                      const SizedBox(height: 3),
+                      Text(
+                          'Thumal $playableWords • Chi ${WordCategory.values.length}',
+                          style: const TextStyle(color: QuestColors.slate)),
+                    ])),
+                const Icon(Icons.arrow_forward_rounded,
+                    color: QuestColors.tealDark),
+              ]),
+            ),
+            const SizedBox(height: 26),
+            for (var index = 0; index < _steps.length; index += 1)
+              _LessonStep(
+                  number: index + 1,
+                  icon: _steps[index].$2,
+                  color: _steps[index].$3,
+                  foreground: _steps[index].$4,
+                  title: GameText.of(_steps[index].$1).title,
+                  subtitle: GameText.of(_steps[index].$1).subtitle,
+                  state: controller.completedGames.contains(_steps[index].$1)
+                      ? _LessonState.done
+                      : index == next
+                          ? _LessonState.current
+                          : _LessonState.open,
+                  onTap: () => _open(context, _game(_steps[index].$1))),
+          ]);
+        },
       );
 }
 
@@ -1162,7 +1122,7 @@ class _WordBankScreenState extends State<WordBankScreen> {
         : playableEntries.where((entry) => entry.category == category).toList();
     return QuestPage(
       title: 'Word Library',
-      subtitle: '${entries.length} words',
+      subtitle: 'Thumal ${entries.length}',
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         SizedBox(
             height: 42,
@@ -1170,13 +1130,13 @@ class _WordBankScreenState extends State<WordBankScreen> {
               Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: ChoiceChip(
-                      label: const Text('All'),
+                      label: const Text('Zawng zawng'),
                       selected: category == null,
                       onSelected: (_) => setState(() => category = null))),
               ...WordCategory.values.map((item) => Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: ChoiceChip(
-                      label: Text(item.englishLabel),
+                      label: Text(item.label),
                       selected: category == item,
                       onSelected: (_) => setState(() => category = item)))),
             ])),

@@ -139,10 +139,19 @@ class DailyLessonPlanner {
         return dueOrder == 0 ? a.itemId.compareTo(b.itemId) : dueOrder;
       });
 
+    // Easiest first; words of the same level keep their catalog order.
     final eligibleNew = allItemIds
         .where((id) => !state.masteries.containsKey(id))
         .where((id) => (itemLevels[id] ?? 0) <= state.level.index)
         .toList();
+    final order = <String, int>{
+      for (var index = 0; index < eligibleNew.length; index += 1)
+        eligibleNew[index]: index,
+    };
+    eligibleNew.sort((a, b) {
+      final byLevel = (itemLevels[a] ?? 0).compareTo(itemLevels[b] ?? 0);
+      return byLevel != 0 ? byLevel : order[a]!.compareTo(order[b]!);
+    });
 
     return DailyLessonPlan(
       reviewItemIds: List<String>.unmodifiable(

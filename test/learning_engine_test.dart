@@ -10,11 +10,16 @@ void main() {
   final now = DateTime.utc(2026, 9, 13, 9);
 
   test('placement maps a ten-question score across Level 1 to Level 5', () {
-    expect(placement.levelForScore(correct: 0, total: 10), LearningLevel.level1);
-    expect(placement.levelForScore(correct: 2, total: 10), LearningLevel.level2);
-    expect(placement.levelForScore(correct: 4, total: 10), LearningLevel.level3);
-    expect(placement.levelForScore(correct: 6, total: 10), LearningLevel.level4);
-    expect(placement.levelForScore(correct: 8, total: 10), LearningLevel.level5);
+    expect(
+        placement.levelForScore(correct: 0, total: 10), LearningLevel.level1);
+    expect(
+        placement.levelForScore(correct: 2, total: 10), LearningLevel.level2);
+    expect(
+        placement.levelForScore(correct: 4, total: 10), LearningLevel.level3);
+    expect(
+        placement.levelForScore(correct: 6, total: 10), LearningLevel.level4);
+    expect(
+        placement.levelForScore(correct: 8, total: 10), LearningLevel.level5);
   });
 
   test('spaced repetition advances and resets an item deterministically', () {
@@ -147,5 +152,21 @@ void main() {
       LearningState.fromJson(const <String, Object?>{'level': 'tq8'}).level,
       LearningLevel.level1,
     );
+  });
+
+  test('new words stay within the level and come easiest first', () {
+    final plan = planner.build(
+      state: LearningState.fresh().copyWith(level: LearningLevel.level3),
+      allItemIds: const <String>['hard', 'too_hard', 'easy', 'middle'],
+      itemLevels: const <String, int>{
+        'hard': 2,
+        'too_hard': 3,
+        'easy': 0,
+        'middle': 1,
+      },
+      now: now,
+    );
+
+    expect(plan.newItemIds, <String>['easy', 'middle', 'hard']);
   });
 }

@@ -66,9 +66,39 @@ void main() {
       <String>['word.in'],
     );
     expect(
-      (await repository.loadLearningState())
-          .contentReports['word.in'],
+      (await repository.loadLearningState()).contentReports['word.in'],
       'picture does not match',
     );
+  });
+
+  test('a run of right answers moves the level up once, not every answer',
+      () async {
+    final controller = QuestController(repository: InMemoryQuestRepository());
+
+    for (var answer = 0; answer < 8; answer += 1) {
+      await controller.recordReview(
+        itemId: 'word.$answer',
+        rating: ReviewRating.good,
+      );
+    }
+
+    expect(controller.learningState.level, LearningLevel.level2);
+    expect(controller.learningState.recentOutcomes, hasLength(3));
+  });
+
+  test('moving up a level starts the answer window afresh', () async {
+    final controller = QuestController(repository: InMemoryQuestRepository());
+    for (var answer = 0; answer < 4; answer += 1) {
+      await controller.recordReview(
+        itemId: 'word.$answer',
+        rating: ReviewRating.good,
+      );
+    }
+    expect(controller.learningState.level, LearningLevel.level1);
+
+    await controller.recordReview(itemId: 'word.4', rating: ReviewRating.good);
+
+    expect(controller.learningState.level, LearningLevel.level2);
+    expect(controller.learningState.recentOutcomes, isEmpty);
   });
 }

@@ -157,20 +157,16 @@ class QuestController extends ChangeNotifier {
     final playable = wordCatalog
         .where((entry) => ContentPolicy.playable(entry.review))
         .toList();
-    final levels = <String, int>{};
-    for (var index = 0; index < playable.length; index += 1) {
-      final difficulty = playable[index].difficulty;
-      levels[playable[index].id] = switch (difficulty) {
-        <= 1 => index.isEven ? 0 : 1,
-        2 => index.isEven ? 2 : 3,
-        _ => 4,
-      };
-    }
+    // A word's difficulty (1–7, from its tq_level) is the level it belongs
+    // to: difficulty 1 is Level 1, difficulty 3 is Level 3.
     return _lessonPlanner.build(
       state: learningState,
       allItemIds: playable.map((entry) => entry.id).toList(),
-      itemLevels: levels,
-      now: DateTime.now().toUtc(),
+      itemLevels: <String, int>{
+        for (final entry in playable)
+          entry.id: (entry.difficulty - 1).clamp(0, LearningLevel.values.length - 1),
+      },
+      now: _clock().toUtc(),
     );
   }
 
@@ -375,34 +371,26 @@ class QuestController extends ChangeNotifier {
     required String itemId,
     required ReviewRating rating,
   }) async {
+    final now = _clock();
     final reviewed = _scheduler.review(
       itemId: itemId,
       rating: rating,
-      now: DateTime.now().toUtc(),
+      now: now.toUtc(),
       current: learningState.masteries[itemId],
     );
-    final outcomes = <bool>[
-      ...learningState.recentOutcomes,
-      rating != ReviewRating.again,
-    ];
-    final trimmed =
-        outcomes.length > 8 ? outcomes.sublist(outcomes.length - 8) : outcomes;
-    final nextLevel = _adaptiveDifficulty.recommend(
-      current: learningState.level,
-      recentOutcomes: trimmed,
-    );
-    learningState = learningState.copyWith(
-      level: nextLevel,
-      masteries: <String, ItemMastery>{
-        ...learningState.masteries,
-        itemId: reviewed,
-      },
-      recentOutcomes: trimmed,
+    learningState = _withOutcomes(
+      learningState.copyWith(
+        masteries: <String, ItemMastery>{
+          ...learningState.masteries,
+          itemId: reviewed,
+        },
+      ),
+      <bool>[rating != ReviewRating.again],
     );
     journeyState = _journeyEngine.recordAction(
       state: journeyState,
       action: JourneyAction.review,
-      now: DateTime.now(),
+      now: now,
     );
     notifyListeners();
     await Future.wait(<Future<void>>[
@@ -482,7 +470,6 @@ class QuestController extends ChangeNotifier {
 
   LearningState _reviewStoryTargets(List<String> itemIds, DateTime now) {
     final masteries = <String, ItemMastery>{...learningState.masteries};
-    final outcomes = <bool>[...learningState.recentOutcomes];
     for (final itemId in itemIds) {
       masteries[itemId] = _scheduler.review(
         itemId: itemId,
@@ -490,17 +477,26 @@ class QuestController extends ChangeNotifier {
         now: now,
         current: masteries[itemId],
       );
-      outcomes.add(true);
     }
-    final trimmed =
-        outcomes.length > 8 ? outcomes.sublist(outcomes.length - 8) : outcomes;
-    return learningState.copyWith(
-      level: _adaptiveDifficulty.recommend(
-        current: learningState.level,
-        recentOutcomes: trimmed,
-      ),
-      masteries: masteries,
+    return _withOutcomes(
+      learningState.copyWith(masteries: masteries),
+      List<bool>.filled(itemIds.length, true),
+    );
+  }
+
+  /// Adds [outcomes] to the last eight answers and moves the level if they
+  /// call for it. A move starts the window afresh, so the level changes once
+  /// for a run of answers rather than once for every answer after the fifth.
+  LearningState _withOutcomes(LearningState state, List<bool> outcomes) {
+    final all = <bool>[...state.recentOutcomes, ...outcomes];
+    final trimmed = all.length > 8 ? all.sublist(all.length - 8) : all;
+    final level = _adaptiveDifficulty.recommend(
+      current: state.level,
       recentOutcomes: trimmed,
+    );
+    return state.copyWith(
+      level: level,
+      recentOutcomes: level == state.level ? trimmed : const <bool>[],
     );
   }
 

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../../../src/controller.dart';
@@ -25,7 +27,8 @@ class LearningOverviewCard extends StatelessWidget {
           Row(
             children: <Widget>[
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
                   color: QuestColors.gold,
                   borderRadius: BorderRadius.circular(99),
@@ -62,15 +65,15 @@ class LearningOverviewCard extends StatelessWidget {
             runSpacing: 8,
             children: <Widget>[
               _LearningMetric(
-                label: 'DUE',
+                label: 'EN LEH TUR',
                 value: '${plan.reviewItemIds.length}',
               ),
               _LearningMetric(
-                label: 'NEW',
+                label: 'THAR',
                 value: '${plan.newItemIds.length}',
               ),
               _LearningMetric(
-                label: 'MASTERED',
+                label: 'THIAM TAWH',
                 value: '${state.masteredCount}',
               ),
             ],
@@ -97,8 +100,8 @@ class LearningOverviewCard extends StatelessWidget {
               ),
               label: Text(
                 state.placementCompleted
-                    ? 'Start Daily Lesson'
-                    : 'Find My Mizo Level',
+                    ? 'Vawiin zirna ṭan rawh'
+                    : 'I level hre chhuak rawh',
               ),
             ),
           ),
@@ -112,7 +115,7 @@ class LearningOverviewCard extends StatelessWidget {
                   ),
                 ),
                 style: TextButton.styleFrom(foregroundColor: Colors.white),
-                child: const Text('Retake Placement Check'),
+                child: const Text('Level en leh rawh'),
               ),
             ),
         ],
@@ -181,7 +184,8 @@ class _PlacementScreenState extends State<PlacementScreen> {
   @override
   void initState() {
     super.initState();
-    questions = _buildQuestions(limit: 10, corpus: widget.controller.wordCatalog);
+    questions =
+        _placementQuestions(_playableWords(widget.controller), Random());
   }
 
   Future<void> _next() async {
@@ -224,9 +228,9 @@ class _PlacementScreenState extends State<PlacementScreen> {
   Widget build(BuildContext context) {
     if (questions.isEmpty) {
       return const QuestPage(
-        title: 'Placement Check',
+        title: 'Level enna',
         child: PremiumCard(
-          child: Text('Learning content is not available yet.'),
+          child: Text('Zirna tur thumal a la awm lo.'),
         ),
       );
     }
@@ -234,8 +238,8 @@ class _PlacementScreenState extends State<PlacementScreen> {
     final question = questions[index];
     final answered = selected != null;
     return QuestPage(
-      title: 'Placement Check',
-      subtitle: 'Question ${index + 1} of ${questions.length}',
+      title: 'Level enna',
+      subtitle: 'Zawhna ${index + 1}/${questions.length}',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -251,7 +255,7 @@ class _PlacementScreenState extends State<PlacementScreen> {
                 WordPicture(entry: question.item, size: 48),
                 const SizedBox(height: 10),
                 const Text(
-                  'Choose the closest meaning',
+                  'A awmzia hnai ber thlang rawh',
                   style: TextStyle(color: QuestColors.slate),
                 ),
                 const SizedBox(height: 6),
@@ -270,7 +274,8 @@ class _PlacementScreenState extends State<PlacementScreen> {
               child: AnswerButton(
                 label: option,
                 selected: selected == option,
-                onTap: answered ? null : () => setState(() => selected = option),
+                onTap:
+                    answered ? null : () => setState(() => selected = option),
               ),
             ),
           ),
@@ -280,7 +285,7 @@ class _PlacementScreenState extends State<PlacementScreen> {
             child: FilledButton(
               onPressed: selected == null || saving ? null : _next,
               child: Text(
-                index == questions.length - 1 ? 'See My Level' : 'Next',
+                index == questions.length - 1 ? 'I level en rawh' : 'A dawt',
               ),
             ),
           ),
@@ -288,7 +293,7 @@ class _PlacementScreenState extends State<PlacementScreen> {
             alignment: Alignment.center,
             child: TextButton(
               onPressed: saving ? null : _startAtLevel1,
-              child: const Text('Skip and start at Level 1'),
+              child: const Text('Level 1 atangin ṭan nghal rawh'),
             ),
           ),
         ],
@@ -299,7 +304,7 @@ class _PlacementScreenState extends State<PlacementScreen> {
   Widget _result(BuildContext context) {
     final level = widget.controller.learningState.level;
     return QuestPage(
-      title: 'Your Starting Level',
+      title: 'I ṭanna level',
       child: Column(
         children: <Widget>[
           PremiumCard(
@@ -334,7 +339,7 @@ class _PlacementScreenState extends State<PlacementScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '$correct/${questions.length} correct • ${level.mizoDescription}',
+                  '${questions.length} zingah $correct i chhang dik • ${level.mizoDescription}',
                   textAlign: TextAlign.center,
                   style: const TextStyle(color: Color(0xFFDDF3FF), height: 1.4),
                 ),
@@ -347,7 +352,7 @@ class _PlacementScreenState extends State<PlacementScreen> {
             child: FilledButton.icon(
               onPressed: () => Navigator.of(context).pop(),
               icon: const Icon(Icons.arrow_forward_rounded),
-              label: const Text('Continue Learning'),
+              label: const Text('Zir chhunzawm rawh'),
             ),
           ),
         ],
@@ -376,14 +381,19 @@ class _DailyReviewScreenState extends State<DailyReviewScreen> {
   @override
   void initState() {
     super.initState();
+    final playable = _playableWords(widget.controller);
     final byId = <String, WordEntry>{
-      for (final item in widget.controller.wordCatalog) item.id: item,
+      for (final item in playable) item.id: item
     };
-    final items = widget.controller.dailyPlan.itemIds
-        .map((id) => byId[id])
-        .whereType<WordEntry>()
-        .toList();
-    questions = _questionsForItems(items);
+    final plan = widget.controller.dailyPlan;
+    final items =
+        plan.itemIds.map((id) => byId[id]).whereType<WordEntry>().toList();
+    questions = _questionsFor(
+      items,
+      playable,
+      Random(),
+      newIds: plan.newItemIds.toSet(),
+    );
   }
 
   Future<void> _continue() async {
@@ -419,8 +429,8 @@ class _DailyReviewScreenState extends State<DailyReviewScreen> {
     final question = questions[index];
     final answered = selected != null;
     return QuestPage(
-      title: 'Daily Lesson',
-      subtitle: '${index + 1} of ${questions.length}',
+      title: 'Vawiin zirna',
+      subtitle: '${index + 1}/${questions.length}',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -433,15 +443,24 @@ class _DailyReviewScreenState extends State<DailyReviewScreen> {
           PremiumCard(
             child: Column(
               children: <Widget>[
+                if (question.isNew) ...<Widget>[
+                  const _NewWordChip(),
+                  const SizedBox(height: 10),
+                ],
                 WordPicture(entry: question.item, size: 48),
                 const SizedBox(height: 10),
                 Text(
                   question.item.word,
+                  textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.displaySmall,
                 ),
                 const SizedBox(height: 6),
+                // A new word is taught with its meaning; a word coming back
+                // is asked first and its meaning shown once answered.
                 Text(
-                  question.item.meaningMizo,
+                  question.isNew || answered
+                      ? question.item.meaningMizo
+                      : 'A awmzia thlang rawh',
                   textAlign: TextAlign.center,
                   style: const TextStyle(color: QuestColors.slate),
                 ),
@@ -462,7 +481,8 @@ class _DailyReviewScreenState extends State<DailyReviewScreen> {
                             ? false
                             : null
                     : null,
-                onTap: answered ? null : () => setState(() => selected = option),
+                onTap:
+                    answered ? null : () => setState(() => selected = option),
               ),
             ),
           ),
@@ -480,7 +500,7 @@ class _DailyReviewScreenState extends State<DailyReviewScreen> {
             child: FilledButton(
               onPressed: selected == null || saving ? null : _continue,
               child: Text(
-                index == questions.length - 1 ? 'Finish Lesson' : 'Continue',
+                index == questions.length - 1 ? 'Zirna tihfel rawh' : 'A dawt',
               ),
             ),
           ),
@@ -490,31 +510,35 @@ class _DailyReviewScreenState extends State<DailyReviewScreen> {
   }
 
   Widget _empty(BuildContext context) => QuestPage(
-        title: 'Daily Lesson',
+        title: 'Vawiin zirna',
         child: Column(
           children: <Widget>[
             const PremiumCard(
               child: Column(
                 children: <Widget>[
-                  Icon(Icons.task_alt_rounded, color: QuestColors.success, size: 50),
+                  Icon(Icons.task_alt_rounded,
+                      color: QuestColors.success, size: 50),
                   SizedBox(height: 10),
-                  Text('All caught up!', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900)),
+                  Text('I zo vek tawh e!',
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.w900)),
                   SizedBox(height: 6),
-                  Text('Vawiin review tur i zo vek tawh e.', textAlign: TextAlign.center),
+                  Text('Tunah hian en leh tur thumal a awm lo.',
+                      textAlign: TextAlign.center),
                 ],
               ),
             ),
             const SizedBox(height: 16),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Back to Learn'),
+              child: const Text('Kir leh rawh'),
             ),
           ],
         ),
       );
 
   Widget _complete(BuildContext context) => QuestPage(
-        title: 'Lesson Complete',
+        title: 'Zirna zo',
         child: Column(
           children: <Widget>[
             PremiumCard(
@@ -523,18 +547,23 @@ class _DailyReviewScreenState extends State<DailyReviewScreen> {
               ),
               child: Column(
                 children: <Widget>[
-                  const Icon(Icons.verified_rounded, color: QuestColors.gold, size: 52),
+                  const Icon(Icons.verified_rounded,
+                      color: QuestColors.gold, size: 52),
                   const SizedBox(height: 10),
                   const Text(
-                    'Daily lesson complete!',
+                    'Vawiin zirna i zo ta!',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900),
                   ),
                   const SizedBox(height: 7),
                   Text(
-                    '$correct/${questions.length} correct • Review hun leh tur automatic-in ruahman a ni.',
+                    '${questions.length} zingah $correct i chhang dik • Heng thumalte hi a hun takah kan rawn tilang leh ang.',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(color: Color(0xFFDDF3FF), height: 1.4),
+                    style:
+                        const TextStyle(color: Color(0xFFDDF3FF), height: 1.4),
                   ),
                 ],
               ),
@@ -544,10 +573,32 @@ class _DailyReviewScreenState extends State<DailyReviewScreen> {
               width: double.infinity,
               child: FilledButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Continue'),
+                child: const Text('Zir chhunzawm rawh'),
               ),
             ),
           ],
+        ),
+      );
+}
+
+class _NewWordChip extends StatelessWidget {
+  const _NewWordChip();
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: QuestColors.gold,
+          borderRadius: BorderRadius.circular(99),
+        ),
+        child: const Text(
+          'THUMAL THAR',
+          style: TextStyle(
+            color: QuestColors.midnight,
+            fontSize: 11,
+            fontWeight: FontWeight.w900,
+            letterSpacing: .7,
+          ),
         ),
       );
 }
@@ -556,57 +607,77 @@ class _LearningQuestion {
   const _LearningQuestion({
     required this.item,
     required this.options,
+    this.isNew = false,
   });
 
   final WordEntry item;
   final List<String> options;
+
+  /// Shown for the first time, so it is taught rather than tested.
+  final bool isNew;
+
   String get answer => item.englishGloss;
 }
 
-List<_LearningQuestion> _buildQuestions({
-  required int limit,
-  List<WordEntry> corpus = wordEntries,
+List<WordEntry> _playableWords(QuestController controller) =>
+    controller.wordCatalog
+        .where((item) => ContentPolicy.playable(item.review))
+        .toList();
+
+/// Up to [limit] different words from easiest to hardest, spread evenly over
+/// the catalog, so the score shows how far up the learner gets.
+List<_LearningQuestion> _placementQuestions(
+  List<WordEntry> corpus,
+  Random random, {
+  int limit = 10,
 }) {
-  final playableCorpus = corpus
-      .where((item) => ContentPolicy.playable(item.review))
-      .toList();
-  if (playableCorpus.length < 4) return const <_LearningQuestion>[];
-  final count = playableCorpus.length < limit ? playableCorpus.length : limit;
-  final items = <WordEntry>[];
-  for (var index = 0; index < count; index += 1) {
-    items.add(playableCorpus[(index * 3) % playableCorpus.length]);
-  }
-  return _questionsForItems(items, corpus: playableCorpus);
+  if (corpus.length < 4) return const <_LearningQuestion>[];
+  final sorted = <WordEntry>[...corpus]
+    ..shuffle(random)
+    ..sort((a, b) => a.difficulty.compareTo(b.difficulty));
+  final count = min(limit, sorted.length);
+  return _questionsFor(
+    <WordEntry>[
+      for (var index = 0; index < count; index += 1)
+        sorted[index * sorted.length ~/ count],
+    ],
+    sorted,
+    random,
+  );
 }
 
-List<_LearningQuestion> _questionsForItems(
-  List<WordEntry> items, {
-  List<WordEntry>? corpus,
+/// One question per item, with its English gloss among the options.
+List<_LearningQuestion> _questionsFor(
+  List<WordEntry> items,
+  List<WordEntry> corpus,
+  Random random, {
+  Set<String> newIds = const <String>{},
 }) {
-  final source = corpus ??
-      wordEntries
-          .where((item) => ContentPolicy.playable(item.review))
-          .toList();
-  if (source.length < 4) return const <_LearningQuestion>[];
-  return List<_LearningQuestion>.generate(items.length, (questionIndex) {
-    final target = items[questionIndex];
-    final targetIndex = source.indexWhere((item) => item.id == target.id);
-    final start = targetIndex < 0 ? questionIndex : targetIndex;
-    final choices = <String>{target.englishGloss};
-    var offset = 1;
-    while (choices.length < 4 && offset <= source.length) {
-      choices.add(source[(start + offset) % source.length].englishGloss);
-      offset += 1;
-    }
-    final options = choices.toList();
-    final shift = questionIndex % options.length;
-    final rotated = <String>[
-      ...options.sublist(shift),
-      ...options.sublist(0, shift),
-    ];
-    return _LearningQuestion(
-      item: target,
-      options: List<String>.unmodifiable(rotated),
-    );
-  });
+  if (corpus.length < 4) return const <_LearningQuestion>[];
+  return <_LearningQuestion>[
+    for (final item in items)
+      _LearningQuestion(
+        item: item,
+        options: _optionsFor(item, corpus, random),
+        isNew: newIds.contains(item.id),
+      ),
+  ];
+}
+
+/// [item]'s gloss and three different ones, preferring words of the same
+/// category so the wrong answers are believable, in a random order.
+List<String> _optionsFor(
+    WordEntry item, List<WordEntry> corpus, Random random) {
+  String key(String gloss) => gloss.trim().toLowerCase();
+  final others = <WordEntry>[...corpus]..shuffle(random);
+  final options = <String>[item.englishGloss];
+  final seen = <String>{key(item.englishGloss)};
+  for (final other in <WordEntry>[
+    ...others.where((other) => other.category == item.category),
+    ...others.where((other) => other.category != item.category),
+  ]) {
+    if (options.length == 4) break;
+    if (seen.add(key(other.englishGloss))) options.add(other.englishGloss);
+  }
+  return List<String>.unmodifiable(options..shuffle(random));
 }
