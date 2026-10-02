@@ -150,7 +150,7 @@ class _PremiumCardState extends State<PremiumCard> {
     final dark = widget.gradient != null;
     final card = AnimatedScale(
       scale: pressed ? .975 : 1,
-      duration: const Duration(milliseconds: 140),
+      duration: motionFor(context, const Duration(milliseconds: 140)),
       curve: Curves.easeOut,
       child: DecoratedBox(
         decoration: BoxDecoration(
@@ -290,7 +290,7 @@ class ProgressRing extends StatelessWidget {
             height: size,
             child: TweenAnimationBuilder<double>(
               tween: Tween(begin: 0, end: value.clamp(0, 1).toDouble()),
-              duration: const Duration(milliseconds: 900),
+              duration: motionFor(context, const Duration(milliseconds: 900)),
               curve: Curves.easeOutCubic,
               builder: (context, animated, _) => CircularProgressIndicator(
                 value: animated,
@@ -379,7 +379,7 @@ class GameHud extends StatelessWidget {
                 Container(height: 9, color: const Color(0x33FFFFFF)),
                 TweenAnimationBuilder<double>(
                   tween: Tween(end: progress.clamp(0, 1).toDouble()),
-                  duration: const Duration(milliseconds: 420),
+                  duration: motionFor(context, const Duration(milliseconds: 420)),
                   curve: Curves.easeOutCubic,
                   builder: (context, value, _) => FractionallySizedBox(
                     widthFactor: value,
@@ -410,7 +410,7 @@ class _HudChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: motionFor(context, const Duration(milliseconds: 200)),
         padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
         decoration: BoxDecoration(
           color: highlight ? QuestColors.coral.withValues(alpha: .25) : const Color(0x1FFFFFFF),
@@ -598,9 +598,9 @@ class _AnswerButtonState extends State<AnswerButton> {
           onTap: widget.onTap,
           child: AnimatedScale(
             scale: pressed ? .97 : 1,
-            duration: const Duration(milliseconds: 120),
+            duration: motionFor(context, const Duration(milliseconds: 120)),
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
+              duration: motionFor(context, const Duration(milliseconds: 200)),
               curve: Curves.easeOutCubic,
               constraints: const BoxConstraints(minHeight: 60),
               padding: const EdgeInsets.fromLTRB(12, 10, 16, 10),
@@ -614,7 +614,7 @@ class _AnswerButtonState extends State<AnswerButton> {
               ),
               child: Row(children: [
                 AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
+                  duration: motionFor(context, const Duration(milliseconds: 200)),
                   width: 34,
                   height: 34,
                   alignment: Alignment.center,
@@ -658,7 +658,7 @@ class FeedbackCard extends StatelessWidget {
       child: ExcludeSemantics(
         child: TweenAnimationBuilder<double>(
           tween: Tween(begin: 0, end: 1),
-          duration: const Duration(milliseconds: 320),
+          duration: motionFor(context, const Duration(milliseconds: 320)),
           curve: Curves.easeOutBack,
           builder: (context, t, child) => Transform.translate(offset: Offset(0, 14 * (1 - t)), child: Opacity(opacity: t.clamp(0, 1).toDouble(), child: child)),
           child: Container(
@@ -726,7 +726,7 @@ Future<void> showGameResult(BuildContext context, QuestController controller, St
               crossAxisAlignment: CrossAxisAlignment.end,
               children: List.generate(3, (index) => TweenAnimationBuilder<double>(
                 tween: Tween(begin: 0, end: 1),
-                duration: Duration(milliseconds: 450 + index * 180),
+                duration: motionFor(context, Duration(milliseconds: 450 + index * 180)),
                 curve: Curves.elasticOut,
                 builder: (context, t, child) => Transform.scale(scale: t, child: child),
                 child: Padding(

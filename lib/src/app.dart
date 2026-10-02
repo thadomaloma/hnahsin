@@ -20,9 +20,23 @@ class HnahsinApp extends StatelessWidget {
       title: 'Hnahsin',
       theme: buildQuestTheme(),
       // Honour larger system text, but cap it where game layouts would break.
-      builder: (context, child) => MediaQuery.withClampedTextScaling(
-        maxScaleFactor: 1.35,
-        child: child!,
+      // Profile's Reduce motion turns animations off like the device's
+      // setting does (see motionFor).
+      builder: (context, child) => ListenableBuilder(
+        listenable: controller,
+        builder: (context, _) {
+          final media = MediaQuery.of(context);
+          return MediaQuery(
+            data: media.copyWith(
+              disableAnimations:
+                  media.disableAnimations || controller.profile.reducedMotion,
+            ),
+            child: MediaQuery.withClampedTextScaling(
+              maxScaleFactor: 1.35,
+              child: child!,
+            ),
+          );
+        },
       ),
       home: AnimatedBuilder(
         animation: controller,
@@ -194,7 +208,7 @@ class _NavItem extends StatelessWidget {
             behavior: HitTestBehavior.opaque,
             onTap: onTap,
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 260),
+              duration: motionFor(context, const Duration(milliseconds: 260)),
               curve: Curves.easeOutCubic,
               margin: const EdgeInsets.symmetric(horizontal: 2),
               decoration: BoxDecoration(
@@ -260,7 +274,7 @@ class _SideRail extends StatelessWidget {
                     onTap: () => onSelect(i),
                     borderRadius: BorderRadius.circular(20),
                     child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 240),
+                      duration: motionFor(context, const Duration(milliseconds: 240)),
                       height: 68,
                       decoration: BoxDecoration(
                         color: index == i ? Colors.white.withValues(alpha: .14) : Colors.transparent,

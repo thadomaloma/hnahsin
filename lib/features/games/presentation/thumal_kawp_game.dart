@@ -365,7 +365,7 @@ class _CardTile extends StatelessWidget {
           onTap: onTap,
           child: TweenAnimationBuilder<double>(
             tween: Tween(end: faceUp ? 1 : 0),
-            duration: const Duration(milliseconds: 280),
+            duration: motionFor(context, const Duration(milliseconds: 280)),
             curve: Curves.easeInOut,
             builder: (context, t, _) {
               final showFront = t >= .5;
@@ -375,7 +375,7 @@ class _CardTile extends StatelessWidget {
                 transform: Matrix4.identity()
                   ..setEntry(3, 2, .0012)
                   ..rotateY(angle),
-                child: showFront ? _front() : _back(),
+                child: showFront ? _front(context) : _back(),
               );
             },
           ),
@@ -395,7 +395,7 @@ class _CardTile extends StatelessWidget {
             color: QuestColors.gold, size: 26),
       );
 
-  Widget _front() {
+  Widget _front(BuildContext context) {
     final Widget content = switch (card.face) {
       _Face.picture => WordPicture(entry: card.entry, size: 46),
       _Face.word => Text(
@@ -420,7 +420,7 @@ class _CardTile extends StatelessWidget {
         ),
     };
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
+      duration: motionFor(context, const Duration(milliseconds: 200)),
       padding: const EdgeInsets.all(6),
       alignment: Alignment.center,
       decoration: BoxDecoration(

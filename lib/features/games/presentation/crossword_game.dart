@@ -553,7 +553,7 @@ class _Board extends StatelessWidget {
                   for (var col = 0; col < layout.cols; col++)
                     Padding(
                       padding: EdgeInsets.only(right: col == layout.cols - 1 ? 0 : gap),
-                      child: SizedBox.square(dimension: size, child: _cell((row, col), numbers, inActive, size)),
+                      child: SizedBox.square(dimension: size, child: _cell(context, (row, col), numbers, inActive, size)),
                     ),
                 ]),
               ),
@@ -563,7 +563,7 @@ class _Board extends StatelessWidget {
     });
   }
 
-  Widget _cell(_Cell cell, Map<_Cell, int> numbers, Set<_Cell> inActive, double size) {
+  Widget _cell(BuildContext context, _Cell cell, Map<_Cell, int> numbers, Set<_Cell> inActive, double size) {
     final used = layout.slotsAt(cell).isNotEmpty;
     if (!used) return const SizedBox.shrink();
     final letter = letters[cell];
@@ -590,7 +590,7 @@ class _Board extends StatelessWidget {
       child: GestureDetector(
         onTap: () => onTap(cell),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 120),
+          duration: motionFor(context, const Duration(milliseconds: 120)),
           decoration: BoxDecoration(
             color: color,
             borderRadius: BorderRadius.circular(6),

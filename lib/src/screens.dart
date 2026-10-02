@@ -960,13 +960,24 @@ class ProfileScreen extends StatelessWidget {
                           color: QuestColors.teal,
                           fontWeight: FontWeight.w900)),
                   const SizedBox(height: 16),
-                  LinearProgressIndicator(
-                      value: controller.levelProgress,
-                      minHeight: 9,
-                      borderRadius: BorderRadius.circular(99),
-                      backgroundColor: const Color(0xFF32486E),
-                      valueColor:
-                          const AlwaysStoppedAnimation(QuestColors.gold)),
+                  // The XP level the bar fills towards (Home's “Lv”), not
+                  // the learning level above.
+                  Row(children: [
+                    Text(AppText.of('profile.xpLevel', {'level': controller.level}),
+                        style: const TextStyle(
+                            color: QuestColors.gold,
+                            fontWeight: FontWeight.w900)),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: LinearProgressIndicator(
+                          value: controller.levelProgress,
+                          minHeight: 9,
+                          borderRadius: BorderRadius.circular(99),
+                          backgroundColor: const Color(0xFF32486E),
+                          valueColor:
+                              const AlwaysStoppedAnimation(QuestColors.gold)),
+                    ),
+                  ]),
                   const SizedBox(height: 8),
                   Text(AppText.of('profile.xpToNext', {'xp': controller.xp % 250}),
                       style: const TextStyle(color: Color(0xFFDDF3FF))),
@@ -977,7 +988,7 @@ class ProfileScreen extends StatelessWidget {
                   child: _StatCard(
                       value: controller.profile.gentleMode
                           ? AppText.of('profile.calm')
-                          : '${controller.streak}',
+                          : '${controller.currentStreak}',
                       label: controller.profile.gentleMode
                           ? AppText.of('profile.myPace')
                           : AppText.of('profile.dayStreak'),
@@ -1030,15 +1041,9 @@ class ProfileScreen extends StatelessWidget {
               ),
             ],
             const SizedBox(height: 28),
-            SectionTitle(AppText.of('profile.track')),
+            SectionTitle(AppText.of('profile.settings')),
             const SizedBox(height: 12),
-            ...LearningTrack.values.map((track) => Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: AnswerButton(
-                    label:
-                        '${track.symbol}  ${track.title} — ${track.audience}',
-                    selected: controller.track == track,
-                    onTap: () => controller.selectTrack(track)))),
+            _ProfileSettings(controller: controller),
             const SizedBox(height: 14),
             PremiumCard(
                 child: Row(children: [
@@ -1113,6 +1118,87 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
           ]));
+}
+
+/// What onboarding asked, changeable later: daily goal, age range, English
+/// support, and the Mizo level (by retaking the level check).
+class _ProfileSettings extends StatelessWidget {
+  const _ProfileSettings({required this.controller});
+  final QuestController controller;
+
+  static const _goals = <int>[5, 10, 15];
+
+  void _update(LearnerProfile profile) => controller.updateProfile(profile);
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = controller.profile;
+    const heading = TextStyle(fontWeight: FontWeight.w800);
+    // A goal saved before these three choices shows as the nearest one.
+    final goal = _goals.reduce((a, b) =>
+        (a - profile.dailyGoalMinutes).abs() <= (b - profile.dailyGoalMinutes).abs() ? a : b);
+    return Column(children: [
+      PremiumCard(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(AppText.of('profile.dailyGoal'), style: heading),
+          const SizedBox(height: 3),
+          Text(AppText.of('profile.dailyGoalNote'),
+              style: const TextStyle(color: QuestColors.slate, fontSize: 12)),
+          const SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
+            child: SegmentedButton<int>(
+              // No check mark: “10 min” then fits one line on a phone.
+              showSelectedIcon: false,
+              segments: [
+                for (final minutes in _goals)
+                  ButtonSegment<int>(
+                      value: minutes,
+                      label: Text(AppText.of('rhythm.minutes', {'n': minutes}))),
+              ],
+              selected: {goal},
+              onSelectionChanged: (value) =>
+                  _update(profile.copyWith(dailyGoalMinutes: value.first)),
+            ),
+          ),
+          const SizedBox(height: 18),
+          Text(AppText.of('profile.ageRange'), style: heading),
+          const SizedBox(height: 8),
+          Wrap(spacing: 8, runSpacing: 8, children: [
+            for (final band in LearnerAgeBand.values)
+              ChoiceChip(
+                label: Text(band.label),
+                selected: profile.ageBand == band,
+                onSelected: (_) => _update(profile.copyWith(ageBand: band)),
+              ),
+          ]),
+        ]),
+      ),
+      const SizedBox(height: 10),
+      PremiumCard(
+        padding: EdgeInsets.zero,
+        child: Column(children: [
+          SwitchListTile(
+            title: Text(AppText.of('support.english'), style: heading),
+            subtitle: Text(AppText.of('profile.englishNote')),
+            secondary: const Icon(Icons.translate_rounded, color: QuestColors.indigo),
+            value: profile.supportLanguage == SupportLanguage.english,
+            onChanged: (value) => _update(profile.copyWith(
+                supportLanguage: value ? SupportLanguage.english : SupportLanguage.mizoOnly)),
+          ),
+          const Divider(height: 1),
+          ListTile(
+            leading: const Icon(Icons.tune_rounded, color: QuestColors.indigo),
+            title: Text(AppText.of('learn.retakeLevel'), style: heading),
+            subtitle: Text(
+                '${controller.learningState.level.code} • ${controller.learningState.level.title}'),
+            trailing: const Icon(Icons.arrow_forward_rounded, color: QuestColors.indigo),
+            onTap: () => _open(context, PlacementScreen(controller: controller)),
+          ),
+        ]),
+      ),
+    ]);
+  }
 }
 
 class WordBankScreen extends StatefulWidget {

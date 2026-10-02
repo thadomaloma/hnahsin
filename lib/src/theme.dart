@@ -107,6 +107,25 @@ abstract final class QuestLayout {
 
 const questFontFamily = 'PlusJakartaSans';
 
+/// [duration], or none when the learner asked for less motion (Profile's
+/// Reduce motion, or the device's own setting).
+Duration motionFor(BuildContext context, Duration duration) =>
+    MediaQuery.disableAnimationsOf(context) ? Duration.zero : duration;
+
+/// The platform's page transition, or none with reduced motion.
+class _MotionAwareTransitions extends PageTransitionsBuilder {
+  const _MotionAwareTransitions(this.standard);
+
+  final PageTransitionsBuilder standard;
+
+  @override
+  Widget buildTransitions<T>(PageRoute<T> route, BuildContext context, Animation<double> animation,
+          Animation<double> secondaryAnimation, Widget child) =>
+      MediaQuery.disableAnimationsOf(context)
+          ? child
+          : standard.buildTransitions(route, context, animation, secondaryAnimation, child);
+}
+
 ThemeData buildQuestTheme() {
   const scheme = ColorScheme.light(
     primary: QuestColors.indigo,
@@ -215,5 +234,9 @@ ThemeData buildQuestTheme() {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),
     dividerTheme: const DividerThemeData(color: QuestColors.line, space: 1),
+    pageTransitionsTheme: PageTransitionsTheme(builders: {
+      for (final MapEntry(:key, :value) in const PageTransitionsTheme().builders.entries)
+        key: _MotionAwareTransitions(value),
+    }),
   );
 }

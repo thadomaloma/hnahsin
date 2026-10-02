@@ -148,7 +148,14 @@ const appTextDefaults = <String, AppTextDefault>{
   'profile.journey': AppTextDefault('Profile', 'Mizo Journey Collection'),
   'profile.journeyCount': AppTextDefault(
       'Profile', '{stories}/{total} stories • {rewards} rewards'),
-  'profile.track': AppTextDefault('Profile', 'Learning Level'),
+  'profile.settings': AppTextDefault('Profile', 'My settings'),
+  'profile.dailyGoal': AppTextDefault('Profile', 'Daily goal'),
+  'profile.dailyGoalNote': AppTextDefault('Profile',
+      'About one game round a minute; Home’s ring fills when you reach it.'),
+  'profile.ageRange': AppTextDefault('Profile', 'Age range'),
+  'profile.englishNote': AppTextDefault(
+      'Profile', 'Show English beside the Mizo in stories and culture cards.'),
+  'profile.xpLevel': AppTextDefault('Profile', 'Lv {level}'),
   'profile.family': AppTextDefault('Profile', 'Family-friendly'),
   'profile.familyNote': AppTextDefault(
       'Profile', 'No public chat • Progress saved on this device'),

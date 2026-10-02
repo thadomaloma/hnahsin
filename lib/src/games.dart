@@ -1374,7 +1374,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
                               onTap: () => tapCell(row, col),
                               borderRadius: BorderRadius.circular(10),
                               child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 120),
+                                  duration: motionFor(context, const Duration(milliseconds: 120)),
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
                                       color: active

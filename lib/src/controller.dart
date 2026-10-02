@@ -580,12 +580,6 @@ class QuestController extends ChangeNotifier {
     await _repository.saveLearningState(learningState);
   }
 
-  Future<void> selectTrack(LearningTrack value) async {
-    track = value;
-    notifyListeners();
-    await _repository.saveProgress(_progress);
-  }
-
   Future<RewardOutcome> reward(String gameId, GameResult result) async {
     final updatedScores = <String, int>{...bestScores};
     if (result.score > (updatedScores[gameId] ?? 0)) {
