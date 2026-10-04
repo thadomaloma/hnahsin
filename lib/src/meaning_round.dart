@@ -30,13 +30,7 @@ List<ChoiceQuestion> buildMeaningRound({
   // for this game, as when the Sheet's tawng upa are the whole game) the
   // round is the written questions, picked by level, or the built-in ones.
   List<ChoiceQuestion> fallback() => written.isNotEmpty
-      ? GameDifficulty.pick(
-          written,
-          rating: rating,
-          count: 10,
-          difficultyOf: (question) => question.difficulty,
-          random: random,
-        )
+      ? _pickByLevel(written, rating: rating, random: random)
       : (oldWordQuestions
               .where((q) => ContentPolicy.playable(q.review))
               .toList()
@@ -80,14 +74,29 @@ List<ChoiceQuestion> buildMeaningRound({
               rating: rating, english: askInEnglish(entry), random: random),
   ];
   if (written.isEmpty) return generated;
-  return GameDifficulty.pick(
-    [...generated, ...written],
-    rating: rating,
-    count: 10,
-    difficultyOf: (question) => question.difficulty,
-    random: random,
-  );
+  return _pickByLevel([...generated, ...written],
+      rating: rating, random: random);
 }
+
+/// Ten questions at the learner's level, with levels spread over
+/// [questions] so every level has its own (the Sheet's tawng upa are levels
+/// 2–6, most of them 4); the shorter question first within a level.
+List<ChoiceQuestion> _pickByLevel(
+  List<ChoiceQuestion> questions, {
+  required double rating,
+  required Random random,
+}) =>
+    GameDifficulty.pick(
+      questions,
+      rating: rating,
+      count: 10,
+      difficultyOf: GameDifficulty.spread(
+        questions,
+        difficultyOf: (question) => question.difficulty,
+        tieBreak: (a, b) => a.prompt.length.compareTo(b.prompt.length),
+      ),
+      random: random,
+    );
 
 /// A meaning as an option: meanings often open with their own word
 /// (“Thlêng chu …”), which would point straight at the right option, so

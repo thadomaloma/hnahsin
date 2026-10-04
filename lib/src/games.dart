@@ -269,12 +269,9 @@ class _PictureMatchGameState extends State<PictureMatchGame> {
     final pool = widget.controller.wordCatalog
         .where((word) => ContentPolicy.playable(word.review))
         .where((word) => word.supportsGame('picture_match'))
-        .where(hasWordPicture)
-        .toList();
-    final levels = spreadLevels(pool);
+        .where(hasWordPicture);
     questions = pickWordsForLevel(
-        widget.controller, 'picture_match', pool, 5, session.random,
-        difficultyOf: (word) => levels[word.id]!);
+        widget.controller, 'picture_match', pool, 5, session.random);
     final rating = widget.controller.gameSkill('picture_match');
     optionSets = questions.map((question) {
       final wrong = pictureMatchDistractors(

@@ -61,46 +61,41 @@ List<WordEntry> pictureMatchDistractors(
 /// Words for one round of [gameId], centred on the learner's adaptive level
 /// for that game and ordered easiest first. What the player remembers
 /// steers the pick ([wordMemoryBoost]), so playing is also practising.
-/// [difficultyOf] replaces the words' own level (see [spreadLevels]).
+/// Levels are spread over the game's own words ([spreadLevels]).
 List<WordEntry> pickWordsForLevel(
   QuestController controller,
   String gameId,
   Iterable<WordEntry> pool,
   int count,
-  Random random, {
-  int Function(WordEntry entry)? difficultyOf,
-}) {
+  Random random,
+) {
   final now = DateTime.now().toUtc();
   final masteries = controller.learningState.masteries;
+  final words = pool.toList();
   return GameDifficulty.pick(
-    pool.toList(),
+    words,
     rating: controller.gameSkill(gameId),
     count: count,
-    difficultyOf: difficultyOf ?? (entry) => entry.difficulty,
+    difficultyOf: spreadLevels(words),
     random: random,
     boost: (entry) => wordMemoryBoost(masteries[entry.id], now),
   );
 }
 
 /// Levels 1–7 for a game's own words, spread so each level has about the
-/// same number: easiest by the words' level, then the shorter word first.
-/// A game whose words are mostly level 1 (Picture Match's pictures are)
-/// would otherwise show its few level 5–7 words in every hard round.
-Map<String, int> spreadLevels(Iterable<WordEntry> pool) {
-  final ranked = pool.toList()
-    ..sort((a, b) {
-      final level = a.difficulty.compareTo(b.difficulty);
-      if (level != 0) return level;
-      final length =
-          normalizeMizo(a.word).length.compareTo(normalizeMizo(b.word).length);
-      return length != 0 ? length : a.id.compareTo(b.id);
-    });
-  final levels = GameDifficulty.maxRating.toInt();
-  return {
-    for (final (index, entry) in ranked.indexed)
-      entry.id: 1 + index * levels ~/ ranked.length,
-  };
-}
+/// same number ([GameDifficulty.spread]): easiest by the words' level, then
+/// the shorter word first.
+int Function(WordEntry entry) spreadLevels(List<WordEntry> pool) =>
+    GameDifficulty.spread(
+      pool,
+      difficultyOf: (entry) => entry.difficulty,
+      tieBreak: (a, b) {
+        final length = normalizeMizo(a.word)
+            .length
+            .compareTo(normalizeMizo(b.word).length);
+        return length != 0 ? length : a.id.compareTo(b.id);
+      },
+    );
 
 /// How much more (or less) likely a word is to come up, from what the
 /// player remembers: a word they missed comes back soon, one due for a

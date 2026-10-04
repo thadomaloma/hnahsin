@@ -63,7 +63,7 @@ void main() {
     final levels = spreadLevels(pool);
 
     final perLevel = <int, int>{};
-    for (final level in levels.values) {
+    for (final level in pool.map(levels)) {
       perLevel[level] = (perLevel[level] ?? 0) + 1;
     }
     expect(perLevel.keys.toSet(), {1, 2, 3, 4, 5, 6, 7});
@@ -73,10 +73,10 @@ void main() {
     for (final a in pool) {
       for (final b in pool) {
         if (a.difficulty < b.difficulty) {
-          expect(levels[a.id]!, lessThanOrEqualTo(levels[b.id]!));
+          expect(levels(a), lessThanOrEqualTo(levels(b)));
         }
         if (a.difficulty == b.difficulty && a.word.length < b.word.length) {
-          expect(levels[a.id]!, lessThanOrEqualTo(levels[b.id]!));
+          expect(levels(a), lessThanOrEqualTo(levels(b)));
         }
       }
     }

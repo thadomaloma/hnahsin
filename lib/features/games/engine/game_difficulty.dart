@@ -73,6 +73,30 @@ abstract final class GameDifficulty {
     return max(1e-6, exp(-(distance * distance) / (2 * spread * spread)));
   }
 
+  /// Levels 1–7 for the items of one game, spread so each level has about
+  /// the same number: ranked by [difficultyOf], then [tieBreak]. The content
+  /// Sheet's levels are uneven (Tawng Upa has none at 1 or 7, most picture
+  /// words are level 1), so picking by them would show a game's few hard
+  /// items in every hard round; picking by these gives every level its own.
+  static int Function(T item) spread<T>(
+    List<T> pool, {
+    required int Function(T item) difficultyOf,
+    int Function(T a, T b)? tieBreak,
+  }) {
+    final order = [for (var i = 0; i < pool.length; i++) i]..sort((a, b) {
+        final level = difficultyOf(pool[a]).compareTo(difficultyOf(pool[b]));
+        if (level != 0) return level;
+        final tie = tieBreak?.call(pool[a], pool[b]) ?? 0;
+        return tie != 0 ? tie : a.compareTo(b);
+      });
+    final levels = Map<T, int>.identity();
+    final top = maxRating.toInt();
+    for (final (rank, index) in order.indexed) {
+      levels[pool[index]] = 1 + rank * top ~/ pool.length;
+    }
+    return (item) => levels[item] ?? difficultyOf(item);
+  }
+
   /// Wrong options for a question. At low ratings they are picked at random
   /// (clearly different from the answer); as the rating rises they are drawn
   /// more and more from the candidates most [similarity] to the answer.

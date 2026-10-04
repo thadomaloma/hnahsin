@@ -142,10 +142,13 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
       return ((exercise.tqLevel + lengthLevel) / 2).round().clamp(1, 7);
     }
 
+    // Spread over levels 1–7 so every level has its own sentences.
     questions = GameDifficulty.pick(pool,
         rating: rating,
         count: 5,
-        difficultyOf: difficultyOf,
+        difficultyOf: GameDifficulty.spread(pool,
+            difficultyOf: difficultyOf,
+            tieBreak: (a, b) => a.tokens.length.compareTo(b.tokens.length)),
         random: session.random);
     tileSets = questions
         .map((exercise) =>

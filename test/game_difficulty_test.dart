@@ -106,4 +106,38 @@ void main() {
     expect(GameDifficulty.letterSimilarity('T', 'Ṭ'), 1);
     expect(GameDifficulty.letterSimilarity('A', 'K'), 0);
   });
+
+  test('spread gives every level its own items, even from uneven levels', () {
+    // Like the Sheet's tawng upa: levels 2–6, most of them 4.
+    final pool = [
+      for (var n = 0; n < 203; n++)
+        (id: n, level: n < 9 ? 2 : n < 52 ? 3 : n < 162 ? 4 : n < 185 ? 5 : 6),
+    ];
+    final levelOf = GameDifficulty.spread(pool, difficultyOf: (q) => q.level);
+
+    final counts = <int, int>{};
+    for (final item in pool) {
+      counts[levelOf(item)] = (counts[levelOf(item)] ?? 0) + 1;
+    }
+    expect(counts.keys.toSet(), {1, 2, 3, 4, 5, 6, 7});
+    expect(counts.values, everyElement(inInclusiveRange(29, 30)));
+    for (final a in pool) {
+      for (final b in pool) {
+        if (a.level < b.level) {
+          expect(levelOf(a), lessThanOrEqualTo(levelOf(b)));
+        }
+      }
+    }
+
+    // A learner at level 7 gets the hardest items (levels 6–7), and many
+    // different ones, not the same few.
+    final picked = [
+      for (var seed = 0; seed < 20; seed++)
+        ...GameDifficulty.pick(pool,
+            rating: 7, count: 10, difficultyOf: levelOf, random: Random(seed))
+    ];
+    final hard = picked.where((item) => levelOf(item) >= 6).length;
+    expect(hard / picked.length, greaterThan(.9));
+    expect(picked.toSet().length, greaterThan(45));
+  });
 }
