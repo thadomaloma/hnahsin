@@ -297,7 +297,8 @@ function buildPack(tabs, options) {
       options: options4,
       answer: options4[answer - 1],
       explanation_mizo: required('questions', row, 'explanation', 'Explanation (Mizo)'),
-      emoji: text(row.emoji) || '💬',
+      // Tawng upa need no picture: an empty Emoji shows none.
+      emoji: text(row.emoji),
       difficulty: level('questions', row),
     };
     if (problems.length > before) return;

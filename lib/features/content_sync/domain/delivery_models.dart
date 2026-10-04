@@ -394,7 +394,7 @@ class DeliveredQuestion {
       options: List<String>.unmodifiable(texts),
       answer: answer.trim(),
       explanation: (body['explanation_mizo'] as String?)?.trim() ?? '',
-      emoji: (body['emoji'] as String?)?.trim().isNotEmpty == true ? (body['emoji'] as String).trim() : '💬',
+      emoji: (body['emoji'] as String?)?.trim() ?? '',
       difficulty: difficulty is int ? difficulty.clamp(1, 7) : 1,
     );
   }

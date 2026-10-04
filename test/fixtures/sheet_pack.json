@@ -1,7 +1,7 @@
 {
  "id": "00000000-0000-4000-8000-000000000000",
  "version": "2.20261001.120000",
- "checksum": "f1809e0ef767d1ef9e6689127fba68d37d1a8d8cbe1186ad01351288d6ff4f69",
+ "checksum": "0f9437a6dfe2841375869f8e56c4f0b88d9d309fa08cf0030696251ac38089aa",
  "published_at": "2026-10-01T12:00:00Z",
  "manifest": {
   "schema_version": "1.0",
@@ -40,7 +40,7 @@
    {
     "stable_id": "question.thufingtihhianengngeakawh",
     "content_type": "question",
-    "checksum": "73c212478c35ab235e7f9a849f3f48e3038acb2e220deed143a6db403e97a9d0",
+    "checksum": "03930d99d38bdafb59467e98f745461048e0a21aca44fde7a5aa6c45e469f0a5",
     "body": {
      "prompt_mizo": "“Thufing” tih hian eng nge a kawh?",
      "options": [
@@ -51,7 +51,7 @@
      ],
      "answer": "Finna thu tawi",
      "explanation_mizo": "Thufing chu finna thu tawi a ni.",
-     "emoji": "💬",
+     "emoji": "",
      "difficulty": 1
     }
    },

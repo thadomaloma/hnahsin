@@ -27,11 +27,20 @@ List<ChoiceQuestion> buildMeaningRound({
     for (final entry in pool) _meaningOf(entry, english: english)
   };
   // Without enough words to make four different meanings (or none tagged
-  // for this game) the round is the written and built-in questions.
-  List<ChoiceQuestion> fallback() => (<ChoiceQuestion>[
-        ...written,
-        ...oldWordQuestions.where((q) => ContentPolicy.playable(q.review)),
-      ]..shuffle(random))
+  // for this game, as when the Sheet's tawng upa are the whole game) the
+  // round is the written questions, picked by level, or the built-in ones.
+  List<ChoiceQuestion> fallback() => written.isNotEmpty
+      ? GameDifficulty.pick(
+          written,
+          rating: rating,
+          count: 10,
+          difficultyOf: (question) => question.difficulty,
+          random: random,
+        )
+      : (oldWordQuestions
+              .where((q) => ContentPolicy.playable(q.review))
+              .toList()
+            ..shuffle(random))
           .take(10)
           .toList();
   if (pool.isEmpty || distinctMeanings.length < 4) return fallback();

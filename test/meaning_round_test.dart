@@ -123,6 +123,44 @@ void main() {
     expect(_round(catalog: tagged), hasLength(oldWordQuestions.length));
   });
 
+  test('with no word tagged, the round is the written questions by level', () {
+    final untagged = [
+      for (final w in _catalog)
+        WordEntry(
+            id: w.id,
+            word: w.word,
+            meaningMizo: w.meaningMizo,
+            englishGloss: w.englishGloss,
+            exampleMizo: '',
+            emoji: '',
+            category: w.category,
+            review: w.review,
+            gameModes: const {'spelling'}),
+    ];
+    final written = [
+      for (var n = 0; n < 40; n++)
+        ChoiceQuestion(
+          prompt: 'Tawng upa $n',
+          options: const ['a', 'b', 'c', 'd'],
+          answer: 'a',
+          explanation: '',
+          emoji: '',
+          difficulty: n < 20 ? 2 : 6,
+          contentId: 'question.$n',
+        ),
+    ];
+    final round = buildMeaningRound(
+      catalog: untagged,
+      written: written,
+      rating: 1.5,
+      random: Random(1),
+      pick: (pool, count) => pool.take(count).toList(),
+    );
+    expect(round, hasLength(10));
+    expect(round.every(written.contains), isTrue);
+    expect(round.where((q) => q.difficulty == 2).length, greaterThan(7));
+  });
+
   test('built-in answers never name the word they are about', () {
     for (final question in oldWordQuestions) {
       final word = RegExp('“(.+?)”').firstMatch(question.prompt)![1]!;

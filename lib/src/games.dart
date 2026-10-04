@@ -747,8 +747,10 @@ class _OldWordQuizGameState extends State<OldWordQuizGame> {
           secondsRemaining: runtime.isTimed ? runtime.remainingSeconds : null),
       child: Column(children: [
         if (runtime.restoredSession) const GameResumeBanner(),
-        Text(question.emoji, style: const TextStyle(fontSize: 60)),
-        const SizedBox(height: 14),
+        if (question.emoji.trim().isNotEmpty) ...[
+          Text(question.emoji, style: const TextStyle(fontSize: 60)),
+          const SizedBox(height: 14),
+        ],
         if (question.instruction.isNotEmpty) ...[
           Text(question.instruction,
               textAlign: TextAlign.center,
