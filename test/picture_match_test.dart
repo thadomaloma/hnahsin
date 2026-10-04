@@ -44,4 +44,41 @@ void main() {
     expect(pictureKey(catalog[0]), pictureKey(catalog[1]));
     expect(pictureKey(catalog[0]), isNot(pictureKey(catalog[4])));
   });
+
+  test('levels are spread so every level has its own pictures', () {
+    // Like the Sheet: mostly level 1, a handful above level 4.
+    final pool = [
+      for (var n = 0; n < 100; n++)
+        WordEntry(
+          id: 'word.$n',
+          word: 'a' * (1 + n % 9),
+          meaningMizo: '',
+          englishGloss: '',
+          exampleMizo: '',
+          emoji: '🐕',
+          category: WordCategory.nunphung,
+          difficulty: n < 60 ? 1 : (n < 90 ? 2 : 3 + n % 5),
+        ),
+    ];
+    final levels = spreadLevels(pool);
+
+    final perLevel = <int, int>{};
+    for (final level in levels.values) {
+      perLevel[level] = (perLevel[level] ?? 0) + 1;
+    }
+    expect(perLevel.keys.toSet(), {1, 2, 3, 4, 5, 6, 7});
+    expect(perLevel.values, everyElement(inInclusiveRange(14, 15)));
+    // A harder word is never on an easier level than an easier word, and
+    // among words of one level the shorter comes first.
+    for (final a in pool) {
+      for (final b in pool) {
+        if (a.difficulty < b.difficulty) {
+          expect(levels[a.id]!, lessThanOrEqualTo(levels[b.id]!));
+        }
+        if (a.difficulty == b.difficulty && a.word.length < b.word.length) {
+          expect(levels[a.id]!, lessThanOrEqualTo(levels[b.id]!));
+        }
+      }
+    }
+  });
 }
