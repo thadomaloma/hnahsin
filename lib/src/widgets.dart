@@ -8,6 +8,8 @@ import 'game_text.dart';
 import 'theme.dart';
 import 'app_text.dart';
 import 'game_sounds.dart';
+import 'celebration.dart';
+import 'dart:math' as math;
 
 class QuestPage extends StatelessWidget {
   const QuestPage({super.key, required this.title, required this.child, this.subtitle, this.hud});
@@ -353,10 +355,19 @@ class GameHud extends StatelessWidget {
                   for (var i = 0; i < session.startingHearts; i++)
                     Padding(
                       padding: const EdgeInsets.only(right: 2),
-                      child: Icon(
-                        i < session.hearts ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                        size: 22,
-                        color: i < session.hearts ? QuestColors.coral : const Color(0x66FFFFFF),
+                      // A lost heart shrinks away and its outline pops in.
+                      child: AnimatedSwitcher(
+                        duration: motionFor(context, const Duration(milliseconds: 420)),
+                        transitionBuilder: (child, animation) => ScaleTransition(
+                          scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+                          child: child,
+                        ),
+                        child: Icon(
+                          i < session.hearts ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                          key: ValueKey<bool>(i < session.hearts),
+                          size: 22,
+                          color: i < session.hearts ? QuestColors.coral : const Color(0x66FFFFFF),
+                        ),
                       ),
                     ),
                 ]),
@@ -369,9 +380,22 @@ class GameHud extends StatelessWidget {
                   highlight: lowTime,
                 )
               else if (session.combo > 1)
-                _HudChip(icon: Icons.bolt_rounded, label: 'x${session.combo}', iconColor: QuestColors.gold),
+                PopOnChange(
+                  trigger: session.combo,
+                  child: _HudChip(icon: Icons.bolt_rounded, label: 'x${session.combo}', iconColor: QuestColors.gold),
+                ),
               const SizedBox(width: 8),
-              _HudChip(icon: Icons.star_rounded, label: '${session.score}', iconColor: QuestColors.gold),
+              // The score counts up to its new value.
+              PopOnChange(
+                trigger: session.score,
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween(end: session.score.toDouble()),
+                  duration: motionFor(context, const Duration(milliseconds: 600)),
+                  curve: Curves.easeOutCubic,
+                  builder: (context, value, _) => _HudChip(
+                      icon: Icons.star_rounded, label: '${value.round()}', iconColor: QuestColors.gold),
+                ),
+              ),
             ]),
             const SizedBox(height: 12),
             ClipRRect(
@@ -557,8 +581,39 @@ class AnswerButton extends StatefulWidget {
   State<AnswerButton> createState() => _AnswerButtonState();
 }
 
-class _AnswerButtonState extends State<AnswerButton> {
+class _AnswerButtonState extends State<AnswerButton>
+    with SingleTickerProviderStateMixin {
   bool pressed = false;
+
+  /// Once answered: a right answer bounces, a wrong one shakes.
+  late final AnimationController _reveal =
+      AnimationController(vsync: this, duration: const Duration(milliseconds: 480));
+
+  @override
+  void didUpdateWidget(AnswerButton old) {
+    super.didUpdateWidget(old);
+    if (old.correct == null && widget.correct != null && !MediaQuery.disableAnimationsOf(context)) {
+      _reveal.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _reveal.dispose();
+    super.dispose();
+  }
+
+  Widget _revealMotion(Widget child) => AnimatedBuilder(
+        animation: _reveal,
+        builder: (context, child) {
+          final t = _reveal.value;
+          if (t == 0 || t == 1) return child!;
+          return widget.correct == true
+              ? Transform.scale(scale: 1 + .05 * math.sin(math.pi * t), child: child)
+              : Transform.translate(offset: Offset(9 * math.sin(t * math.pi * 6) * (1 - t), 0), child: child);
+        },
+        child: child,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -597,7 +652,7 @@ class _AnswerButtonState extends State<AnswerButton> {
           onTapCancel: () => setState(() => pressed = false),
           onTapUp: (_) => setState(() => pressed = false),
           onTap: widget.onTap,
-          child: AnimatedScale(
+          child: _revealMotion(AnimatedScale(
             scale: pressed ? .97 : 1,
             duration: motionFor(context, const Duration(milliseconds: 120)),
             child: AnimatedContainer(
@@ -639,7 +694,7 @@ class _AnswerButtonState extends State<AnswerButton> {
                 ),
               ]),
             ),
-          ),
+          )),
         ),
       ),
     );
@@ -717,6 +772,7 @@ Future<void> showGameResult(BuildContext context, QuestController controller, St
     builder: (sheetContext) => Container(
       decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(32))),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
+        Stack(children: [
         Container(
           width: double.infinity,
           padding: const EdgeInsets.fromLTRB(24, 14, 24, 26),
@@ -761,6 +817,15 @@ Future<void> showGameResult(BuildContext context, QuestController controller, St
             _LevelBanner(outcome: outcome),
           ]),
         ),
+        // Confetti for a good round (two stars or more) or a new level.
+        if (outcome.levelledUp || (result.stars >= 2 && result.endReason != GameEndReason.heartsExhausted))
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+              child: ConfettiBurst(pieces: outcome.levelledUp ? 110 : 70),
+            ),
+          ),
+        ]),
         Padding(
           padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + MediaQuery.of(sheetContext).padding.bottom),
           child: Column(children: [

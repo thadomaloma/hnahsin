@@ -395,14 +395,16 @@ class _RegionSection extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        region.titleEnglish,
+                        AppText.pick(mizo: region.titleMizo, english: region.titleEnglish),
                         style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w900,
                         ),
                       ),
                       Text(
-                        '${region.titleMizo} • ${region.subtitleMizo}',
+                        AppText.language == AppLanguage.english
+                            ? '${region.titleMizo} • ${region.subtitleMizo}'
+                            : region.subtitleMizo,
                         style: const TextStyle(
                           color: QuestColors.slate,
                           fontSize: 12,
@@ -441,7 +443,7 @@ class _JourneyNodeTile extends StatelessWidget {
     return Semantics(
       button: !locked,
       enabled: !locked,
-      label: AppText.of('journey.nodeSpoken', {'title': node.titleEnglish, 'status': status.name}),
+      label: AppText.of('journey.nodeSpoken', {'title': AppText.pick(mizo: node.titleMizo, english: node.titleEnglish), 'status': status.name}),
       child: InkWell(
         onTap: locked
             ? null
@@ -493,11 +495,13 @@ class _JourneyNodeTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      node.titleEnglish,
+                      AppText.pick(mizo: node.titleMizo, english: node.titleEnglish),
                       style: const TextStyle(fontWeight: FontWeight.w900),
                     ),
                     Text(
-                      '${node.titleMizo} • ${node.subtitleMizo}',
+                      AppText.language == AppLanguage.english
+                          ? '${node.titleMizo} • ${node.subtitleMizo}'
+                          : node.subtitleMizo,
                       style: const TextStyle(
                         color: QuestColors.slate,
                         fontSize: 12,

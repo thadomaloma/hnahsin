@@ -24,7 +24,7 @@ void main() {
     expect(find.text(AppText.of('home.journey')), findsOneWidget);
     expect(find.text(AppText.of('journey.dailyGentle')), findsOneWidget);
     expect(find.text(AppText.of('journey.weeklyGentle')), findsOneWidget);
-    expect(find.text('Coming Home'), findsOneWidget);
+    expect(find.text('In Lam Pan'), findsOneWidget);
     expect(find.text(AppText.of('journey.start')), findsOneWidget);
     expect(find.text('Level 2'), findsOneWidget);
   });
@@ -42,8 +42,8 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(home: JourneyScreen(controller: controller)),
     );
-    await tester.ensureVisible(find.text('Coming Home'));
-    await tester.tap(find.text('Coming Home'));
+    await tester.ensureVisible(find.text('In Lam Pan'));
+    await tester.tap(find.text('In Lam Pan'));
     await tester.pumpAndSettle();
 
     expect(find.text(AppText.of('story.title')), findsOneWidget);

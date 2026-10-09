@@ -54,6 +54,11 @@ abstract final class AppText {
     return text;
   }
 
+  /// [mizo] or [english], whichever the app is shown in: for content that
+  /// has both, such as the journey's story titles.
+  static String pick({required String mizo, required String english}) =>
+      language == AppLanguage.english && english.isNotEmpty ? english : mizo;
+
   static bool _sameSet(Set<String> a, Set<String> b) =>
       a.length == b.length && a.containsAll(b);
 }

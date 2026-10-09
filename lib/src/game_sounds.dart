@@ -28,8 +28,8 @@ abstract final class GameSounds {
   static bool _configured = false;
 
   /// Tests have no audio plugin.
-  static final bool _available = kIsWeb ||
-      !Platform.environment.containsKey('FLUTTER_TEST');
+  static final bool _available =
+      kIsWeb || !Platform.environment.containsKey('FLUTTER_TEST');
 
   static void play(GameSound sound) {
     if (!enabled || !_available) return;
@@ -45,11 +45,10 @@ abstract final class GameSounds {
           respectSilence: true,
         ).build());
       }
-      final player = _players[sound] ??= AudioPlayer()
-        ..setReleaseMode(ReleaseMode.stop);
+      final player =
+          _players[sound] ??= AudioPlayer()..setReleaseMode(ReleaseMode.stop);
       await player.stop();
-      await player.play(AssetSource(sound.asset),
-          mode: PlayerMode.lowLatency);
+      await player.play(AssetSource(sound.asset), mode: PlayerMode.lowLatency);
     } catch (error) {
       // A missing sound must never break a game.
       debugPrint('Sound ${sound.name} could not play: $error');

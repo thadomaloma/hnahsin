@@ -14,6 +14,7 @@ import '../application/game_runtime.dart';
 import '../engine/game_engine.dart';
 import '../../../src/app_text.dart';
 import '../../../src/game_sounds.dart';
+import '../../../src/celebration.dart';
 
 enum _Face { word, picture, gloss }
 
@@ -368,21 +369,25 @@ class _CardTile extends StatelessWidget {
       child: ExcludeSemantics(
         child: GestureDetector(
           onTap: onTap,
-          child: TweenAnimationBuilder<double>(
-            tween: Tween(end: faceUp ? 1 : 0),
-            duration: motionFor(context, const Duration(milliseconds: 280)),
-            curve: Curves.easeInOut,
-            builder: (context, t, _) {
-              final showFront = t >= .5;
-              final angle = (showFront ? 1 - t : t) * 3.1416;
-              return Transform(
-                alignment: Alignment.center,
-                transform: Matrix4.identity()
-                  ..setEntry(3, 2, .0012)
-                  ..rotateY(angle),
-                child: showFront ? _front(context) : _back(),
-              );
-            },
+          // A found pair gives a little hop.
+          child: PopOnChange(
+            trigger: matched,
+            child: TweenAnimationBuilder<double>(
+              tween: Tween(end: faceUp ? 1 : 0),
+              duration: motionFor(context, const Duration(milliseconds: 280)),
+              curve: Curves.easeInOut,
+              builder: (context, t, _) {
+                final showFront = t >= .5;
+                final angle = (showFront ? 1 - t : t) * 3.1416;
+                return Transform(
+                  alignment: Alignment.center,
+                  transform: Matrix4.identity()
+                    ..setEntry(3, 2, .0012)
+                    ..rotateY(angle),
+                  child: showFront ? _front(context) : _back(),
+                );
+              },
+            ),
           ),
         ),
       ),

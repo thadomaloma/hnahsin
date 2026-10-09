@@ -72,7 +72,11 @@ class _HomeJourney extends StatelessWidget {
           icon: Icons.route_rounded,
           colors: const [Color(0xFF7569E8), Color(0xFF5B4FD0)],
           eyebrow: AppText.of('home.storyPath'),
-          title: controller.nextJourneyNode?.titleEnglish ??
+          title: (controller.nextJourneyNode == null
+                  ? null
+                  : AppText.pick(
+                      mizo: controller.nextJourneyNode!.titleMizo,
+                      english: controller.nextJourneyNode!.titleEnglish)) ??
               (controller.journeyState.completedNodeIds.length ==
                       journeyNodes.length
                   ? AppText.of('home.journeyComplete')
