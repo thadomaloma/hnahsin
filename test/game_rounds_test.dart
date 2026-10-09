@@ -4,6 +4,7 @@ import 'package:hnahsin/src/app_text.dart';
 import 'package:hnahsin/data/quest_repository.dart';
 import 'package:hnahsin/features/games/engine/game_engine.dart';
 import 'package:hnahsin/src/controller.dart';
+import 'package:hnahsin/src/mizo_lexicon.dart';
 import 'package:hnahsin/features/games/presentation/crossword_game.dart';
 import 'package:hnahsin/src/games.dart';
 import 'package:hnahsin/src/widgets.dart';
@@ -48,6 +49,17 @@ void main() {
     await play(tester, 'lal');
     expect(_hearts(2), findsOneWidget);
     expect(find.textContaining('it needs to start with “n”'), findsOneWidget);
+  });
+
+  testWidgets('word chain accepts a real Mizo word the content does not teach',
+      (tester) async {
+    MizoLexicon.use(['nawlpui']);
+    addTearDown(() => MizoLexicon.use(const <String>[]));
+    await pumpChain(tester, ['in']);
+
+    await play(tester, 'nawlpui');
+    expect(find.textContaining("We don't have this word yet"), findsNothing);
+    expect(find.text('Nawlpui'), findsOneWidget);
   });
 
   testWidgets('word chain links by Mizo alphabet letters: th starts with t',

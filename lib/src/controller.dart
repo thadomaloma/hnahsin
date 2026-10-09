@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 import '../data/quest_repository.dart';
@@ -19,6 +20,7 @@ import 'game_session.dart';
 import 'game_text.dart';
 import 'game_sounds.dart';
 import '../features/games/application/daily_puzzle.dart';
+import 'mizo_lexicon.dart';
 
 class QuestController extends ChangeNotifier {
   QuestController({
@@ -225,6 +227,7 @@ class QuestController extends ChangeNotifier {
       learningState.level.index >= card.minimumLevel;
 
   Future<void> load() async {
+    unawaited(MizoLexicon.load());
     profile = await _repository.loadProfile();
     _applyProgress(await _repository.loadProgress());
     learningState = await _repository.loadLearningState();

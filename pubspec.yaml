@@ -31,6 +31,7 @@ flutter:
     - assets/branding/hnahsin_icon.png
     - assets/illustrations/
     - assets/sounds/
+    - assets/mizo_words.txt
   fonts:
     # Plus Jakarta Sans (SIL OFL 1.1, assets/fonts/OFL.txt): covers every Mizo
     # letter including ṭ/Ṭ and circumflex vowels, so web builds no longer fall

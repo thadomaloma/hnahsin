@@ -16,6 +16,7 @@ import 'game_session.dart';
 import 'game_text.dart';
 import 'game_words.dart';
 import 'meaning_round.dart';
+import 'mizo_lexicon.dart';
 import 'theme.dart';
 import 'widgets.dart';
 import 'app_text.dart';
@@ -964,8 +965,12 @@ class _WordChainGameState extends State<WordChainGame> {
     if (vocabulary.contains(typed)) return typed;
     final folded = foldMizo(typed);
     final matches = vocabulary.where((word) => foldMizo(word) == folded);
-    return matches.length == 1 ? matches.single : null;
+    if (matches.length == 1) return matches.single;
+    // A real Mizo word the content doesn't teach yet still counts, as typed.
+    return _singleWord.hasMatch(typed) && MizoLexicon.contains(typed) ? typed : null;
   }
+
+  static final _singleWord = RegExp(r'^[a-zâêîôûṭ]+$');
 
   Future<void> submit() async {
     if (!runtime.ready || finishing) return;
