@@ -8,38 +8,38 @@ import 'package:hnahsin/src/app_text.dart';
 void main() {
   tearDown(() => AppText.update(const <String, String>{}));
 
-  test('built-in text fills its placeholders', () {
-    expect(AppText.of('home.play'), 'Khel rawh');
-    expect(AppText.of('home.streak', {'n': 4}), 'Ni 4 indawt');
-  });
-
-  test('English shows the built-in English, not the Sheet\'s Mizo', () {
-    addTearDown(() => AppText.language = AppLanguage.mizo);
-    AppText.update(const {'home.play': 'Khel nghal rawh'});
-    AppText.language = AppLanguage.english;
-
+  test('built-in text is simple English and fills its placeholders', () {
     expect(AppText.of('home.play'), 'Play');
     expect(AppText.of('home.streak', {'n': 4}), '4 day streak');
   });
 
-  test('every text has the same placeholders in Mizo and English', () {
+  test('Mizo shows the built-in Mizo, not the Sheet\'s English', () {
+    addTearDown(() => AppText.language = AppLanguage.english);
+    AppText.update(const {'home.play': 'Play now'});
+    AppText.language = AppLanguage.mizo;
+
+    expect(AppText.of('home.play'), 'Khel rawh');
+    expect(AppText.of('home.streak', {'n': 4}), 'Ni 4 indawt');
+  });
+
+  test('every text has the same placeholders in English and Mizo', () {
     for (final MapEntry(:key, :value) in appTextDefaults.entries) {
-      expect(appTextPlaceholders(value.english), appTextPlaceholders(value.text), reason: key);
+      expect(appTextPlaceholders(value.mizo), appTextPlaceholders(value.text), reason: key);
     }
   });
 
   test('Sheet text replaces the built-in text', () {
-    AppText.update(const {'home.play': 'Khel nghal rawh', 'home.streak': 'Ni {n} indawt'});
+    AppText.update(const {'home.play': 'Play now', 'home.streak': '{n} days in a row'});
 
-    expect(AppText.of('home.play'), 'Khel nghal rawh');
-    expect(AppText.of('home.streak', {'n': 4}), 'Ni 4 indawt');
+    expect(AppText.of('home.play'), 'Play now');
+    expect(AppText.of('home.streak', {'n': 4}), '4 days in a row');
   });
 
   test('Sheet text with other placeholders is ignored', () {
-    AppText.update(const {'home.streak': 'Ni indawt', 'home.play': 'Khel {now}'});
+    AppText.update(const {'home.streak': 'Streak', 'home.play': 'Play {now}'});
 
-    expect(AppText.of('home.streak', {'n': 4}), 'Ni 4 indawt');
-    expect(AppText.of('home.play'), 'Khel rawh');
+    expect(AppText.of('home.streak', {'n': 4}), '4 day streak');
+    expect(AppText.of('home.play'), 'Play');
   });
 
   test('every text the code asks for has a built-in text', () {

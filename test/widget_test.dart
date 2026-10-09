@@ -34,8 +34,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
 
     expect(controller.profile.onboardingCompleted, isTrue);
-    expect(find.text('VAWIIN GAME'), findsOneWidget);
-    expect(find.text('Khel rawh'), findsOneWidget);
+    expect(find.text(AppText.of('home.todaysGame')), findsOneWidget);
+    expect(find.text(AppText.of('home.play')), findsOneWidget);
     expect(find.text(AppText.of('nav.home')), findsOneWidget);
     expect(find.text(AppText.of('nav.learn')), findsWidgets);
     expect(find.text(AppText.of('nav.games')), findsWidgets);
@@ -72,12 +72,12 @@ void main() {
     );
 
     expect(find.text('Level 1'), findsOneWidget);
-    expect(find.text('I level hre chhuak rawh'), findsOneWidget);
-    await tester.tap(find.text('I level hre chhuak rawh'));
+    expect(find.text(AppText.of('learn.findLevel')), findsOneWidget);
+    await tester.tap(find.text(AppText.of('learn.findLevel')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Level enna'), findsOneWidget);
-    expect(find.text('Zawhna 1/10'), findsOneWidget);
+    expect(find.text(AppText.of('placement.title')), findsOneWidget);
+    expect(find.text('Question 1/10'), findsOneWidget);
   });
 
   testWidgets('placement asks ten different words with four different options',
@@ -101,12 +101,12 @@ void main() {
       expect(options, contains(entry.englishGloss));
       await tester.tap(find.byType(AnswerButton).first);
       await tester.pump();
-      await tester.tap(find.text(question == 9 ? 'I level en rawh' : 'A dawt'));
+      await tester.tap(find.text(AppText.of(question == 9 ? 'placement.seeLevel' : 'common.next')));
       await tester.pumpAndSettle();
     }
 
     expect(asked.toSet(), hasLength(10));
-    expect(find.text('I ṭanna level'), findsOneWidget);
+    expect(find.text(AppText.of('placement.result')), findsOneWidget);
     expect(controller.learningState.placementCompleted, isTrue);
   });
 
@@ -142,17 +142,17 @@ void main() {
     );
 
     expect(find.text('In'), findsOneWidget);
-    expect(find.text('A awmzia thlang rawh'), findsOneWidget);
+    expect(find.text(AppText.of('lesson.prompt')), findsOneWidget);
     expect(find.text('Mihring chenna hmun'), findsNothing);
-    expect(find.text('THUMAL THAR'), findsNothing);
+    expect(find.text(AppText.of('lesson.newWord')), findsNothing);
 
     await tester.tap(find.text('House'));
     await tester.pump();
     expect(find.text('Mihring chenna hmun'), findsOneWidget);
 
-    await tester.tap(find.text('A dawt'));
+    await tester.tap(find.text(AppText.of('common.next')));
     await tester.pumpAndSettle();
-    expect(find.text('THUMAL THAR'), findsOneWidget);
-    expect(find.text('A awmzia thlang rawh'), findsNothing);
+    expect(find.text(AppText.of('lesson.newWord')), findsOneWidget);
+    expect(find.text(AppText.of('lesson.prompt')), findsNothing);
   });
 }

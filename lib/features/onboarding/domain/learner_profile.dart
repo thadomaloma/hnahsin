@@ -68,7 +68,7 @@ class LearnerProfile {
     required this.reducedMotion,
     required this.onboardingCompleted,
     this.gentleMode = true,
-    this.appLanguage = AppLanguage.mizo,
+    this.appLanguage = AppLanguage.english,
     this.soundEffects = true,
   });
 
@@ -82,7 +82,7 @@ class LearnerProfile {
         reducedMotion: false,
         onboardingCompleted: false,
         gentleMode: true,
-        appLanguage: AppLanguage.mizo,
+        appLanguage: AppLanguage.english,
         soundEffects: true,
       );
 
@@ -198,7 +198,7 @@ class LearnerProfile {
       appLanguage: enumValue(
         AppLanguage.values,
         json['appLanguage'],
-        AppLanguage.mizo,
+        AppLanguage.english,
       ),
       soundEffects: json['soundEffects'] as bool? ?? true,
     );

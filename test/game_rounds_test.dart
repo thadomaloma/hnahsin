@@ -41,13 +41,13 @@ void main() {
     await pumpChain(tester, ['in']);
 
     await play(tester, 'qwxz');
-    expect(find.textContaining('a la awm lo'), findsOneWidget);
+    expect(find.textContaining("We don't have this word yet"), findsOneWidget);
     expect(_hearts(3), findsOneWidget);
 
     // "lal" is known but cannot follow "in".
     await play(tester, 'lal');
     expect(_hearts(2), findsOneWidget);
-    expect(find.textContaining('“n” hmanga bulṭan tûr a ni'), findsOneWidget);
+    expect(find.textContaining('it needs to start with “n”'), findsOneWidget);
   });
 
   testWidgets('word chain links by Mizo alphabet letters: th starts with t',
@@ -57,13 +57,13 @@ void main() {
     // Nothing here starts with “ng”, so “thing” would strand the learner:
     // it is explained, not scored.
     await play(tester, 'thing');
-    expect(find.textContaining('bulṭan thumal kan la nei lo'), findsOneWidget);
+    expect(find.textContaining('we have no word starting with'), findsOneWidget);
     expect(_hearts(3), findsOneWidget);
 
     await play(tester, 'thla');
     expect(_hearts(3), findsOneWidget);
     expect(find.text('Thla'), findsOneWidget);
-    expect(find.textContaining('“a” hmanga zawm leh rawh'), findsOneWidget);
+    expect(find.textContaining('Now link a word starting with “a”'), findsOneWidget);
   });
 
   testWidgets('a new word chain starts from a word with ways to go on',
@@ -78,8 +78,8 @@ void main() {
     final tip = tester
         .widgetList<Text>(find.byType(Text))
         .map((text) => text.data ?? '')
-        .firstWhere((data) => data.startsWith('KAWHHMUHNA'));
-    final count = int.parse(RegExp(r'thumal (\d+) kan nei').firstMatch(tip)!.group(1)!);
+        .firstWhere((data) => data.startsWith('TIP'));
+    final count = int.parse(RegExp(r'We know (\d+) words').firstMatch(tip)!.group(1)!);
     expect(count, greaterThan(0));
   });
 
@@ -141,8 +141,8 @@ void main() {
       final cells = <(int, int), String?>{};
       late (int, int) cursor;
       for (final semantics in tester.widgetList<Semantics>(find.byWidgetPredicate(
-          (widget) => widget is Semantics && (widget.properties.label ?? '').startsWith('Tlar ')))) {
-        final match = RegExp(r'^Tlar (\d+), ban (\d+), (?:a ruak|hawrawp (.+))$')
+          (widget) => widget is Semantics && (widget.properties.label ?? '').startsWith('Row ')))) {
+        final match = RegExp(r'^Row (\d+), column (\d+), (?:empty|letter (.+))$')
             .firstMatch(semantics.properties.label!)!;
         final cell = (int.parse(match[1]!), int.parse(match[2]!));
         cells[cell] = match[3];
@@ -150,7 +150,7 @@ void main() {
       }
       final down = tester
           .widgetList<Text>(find.byType(Text))
-          .any((text) => (text.data ?? '').contains('DUNG') && (text.data ?? '').contains('HAWRAWP'));
+          .any((text) => (text.data ?? '').contains('DOWN') && (text.data ?? '').contains('LETTERS'));
       final (dr, dc) = down ? (1, 0) : (0, 1);
       var start = cursor;
       while (cells.containsKey((start.$1 - dr, start.$2 - dc))) {
@@ -167,8 +167,8 @@ void main() {
       final header = tester
           .widgetList<Text>(find.byType(Text))
           .map((text) => text.data ?? '')
-          .firstWhere((data) => data.contains('HAWRAWP'));
-      final length = int.parse(RegExp(r'HAWRAWP (\d+)').firstMatch(header)!.group(1)!);
+          .firstWhere((data) => data.contains('LETTERS'));
+      final length = int.parse(RegExp(r'(\d+) LETTERS').firstMatch(header)!.group(1)!);
       final clues = tester.widgetList<Text>(find.byType(Text)).map((text) => text.data);
       return controller.wordCatalog
           .map((entry) => entry.word.trim().toUpperCase())
@@ -192,7 +192,7 @@ void main() {
     final wrongWord = redLetters(next).split('').map((letter) => letter == 'Z' ? 'A' : 'Z').join();
     await typeWord(wrongWord);
     expect(_hearts(2), findsOneWidget);
-    expect(find.textContaining('a dik lo'), findsOneWidget);
+    expect(find.textContaining("isn't right"), findsOneWidget);
 
     // Fixing it letter by letter is not checked again until every red
     // letter is replaced, so it costs no further hearts.

@@ -68,9 +68,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(controller.profile.supportLanguage, isNot(english));
 
-    expect(find.text('Level en leh rawh'), findsOneWidget);
+    expect(find.text(AppText.of('learn.retakeLevel')), findsOneWidget);
     // The old track picker did nothing, so it's gone.
-    expect(find.textContaining('Bulṭan —'), findsNothing);
+    expect(find.textContaining('Beginner —'), findsNothing);
   });
 
   testWidgets('Reduce motion turns animations off across the app',

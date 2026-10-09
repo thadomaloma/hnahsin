@@ -20,7 +20,7 @@ void main() {
     await tester.tap(find.text('Tlawmngaihna'));
     await tester.pumpAndSettle();
 
-    expect(find.text('A hman dân leh a nihna'), findsOneWidget);
+    expect(find.text(AppText.of('culture.usage')), findsOneWidget);
     expect(find.text(AppText.of('culture.add')), findsOneWidget);
   });
 

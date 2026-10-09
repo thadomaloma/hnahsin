@@ -1201,8 +1201,8 @@ class _ProfileSettings extends StatelessWidget {
               showSelectedIcon: false,
               style: SegmentedButton.styleFrom(visualDensity: VisualDensity.compact),
               segments: const <ButtonSegment<AppLanguage>>[
-                ButtonSegment(value: AppLanguage.mizo, label: Text('Mizo')),
                 ButtonSegment(value: AppLanguage.english, label: Text('English')),
+                ButtonSegment(value: AppLanguage.mizo, label: Text('Mizo')),
               ],
               selected: <AppLanguage>{profile.appLanguage},
               onSelectionChanged: (selection) =>

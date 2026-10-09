@@ -14,7 +14,7 @@ void main() {
       dailyGoalMinutes: 10,
       onboardingCompleted: true,
       gentleMode: false,
-      appLanguage: AppLanguage.english,
+      appLanguage: AppLanguage.mizo,
     );
 
     final decoded = LearnerProfile.fromJson(profile.toJson());
@@ -24,7 +24,7 @@ void main() {
     expect(decoded.dailyGoalMinutes, 10);
     expect(decoded.onboardingCompleted, isTrue);
     expect(decoded.gentleMode, isFalse);
-    expect(decoded.appLanguage, AppLanguage.english);
+    expect(decoded.appLanguage, AppLanguage.mizo);
   });
 
   test('older profiles default to gentle engagement', () {
@@ -33,7 +33,7 @@ void main() {
     expect(decoded.gentleMode, isTrue);
   });
 
-  test('older profiles show the app in Mizo', () {
-    expect(LearnerProfile.fromJson(const <String, Object?>{}).appLanguage, AppLanguage.mizo);
+  test('older profiles show the app in English', () {
+    expect(LearnerProfile.fromJson(const <String, Object?>{}).appLanguage, AppLanguage.english);
   });
 }

@@ -139,9 +139,9 @@ void main() {
 
     await tester.tap(find.text(AppText.of('sentence.finish')));
     await tester.pumpAndSettle();
-    expect(find.text('Thumal i hmuh te'), findsOneWidget);
+    expect(find.text(AppText.of('result.words')), findsOneWidget);
     expect(find.text('ar'), findsOneWidget);
-    expect(find.text('A sen te hi i khelh leh hunah an lo lang leh ang.'), findsOneWidget);
+    expect(find.text(AppText.of('result.missedNote')), findsOneWidget);
 
     await tester.tap(find.text(AppText.of('result.playAgain')));
     await tester.pumpAndSettle();

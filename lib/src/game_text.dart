@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import '../features/content_sync/domain/delivery_models.dart';
 import 'app_text.dart';
 
-/// Text for one game. Every field can be overridden per game on the
+/// Text for one game, in simple English. Every field can be overridden per game on the
 /// content Sheet's “Game text” tab; anything left empty there falls back to
 /// these built-in defaults.
 class GameCopy {
@@ -52,7 +52,9 @@ String fillGameText(String template,
         .replaceAll('{answer}', answer)
         .replaceAll('{first}', answer.isEmpty ? '' : answer.substring(0, 1));
 
-const _defaultGameCopy = <String, GameCopy>{
+/// The games' text for [AppLanguage.mizo]. The Sheet's game text is
+/// English, so it doesn't apply here.
+const _mizoGameCopy = <String, GameCopy>{
   'picture_match': GameCopy(
       title: 'Picture Match',
       subtitle: 'Milem leh thumal zawm',
@@ -126,16 +128,14 @@ const _defaultGameCopy = <String, GameCopy>{
       GameCopy(correctFeedback: 'A dik e!', retryFeedback: 'Tum leh rawh'),
 };
 
-/// The games' text for [AppLanguage.english]. The Sheet's game text is
-/// Mizo, so it doesn't apply here.
-const _englishGameCopy = <String, GameCopy>{
+const _defaultGameCopy = <String, GameCopy>{
   'picture_match': GameCopy(
       title: 'Picture Match',
       subtitle: 'Match pictures and words',
-      prompt: 'What is this called in Mizo?',
-      hint: 'Hint: it means “{gloss}” in English.',
+      prompt: 'What is this?',
+      hint: 'Hint: it means “{gloss}”.',
       instructions: <String>[
-        'Look at the picture and pick its Mizo name.',
+        'Look at the picture and pick its name.',
         'After you answer, read the meaning and the example.'
       ]),
   'spelling': GameCopy(
@@ -210,8 +210,8 @@ abstract final class GameText {
   static void update(Map<String, DeliveredGameCopy> delivered) =>
       _delivered = delivered;
 
-  static GameCopy of(String gameId) => AppText.language == AppLanguage.english
-      ? _englishGameCopy[gameId] ?? const GameCopy()
+  static GameCopy of(String gameId) => AppText.language == AppLanguage.mizo
+      ? _mizoGameCopy[gameId] ?? const GameCopy()
       : (_defaultGameCopy[gameId] ?? const GameCopy())
           ._override(_delivered[gameId]);
 

@@ -12,17 +12,17 @@ void main() {
   });
 
   test('built-in game text is used until Studio overrides a field', () {
-    expect(GameText.of('picture_match').prompt, 'Milem hming hi eng nge?');
-    expect(GameText.common.correctFeedback, 'A dik e!');
+    expect(GameText.of('picture_match').prompt, 'What is this?');
+    expect(GameText.common.correctFeedback, 'Correct!');
 
     GameText.update({
       'picture_match': const DeliveredGameCopy(
         gameId: 'picture_match',
-        fields: {'prompt': 'Hei hi eng nge?'},
+        fields: {'prompt': 'Name this'},
       ),
     });
 
-    expect(GameText.of('picture_match').prompt, 'Hei hi eng nge?');
+    expect(GameText.of('picture_match').prompt, 'Name this');
     expect(GameText.of('picture_match').title, 'Picture Match', reason: 'untouched fields keep defaults');
     expect(GameText.of('picture_match').instructions, isNotEmpty);
   });

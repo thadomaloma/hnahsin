@@ -4,22 +4,23 @@
 /// (content_studio/README.md).
 library;
 
-/// The language the app's own labels and messages are shown in. Mizo is the
-/// default; English is for learners who can't read Mizo yet.
-enum AppLanguage { mizo, english }
+/// The language the app's own labels and messages are shown in. Simple
+/// English is the default, so anyone can play; the Mizo is in the games'
+/// words, learnt along the way. Mizo is an option in Profile.
+enum AppLanguage { english, mizo }
 
 /// One text's built-in wording and where in the app it shows.
 class AppTextDefault {
-  const AppTextDefault(this.where, this.text, this.english);
+  const AppTextDefault(this.where, this.text, this.mizo);
 
   /// The screen or part of the app, so an editor can find it.
   final String where;
 
-  /// The Mizo wording: what the Sheet's “Built-in text” shows.
+  /// The English wording: what the Sheet's “Built-in text” shows.
   final String text;
 
-  /// The same text in English, for [AppLanguage.english].
-  final String english;
+  /// The same text in Mizo, for [AppLanguage.mizo].
+  final String mizo;
 }
 
 /// The `{name}` placeholders in [text], which the app fills in.
@@ -32,19 +33,19 @@ abstract final class AppText {
   /// The Sheet's texts from the active content pack.
   static void update(Map<String, String> delivered) => _delivered = delivered;
 
-  /// The learner's choice (Profile, or the welcome screen).
-  static AppLanguage language = AppLanguage.mizo;
+  /// The learner's choice in Profile.
+  static AppLanguage language = AppLanguage.english;
 
   /// [id]'s text with its `{name}` placeholders filled from [values]. Sheet
   /// text is used only when it has the same placeholders as the built-in
   /// text, so a typo there can't show a raw `{name}` or drop a number. The
-  /// Sheet edits the Mizo wording, so English shows the built-in English.
+  /// Sheet edits the English wording, so Mizo shows the built-in Mizo.
   static String of(String id,
       [Map<String, Object?> values = const <String, Object?>{}]) {
     final builtIn = appTextDefaults[id];
-    final english = language == AppLanguage.english;
-    final fallback = (english ? builtIn?.english : builtIn?.text) ?? id;
-    final sheet = english ? null : _delivered[id];
+    final mizo = language == AppLanguage.mizo;
+    final fallback = (mizo ? builtIn?.mizo : builtIn?.text) ?? id;
+    final sheet = mizo ? null : _delivered[id];
     var text = sheet != null &&
             _sameSet(appTextPlaceholders(sheet), appTextPlaceholders(fallback))
         ? sheet
@@ -57,7 +58,7 @@ abstract final class AppText {
   /// [mizo] or [english], whichever the app is shown in: for content that
   /// has both, such as the journey's story titles.
   static String pick({required String mizo, required String english}) =>
-      language == AppLanguage.english && english.isNotEmpty ? english : mizo;
+      language == AppLanguage.mizo || english.isEmpty ? mizo : english;
 
   static bool _sameSet(Set<String> a, Set<String> b) =>
       a.length == b.length && a.containsAll(b);
@@ -65,888 +66,884 @@ abstract final class AppText {
 
 const appTextDefaults = <String, AppTextDefault>{
   // Content review
-  'review.title': AppTextDefault('Content review', 'Content en fel mêk a ni',
-      'Content review in progress'),
+  'review.title': AppTextDefault(
+      'Content review', 'Checking content', 'Content en fel mêk a ni'),
   'review.body': AppTextDefault(
       'Content review',
-      'Mizo ṭawng thiam mi te\'n content hi an la en fel mêk a. An pawm hma chuan app-ah kan dah lo.',
-      'Qualified Mizo reviewers are still checking this content. Draft content is not shown in public releases.'),
+      'Mizo experts are still checking this content. It will appear when it is ready.',
+      'Mizo ṭawng thiam mi te\'n content hi an la en fel mêk a. An pawm hma chuan app-ah kan dah lo.'),
   // Navigation
-  'nav.home': AppTextDefault('Navigation', 'In', 'Home'),
-  'nav.learn': AppTextDefault('Navigation', 'Zir', 'Learn'),
-  'nav.games': AppTextDefault('Navigation', 'Khel', 'Games'),
-  'nav.profile': AppTextDefault('Navigation', 'Keimah', 'Profile'),
+  'nav.home': AppTextDefault('Navigation', 'Home', 'In'),
+  'nav.learn': AppTextDefault('Navigation', 'Learn', 'Zir'),
+  'nav.games': AppTextDefault('Navigation', 'Games', 'Khel'),
+  'nav.profile': AppTextDefault('Navigation', 'Profile', 'Keimah'),
   // Profile • content
   'content.offline': AppTextDefault(
-      'Profile • content', 'Internet nei lovin', 'Offline content'),
+      'Profile • content', 'Offline words', 'Internet nei lovin'),
   'content.version': AppTextDefault(
       'Profile • content', 'Content {version}', 'Content {version}'),
   'content.check': AppTextDefault(
-      'Profile • content', 'Thil thar awm em en rawh', 'Check for Updates'),
+      'Profile • content', 'Check for new words', 'Thil thar awm em en rawh'),
   'content.builtIn':
-      AppTextDefault('Profile • content', 'App-a awm sa', 'Built-in Pack'),
+      AppTextDefault('Profile • content', 'Built-in words', 'App-a awm sa'),
   'sync.builtInReady': AppTextDefault(
       'Profile • content',
-      'App-a zirna awm sa hi internet nei lovin a hman theih.',
-      'Built-in learning content is ready offline.'),
+      'Words are ready to play offline.',
+      'App-a zirna awm sa hi internet nei lovin a hman theih.'),
   'sync.packsReady': AppTextDefault(
       'Profile • content',
-      'Content endik fel sa hi internet nei lovin a hman theih.',
-      'Verified offline packs are ready.'),
+      'Your words are ready offline.',
+      'Content endik fel sa hi internet nei lovin a hman theih.'),
   'sync.checking': AppTextDefault('Profile • content',
-      'Content thar awm em kan en mêk…', 'Checking reviewed content packs…'),
-  'sync.updated': AppTextDefault('Profile • content',
-      'Content thar a lut ṭha ta.', 'Reviewed offline packs updated safely.'),
+      'Checking for new words…', 'Content thar awm em kan en mêk…'),
+  'sync.updated': AppTextDefault(
+      'Profile • content', 'New words added.', 'Content thar a lut ṭha ta.'),
   'sync.upToDate': AppTextDefault('Profile • content',
-      'Content thar ber i nei tawh.', 'Offline packs are up to date.'),
+      'You have the latest words.', 'Content thar ber i nei tawh.'),
   'sync.rejected': AppTextDefault(
       'Profile • content',
-      'Content thar hi a ṭha lo avangin kan la lo. I content awm sa chu i hmang thei reng. {error}',
-      'Unsafe update rejected. Verified compatible offline content remains available. {error}'),
+      'This update had a problem, so we skipped it. Your words still work. {error}',
+      'Content thar hi a ṭha lo avangin kan la lo. I content awm sa chu i hmang thei reng. {error}'),
   'sync.unavailable': AppTextDefault(
       'Profile • content',
-      'Tunah hian content thar kan la thei lo. I content awm sa chu i hmang thei reng.',
-      'Update unavailable. Verified compatible offline content remains available.'),
+      'Could not check for new words. Your words still work.',
+      'Tunah hian content thar kan la thei lo. I content awm sa chu i hmang thei reng.'),
   // Content report
   'report.done':
-      AppTextDefault('Content report', 'Kan hriattir tawh', 'Issue reported'),
+      AppTextDefault('Content report', 'Issue reported', 'Kan hriattir tawh'),
   'report.open': AppTextDefault(
-      'Content report', 'Content dik lo hriattir rawh', 'Report content issue'),
+      'Content report', 'Report content issue', 'Content dik lo hriattir rawh'),
   'report.title': AppTextDefault(
-      'Content report', 'Content dik lo hriattirna', 'Report a content issue'),
+      'Content report', 'Report a content issue', 'Content dik lo hriattirna'),
   'report.privacy': AppTextDefault(
       'Content report',
-      'I thu mal kan la lo. Content leh a chhan chauh hi i phone-ah a awm a, en fel turin kan dah.',
-      'No personal message is collected. The content reference and reason stay on this device for the review queue.'),
+      'We don\'t collect personal messages. Your report stays on this device.',
+      'I thu mal kan la lo. Content leh a chhan chauh hi i phone-ah a awm a, en fel turin kan dah.'),
   'report.spelling': AppTextDefault('Content report',
-      'Mizo ziah dan emaw thumal hman dan', 'Mizo spelling or wording'),
+      'Mizo spelling or wording', 'Mizo ziah dan emaw thumal hman dan'),
   'report.meaning': AppTextDefault(
-      'Content report', 'Awmzia emaw lehlin dan', 'Meaning or translation'),
+      'Content report', 'Meaning or translation', 'Awmzia emaw lehlin dan'),
   'report.picture': AppTextDefault(
-      'Content report', 'Milem a inmil lo', 'Picture does not match'),
+      'Content report', 'Picture does not match', 'Milem a inmil lo'),
   'report.culture':
-      AppTextDefault('Content report', 'Hnam nun lam', 'Cultural context'),
+      AppTextDefault('Content report', 'Cultural context', 'Hnam nun lam'),
   'report.save':
-      AppTextDefault('Content report', 'Dah ṭha rawh', 'Save Report'),
-  'report.saved': AppTextDefault(
-      'Content report',
-      'I hriattirna chu en fel turin kan dah ṭha e.',
-      'Report saved to the local review queue.'),
+      AppTextDefault('Content report', 'Save Report', 'Dah ṭha rawh'),
+  'report.saved': AppTextDefault('Content report', 'Report saved. Thank you!',
+      'I hriattirna chu en fel turin kan dah ṭha e.'),
   // Home
-  'home.games': AppTextDefault('Home', 'Khel', 'Games'),
-  'home.viewAll': AppTextDefault('Home', 'A vaiin en rawh', 'View All'),
-  'home.journey': AppTextDefault('Home', 'Mizo Kawngzawh', 'Mizo Journey'),
-  'home.viewMap': AppTextDefault('Home', 'Map en rawh', 'View Map'),
-  'home.storyPath': AppTextDefault('Home', 'THAWNTHU KAWNG', 'STORY PATH'),
+  'home.games': AppTextDefault('Home', 'Games', 'Khel'),
+  'home.viewAll': AppTextDefault('Home', 'View All', 'A vaiin en rawh'),
+  'home.journey': AppTextDefault('Home', 'Mizo Journey', 'Mizo Kawngzawh'),
+  'home.viewMap': AppTextDefault('Home', 'View Map', 'Map en rawh'),
+  'home.storyPath': AppTextDefault('Home', 'STORY PATH', 'THAWNTHU KAWNG'),
   'home.journeyComplete':
-      AppTextDefault('Home', 'Kawngzawh i zo ta', 'Journey Complete'),
+      AppTextDefault('Home', 'Journey Complete', 'Kawngzawh i zo ta'),
   'home.journeyContinue': AppTextDefault(
-      'Home', 'I kawngzawh chhunzawm rawh', 'Continue Your Journey'),
+      'Home', 'Continue Your Journey', 'I kawngzawh chhunzawm rawh'),
   'home.journeyProgress': AppTextDefault(
       'Home',
-      'Thawnthu {total} zingah {done} i zo • Ni tin hna',
-      '{done}/{total} story stops • Daily quests'),
+      '{done}/{total} story stops • Daily quests',
+      'Thawnthu {total} zingah {done} i zo • Ni tin hna'),
   'home.greeting': AppTextDefault('Home', 'Chibai! 👋', 'Chibai! 👋'),
   'app.name': AppTextDefault('Home', 'Hnahsin', 'Hnahsin'),
   'home.xpLevel': AppTextDefault('Home', 'Lv {level}', 'Lv {level}'),
-  'home.todaysGame': AppTextDefault('Home', 'VAWIIN GAME', 'TODAY\'S GAME'),
-  'home.best': AppTextDefault('Home', 'A sang ber {score}', 'Best {score}'),
+  'home.todaysGame': AppTextDefault('Home', 'TODAY\'S GAME', 'VAWIIN GAME'),
+  'home.best': AppTextDefault('Home', 'Best {score}', 'A sang ber {score}'),
   'home.replay': AppTextDefault(
-      'Home', 'Thumal {n} i hmuh leh tur a awm', '{n} words to see again'),
+      'Home', '{n} words to see again', 'Thumal {n} i hmuh leh tur a awm'),
   'home.roundsToday':
-      AppTextDefault('Home', '{done}/{goal}\nKHELH', '{done}/{goal}\nROUNDS'),
-  'home.rhythm': AppTextDefault('Home', 'Zirna kalphung', 'Learning rhythm'),
-  'home.streak': AppTextDefault('Home', 'Ni {n} indawt', '{n} day streak'),
-  'home.startToday': AppTextDefault('Home', 'Vawiin ṭan rawh', 'Start today'),
-  'home.play': AppTextDefault('Home', 'Khel rawh', 'Play'),
+      AppTextDefault('Home', '{done}/{goal}\nROUNDS', '{done}/{goal}\nKHELH'),
+  'home.rhythm': AppTextDefault('Home', 'Learning rhythm', 'Zirna kalphung'),
+  'home.streak': AppTextDefault('Home', '{n} day streak', 'Ni {n} indawt'),
+  'home.startToday': AppTextDefault('Home', 'Start today', 'Vawiin ṭan rawh'),
+  'home.play': AppTextDefault('Home', 'Play', 'Khel rawh'),
   'home.otherGame':
-      AppTextDefault('Home', 'Game dang khel rawh', 'Play another game'),
+      AppTextDefault('Home', 'Play another game', 'Game dang khel rawh'),
   // Learn
-  'learn.eyebrow': AppTextDefault('Learn', 'I zirna', 'Your learning'),
-  'learn.title': AppTextDefault('Learn', 'Zir', 'Learn'),
+  'learn.eyebrow': AppTextDefault('Learn', 'Your learning', 'I zirna'),
+  'learn.title': AppTextDefault('Learn', 'Learn', 'Zir'),
   'learn.subtitle': AppTextDefault(
       'Learn',
-      '{level} {title} • Mahni chak zawngin zir chhunzawm rawh.',
-      '{level} {title} • Keep learning at your own pace.'),
-  'learn.library': AppTextDefault('Learn', 'Thumal Dahkhawmna', 'Word Library'),
+      '{level} {title} • Keep learning at your own pace.',
+      '{level} {title} • Mahni chak zawngin zir chhunzawm rawh.'),
+  'learn.library': AppTextDefault('Learn', 'Word Library', 'Thumal Dahkhawmna'),
   'learn.libraryCount': AppTextDefault(
       'Learn',
-      'Thumal {words} • Chi {categories}',
-      '{words} words • {categories} topics'),
-  'learn.due': AppTextDefault('Learn', 'EN LEH TUR', 'TO REVIEW'),
-  'learn.new': AppTextDefault('Learn', 'THAR', 'NEW'),
-  'learn.mastered': AppTextDefault('Learn', 'THIAM TAWH', 'MASTERED'),
+      '{words} words • {categories} topics',
+      'Thumal {words} • Chi {categories}'),
+  'learn.due': AppTextDefault('Learn', 'TO REVIEW', 'EN LEH TUR'),
+  'learn.new': AppTextDefault('Learn', 'NEW', 'THAR'),
+  'learn.mastered': AppTextDefault('Learn', 'MASTERED', 'THIAM TAWH'),
   'learn.startLesson':
-      AppTextDefault('Learn', 'Vawiin zirna ṭan rawh', 'Start today\'s lesson'),
+      AppTextDefault('Learn', 'Start today\'s lesson', 'Vawiin zirna ṭan rawh'),
   'learn.findLevel':
-      AppTextDefault('Learn', 'I level hre chhuak rawh', 'Find your level'),
+      AppTextDefault('Learn', 'Find your level', 'I level hre chhuak rawh'),
   'learn.retakeLevel':
-      AppTextDefault('Learn', 'Level en leh rawh', 'Check your level again'),
+      AppTextDefault('Learn', 'Check your level again', 'Level en leh rawh'),
   'learn.continue':
-      AppTextDefault('Learn', 'Zir chhunzawm rawh', 'Keep learning'),
+      AppTextDefault('Learn', 'Keep learning', 'Zir chhunzawm rawh'),
   // Games
-  'games.eyebrow': AppTextDefault('Games', 'Inzirna hmun', 'Practice arena'),
-  'games.title': AppTextDefault('Games', 'Khel', 'Games'),
+  'games.eyebrow': AppTextDefault('Games', 'Practice arena', 'Inzirna hmun'),
+  'games.title': AppTextDefault('Games', 'Games', 'Khel'),
   'games.subtitle': AppTextDefault(
       'Games',
-      'I duh zawng thlang la, i mark sang ber siam rawh.',
-      'Pick a game and beat your best score.'),
-  'games.played': AppTextDefault('Games', 'I KHEL TAWH', 'PLAYED'),
+      'Pick a game and beat your best score.',
+      'I duh zawng thlang la, i mark sang ber siam rawh.'),
+  'games.played': AppTextDefault('Games', 'PLAYED', 'I KHEL TAWH'),
   'games.level': AppTextDefault('Games', 'Lv {level}', 'Lv {level}'),
   'games.best': AppTextDefault('Games', '★ {score}', '★ {score}'),
-  'games.play': AppTextDefault('Games', 'KHEL RAWH', 'PLAY'),
+  'games.play': AppTextDefault('Games', 'PLAY', 'KHEL RAWH'),
   // Profile
-  'profile.eyebrow': AppTextDefault('Profile', 'I kawngzawh', 'Your journey'),
-  'profile.title': AppTextDefault('Profile', 'Keimah', 'Profile'),
+  'profile.eyebrow': AppTextDefault('Profile', 'Your journey', 'I kawngzawh'),
+  'profile.title': AppTextDefault('Profile', 'Profile', 'Keimah'),
   'profile.subtitle': AppTextDefault(
       'Profile',
-      'I zirna hmasawnna leh level te hetah en rawh.',
-      'See your progress and levels here.'),
+      'See your progress and levels here.',
+      'I zirna hmasawnna leh level te hetah en rawh.'),
   'profile.name':
-      AppTextDefault('Profile', 'Thumal {experience}', 'Thumal {experience}'),
-  'profile.xpToNext': AppTextDefault('Profile', '{xp}/250 XP level thar atan',
-      '{xp}/250 XP to the next level'),
-  'profile.calm': AppTextDefault('Profile', 'Muang takin', 'Calm'),
-  'profile.myPace': AppTextDefault('Profile', 'Ka chak zawngin', 'My Pace'),
-  'profile.dayStreak': AppTextDefault('Profile', 'Ni indawt', 'Day Streak'),
-  'profile.games': AppTextDefault('Profile', 'Khelh zat', 'Games'),
-  'profile.lessons': AppTextDefault('Profile', 'Zirna', 'Lessons'),
+      AppTextDefault('Profile', 'Hnahsin {experience}', 'Thumal {experience}'),
+  'profile.xpToNext': AppTextDefault('Profile', '{xp}/250 XP to the next level',
+      '{xp}/250 XP level thar atan'),
+  'profile.calm': AppTextDefault('Profile', 'Calm', 'Muang takin'),
+  'profile.myPace': AppTextDefault('Profile', 'My Pace', 'Ka chak zawngin'),
+  'profile.dayStreak': AppTextDefault('Profile', 'Day Streak', 'Ni indawt'),
+  'profile.games': AppTextDefault('Profile', 'Games', 'Khelh zat'),
+  'profile.lessons': AppTextDefault('Profile', 'Lessons', 'Zirna'),
   'profile.journey': AppTextDefault(
-      'Profile', 'Mizo Kawngzawh Dahkhawmna', 'Mizo Journey Collection'),
+      'Profile', 'Mizo Journey Collection', 'Mizo Kawngzawh Dahkhawmna'),
   'profile.journeyCount': AppTextDefault(
       'Profile',
-      'Thawnthu {stories}/{total} • Lawmman {rewards}',
-      '{stories}/{total} stories • {rewards} rewards'),
-  'profile.settings': AppTextDefault('Profile', 'Ka duh dan', 'My settings'),
-  'profile.dailyGoal': AppTextDefault('Profile', 'Ni tin tum', 'Daily goal'),
+      '{stories}/{total} stories • {rewards} rewards',
+      'Thawnthu {stories}/{total} • Lawmman {rewards}'),
+  'profile.settings': AppTextDefault('Profile', 'My settings', 'Ka duh dan'),
+  'profile.dailyGoal': AppTextDefault('Profile', 'Daily goal', 'Ni tin tum'),
   'profile.dailyGoalNote': AppTextDefault(
       'Profile',
-      'Minute khatah game khat vel a ni; i tum i thlen chuan In-a bial chu a khat ang.',
-      'About one game round a minute; Home\'s ring fills when you reach it.'),
-  'profile.appLanguage': AppTextDefault('Profile', 'App ṭawng', 'App language'),
-  'profile.appLanguageNote': AppTextDefault('Profile',
-      'Button leh thuchah te ṭawng', 'The language of buttons and messages'),
-  'profile.sound': AppTextDefault('Profile', 'Ri', 'Sound'),
+      'About one game round a minute; Home\'s ring fills when you reach it.',
+      'Minute khatah game khat vel a ni; i tum i thlen chuan In-a bial chu a khat ang.'),
+  'profile.appLanguage': AppTextDefault('Profile', 'App language', 'App ṭawng'),
+  'profile.appLanguageNote': AppTextDefault(
+      'Profile', 'Buttons and messages', 'Button leh thuchah te ṭawng'),
+  'profile.sound': AppTextDefault('Profile', 'Sound', 'Ri'),
   'profile.soundNote': AppTextDefault(
       'Profile',
-      'Chhanna dik, dik lo leh game zawh ri',
-      'Sounds for right and wrong answers and finished rounds'),
-  'profile.ageRange': AppTextDefault('Profile', 'Kum', 'Age range'),
+      'Sounds for right and wrong answers and finished rounds',
+      'Chhanna dik, dik lo leh game zawh ri'),
+  'profile.ageRange': AppTextDefault('Profile', 'Age range', 'Kum'),
   'profile.englishNote': AppTextDefault(
       'Profile',
-      'Thawnthu leh hnam nun card-ah Mizo bulah English pawh tilang rawh.',
-      'Show English beside the Mizo in stories and culture cards.'),
+      'Show English beside the Mizo in stories and culture cards.',
+      'Thawnthu leh hnam nun card-ah Mizo bulah English pawh tilang rawh.'),
   'profile.xpLevel': AppTextDefault('Profile', 'Lv {level}', 'Lv {level}'),
   'profile.family':
-      AppTextDefault('Profile', 'Chhungkaw tan a him', 'Family-friendly'),
+      AppTextDefault('Profile', 'Family-friendly', 'Chhungkaw tan a him'),
   'profile.familyNote': AppTextDefault(
       'Profile',
-      'Mi dang nen inbiakna a awm lo • I hmasawnna i phone-ah a awm',
-      'No public chat • Progress saved on this device'),
+      'No public chat • Progress saved on this device',
+      'Mi dang nen inbiakna a awm lo • I hmasawnna i phone-ah a awm'),
   'profile.reduceMotion':
-      AppTextDefault('Profile', 'Che tlem zawk', 'Reduce motion'),
-  'profile.reduceMotionNote': AppTextDefault('Profile',
-      'Animation tlem zawk hmang rawh', 'Use fewer interface animations'),
+      AppTextDefault('Profile', 'Reduce motion', 'Che tlem zawk'),
+  'profile.reduceMotionNote': AppTextDefault(
+      'Profile', 'Fewer animations', 'Animation tlem zawk hmang rawh'),
   'profile.gentle':
-      AppTextDefault('Profile', 'Nawr lovin', 'Gentle engagement'),
+      AppTextDefault('Profile', 'Gentle engagement', 'Nawr lovin'),
   'profile.gentleNote': AppTextDefault(
       'Profile',
-      'Hna te hi duh thlan a ni a, ni indawt nawrna a lang lo',
-      'Keep quests optional and hide streak pressure'),
+      'Quests are optional, no streak pressure',
+      'Hna te hi duh thlan a ni a, ni indawt nawrna a lang lo'),
   'profile.reset': AppTextDefault(
-      'Profile', 'Hmasawnna paih vek rawh', 'Reset Local Progress'),
+      'Profile', 'Reset Local Progress', 'Hmasawnna paih vek rawh'),
   'profile.resetTitle': AppTextDefault(
-      'Profile', 'I hmasawnna paih vek dawn em?', 'Reset local progress?'),
+      'Profile', 'Reset local progress?', 'I hmasawnna paih vek dawn em?'),
   'profile.resetBody': AppTextDefault(
       'Profile',
-      'He phone-a i XP, mark, i duh dan leh game i dah ṭhat te chu an bo vek ang. Siam ṭhat leh theih a ni lo.',
-      'Your XP, scores, settings and saved game sessions on this device will be deleted. This cannot be undone.'),
-  'profile.resetConfirm': AppTextDefault('Profile', 'Paih vek rawh', 'Reset'),
-  'profile.badge.older': AppTextDefault('Profile', 'Kawngzawh', 'Journey'),
+      'Your XP, scores, settings and saved game sessions on this device will be deleted. This cannot be undone.',
+      'He phone-a i XP, mark, i duh dan leh game i dah ṭhat te chu an bo vek ang. Siam ṭhat leh theih a ni lo.'),
+  'profile.resetConfirm': AppTextDefault('Profile', 'Reset', 'Paih vek rawh'),
+  'profile.badge.older': AppTextDefault('Profile', 'Journey', 'Kawngzawh'),
   // Common
-  'common.cancel': AppTextDefault('Common', 'Ti lo ang', 'Cancel'),
-  'common.back': AppTextDefault('Common', 'Kir leh', 'Back'),
-  'common.continue': AppTextDefault('Common', 'Chhunzawm rawh', 'Continue'),
+  'common.cancel': AppTextDefault('Common', 'Cancel', 'Ti lo ang'),
+  'common.back': AppTextDefault('Common', 'Back', 'Kir leh'),
+  'common.continue': AppTextDefault('Common', 'Continue', 'Chhunzawm rawh'),
   'common.viewResults':
-      AppTextDefault('Common', 'I hmuh zat en rawh', 'View Results'),
-  'common.next': AppTextDefault('Common', 'A dawt', 'Next'),
-  'common.next.mizo': AppTextDefault('Common', 'A dawt', 'Next'),
+      AppTextDefault('Common', 'View Results', 'I hmuh zat en rawh'),
+  'common.next': AppTextDefault('Common', 'Next', 'A dawt'),
+  'common.next.mizo': AppTextDefault('Common', 'Next', 'A dawt'),
   // Word Library
-  'library.count': AppTextDefault('Word Library', 'Thumal {n}', '{n} words'),
-  'library.all': AppTextDefault('Word Library', 'Zawng zawng', 'All'),
+  'library.count': AppTextDefault('Word Library', '{n} words', 'Thumal {n}'),
+  'library.all': AppTextDefault('Word Library', 'All', 'Zawng zawng'),
   // Game screen
   'hud.relaxedSpoken': AppTextDefault(
       'Game screen',
-      'Hahdam takin. Mark {score}. {percent} zaa khat i zo.',
-      'Relaxed mode. Score {score}. Progress {percent} percent.'),
+      'Relaxed mode. Score {score}. Progress {percent} percent.',
+      'Hahdam takin. Mark {score}. {percent} zaa khat i zo.'),
   'hud.heartsSpoken': AppTextDefault('Game screen',
-      'Thinlung {total} zingah {hearts} i nei.', '{hearts} of {total} hearts.'),
+      '{hearts} of {total} hearts.', 'Thinlung {total} zingah {hearts} i nei.'),
   'hud.secondsSpoken': AppTextDefault('Game screen',
-      'Second {seconds} a la awm.', '{seconds} seconds remaining.'),
+      '{seconds} seconds remaining.', 'Second {seconds} a la awm.'),
   'hud.scoreSpoken': AppTextDefault(
       'Game screen',
-      'Mark {score}. {percent} zaa khat i zo.',
-      'Score {score}. Progress {percent} percent.'),
-  'hud.relaxed': AppTextDefault('Game screen', 'Hahdam', 'Relaxed'),
+      'Score {score}. Progress {percent} percent.',
+      'Mark {score}. {percent} zaa khat i zo.'),
+  'hud.relaxed': AppTextDefault('Game screen', 'Relaxed', 'Hahdam'),
   'game.restored': AppTextDefault(
       'Game screen',
-      'I khelhna hmasa kha kan chhunzawm e.',
-      'Saved game restored — picking up where you left off.'),
+      'Saved game restored — picking up where you left off.',
+      'I khelhna hmasa kha kan chhunzawm e.'),
   'game.hintUsed':
-      AppTextDefault('Game screen', 'Ṭanpuina i la tawh', 'Hint used'),
+      AppTextDefault('Game screen', 'Hint used', 'Ṭanpuina i la tawh'),
   'game.useHint':
-      AppTextDefault('Game screen', 'Ṭanpuina la rawh', 'Use a hint'),
+      AppTextDefault('Game screen', 'Use a hint', 'Ṭanpuina la rawh'),
   'answer.correctSpoken':
-      AppTextDefault('Game screen', '{answer}, a dik', '{answer}, correct'),
+      AppTextDefault('Game screen', '{answer}, correct', '{answer}, a dik'),
   'answer.incorrectSpoken': AppTextDefault(
-      'Game screen', '{answer}, a dik lo', '{answer}, incorrect'),
-  'feedback.correctSpoken': AppTextDefault('Game screen', 'A dik', 'Correct'),
+      'Game screen', '{answer}, incorrect', '{answer}, a dik lo'),
+  'feedback.correctSpoken': AppTextDefault('Game screen', 'Correct', 'A dik'),
   'feedback.retrySpoken':
-      AppTextDefault('Game screen', 'Tum leh rawh', 'Try again'),
+      AppTextDefault('Game screen', 'Try again', 'Tum leh rawh'),
   // Game result
   'result.timeUp':
-      AppTextDefault('Game result', 'Hun a tawp ta!', 'Time is up!'),
+      AppTextDefault('Game result', 'Time is up!', 'Hun a tawp ta!'),
   'result.outOfHearts':
-      AppTextDefault('Game result', 'Tunah chuan a tâwk e!', 'Out of hearts!'),
-  'result.done': AppTextDefault('Game result', 'I ti thei e!', 'You did it!'),
+      AppTextDefault('Game result', 'Out of hearts!', 'Tunah chuan a tâwk e!'),
+  'result.done': AppTextDefault('Game result', 'You did it!', 'I ti thei e!'),
   'result.timeUpNote': AppTextDefault(
       'Game result',
-      'Hun a tâwp ta. I chhân tawhte chu a save vek e.',
-      'Time ran out. Every answer you gave is saved.'),
+      'Time ran out. Every answer you gave is saved.',
+      'Hun a tâwp ta. I chhân tawhte chu a save vek e.'),
   'result.outOfHeartsNote': AppTextDefault(
       'Game result',
-      'I mark chu a save tawh. Tum leh la, i thiam chho ang.',
-      'Your score is saved. Try again and you will get better.'),
+      'Your score is saved. Try again and you will get better.',
+      'I mark chu a save tawh. Tum leh la, i thiam chho ang.'),
   'result.doneNote': AppTextDefault(
       'Game result',
-      'Khelh pahin Mizo ṭawng i thiam chho zêl e.',
-      'Every game makes your Mizo stronger.'),
-  'result.score': AppTextDefault('Game result', 'MARK', 'SCORE'),
-  'result.accuracy': AppTextDefault('Game result', 'A DIK ZAT', 'ACCURACY'),
+      'Nice work! New words are sticking.',
+      'Khelh pahin Mizo ṭawng i thiam chho zêl e.'),
+  'result.score': AppTextDefault('Game result', 'SCORE', 'MARK'),
+  'result.accuracy': AppTextDefault('Game result', 'ACCURACY', 'A DIK ZAT'),
   'result.xp': AppTextDefault('Game result', 'XP', 'XP'),
   'result.playAgain':
-      AppTextDefault('Game result', 'Khel leh rawh', 'Play again'),
+      AppTextDefault('Game result', 'Play again', 'Khel leh rawh'),
   'result.words':
-      AppTextDefault('Game result', 'Thumal i hmuh te', 'Words in this round'),
+      AppTextDefault('Game result', 'Words in this round', 'Thumal i hmuh te'),
   'result.missedNote': AppTextDefault(
       'Game result',
-      'A sen te hi i khelh leh hunah an lo lang leh ang.',
-      'The red ones will come back next time you play.'),
+      'The red ones will come back next time you play.',
+      'A sen te hi i khelh leh hunah an lo lang leh ang.'),
   'result.levelUp': AppTextDefault(
-      'Game result', 'Level i kai! {from} → {to}', 'Level up! {from} → {to}'),
+      'Game result', 'Level up! {from} → {to}', 'Level i kai! {from} → {to}'),
   'result.levelDown': AppTextDefault(
       'Game result',
-      'Level {level} — awlsam deuhvin kan ṭan leh ang',
-      'Level {level} — a little easier next time'),
+      'Level {level} — a little easier next time',
+      'Level {level} — awlsam deuhvin kan ṭan leh ang'),
   'result.levelProgress': AppTextDefault(
       'Game result',
-      'Level {level} • Level thar thlengin {percent}%',
-      'Level {level} • {percent}% to the next level'),
+      'Level {level} • {percent}% to the next level',
+      'Level {level} • Level thar thlengin {percent}%'),
   // Game level
   'gameLevel.spoken': AppTextDefault(
-      'Game level', 'Level 7 zingah {level}', 'Level {level} of 7'),
+      'Game level', 'Level {level} of 7', 'Level 7 zingah {level}'),
   'gameLevel.master': AppTextDefault(
-      'Game level', 'Level 7 • Thiam famkim', 'Level 7 • Master'),
+      'Game level', 'Level 7 • Master', 'Level 7 • Thiam famkim'),
   'gameLevel.level':
       AppTextDefault('Game level', 'Level {level}', 'Level {level}'),
   'gameLevel.note': AppTextDefault(
       'Game level',
-      'I thiam chhoh dan zirin thumal a harsa chho zel ang.',
-      'Words get harder as you improve.'),
+      'Words get harder as you improve.',
+      'I thiam chhoh dan zirin thumal a harsa chho zel ang.'),
   // Game start
   'launcher.howToPlay':
-      AppTextDefault('Game start', 'KHELH DAN', 'HOW TO PLAY'),
+      AppTextDefault('Game start', 'HOW TO PLAY', 'KHELH DAN'),
   'launcher.saved': AppTextDefault(
-      'Game start', 'Game i dah ṭhat a awm', 'Saved game available'),
+      'Game start', 'Saved game available', 'Game i dah ṭhat a awm'),
   'launcher.savedDetail': AppTextDefault('Game start',
-      '{mode} • Vawi {attempts} i chhang', '{mode} mode • {attempts} attempts'),
+      '{mode} mode • {attempts} attempts', '{mode} • Vawi {attempts} i chhang'),
   'launcher.modeName.relaxed':
-      AppTextDefault('Game start', 'Hahdam', 'relaxed'),
+      AppTextDefault('Game start', 'relaxed', 'Hahdam'),
   'launcher.modeName.standard':
-      AppTextDefault('Game start', 'Pangngai', 'standard'),
-  'launcher.modeName.timed': AppTextDefault('Game start', 'Hun bituk', 'timed'),
+      AppTextDefault('Game start', 'standard', 'Pangngai'),
+  'launcher.modeName.timed': AppTextDefault('Game start', 'timed', 'Hun bituk'),
   'launcher.chooseMode':
-      AppTextDefault('Game start', 'Khelh dan thlang rawh', 'Choose a mode'),
+      AppTextDefault('Game start', 'Choose a mode', 'Khelh dan thlang rawh'),
   'launcher.relaxed': AppTextDefault('Game start',
-      'Hahdam — Thinlung chân lovin', 'Relaxed — no hearts to lose'),
+      'Relaxed — no hearts to lose', 'Hahdam — Thinlung chân lovin'),
   'launcher.standard': AppTextDefault(
-      'Game start', 'Pangngai — Thinlung 3 nen', 'Standard — 3 hearts'),
+      'Game start', 'Standard — 3 hearts', 'Pangngai — Thinlung 3 nen'),
   'launcher.timed': AppTextDefault(
-      'Game start', 'Hun bituk — Second 90 chhungin', 'Timed — 90 seconds'),
-  'launcher.start': AppTextDefault('Game start', 'Ṭan rawh', 'Start Game'),
+      'Game start', 'Timed — 90 seconds', 'Hun bituk — Second 90 chhungin'),
+  'launcher.start': AppTextDefault('Game start', 'Start Game', 'Ṭan rawh'),
   'launcher.resume':
-      AppTextDefault('Game start', 'Chhunzawm rawh', 'Resume Game'),
+      AppTextDefault('Game start', 'Resume Game', 'Chhunzawm rawh'),
   'launcher.startNew':
-      AppTextDefault('Game start', 'A thar ṭan rawh', 'Start New Game'),
+      AppTextDefault('Game start', 'Start New Game', 'A thar ṭan rawh'),
   // Picture Match
   'picture.right':
       AppTextDefault('Picture Match', '{word} — {gloss}', '{word} — {gloss}'),
   'picture.wrong': AppTextDefault(
       'Picture Match',
-      'Chhanna dik chu “{word}” a ni.\n{meaning}\n“{example}”',
-      'The answer is “{word}”.\n{meaning}\n“{example}”'),
+      'The answer is “{word}”.\n{meaning}\n“{example}”',
+      'Chhanna dik chu “{word}” a ni.\n{meaning}\n“{example}”'),
   // Spelling
   'spelling.clue':
-      AppTextDefault('Spelling', 'KAWHHMUHNA  •  {hint}', 'CLUE  •  {hint}'),
+      AppTextDefault('Spelling', 'CLUE  •  {hint}', 'KAWHHMUHNA  •  {hint}'),
   'spelling.right':
-      AppTextDefault('Spelling', '“{word}” a kim ta.', '“{word}” is complete.'),
+      AppTextDefault('Spelling', '“{word}” is complete.', '“{word}” a kim ta.'),
   'spelling.wrong': AppTextDefault(
       'Spelling',
-      'Chhanna dik chu “{answer}” a ni: “{word}”.',
-      'The answer is “{answer}”: “{word}”.'),
+      'The answer is “{answer}”: “{word}”.',
+      'Chhanna dik chu “{answer}” a ni: “{word}”.'),
   // Tawng Upa
-  'tawngUpa.blank': AppTextDefault('Tawng Upa',
-      'A ruak-ah eng thumal nge a lut ang?', 'Which word fills the blank?'),
+  'tawngUpa.blank': AppTextDefault('Tawng Upa', 'Which word fills the blank?',
+      'A ruak-ah eng thumal nge a lut ang?'),
   'tawngUpa.wrong': AppTextDefault(
       'Tawng Upa',
-      'Chhanna dik chu “{answer}” a ni.\n{explanation}',
-      'The answer is “{answer}”.\n{explanation}'),
+      'The answer is “{answer}”.\n{explanation}',
+      'Chhanna dik chu “{answer}” a ni.\n{explanation}'),
   // Word Chain
   'chain.hintNone': AppTextDefault(
-      'Word Chain', 'Thumal dang ngaihtuah rawh.', 'Think of another word.'),
+      'Word Chain', 'Think of another word.', 'Thumal dang ngaihtuah rawh.'),
   'chain.hint': AppTextDefault(
-      'Word Chain', '“{word}” i hmang thei.', 'You could use “{word}”.'),
+      'Word Chain', 'You could use “{word}”.', '“{word}” i hmang thei.'),
   'chain.word': AppTextDefault('Word Chain', '“{word}”', '“{word}”'),
   'chain.wordMeaning': AppTextDefault(
       'Word Chain', '“{word}” ({meaning})', '“{word}” ({meaning})'),
   'chain.unknown': AppTextDefault(
       'Word Chain',
-      'He thumal hi kan thumal dahkhâwmnaah a la awm lo. Thumal dang ziak rawh.',
-      'We don\'t have this word yet. Try another one.'),
+      'We don\'t have this word yet. Try another one.',
+      'He thumal hi kan thumal dahkhâwmnaah a la awm lo. Thumal dang ziak rawh.'),
   'chain.deadEnd': AppTextDefault(
       'Word Chain',
-      '“{word}” a dik, mahse “{unit}” hmanga bulṭan thumal kan la nei lo. Thumal dang ziak rawh.',
-      '“{word}” is right, but we have no word starting with “{unit}” yet. Try another one.'),
-  'chain.used': AppTextDefault('Word Chain', 'He thumal hi i hmang tawh.',
-      'You already used this word.'),
+      '“{word}” is right, but we have no word starting with “{unit}” yet. Try another one.',
+      '“{word}” a dik, mahse “{unit}” hmanga bulṭan thumal kan la nei lo. Thumal dang ziak rawh.'),
+  'chain.used': AppTextDefault('Word Chain', 'You already used this word.',
+      'He thumal hi i hmang tawh.'),
   'chain.wrongStart': AppTextDefault(
       'Word Chain',
-      '“{word}” chu “{start}” hmangin a inṭan; “{needed}” hmanga bulṭan tûr a ni.',
-      '“{word}” starts with “{start}”; it needs to start with “{needed}”.'),
+      '“{word}” starts with “{start}”; it needs to start with “{needed}”.',
+      '“{word}” chu “{start}” hmangin a inṭan; “{needed}” hmanga bulṭan tûr a ni.'),
   'chain.linked': AppTextDefault(
       'Word Chain',
-      '{word}\n“{unit}” hmanga zawm leh rawh.',
-      '{word}\nNow link a word starting with “{unit}”.'),
-  'chain.howToPlay': AppTextDefault('Word Chain', 'KHELH DAN', 'HOW TO PLAY'),
+      '{word}\nNow link a word starting with “{unit}”.',
+      '{word}\n“{unit}” hmanga zawm leh rawh.'),
+  'chain.howToPlay': AppTextDefault('Word Chain', 'HOW TO PLAY', 'KHELH DAN'),
   'chain.rule': AppTextDefault(
       'Word Chain',
-      'Thumal tawpna hawrawp hmangin thumal dang bulṭan rawh.',
-      'Start each word with the last letter of the one before.'),
+      'Start each word with the last letter of the one before.',
+      'Thumal tawpna hawrawp hmangin thumal dang bulṭan rawh.'),
   'chain.example': AppTextDefault('Word Chain',
-      'Entîrna: In → Nula → Aizawl → Lal', 'Example: In → Nula → Aizawl → Lal'),
-  'chain.title': AppTextDefault('Word Chain', 'Kan thumal zawm', 'Our chain'),
+      'Example: In → Nula → Aizawl → Lal', 'Entîrna: In → Nula → Aizawl → Lal'),
+  'chain.title': AppTextDefault('Word Chain', 'Our chain', 'Kan thumal zawm'),
   'chain.start':
-      AppTextDefault('Word Chain', 'Inṭanna: {word}', 'Start: {word}'),
+      AppTextDefault('Word Chain', 'Start: {word}', 'Inṭanna: {word}'),
   'chain.needed': AppTextDefault(
-      'Word Chain', '“{unit}” hmanga bulṭan rawh', 'Start with “{unit}”'),
+      'Word Chain', 'Start with “{unit}”', '“{unit}” hmanga bulṭan rawh'),
   'chain.input': AppTextDefault(
-      'Word Chain', 'Mizo thumal ziak rawh…', 'Type a Mizo word…'),
+      'Word Chain', 'Type a Mizo word…', 'Mizo thumal ziak rawh…'),
   'chain.tip': AppTextDefault(
       'Word Chain',
-      'KAWHHMUHNA  •  “{unit}” hmanga bulṭan thumal {n} kan nei.',
-      'TIP  •  We know {n} words starting with “{unit}”.'),
+      'TIP  •  We know {n} words starting with “{unit}”.',
+      'KAWHHMUHNA  •  “{unit}” hmanga bulṭan thumal {n} kan nei.'),
   // Word Search
-  'search.start': AppTextDefault('Word Search',
-      'Hawrawp te indawtin hmet rawh.', 'Tap the letters in order.'),
+  'search.start': AppTextDefault('Word Search', 'Tap the letters in order.',
+      'Hawrawp te indawtin hmet rawh.'),
   'search.allFound': AppTextDefault(
-      'Word Search', 'Thumal zawng zawng i hmu tawh.', 'You found every word.'),
+      'Word Search', 'You found every word.', 'Thumal zawng zawng i hmu tawh.'),
   'search.adjacent': AppTextDefault(
       'Word Search',
-      'Hawrawp bul hnai indawtin thlang rawh.',
-      'Pick letters next to each other.'),
+      'Pick letters next to each other.',
+      'Hawrawp bul hnai indawtin thlang rawh.'),
   'search.found': AppTextDefault(
-      'Word Search', '“{word}” i hmu ta!', 'You found “{word}”!'),
+      'Word Search', 'You found “{word}”!', '“{word}” i hmu ta!'),
   'search.foundGloss': AppTextDefault('Word Search',
-      '“{word}” i hmu ta! ({gloss})', 'You found “{word}”! ({gloss})'),
+      'You found “{word}”! ({gloss})', '“{word}” i hmu ta! ({gloss})'),
   'search.noMatch': AppTextDefault('Word Search',
-      'A rem lo. Bulṭan nawn leh rawh.', 'That\'s not one. Start again.'),
+      'That\'s not one. Start again.', 'A rem lo. Bulṭan nawn leh rawh.'),
   'search.cellSpoken': AppTextDefault(
       'Word Search',
-      'Tlar {row}, ban {column}, hawrawp {letter}',
-      'Row {row}, column {column}, letter {letter}'),
+      'Row {row}, column {column}, letter {letter}',
+      'Tlar {row}, ban {column}, hawrawp {letter}'),
   // Crossword
   'crossword.yourAnswer':
-      AppTextDefault('Crossword', 'I chhanna', 'Your answer'),
+      AppTextDefault('Crossword', 'Your answer', 'I chhanna'),
   'crossword.words':
-      AppTextDefault('Crossword', 'Thumal {words}', '{words} words'),
+      AppTextDefault('Crossword', '{words} words', 'Thumal {words}'),
   'crossword.nearly': AppTextDefault(
       'Crossword',
-      '{subject} a hnaih hle! Hawrawp sen chu â, ê, î, ô, û emaw ṭ emaw a ni ang.',
-      '{subject} is very close! The red letter needs â, ê, î, ô, û or ṭ.'),
+      '{subject} is very close! The red letter needs â, ê, î, ô, û or ṭ.',
+      '{subject} a hnaih hle! Hawrawp sen chu â, ê, î, ô, û emaw ṭ emaw a ni ang.'),
   'crossword.wrong': AppTextDefault(
       'Crossword',
-      '{subject} a dik lo. Hawrawp sen te thlak la, tum leh rawh.',
-      '{subject} isn\'t right. Change the red letters and try again.'),
-  'crossword.across': AppTextDefault('Crossword', 'Vang →', 'Across →'),
-  'crossword.down': AppTextDefault('Crossword', 'Dung ↓', 'Down ↓'),
+      '{subject} isn\'t right. Change the red letters and try again.',
+      '{subject} a dik lo. Hawrawp sen te thlak la, tum leh rawh.'),
+  'crossword.across': AppTextDefault('Crossword', 'Across →', 'Vang →'),
+  'crossword.down': AppTextDefault('Crossword', 'Down ↓', 'Dung ↓'),
   'crossword.previous':
-      AppTextDefault('Crossword', 'Kawhhmuhna hmasa', 'Previous clue'),
-  'crossword.next': AppTextDefault('Crossword', 'Kawhhmuhna dawt', 'Next clue'),
+      AppTextDefault('Crossword', 'Previous clue', 'Kawhhmuhna hmasa'),
+  'crossword.next': AppTextDefault('Crossword', 'Next clue', 'Kawhhmuhna dawt'),
   'crossword.clueAcross': AppTextDefault('Crossword',
-      '{n} VANG →  •  HAWRAWP {letters}', '{n} ACROSS →  •  {letters} LETTERS'),
+      '{n} ACROSS →  •  {letters} LETTERS', '{n} VANG →  •  HAWRAWP {letters}'),
   'crossword.clueDown': AppTextDefault('Crossword',
-      '{n} DUNG ↓  •  HAWRAWP {letters}', '{n} DOWN ↓  •  {letters} LETTERS'),
+      '{n} DOWN ↓  •  {letters} LETTERS', '{n} DUNG ↓  •  HAWRAWP {letters}'),
   'crossword.cellEmptySpoken': AppTextDefault('Crossword',
-      'Tlar {row}, ban {column}, a ruak', 'Row {row}, column {column}, empty'),
+      'Row {row}, column {column}, empty', 'Tlar {row}, ban {column}, a ruak'),
   'crossword.cellSpoken': AppTextDefault(
       'Crossword',
-      'Tlar {row}, ban {column}, hawrawp {letter}',
-      'Row {row}, column {column}, letter {letter}'),
-  'crossword.erase': AppTextDefault('Crossword', 'Thai bo', 'Erase'),
+      'Row {row}, column {column}, letter {letter}',
+      'Tlar {row}, ban {column}, hawrawp {letter}'),
+  'crossword.erase': AppTextDefault('Crossword', 'Erase', 'Thai bo'),
   // Sentence Builder
   'sentence.title': AppTextDefault(
       'Sentence Builder', 'Sentence Builder', 'Sentence Builder'),
-  'sentence.empty': AppTextDefault('Sentence Builder', 'Sentence a la awm lo.',
-      'Sentence content is not available.'),
+  'sentence.empty': AppTextDefault('Sentence Builder',
+      'Sentence content is not available.', 'Sentence a la awm lo.'),
   'sentence.usingWord': AppTextDefault('Sentence Builder',
-      'HE THUMAL HMANGA SENTENCE', 'SENTENCE USING THIS WORD'),
+      'SENTENCE USING THIS WORD', 'HE THUMAL HMANGA SENTENCE'),
   'sentence.yours':
-      AppTextDefault('Sentence Builder', 'I SENTENCE', 'YOUR SENTENCE'),
+      AppTextDefault('Sentence Builder', 'YOUR SENTENCE', 'I SENTENCE'),
   'sentence.right': AppTextDefault('Sentence Builder',
-      '{sentence} — A rem dik e.', '{sentence} — Well built!'),
+      '{sentence} — Well built!', '{sentence} — A rem dik e.'),
   'sentence.wrong': AppTextDefault(
       'Sentence Builder',
-      'A indawt a la dik lo. “{sentence}” tih hi en la, tum leh rawh.',
-      'The order isn\'t right yet. Look at “{sentence}” and try again.'),
+      'The order isn\'t right yet. Look at “{sentence}” and try again.',
+      'A indawt a la dik lo. “{sentence}” tih hi en la, tum leh rawh.'),
   'sentence.check':
-      AppTextDefault('Sentence Builder', 'En rawh', 'Check Sentence'),
-  'sentence.finish': AppTextDefault('Sentence Builder', 'Zo ta', 'Finish'),
+      AppTextDefault('Sentence Builder', 'Check Sentence', 'En rawh'),
+  'sentence.finish': AppTextDefault('Sentence Builder', 'Finish', 'Zo ta'),
   'sentence.next':
-      AppTextDefault('Sentence Builder', 'Sentence dawt', 'Next Sentence'),
+      AppTextDefault('Sentence Builder', 'Next Sentence', 'Sentence dawt'),
   'sentence.retry':
-      AppTextDefault('Sentence Builder', 'Tum leh rawh', 'Try Again'),
+      AppTextDefault('Sentence Builder', 'Try Again', 'Tum leh rawh'),
   // Thumal Kawp
   'kawp.progress': AppTextDefault(
       'Thumal Kawp',
-      'Kawp {found}/{pairs} i hmu tawh • Vawi {turns} i let tawh',
-      '{found}/{pairs} pairs found • {turns} turns'),
+      '{found}/{pairs} pairs found • {turns} turns',
+      'Kawp {found}/{pairs} i hmu tawh • Vawi {turns} i let tawh'),
   'kawp.notEnough': AppTextDefault(
       'Thumal Kawp',
-      'Card kawp tûr thumal a tâwk lo. Content thar a lo thlen hunah tum leh rawh.',
-      'Not enough words for the cards yet. Try again when new content arrives.'),
+      'Not enough words for the cards yet. Try again when new content arrives.',
+      'Card kawp tûr thumal a tâwk lo. Content thar a lo thlen hunah tum leh rawh.'),
   'kawp.hiddenSpoken':
-      AppTextDefault('Thumal Kawp', 'Card khuh', 'Hidden card'),
+      AppTextDefault('Thumal Kawp', 'Hidden card', 'Card khuh'),
   'kawp.pictureSpoken':
-      AppTextDefault('Thumal Kawp', '{gloss} milem', 'Picture of {gloss}'),
+      AppTextDefault('Thumal Kawp', 'Picture of {gloss}', '{gloss} milem'),
   'kawp.matchedSpoken':
-      AppTextDefault('Thumal Kawp', '{card}, a inkawp ta', '{card}, matched'),
+      AppTextDefault('Thumal Kawp', '{card}, matched', '{card}, a inkawp ta'),
   // Level check
   'placement.empty': AppTextDefault(
-      'Level check', 'Zirna tur thumal a la awm lo.', 'No words to learn yet.'),
-  'placement.prompt': AppTextDefault('Level check',
-      'A awmzia hnai ber thlang rawh', 'Pick the closest meaning'),
+      'Level check', 'No words to learn yet.', 'Zirna tur thumal a la awm lo.'),
+  'placement.prompt': AppTextDefault('Level check', 'Pick the closest meaning',
+      'A awmzia hnai ber thlang rawh'),
   'placement.seeLevel':
-      AppTextDefault('Level check', 'I level en rawh', 'See your level'),
+      AppTextDefault('Level check', 'See your level', 'I level en rawh'),
   'placement.skip': AppTextDefault(
-      'Level check', 'Level 1 aṭangin ṭan nghal rawh', 'Start from Level 1'),
+      'Level check', 'Start from Level 1', 'Level 1 aṭangin ṭan nghal rawh'),
   'placement.result':
-      AppTextDefault('Level check', 'I ṭanna level', 'Your starting level'),
-  'placement.title': AppTextDefault('Level check', 'Level enna', 'Level check'),
+      AppTextDefault('Level check', 'Your starting level', 'I ṭanna level'),
+  'placement.title': AppTextDefault('Level check', 'Level check', 'Level enna'),
   'placement.question': AppTextDefault(
-      'Level check', 'Zawhna {n}/{total}', 'Question {n}/{total}'),
+      'Level check', 'Question {n}/{total}', 'Zawhna {n}/{total}'),
   'placement.score': AppTextDefault(
       'Level check',
-      '{total} zingah {correct} i chhang dik • {description}',
-      '{correct} of {total} right • {description}'),
+      '{correct} of {total} right • {description}',
+      '{total} zingah {correct} i chhang dik • {description}'),
   // Daily lesson
   'lesson.prompt': AppTextDefault(
-      'Daily lesson', 'A awmzia thlang rawh', 'Pick the meaning'),
+      'Daily lesson', 'Pick the meaning', 'A awmzia thlang rawh'),
   'lesson.finish':
-      AppTextDefault('Daily lesson', 'Zirna tihfel rawh', 'Finish lesson'),
+      AppTextDefault('Daily lesson', 'Finish lesson', 'Zirna tihfel rawh'),
   'lesson.caughtUp': AppTextDefault(
-      'Daily lesson', 'I zo vek tawh e!', 'You\'re all caught up!'),
+      'Daily lesson', 'You\'re all caught up!', 'I zo vek tawh e!'),
   'lesson.caughtUpNote': AppTextDefault(
       'Daily lesson',
-      'Tunah hian en leh tur thumal a awm lo.',
-      'No words to review right now.'),
-  'lesson.back': AppTextDefault('Daily lesson', 'Kir leh rawh', 'Go back'),
+      'No words to review right now.',
+      'Tunah hian en leh tur thumal a awm lo.'),
+  'lesson.back': AppTextDefault('Daily lesson', 'Go back', 'Kir leh rawh'),
   'lesson.completeTitle':
-      AppTextDefault('Daily lesson', 'Zirna zo', 'Lesson complete'),
+      AppTextDefault('Daily lesson', 'Lesson complete', 'Zirna zo'),
   'lesson.complete': AppTextDefault(
-      'Daily lesson', 'Vawiin zirna i zo ta!', 'You finished today\'s lesson!'),
-  'lesson.newWord': AppTextDefault('Daily lesson', 'THUMAL THAR', 'NEW WORD'),
+      'Daily lesson', 'You finished today\'s lesson!', 'Vawiin zirna i zo ta!'),
+  'lesson.newWord': AppTextDefault('Daily lesson', 'NEW WORD', 'THUMAL THAR'),
   'lesson.title':
-      AppTextDefault('Daily lesson', 'Vawiin zirna', 'Today\'s lesson'),
+      AppTextDefault('Daily lesson', 'Today\'s lesson', 'Vawiin zirna'),
   'lesson.score': AppTextDefault(
       'Daily lesson',
-      '{total} zingah {correct} i chhang dik • Heng thumalte hi a hun takah kan rawn tilang leh ang.',
-      '{correct} of {total} right • We\'ll bring these words back at the right time.'),
+      '{correct} of {total} right • We\'ll bring these words back at the right time.',
+      '{total} zingah {correct} i chhang dik • Heng thumalte hi a hun takah kan rawn tilang leh ang.'),
   'lesson.right': AppTextDefault(
-      'Daily lesson', 'A dik e! “{example}”', 'Correct! “{example}”'),
+      'Daily lesson', 'Correct! “{example}”', 'A dik e! “{example}”'),
   'lesson.wrong': AppTextDefault(
       'Daily lesson',
-      'A dik chu “{answer}” a ni. {example}',
-      'The answer is “{answer}”. {example}'),
+      'The answer is “{answer}”. {example}',
+      'A dik chu “{answer}” a ni. {example}'),
   // Levels
   'level.code': AppTextDefault('Levels', 'Level {n}', 'Level {n}'),
-  'level.1.title': AppTextDefault('Levels', 'Ke pen hmasa', 'First Steps'),
+  'level.1.title': AppTextDefault('Levels', 'First Steps', 'Ke pen hmasa'),
   'level.1.description': AppTextDefault(
       'Levels',
-      'Thumal bul leh milem hmanga bulṭanna',
-      'Start with basic words and pictures'),
-  'level.2.title': AppTextDefault('Levels', 'Ni tin thumal', 'Everyday Words'),
+      'Start with basic words and pictures',
+      'Thumal bul leh milem hmanga bulṭanna'),
+  'level.2.title': AppTextDefault('Levels', 'Everyday Words', 'Ni tin thumal'),
   'level.2.description': AppTextDefault(
       'Levels',
-      'Ni tin thumal leh sentence tawi zirna',
-      'Everyday words and short sentences'),
+      'Everyday words and short sentences',
+      'Ni tin thumal leh sentence tawi zirna'),
   'level.3.title':
-      AppTextDefault('Levels', 'Sawi thiam chho', 'Growing Speaker'),
+      AppTextDefault('Levels', 'Growing Speaker', 'Sawi thiam chho'),
   'level.3.description': AppTextDefault(
       'Levels',
-      'Inbiakna, hawrawp ziah dan leh chhiarna',
-      'Conversation, spelling and reading'),
-  'level.4.title': AppTextDefault('Levels', 'Chhiar thiam', 'Confident Reader'),
+      'Conversation, spelling and reading',
+      'Inbiakna, hawrawp ziah dan leh chhiarna'),
+  'level.4.title': AppTextDefault('Levels', 'Confident Reader', 'Chhiar thiam'),
   'level.4.description': AppTextDefault('Levels',
-      'Sentence sei leh thu awmzia hriatna', 'Longer sentences and meaning'),
+      'Longer sentences and meaning', 'Sentence sei leh thu awmzia hriatna'),
   'level.5.title':
-      AppTextDefault('Levels', 'Thawnthu sawi thiam', 'Storyteller'),
+      AppTextDefault('Levels', 'Storyteller', 'Thawnthu sawi thiam'),
   'level.5.description': AppTextDefault(
-      'Levels', 'Thawnthu leh chanchin zirna', 'Stories and accounts'),
-  'level.6.title': AppTextDefault('Levels', 'Kawngzawh thiam', 'Explorer'),
+      'Levels', 'Stories and accounts', 'Thawnthu leh chanchin zirna'),
+  'level.6.title': AppTextDefault('Levels', 'Explorer', 'Kawngzawh thiam'),
   'level.6.description': AppTextDefault(
-      'Levels', 'Ram hmuhna leh nunphung zirna', 'Places and way of life'),
+      'Levels', 'Places and way of life', 'Ram hmuhna leh nunphung zirna'),
   'level.7.title':
-      AppTextDefault('Levels', 'Hnam nun zir', 'Culture Apprentice'),
+      AppTextDefault('Levels', 'Culture Apprentice', 'Hnam nun zir'),
   'level.7.description': AppTextDefault(
-      'Levels', 'Tawng upa leh ṭawng dan zirna', 'Old sayings and grammar'),
+      'Levels', 'Old sayings and grammar', 'Tawng upa leh ṭawng dan zirna'),
   'level.8.title':
-      AppTextDefault('Levels', 'Hnam nun leh ṭawng thiam', 'Culture & Fluency'),
+      AppTextDefault('Levels', 'Culture & Fluency', 'Hnam nun leh ṭawng thiam'),
   'level.8.description': AppTextDefault(
       'Levels',
-      'Tawng upa, hnam ziarang leh ṭawng thiamna famkim',
-      'Old sayings, heritage and full fluency'),
-  'mastery.unseen': AppTextDefault('Levels', 'Thar', 'New'),
-  'mastery.learning': AppTextDefault('Levels', 'Zir mêk', 'Learning'),
-  'mastery.familiar': AppTextDefault('Levels', 'Hriat chin', 'Familiar'),
-  'mastery.strong': AppTextDefault('Levels', 'Hriat ṭha', 'Strong'),
-  'mastery.mastered': AppTextDefault('Levels', 'Thiam tawh', 'Mastered'),
+      'Old sayings, heritage and full fluency',
+      'Tawng upa, hnam ziarang leh ṭawng thiamna famkim'),
+  'mastery.unseen': AppTextDefault('Levels', 'New', 'Thar'),
+  'mastery.learning': AppTextDefault('Levels', 'Learning', 'Zir mêk'),
+  'mastery.familiar': AppTextDefault('Levels', 'Familiar', 'Hriat chin'),
+  'mastery.strong': AppTextDefault('Levels', 'Strong', 'Hriat ṭha'),
+  'mastery.mastered': AppTextDefault('Levels', 'Mastered', 'Thiam tawh'),
   // Onboarding
-  'age.early': AppTextDefault('Onboarding', 'Kum 5–7', 'Ages 5–7'),
-  'age.young': AppTextDefault('Onboarding', 'Kum 8–13', 'Ages 8–13'),
-  'age.teen': AppTextDefault('Onboarding', 'Kum 14–17', 'Ages 14–17'),
-  'age.adult': AppTextDefault('Onboarding', 'Puitling', 'Adult'),
+  'age.early': AppTextDefault('Onboarding', 'Ages 5–7', 'Kum 5–7'),
+  'age.young': AppTextDefault('Onboarding', 'Ages 8–13', 'Kum 8–13'),
+  'age.teen': AppTextDefault('Onboarding', 'Ages 14–17', 'Kum 14–17'),
+  'age.adult': AppTextDefault('Onboarding', 'Adult', 'Puitling'),
   'age.early.note': AppTextDefault('Onboarding',
-      'Milem leh game hmanga bulṭanna', 'Start with pictures and games'),
+      'Start with pictures and games', 'Milem leh game hmanga bulṭanna'),
   'age.young.note': AppTextDefault(
       'Onboarding',
-      'Thumal, hawrawp ziah dan leh thawnthu hmanga zir',
-      'Learn with words, spelling and stories'),
+      'Learn with words, spelling and stories',
+      'Thumal, hawrawp ziah dan leh thawnthu hmanga zir'),
   'age.teen.note': AppTextDefault('Onboarding',
-      'Chhiarna, inbiakna leh hnam nun', 'Reading, conversation and culture'),
-  'age.adult.note': AppTextDefault('Onboarding',
-      'Mahni chak zawngin Mizo ṭawng zir leh', 'Learn Mizo at your own pace'),
+      'Reading, conversation and culture', 'Chhiarna, inbiakna leh hnam nun'),
+  'age.adult.note': AppTextDefault('Onboarding', 'Learn Mizo at your own pace',
+      'Mahni chak zawngin Mizo ṭawng zir leh'),
   'proficiency.new': AppTextDefault(
-      'Onboarding', 'Mizo ṭawng ka thiam lo', 'I\'m new to Mizo'),
+      'Onboarding', 'I\'m new to Mizo', 'Mizo ṭawng ka thiam lo'),
   'proficiency.some':
-      AppTextDefault('Onboarding', 'Ka hrethiam deuh', 'I understand some'),
+      AppTextDefault('Onboarding', 'I understand some', 'Ka hrethiam deuh'),
   'proficiency.speaks': AppTextDefault(
-      'Onboarding', 'Mizo ṭawng ka sawi thiam', 'I can speak Mizo'),
+      'Onboarding', 'I can speak Mizo', 'Mizo ṭawng ka sawi thiam'),
   'proficiency.reads': AppTextDefault(
-      'Onboarding', 'Ka chhiar leh ziak thiam', 'I can read and write'),
+      'Onboarding', 'I can read and write', 'Ka chhiar leh ziak thiam'),
   'proficiency.new.note': AppTextDefault(
       'Onboarding',
-      'Thumal bul aṭangin min kaihhruai rawh',
-      'Guide me from the very first words'),
+      'Guide me from the very first words',
+      'Thumal bul aṭangin min kaihhruai rawh'),
   'proficiency.some.note': AppTextDefault(
       'Onboarding',
-      'Ka hria deuh, sawi leh chhiar ka zir duh',
-      'I know a little and want to speak and read'),
+      'I know a little and want to speak and read',
+      'Ka hria deuh, sawi leh chhiar ka zir duh'),
   'proficiency.speaks.note': AppTextDefault(
       'Onboarding',
-      'Hawrawp ziah dan leh chhiarna ka tihpun duh',
-      'I want better spelling and reading'),
+      'I want better spelling and reading',
+      'Hawrawp ziah dan leh chhiarna ka tihpun duh'),
   'proficiency.reads.note': AppTextDefault(
       'Onboarding',
-      'Tawng upa leh thiamna sang zâwk ka duh',
-      'I want old sayings and harder skills'),
+      'I want old sayings and harder skills',
+      'Tawng upa leh thiamna sang zâwk ka duh'),
   'goal.conversation':
-      AppTextDefault('Onboarding', 'Inbiakna', 'Home Conversation'),
+      AppTextDefault('Onboarding', 'Home Conversation', 'Inbiakna'),
   'goal.vocabulary':
-      AppTextDefault('Onboarding', 'Thumal leh ziah dan', 'Words & Spelling'),
-  'goal.reading': AppTextDefault('Onboarding', 'Chhiarna', 'Reading'),
-  'goal.culture': AppTextDefault('Onboarding', 'Hnam nun', 'Culture'),
+      AppTextDefault('Onboarding', 'Words & Spelling', 'Thumal leh ziah dan'),
+  'goal.reading': AppTextDefault('Onboarding', 'Reading', 'Chhiarna'),
+  'goal.culture': AppTextDefault('Onboarding', 'Culture', 'Hnam nun'),
   'goal.refresh':
-      AppTextDefault('Onboarding', 'Ka Mizo ṭawng tihthar', 'Refresh My Mizo'),
+      AppTextDefault('Onboarding', 'Refresh My Mizo', 'Ka Mizo ṭawng tihthar'),
   'support.english':
-      AppTextDefault('Onboarding', 'English ṭanpuina', 'English support'),
-  'support.mizoOnly': AppTextDefault('Onboarding', 'Mizo chauh', 'Mizo only'),
-  'profile.badge.early': AppTextDefault('Onboarding', 'Thlai tiak', 'Sprout'),
-  'profile.badge.young': AppTextDefault('Onboarding', 'Kawngzawh', 'Explorer'),
+      AppTextDefault('Onboarding', 'English support', 'English ṭanpuina'),
+  'support.mizoOnly': AppTextDefault('Onboarding', 'Mizo only', 'Mizo chauh'),
+  'profile.badge.early': AppTextDefault('Onboarding', 'Sprout', 'Thlai tiak'),
+  'profile.badge.young': AppTextDefault('Onboarding', 'Explorer', 'Kawngzawh'),
   'onboarding.brand': AppTextDefault('Onboarding', 'HNAHSIN', 'HNAHSIN'),
   'onboarding.stepSpoken': AppTextDefault(
-      'Onboarding', 'Kal dan {total} zingah {n}-na', 'Step {n} of {total}'),
+      'Onboarding', 'Step {n} of {total}', 'Kal dan {total} zingah {n}-na'),
   'onboarding.goalLimit': AppTextDefault('Onboarding',
-      'I tum pahnih thleng i thlang thei.', 'Choose up to two learning goals.'),
+      'Choose up to two learning goals.', 'I tum pahnih thleng i thlang thei.'),
   'onboarding.start':
-      AppTextDefault('Onboarding', 'Ka kawngzawh ṭan rawh', 'Start My Journey'),
+      AppTextDefault('Onboarding', 'Start My Journey', 'Ka kawngzawh ṭan rawh'),
   'onboarding.finish': AppTextDefault(
-      'Onboarding', 'Ka zirna kawng siam rawh', 'Build My Learning Path'),
+      'Onboarding', 'Build My Learning Path', 'Ka zirna kawng siam rawh'),
   'welcome.eyebrow': AppTextDefault(
-      'Onboarding', 'Mizo ṭawng hlim taka zirna', 'Mizo learning, made joyful'),
-  'welcome.title': AppTextDefault('Onboarding',
-      'I Mizo ṭawng kawngzawh hetah a ṭan.', 'Your Mizo journey starts here.'),
+      'Onboarding', 'Word games from Mizoram', 'Mizo ṭawng hlim taka zirna'),
+  'welcome.title': AppTextDefault('Onboarding', 'Play games. Pick up Mizo.',
+      'I Mizo ṭawng kawngzawh hetah a ṭan.'),
   'welcome.path': AppTextDefault(
-      'Onboarding', 'Nangma tana kawng siam', 'A path built for you'),
-  'welcome.pathNote': AppTextDefault(
-      'Onboarding',
-      'I thiamna leh i tum dân ang zêlin.',
-      'Shaped by what you know and what you want.'),
+      'Onboarding', 'A path built for you', 'Nangma tana kawng siam'),
+  'welcome.pathNote': AppTextDefault('Onboarding',
+      'Games that match what you know.', 'I thiamna leh i tum dân ang zêlin.'),
   'welcome.offline':
-      AppTextDefault('Onboarding', 'Khawiah pawh zir rawh', 'Learn anywhere'),
+      AppTextDefault('Onboarding', 'Learn anywhere', 'Khawiah pawh zir rawh'),
   'welcome.offlineNote': AppTextDefault(
       'Onboarding',
-      'Game te hi internet nei lovin i phone-ah a khelh theih.',
-      'Core games work offline on your device.'),
+      'Core games work offline on your device.',
+      'Game te hi internet nei lovin i phone-ah a khelh theih.'),
   'welcome.safe':
-      AppTextDefault('Onboarding', 'Chhungkaw tan a him', 'Safe for families'),
+      AppTextDefault('Onboarding', 'Safe for families', 'Chhungkaw tan a him'),
   'welcome.safeNote': AppTextDefault(
       'Onboarding',
-      'Mi dang nen inbiakna, advertisement, naupang inelna list a awm lo.',
-      'No public chat, ads, or child leaderboard.'),
+      'No public chat, ads, or child leaderboard.',
+      'Mi dang nen inbiakna, advertisement, naupang inelna list a awm lo.'),
   'age.eyebrow': AppTextDefault(
-      'Onboarding', 'I kawng siam rawh', 'Personalize your path'),
+      'Onboarding', 'Personalize your path', 'I kawng siam rawh'),
   'age.title':
-      AppTextDefault('Onboarding', 'Tu nge zir dawn?', 'Who is learning?'),
+      AppTextDefault('Onboarding', 'Who is learning?', 'Tu nge zir dawn?'),
   'age.subtitle': AppTextDefault(
       'Onboarding',
-      'Kum chauh kan mamawh — pian ni emaw hming emaw kan dil lo.',
-      'We only need an age range — no birthday or name.'),
+      'We only need an age range — no birthday or name.',
+      'Kum chauh kan mamawh — pian ni emaw hming emaw kan dil lo.'),
   'proficiency.eyebrow': AppTextDefault(
-      'Onboarding', 'I ṭanna zawng rawh', 'Find your starting point'),
+      'Onboarding', 'Find your starting point', 'I ṭanna zawng rawh'),
   'proficiency.title': AppTextDefault(
-      'Onboarding', 'Mizo ṭawng i thiam em?', 'How much Mizo do you know?'),
+      'Onboarding', 'How much Mizo do you know?', 'Mizo ṭawng i thiam em?'),
   'proficiency.subtitle': AppTextDefault(
       'Onboarding',
-      'A dik tak thlang rawh — eng hunah pawh Keimah-ah i thlâk thei.',
-      'Pick honestly — you can change it any time in Profile.'),
+      'Pick honestly — you can change it any time in Profile.',
+      'A dik tak thlang rawh — eng hunah pawh Keimah-ah i thlâk thei.'),
   'goal.eyebrow': AppTextDefault(
-      'Onboarding', 'Pahnih thleng thlang rawh', 'Choose up to two'),
+      'Onboarding', 'Choose up to two', 'Pahnih thleng thlang rawh'),
   'goal.title': AppTextDefault(
-      'Onboarding', 'Eng nge i zir duh?', 'What would you like to learn?'),
+      'Onboarding', 'What would you like to learn?', 'Eng nge i zir duh?'),
   'goal.subtitle': AppTextDefault(
       'Onboarding',
-      'I zir duh ber thlang la, ni tin hnaah kan dah hmasa ang.',
-      'Pick what matters most and we\'ll put it first in your daily quests.'),
-  'rhythm.eyebrow': AppTextDefault('Onboarding',
-      'I hna hmasa ber atan i inpeih', 'Ready for your first quest'),
+      'Pick what matters most and we\'ll put it first in your daily quests.',
+      'I zir duh ber thlang la, ni tin hnaah kan dah hmasa ang.'),
+  'rhythm.eyebrow': AppTextDefault('Onboarding', 'Ready for your first quest',
+      'I hna hmasa ber atan i inpeih'),
   'rhythm.title': AppTextDefault(
-      'Onboarding', 'Ni tin i zir zat thlang rawh.', 'Set your daily rhythm.'),
+      'Onboarding', 'Set your daily rhythm.', 'Ni tin i zir zat thlang rawh.'),
   'rhythm.subtitle': AppTextDefault(
       'Onboarding',
-      'Tlem tê tê, ni tin zir hi zirna kawng ṭha ber a ni.',
-      'A little every day is the best way to learn.'),
+      'A little every day is the best way to learn.',
+      'Tlem tê tê, ni tin zir hi zirna kawng ṭha ber a ni.'),
   'welcome.subtitle': AppTextDefault(
       'Onboarding',
-      'Khelh pahin thumal, hawrawp ziah dan, chhiarna leh Mizo nunphung zir rawh.',
-      'Learn words, spelling, reading and Mizo culture as you play.'),
-  'rhythm.goal': AppTextDefault('Onboarding', 'NI TIN TUM', 'DAILY GOAL'),
-  'rhythm.minutes': AppTextDefault('Onboarding', 'Minute {n}', '{n} min'),
+      'Fun word games. You\'ll learn Mizo words as you play.',
+      'Khelh pahin thumal, hawrawp ziah dan, chhiarna leh Mizo nunphung zir rawh.'),
+  'rhythm.goal': AppTextDefault('Onboarding', 'DAILY GOAL', 'NI TIN TUM'),
+  'rhythm.minutes': AppTextDefault('Onboarding', '{n} min', 'Minute {n}'),
   'rhythm.privacy': AppTextDefault(
       'Onboarding',
-      'Account a ngai lo • I hmasawnna i phone-ah a awm',
-      'Guest-first • Progress stays on this device'),
+      'Guest-first • Progress stays on this device',
+      'Account a ngai lo • I hmasawnna i phone-ah a awm'),
   // Profile • learning level
   'track.beginner':
-      AppTextDefault('Profile • learning level', 'Bulṭan', 'Beginner'),
+      AppTextDefault('Profile • learning level', 'Beginner', 'Bulṭan'),
   'track.explorer':
-      AppTextDefault('Profile • learning level', 'Zirchho', 'Explorer'),
+      AppTextDefault('Profile • learning level', 'Explorer', 'Zirchho'),
   'track.master':
-      AppTextDefault('Profile • learning level', 'Thiamna', 'Master'),
+      AppTextDefault('Profile • learning level', 'Master', 'Thiamna'),
   'track.beginner.note': AppTextDefault(
       'Profile • learning level',
-      'Milem leh thumal awlsam hmanga bulṭan',
-      'Start with pictures and easy words'),
+      'Start with pictures and easy words',
+      'Milem leh thumal awlsam hmanga bulṭan'),
   'track.explorer.note': AppTextDefault(
       'Profile • learning level',
-      'Hawrawp ziah dan leh puzzle hmanga zir chhunzawm',
-      'Keep going with spelling and puzzles'),
+      'Keep going with spelling and puzzles',
+      'Hawrawp ziah dan leh puzzle hmanga zir chhunzawm'),
   'track.master.note': AppTextDefault('Profile • learning level',
-      'Tawng upa leh thufing zirna', 'Old sayings and proverbs'),
+      'Old sayings and proverbs', 'Tawng upa leh thufing zirna'),
   // Word categories
   'category.chhungkua':
-      AppTextDefault('Word categories', 'Chhungkua', 'Family'),
-  'category.sikul': AppTextDefault('Word categories', 'Sikul', 'School'),
-  'category.nungcha': AppTextDefault('Word categories', 'Nungcha', 'Animals'),
-  'category.khawvel': AppTextDefault('Word categories', 'Khawvel', 'World'),
+      AppTextDefault('Word categories', 'Family', 'Chhungkua'),
+  'category.sikul': AppTextDefault('Word categories', 'School', 'Sikul'),
+  'category.nungcha': AppTextDefault('Word categories', 'Animals', 'Nungcha'),
+  'category.khawvel': AppTextDefault('Word categories', 'World', 'Khawvel'),
   'category.nunphung':
-      AppTextDefault('Word categories', 'Nunphung', 'Way of life'),
-  'category.thiltih': AppTextDefault('Word categories', 'Thiltih', 'Actions'),
+      AppTextDefault('Word categories', 'Way of life', 'Nunphung'),
+  'category.thiltih': AppTextDefault('Word categories', 'Actions', 'Thiltih'),
   // Journey
-  'journey.title': AppTextDefault('Journey', 'Mizo Kawngzawh', 'Mizo Journey'),
-  'journey.subtitle': AppTextDefault('Journey',
-      'Thawnthu, inbiakna leh hnam nun', 'Story, conversation & culture'),
+  'journey.title': AppTextDefault('Journey', 'Mizo Journey', 'Mizo Kawngzawh'),
+  'journey.subtitle': AppTextDefault('Journey', 'Story, conversation & culture',
+      'Thawnthu, inbiakna leh hnam nun'),
   'journey.todaysQuests':
-      AppTextDefault('Journey', 'Vawiin hna', 'Today\'s Quests'),
-  'journey.map': AppTextDefault('Journey', 'Kawngzawh Map', 'Journey Map'),
+      AppTextDefault('Journey', 'Today\'s Quests', 'Vawiin hna'),
+  'journey.map': AppTextDefault('Journey', 'Journey Map', 'Kawngzawh Map'),
   'journey.cultureTrail':
-      AppTextDefault('Journey', 'Hnam Nun Kawng', 'Culture Trail'),
+      AppTextDefault('Journey', 'Culture Trail', 'Hnam Nun Kawng'),
   'journey.cultureTrailNote': AppTextDefault('Journey',
-      'Thumal, ngaihhlutna leh hnam nun', 'Words, values & living culture'),
+      'Words, values & living culture', 'Thumal, ngaihhlutna leh hnam nun'),
   'journey.cultureCount': AppTextDefault(
       'Journey',
-      'Card {collected}/{total} • Tawng upa chanchin',
-      '{collected}/{total} cards • Tawng Upa context'),
+      '{collected}/{total} cards • Tawng Upa context',
+      'Card {collected}/{total} • Tawng upa chanchin'),
   'journey.eyebrow':
-      AppTextDefault('Journey', 'I MIZO KAWNGZAWH', 'YOUR MIZO JOURNEY'),
+      AppTextDefault('Journey', 'YOUR MIZO JOURNEY', 'I MIZO KAWNGZAWH'),
   'journey.progress': AppTextDefault(
       'Journey',
-      'Thawnthu {total} zingah {done} i zo',
-      '{done} of {total} story stops complete'),
+      '{done} of {total} story stops complete',
+      'Thawnthu {total} zingah {done} i zo'),
   'journey.rhythm':
-      AppTextDefault('Journey', 'Zirna kalphung', 'Learning rhythm'),
+      AppTextDefault('Journey', 'Learning rhythm', 'Zirna kalphung'),
   'journey.rhythmDays':
-      AppTextDefault('Journey', 'Ni {n} indawt', '{n} day rhythm'),
+      AppTextDefault('Journey', '{n} day rhythm', 'Ni {n} indawt'),
   'journey.graceReady':
-      AppTextDefault('Journey', 'Ni khat chawl theih', 'Grace ready'),
+      AppTextDefault('Journey', 'Grace ready', 'Ni khat chawl theih'),
   'journey.graceUsed':
-      AppTextDefault('Journey', 'Ni chawl i hmang tawh', 'Grace used'),
+      AppTextDefault('Journey', 'Grace used', 'Ni chawl i hmang tawh'),
   'journey.thisWeek':
-      AppTextDefault('Journey', 'Kar khatah {n}/3', '{n}/3 this week'),
+      AppTextDefault('Journey', '{n}/3 this week', 'Kar khatah {n}/3'),
   'journey.trailMarks':
-      AppTextDefault('Journey', 'Chhinchhiahna {n}', '{n} Trail Marks'),
+      AppTextDefault('Journey', '{n} Trail Marks', 'Chhinchhiahna {n}'),
   'journey.welcomeBack':
-      AppTextDefault('Journey', 'Lo kir leh rawh, i lawm e', 'Welcome back'),
+      AppTextDefault('Journey', 'Welcome back', 'Lo kir leh rawh, i lawm e'),
   'journey.welcomeBackNote': AppTextDefault(
       'Journey',
-      'I kalna hmasa a bo lo. Minute tlem chauh hmangin thawnthu chhunzawm rawh.',
-      'Your progress is safe. Pick the story back up in just a few minutes.'),
+      'Your progress is safe. Pick the story back up in just a few minutes.',
+      'I kalna hmasa a bo lo. Minute tlem chauh hmangin thawnthu chhunzawm rawh.'),
   'journey.dailyGentle': AppTextDefault('Journey',
-      'NI TIN • DUH THLAN • HREMNA AWM LO', 'OPTIONAL DAILY • NO PENALTY'),
-  'journey.daily': AppTextDefault('Journey', 'NI TIN', 'DAILY'),
+      'OPTIONAL DAILY • NO PENALTY', 'NI TIN • DUH THLAN • HREMNA AWM LO'),
+  'journey.daily': AppTextDefault('Journey', 'DAILY', 'NI TIN'),
   'journey.weeklyGentle': AppTextDefault(
       'Journey',
-      'KAR TIN • DUH THLAN • HUN BITUK AWM LO',
-      'OPTIONAL WEEKLY • NO DEADLINE'),
+      'OPTIONAL WEEKLY • NO DEADLINE',
+      'KAR TIN • DUH THLAN • HUN BITUK AWM LO'),
   'journey.weekly': AppTextDefault(
-      'Journey', 'KAR TIN • HUN CHHIAR AWM LO', 'WEEKLY • NO COUNTDOWN'),
-  'journey.claim': AppTextDefault('Journey', 'La rawh +{n}', 'Claim +{n}'),
+      'Journey', 'WEEKLY • NO COUNTDOWN', 'KAR TIN • HUN CHHIAR AWM LO'),
+  'journey.claim': AppTextDefault('Journey', 'Claim +{n}', 'La rawh +{n}'),
   'journey.preview': AppTextDefault(
       'Journey',
-      'Content en chhinna — Mizo ṭawng thiam mi pawmna a la nghah mêk.',
-      'Preview content — awaiting Mizo language review.'),
+      'Preview content — awaiting Mizo language review.',
+      'Content en chhinna — Mizo ṭawng thiam mi pawmna a la nghah mêk.'),
   'journey.nodeSpoken':
       AppTextDefault('Journey', '{title}, {status}', '{title}, {status}'),
   'journey.nodeLevel': AppTextDefault('Journey', 'Level {n}', 'Level {n}'),
-  'journey.replay': AppTextDefault('Journey', 'CHHIAR LEH', 'REPLAY'),
-  'journey.start': AppTextDefault('Journey', 'ṬAN RAWH', 'START'),
+  'journey.replay': AppTextDefault('Journey', 'REPLAY', 'CHHIAR LEH'),
+  'journey.start': AppTextDefault('Journey', 'START', 'ṬAN RAWH'),
   'journey.collection':
-      AppTextDefault('Journey', 'Ka Dahkhawm', 'My Collection'),
-  'journey.viewAll': AppTextDefault('Journey', 'A vaiin en rawh', 'View All'),
+      AppTextDefault('Journey', 'My Collection', 'Ka Dahkhawm'),
+  'journey.viewAll': AppTextDefault('Journey', 'View All', 'A vaiin en rawh'),
   'journey.firstReward': AppTextDefault(
       'Journey',
-      'Thawnthu hmasa ber i zawh hunah lawmman i hmu ang.',
-      'You\'ll earn a reward when you finish your first Story Quest.'),
-  'story.title': AppTextDefault('Journey', 'Thawnthu', 'Story Quest'),
+      'You\'ll earn a reward when you finish your first Story Quest.',
+      'Thawnthu hmasa ber i zawh hunah lawmman i hmu ang.'),
+  'story.title': AppTextDefault('Journey', 'Story Quest', 'Thawnthu'),
   'story.chooseReply': AppTextDefault(
-      'Journey', 'Chhanna remchang thlang rawh', 'Choose a natural reply'),
+      'Journey', 'Choose a natural reply', 'Chhanna remchang thlang rawh'),
   'story.complete':
-      AppTextDefault('Journey', 'Thawnthu zo rawh', 'Complete Story'),
+      AppTextDefault('Journey', 'Complete Story', 'Thawnthu zo rawh'),
   'story.completeTitle':
-      AppTextDefault('Journey', 'Thawnthu i zo ta', 'Story Complete'),
-  'story.wellDone': AppTextDefault('Journey', 'I ti ṭha e!', 'Well done!'),
-  'story.reward': AppTextDefault('Journey', 'Thawnthu lawmman', 'Story reward'),
+      AppTextDefault('Journey', 'Story Complete', 'Thawnthu i zo ta'),
+  'story.wellDone': AppTextDefault('Journey', 'Well done!', 'I ti ṭha e!'),
+  'story.reward': AppTextDefault('Journey', 'Story reward', 'Thawnthu lawmman'),
   'story.cultureMoment':
-      AppTextDefault('Journey', 'HNAM NUN', 'CULTURE MOMENT'),
-  'story.saved': AppTextDefault('Journey', 'Dah ṭha', 'Saved'),
-  'story.read': AppTextDefault('Journey', 'Ka chhiar tawh', 'I read this'),
+      AppTextDefault('Journey', 'CULTURE MOMENT', 'HNAM NUN'),
+  'story.saved': AppTextDefault('Journey', 'Saved', 'Dah ṭha'),
+  'story.read': AppTextDefault('Journey', 'I read this', 'Ka chhiar tawh'),
   'story.stop':
-      AppTextDefault('Journey', 'Chawl hun ṭha', 'A good stopping point'),
+      AppTextDefault('Journey', 'A good stopping point', 'Chawl hun ṭha'),
   'story.stopNote': AppTextDefault(
       'Journey',
-      'Vawiin tâna i zirna a tâwk tawh. Naktûkah hlim takin i chhunzawm leh thei e.',
-      'That\'s enough for today. Come back tomorrow and keep going.'),
+      'That\'s enough for today. Come back tomorrow and keep going.',
+      'Vawiin tâna i zirna a tâwk tawh. Naktûkah hlim takin i chhunzawm leh thei e.'),
   'story.finish':
-      AppTextDefault('Journey', 'Tunah chawl rawh', 'Finish for Now'),
+      AppTextDefault('Journey', 'Finish for Now', 'Tunah chawl rawh'),
   'story.stepSpoken': AppTextDefault(
-      'Journey', 'Thawnthu {total} zingah {n}-na', 'Story step {n} of {total}'),
-  'story.conversation': AppTextDefault('Journey',
-      'Inbiakna {total} zingah {n}-na', 'Conversation {n} of {total}'),
+      'Journey', 'Story step {n} of {total}', 'Thawnthu {total} zingah {n}-na'),
+  'story.conversation': AppTextDefault('Journey', 'Conversation {n} of {total}',
+      'Inbiakna {total} zingah {n}-na'),
   // Culture
-  'culture.title': AppTextDefault('Culture', 'Hnam Nun Kawng', 'Culture Trail'),
-  'culture.collected': AppTextDefault('Culture',
-      'Card {n}/{total} i khawl tawh', '{n}/{total} cards collected'),
+  'culture.title': AppTextDefault('Culture', 'Culture Trail', 'Hnam Nun Kawng'),
+  'culture.collected': AppTextDefault('Culture', '{n}/{total} cards collected',
+      'Card {n}/{total} i khawl tawh'),
   'culture.eyebrow':
-      AppTextDefault('Culture', 'MIZO HNAM NUN KAWNG', 'MIZO CULTURE TRAIL'),
+      AppTextDefault('Culture', 'MIZO CULTURE TRAIL', 'MIZO HNAM NUN KAWNG'),
   'culture.intro': AppTextDefault(
       'Culture',
-      'Thumal, hnam nun leh a hman dân zir rawh.',
-      'Learn words, culture and how they are used.'),
+      'Learn words, culture and how they are used.',
+      'Thumal, hnam nun leh a hman dân zir rawh.'),
   'culture.marks': AppTextDefault(
       'Culture',
-      'Chhinchhiahna {n} • Zirna a hawng reng',
-      '{n} Trail Marks • Lessons stay open'),
-  'culture.cards': AppTextDefault('Culture', 'Hnam Nun Card', 'Culture Cards'),
+      '{n} Trail Marks • Lessons stay open',
+      'Chhinchhiahna {n} • Zirna a hawng reng'),
+  'culture.cards': AppTextDefault('Culture', 'Culture Cards', 'Hnam Nun Card'),
   'culture.preview': AppTextDefault(
       'Culture',
-      'Content en chhinna — ṭawng leh hnam nun thiam mi pawmna a la nghah mêk.',
-      'Preview content — awaiting language and culture review.'),
+      'Preview content — awaiting language and culture review.',
+      'Content en chhinna — ṭawng leh hnam nun thiam mi pawmna a la nghah mêk.'),
   'culture.noDeadline':
-      AppTextDefault('Culture', 'HUN BITUK AWM LO', 'NO DEADLINE'),
+      AppTextDefault('Culture', 'NO DEADLINE', 'HUN BITUK AWM LO'),
   'culture.unlockAt': AppTextDefault(
-      'Culture', 'Level {n}-ah a hawng ang', 'Unlock at Level {n}'),
+      'Culture', 'Unlock at Level {n}', 'Level {n}-ah a hawng ang'),
   'culture.keepLearning': AppTextDefault('Culture',
-      'Zirna level chhunzawm rawh.', 'Keep learning to reach this level.'),
+      'Keep learning to reach this level.', 'Zirna level chhunzawm rawh.'),
   'culture.cardTitle':
-      AppTextDefault('Culture', 'Hnam Nun Card', 'Culture Card'),
+      AppTextDefault('Culture', 'Culture Card', 'Hnam Nun Card'),
   'culture.usage': AppTextDefault(
-      'Culture', 'A hman dân leh a nihna', 'How it is used and what it means'),
-  'culture.example': AppTextDefault('Culture', 'Entîrna', 'Example'),
+      'Culture', 'How it is used and what it means', 'A hman dân leh a nihna'),
+  'culture.example': AppTextDefault('Culture', 'Example', 'Entîrna'),
   'culture.readToday':
-      AppTextDefault('Culture', 'Vawiin chhiar rawh', 'Read Today'),
+      AppTextDefault('Culture', 'Read Today', 'Vawiin chhiar rawh'),
   'culture.readAgain':
-      AppTextDefault('Culture', 'Chhiar leh rawh', 'Read Again'),
+      AppTextDefault('Culture', 'Read Again', 'Chhiar leh rawh'),
   'culture.add':
-      AppTextDefault('Culture', 'Ka dahkhawmah dah rawh', 'Add to Collection'),
+      AppTextDefault('Culture', 'Add to Collection', 'Ka dahkhawmah dah rawh'),
   'culture.report': AppTextDefault(
-      'Culture', 'Content dik lo hriattir rawh', 'Report a Content Issue'),
-  'collection.title': AppTextDefault('Culture', 'Ka Dahkhawm', 'My Collection'),
+      'Culture', 'Report a Content Issue', 'Content dik lo hriattir rawh'),
+  'collection.title': AppTextDefault('Culture', 'My Collection', 'Ka Dahkhawm'),
   'collection.count': AppTextDefault(
-      'Culture', 'Hnam nun card {n}/{total}', '{n}/{total} culture cards'),
+      'Culture', '{n}/{total} culture cards', 'Hnam nun card {n}/{total}'),
   'collection.marks':
-      AppTextDefault('Culture', 'Chhinchhiahna {n}', '{n} Trail Marks'),
+      AppTextDefault('Culture', '{n} Trail Marks', 'Chhinchhiahna {n}'),
   'collection.note': AppTextDefault(
       'Culture',
-      'Lawmna chauh a ni • Zirna pakhatmah a khar lo',
-      'Recognition only • No lesson is locked'),
+      'Recognition only • No lesson is locked',
+      'Lawmna chauh a ni • Zirna pakhatmah a khar lo'),
   'collection.style':
-      AppTextDefault('Culture', 'Ka hmel thlang rawh', 'Choose My Style'),
+      AppTextDefault('Culture', 'Choose My Style', 'Ka hmel thlang rawh'),
   'collection.milestones':
-      AppTextDefault('Culture', 'Hmasawnna chhinchhiahna', 'Milestones'),
+      AppTextDefault('Culture', 'Milestones', 'Hmasawnna chhinchhiahna'),
   'collection.firstCard': AppTextDefault(
       'Culture',
-      'Hnam Nun Kawng-ah card pakhat chhiar hmasa rawh.',
-      'Read your first card on the Culture Trail.'),
+      'Read your first card on the Culture Trail.',
+      'Hnam Nun Kawng-ah card pakhat chhiar hmasa rawh.'),
   'collection.rewards':
-      AppTextDefault('Culture', 'Thawnthu lawmman', 'Story Rewards'),
+      AppTextDefault('Culture', 'Story Rewards', 'Thawnthu lawmman'),
   'collection.firstReward': AppTextDefault(
       'Culture',
-      'Thawnthu hmasa ber i zawh hunah lawmman i hmu ang.',
-      'You\'ll earn a reward when you finish your first Story Quest.'),
+      'You\'ll earn a reward when you finish your first Story Quest.',
+      'Thawnthu hmasa ber i zawh hunah lawmman i hmu ang.'),
   'collection.avatarLocked': AppTextDefault('Culture',
-      '{avatar} • Chhinchhiahna {marks}', '{avatar} • {marks} marks'),
+      '{avatar} • {marks} marks', '{avatar} • Chhinchhiahna {marks}'),
   // Journey quests
   'quest.story':
-      AppTextDefault('Journey quests', 'Thawnthu pen khat', 'Story Step'),
+      AppTextDefault('Journey quests', 'Story Step', 'Thawnthu pen khat'),
   'quest.story.note': AppTextDefault(
-      'Journey quests', 'Thawnthu pakhat zo rawh.', 'Finish one Story Quest.'),
+      'Journey quests', 'Finish one Story Quest.', 'Thawnthu pakhat zo rawh.'),
   'quest.words':
-      AppTextDefault('Journey quests', 'Thumal vengtu', 'Word Keeper'),
+      AppTextDefault('Journey quests', 'Word Keeper', 'Thumal vengtu'),
   'quest.words.note': AppTextDefault(
-      'Journey quests', 'Thumal pathum en leh rawh.', 'Review three words.'),
+      'Journey quests', 'Review three words.', 'Thumal pathum en leh rawh.'),
   'quest.culture':
-      AppTextDefault('Journey quests', 'Hnam nun hun', 'Culture Moment'),
+      AppTextDefault('Journey quests', 'Culture Moment', 'Hnam nun hun'),
   'quest.culture.note': AppTextDefault('Journey quests',
-      'Hnam nun thu pakhat chhiar rawh.', 'Read one culture note.'),
+      'Read one culture note.', 'Hnam nun thu pakhat chhiar rawh.'),
   'quest.storyWeek':
-      AppTextDefault('Journey quests', 'Thawnthu kar', 'Story Week'),
+      AppTextDefault('Journey quests', 'Story Week', 'Thawnthu kar'),
   'quest.storyWeek.note': AppTextDefault(
       'Journey quests',
-      'Kar khat chhûngin thawnthu pathum zo rawh.',
-      'Finish three Story Quests this week.'),
+      'Finish three Story Quests this week.',
+      'Kar khat chhûngin thawnthu pathum zo rawh.'),
   'quest.cultureWeek':
-      AppTextDefault('Journey quests', 'Hnam nun kar', 'Culture Trail Week'),
+      AppTextDefault('Journey quests', 'Culture Trail Week', 'Hnam nun kar'),
   'quest.cultureWeek.note': AppTextDefault(
       'Journey quests',
-      'Kar khat chhûngin hnam nun card pathum chhiar rawh.',
-      'Read three Culture Cards this week.'),
+      'Read three Culture Cards this week.',
+      'Kar khat chhûngin hnam nun card pathum chhiar rawh.'),
 };
