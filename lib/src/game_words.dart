@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import '../features/games/application/daily_puzzle.dart';
 import '../features/games/engine/game_difficulty.dart';
 import '../features/learning/domain/learning_state.dart';
 import 'controller.dart';
@@ -81,6 +82,18 @@ List<WordEntry> pickWordsForLevel(
     boost: (entry) => wordMemoryBoost(masteries[entry.id], now),
   );
 }
+
+/// Words for [daily]: picked by the day's level and seed only, so everyone
+/// gets the same ones (what a player remembers doesn't steer them).
+List<WordEntry> pickDailyWords(
+        List<WordEntry> pool, DailyPuzzle daily, int count) =>
+    GameDifficulty.pick(
+      pool,
+      rating: daily.rating,
+      count: count,
+      difficultyOf: spreadLevels(pool),
+      random: daily.random,
+    );
 
 /// Levels 1–7 for a game's own words, spread so each level has about the
 /// same number ([GameDifficulty.spread]): easiest by the words' level, then

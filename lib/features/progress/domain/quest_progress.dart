@@ -9,6 +9,7 @@ class QuestProgress {
     required this.bestScores,
     this.gameSkills = const <String, int>{},
     this.playDay,
+    this.dailyPuzzles = const <String, String>{},
   });
 
   factory QuestProgress.empty() => const QuestProgress(
@@ -36,6 +37,9 @@ class QuestProgress {
   /// [dailyProgress] and [streak] are counted against.
   final String? playDay;
 
+  /// Finished daily puzzles: [DailyPuzzle.key] → [DailyResult.encode].
+  final Map<String, String> dailyPuzzles;
+
   QuestProgress copyWith({
     int? xp,
     int? streak,
@@ -46,6 +50,7 @@ class QuestProgress {
     Map<String, int>? bestScores,
     Map<String, int>? gameSkills,
     String? playDay,
+    Map<String, String>? dailyPuzzles,
   }) {
     return QuestProgress(
       xp: xp ?? this.xp,
@@ -59,6 +64,7 @@ class QuestProgress {
       bestScores: Map<String, int>.unmodifiable(bestScores ?? this.bestScores),
       gameSkills: Map<String, int>.unmodifiable(gameSkills ?? this.gameSkills),
       playDay: playDay ?? this.playDay,
+      dailyPuzzles: Map<String, String>.unmodifiable(dailyPuzzles ?? this.dailyPuzzles),
     );
   }
 
@@ -72,12 +78,14 @@ class QuestProgress {
         'bestScores': bestScores,
         'gameSkills': gameSkills,
         if (playDay != null) 'playDay': playDay,
+        if (dailyPuzzles.isNotEmpty) 'dailyPuzzles': dailyPuzzles,
       };
 
   factory QuestProgress.fromJson(Map<String, Object?> json) {
     final rawGames = json['completedGames'];
     final rawScores = json['bestScores'];
     final rawSkills = json['gameSkills'];
+    final rawDaily = json['dailyPuzzles'];
     return QuestProgress(
       xp: (json['xp'] as num?)?.toInt() ?? 0,
       streak: (json['streak'] as num?)?.toInt() ?? 1,
@@ -108,6 +116,12 @@ class QuestProgress {
             )
           : const <String, int>{},
       playDay: json['playDay'] is String ? json['playDay'] as String : null,
+      dailyPuzzles: rawDaily is Map
+          ? Map<String, String>.unmodifiable({
+              for (final MapEntry(:key, :value) in rawDaily.entries)
+                if (value is String) key.toString(): value,
+            })
+          : const <String, String>{},
     );
   }
 }

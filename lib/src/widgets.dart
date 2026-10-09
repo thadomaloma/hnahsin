@@ -321,10 +321,14 @@ class GameHud extends StatelessWidget {
     required this.session,
     required this.progress,
     this.secondsRemaining,
+    this.secondsElapsed,
   });
   final GameSession session;
   final double progress;
   final int? secondsRemaining;
+
+  /// A daily puzzle's clock, counting up.
+  final int? secondsElapsed;
 
   @override
   Widget build(BuildContext context) {
@@ -372,7 +376,13 @@ class GameHud extends StatelessWidget {
                     ),
                 ]),
               const Spacer(),
-              if (secondsRemaining != null)
+              if (secondsElapsed case final s?)
+                _HudChip(
+                  icon: Icons.timer_rounded,
+                  label: '${s ~/ 60}:${(s % 60).toString().padLeft(2, '0')}',
+                  iconColor: QuestColors.gold,
+                )
+              else if (secondsRemaining != null)
                 _HudChip(
                   icon: Icons.timer_rounded,
                   label: '${secondsRemaining}s',

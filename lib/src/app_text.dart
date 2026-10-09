@@ -377,6 +377,20 @@ const appTextDefaults = <String, AppTextDefault>{
       AppTextDefault('Game start', 'Resume Game', 'Chhunzawm rawh'),
   'launcher.startNew':
       AppTextDefault('Game start', 'Start New Game', 'A thar ṭan rawh'),
+  // Daily puzzles
+  'daily.title': AppTextDefault('Daily puzzles', 'Daily puzzles', 'Ni tin puzzle'),
+  'daily.subtitle': AppTextDefault('Daily puzzles', 'The same puzzle for everyone today', 'Vawiinah mi zawng zawng tan puzzle inang'),
+  'daily.eyebrow': AppTextDefault('Daily puzzles', 'DAILY PUZZLE', 'NI TIN PUZZLE'),
+  'daily.puzzle': AppTextDefault('Daily puzzles', '{game} #{n}', '{game} #{n}'),
+  'daily.play': AppTextDefault('Daily puzzles', 'Play today\'s', 'Vawiin mi khel rawh'),
+  'daily.done': AppTextDefault('Daily puzzles', 'Done in {time}', '{time}-ah i zo'),
+  'daily.comeBack': AppTextDefault('Daily puzzles', 'A new puzzle comes tomorrow.', 'Naktukah puzzle thar a lo awm ang.'),
+  'daily.time': AppTextDefault('Daily puzzles', 'TIME', 'HUN'),
+  'daily.hints': AppTextDefault('Daily puzzles', 'HINTS', 'ṬANPUINA'),
+  'daily.share': AppTextDefault('Daily puzzles', 'Share', 'Share rawh'),
+  'daily.copied': AppTextDefault('Daily puzzles', 'Copied. Paste it anywhere to share.', 'Copy a ni. Share turin paste rawh.'),
+  'daily.marksSpoken': AppTextDefault('Daily puzzles', '{clean} of {total} words without help', 'Thumal {total} zingah {clean} ṭanpuina lovin'),
+  'daily.shareText': AppTextDefault('Daily puzzles', 'Hnahsin {puzzle}\n{marks}\n⏱ {time} · 💡 {hints}', 'Hnahsin {puzzle}\n{marks}\n⏱ {time} · 💡 {hints}'),
   // Picture Match
   'picture.right':
       AppTextDefault('Picture Match', '{word} — {gloss}', '{word} — {gloss}'),

@@ -18,6 +18,7 @@ import 'data.dart';
 import 'game_session.dart';
 import 'game_text.dart';
 import 'game_sounds.dart';
+import '../features/games/application/daily_puzzle.dart';
 
 class QuestController extends ChangeNotifier {
   QuestController({
@@ -60,6 +61,7 @@ class QuestController extends ChangeNotifier {
   final Set<String> completedGames = <String>{};
   final Map<String, int> bestScores = <String, int>{};
   final Map<String, int> gameSkills = <String, int>{};
+  final Map<String, String> dailyPuzzles = <String, String>{};
 
   /// Adaptive difficulty rating (1–7) for [gameId]; games pick words and
   /// distractors around it. Unplayed games start from the placement level.
@@ -303,6 +305,9 @@ class QuestController extends ChangeNotifier {
     gameSkills
       ..clear()
       ..addAll(progress.gameSkills);
+    dailyPuzzles
+      ..clear()
+      ..addAll(progress.dailyPuzzles);
   }
 
   QuestProgress get _progress => QuestProgress(
@@ -315,6 +320,7 @@ class QuestController extends ChangeNotifier {
         bestScores: Map<String, int>.unmodifiable(bestScores),
         gameSkills: Map<String, int>.unmodifiable(gameSkills),
         playDay: playDay,
+        dailyPuzzles: Map<String, String>.unmodifiable(dailyPuzzles),
       );
 
   Future<void> completeOnboarding(LearnerProfile value) async {
@@ -589,13 +595,35 @@ class QuestController extends ChangeNotifier {
     await _repository.saveLearningState(learningState);
   }
 
-  Future<RewardOutcome> reward(String gameId, GameResult result) async {
+  /// Today's puzzle for [gameId].
+  DailyPuzzle dailyPuzzle(String gameId) => DailyPuzzle.today(gameId, _clock());
+
+  /// How [puzzle] went, once finished.
+  DailyResult? dailyResult(DailyPuzzle puzzle) => DailyResult.decode(dailyPuzzles[puzzle.key]);
+
+  /// Keeps [puzzle]'s result (the first one: a replay doesn't change it)
+  /// and the last month's others.
+  Future<void> recordDaily(DailyPuzzle puzzle, DailyResult result) async {
+    if (dailyPuzzles.containsKey(puzzle.key)) return;
+    dailyPuzzles[puzzle.key] = result.encode();
+    final keys = dailyPuzzles.keys.toList()..sort((a, b) => a.split('.').last.compareTo(b.split('.').last));
+    while (dailyPuzzles.length > 60) {
+      dailyPuzzles.remove(keys.removeAt(0));
+    }
+    notifyListeners();
+    await _repository.saveProgress(_progress);
+  }
+
+  /// Banks a finished round: XP, today's rounds and streak, best score and,
+  /// unless the round's difficulty was fixed (a daily puzzle, [adaptive]
+  /// false), the game's level.
+  Future<RewardOutcome> reward(String gameId, GameResult result, {bool adaptive = true}) async {
     final updatedScores = <String, int>{...bestScores};
-    if (result.score > (updatedScores[gameId] ?? 0)) {
+    if (adaptive && result.score > (updatedScores[gameId] ?? 0)) {
       updatedScores[gameId] = result.score;
     }
     final previousSkill = gameSkill(gameId);
-    final nextSkill = GameDifficulty.nextRating(
+    final nextSkill = !adaptive ? previousSkill : GameDifficulty.nextRating(
       previousSkill,
       correct: result.correctAnswers,
       attempts: result.attempts,

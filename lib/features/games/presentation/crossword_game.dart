@@ -11,7 +11,9 @@ import '../../../src/game_text.dart';
 import '../../../src/game_words.dart';
 import '../../../src/theme.dart';
 import '../../../src/widgets.dart';
+import '../application/daily_puzzle.dart';
 import '../application/game_runtime.dart';
+import '../../../src/daily_widgets.dart';
 import '../engine/crossword_layout.dart';
 import '../engine/game_engine.dart';
 import '../../../src/app_text.dart';
@@ -23,7 +25,7 @@ typedef _Cell = (int, int);
 /// Levels 1–2 clue in English (recall the Mizo word), level 3 up clue with
 /// the Mizo meaning. Each word is checked as soon as it is filled in.
 class MiniCrosswordGame extends StatefulWidget {
-  const MiniCrosswordGame({super.key, required this.controller, this.mode = GameMode.standard});
+  const MiniCrosswordGame({super.key, required this.controller, this.mode = GameMode.standard, this.daily});
 
   static const gameId = 'crossword';
 
@@ -32,6 +34,9 @@ class MiniCrosswordGame extends StatefulWidget {
 
   final QuestController controller;
   final GameMode mode;
+
+  /// Today's puzzle instead of one at the player's level.
+  final DailyPuzzle? daily;
 
   @override
   State<MiniCrosswordGame> createState() => _MiniCrosswordGameState();
@@ -64,6 +69,9 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
   CrosswordSlot? lastSolved;
   bool finishing = false;
 
+  /// Words that took a mistake or a hint: a daily result's yellow marks.
+  final Set<String> helped = {};
+
   CrosswordSlot get activeSlot {
     final here = layout.slotsAt(active);
     return here.firstWhere((slot) => slot.across == across, orElse: () => here.first);
@@ -74,8 +82,11 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
     super.initState();
     runtime = GameRuntime(
       controller: widget.controller,
-      gameId: MiniCrosswordGame.gameId,
+      // A daily puzzle is saved apart from the everyday game, and from
+      // other days' puzzles.
+      gameId: widget.daily?.sessionId ?? MiniCrosswordGame.gameId,
       mode: widget.mode,
+      countUp: widget.daily != null,
       onChanged: () {
         if (mounted) setState(() {});
       },
@@ -91,6 +102,7 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
           'wrong': [for (final cell in wrongCells) '${cell.$1},${cell.$2}'],
           'active': '${active.$1},${active.$2}',
           'across': across,
+          'helped': helped.toList(),
         },
         restorePayload: (snapshot) {
           // The saved letters belong to the puzzle built from the saved seed.
@@ -116,14 +128,16 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
           final saved = _decode(snapshot.payload['active'] as String? ?? '');
           if (saved != null && solution.containsKey(saved)) active = saved;
           across = snapshot.payload['across'] as bool? ?? across;
+          helped.addAll((snapshot.payload['helped'] as List<Object?>? ?? const <Object?>[]).whereType<String>());
         },
       ),
     );
   }
 
   void _buildPuzzle() {
-    final random = session.random;
-    final rating = widget.controller.gameSkill(MiniCrosswordGame.gameId);
+    final daily = widget.daily;
+    final random = daily?.random ?? session.random;
+    final rating = daily?.rating ?? widget.controller.gameSkill(MiniCrosswordGame.gameId);
     // Small grids of short words first; bigger, longer ones as the level
     // rises, up to 8 letters on an 8×8 grid.
     final (target, longest) = rating < 2 ? (4, 5) : (rating < 3.5 ? (5, 6) : (6, 8));
@@ -140,7 +154,9 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
       return answer.length >= 3 && answer.length <= longest && answer.split('').every(typeable.contains) && spellings.add(answer);
     });
     final candidates = [
-      for (final entry in pickWordsForLevel(widget.controller, MiniCrosswordGame.gameId, pool, 40, random))
+      for (final entry in daily == null
+          ? pickWordsForLevel(widget.controller, MiniCrosswordGame.gameId, pool, 40, random)
+          : pickDailyWords(pool.toList(), daily, 40))
         if (_clueFor(entry, english: english) case final clue when clue.isNotEmpty)
           CrosswordCandidate(id: entry.id, answer: _answerOf(entry), clue: clue),
     ];
@@ -301,6 +317,7 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
           lastSolved = slot;
         } else {
           wrongCells.addAll(slot.cells.where((c) => letters[c] != solution[c]));
+          helped.add(slot.key);
         }
         final entry = widget.controller.wordCatalog.where((e) => e.id == slot.id).firstOrNull;
         runtime.answer(correct, wordId: entry?.id, word: entry?.word);
@@ -322,6 +339,7 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
     final cell = slot.cells.firstWhere((cell) => letters[cell] != solution[cell]);
     await runtime.revealHint();
     if (!mounted) return;
+    helped.add(slot.key);
     setState(() {
       across = slot.across;
       active = cell;
@@ -339,6 +357,14 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
     finishing = true;
     final result = await runtime.finish(baseXp: 60, reason: reason);
     if (!mounted) return;
+    if (widget.daily case final daily?) {
+      await finishDaily(context, widget.controller, daily, result, DailyResult(
+        marks: [for (final slot in layout.slots) helped.contains(slot.key) ? DailyResult.helped : DailyResult.clean],
+        seconds: runtime.elapsedSeconds,
+        hints: runtime.hintsUsed,
+      ));
+      return;
+    }
     await showGameResult(context, widget.controller, MiniCrosswordGame.gameId, result);
   }
 
@@ -398,12 +424,13 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
     final copy = GameText.of(MiniCrosswordGame.gameId);
     final slot = activeSlot;
     return QuestPage(
-      title: copy.title,
-      subtitle: GameText.of('crossword').subtitle,
+      title: widget.daily == null ? copy.title : dailyTitle(widget.daily!),
+      subtitle: widget.daily == null ? GameText.of('crossword').subtitle : AppText.of('daily.subtitle'),
       hud: GameHud(
         session: session,
         progress: solved.length / layout.slots.length,
         secondsRemaining: runtime.isTimed ? runtime.remainingSeconds : null,
+        secondsElapsed: widget.daily == null ? null : runtime.elapsedSeconds,
       ),
       child: Focus(
         focusNode: focus,

@@ -11,6 +11,7 @@ import '../features/journey/presentation/journey_screens.dart';
 import '../features/onboarding/domain/learner_profile.dart';
 import 'content_widgets.dart';
 import 'controller.dart';
+import 'daily_widgets.dart';
 import 'data.dart';
 import 'game_text.dart';
 import 'games.dart';
@@ -31,6 +32,8 @@ class HomeScreen extends StatelessWidget {
           _BrandHeader(controller: controller),
           const SizedBox(height: 20),
           _DailyHero(controller: controller, openGames: openGames),
+          const SizedBox(height: 28),
+          DailyPuzzlesCard(controller: controller),
           const SizedBox(height: 28),
           if (_journeyVisible) ...[
             _HomeJourney(controller: controller),

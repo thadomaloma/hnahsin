@@ -4,9 +4,11 @@ import 'dart:math' show min;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../features/games/application/daily_puzzle.dart';
 import '../features/games/application/game_runtime.dart';
 import '../features/games/engine/game_engine.dart';
 import 'controller.dart';
+import 'daily_widgets.dart';
 import 'data.dart';
 import 'spelling_round.dart';
 import 'word_search_board.dart';
@@ -1128,9 +1130,15 @@ class _WordChainGameState extends State<WordChainGame> {
 
 class WordSearchGame extends StatefulWidget {
   const WordSearchGame(
-      {super.key, required this.controller, this.mode = GameMode.standard});
+      {super.key,
+      required this.controller,
+      this.mode = GameMode.standard,
+      this.daily});
   final QuestController controller;
   final GameMode mode;
+
+  /// Today's puzzle instead of one at the player's level.
+  final DailyPuzzle? daily;
   @override
   State<WordSearchGame> createState() => _WordSearchGameState();
 }
@@ -1147,6 +1155,9 @@ class _WordSearchGameState extends State<WordSearchGame> {
   final Set<String> found = {};
   String message = AppText.of('search.start');
   bool finishing = false;
+
+  /// Words found with a hint showing: a daily result's yellow marks.
+  final Set<String> helped = {};
   String get current =>
       selected.map((position) => grid[position.$1][position.$2]).join();
 
@@ -1164,12 +1175,16 @@ class _WordSearchGameState extends State<WordSearchGame> {
   };
 
   void _buildBoard() {
+    final daily = widget.daily;
+    final random = daily?.random ?? session.random;
     final board = buildWordSearchBoard(
       catalog: widget.controller.wordCatalog,
-      rating: widget.controller.gameSkill('word_search'),
-      random: session.random,
-      pick: (pool, count) => pickWordsForLevel(
-          widget.controller, 'word_search', pool, count, session.random),
+      rating: daily?.rating ?? widget.controller.gameSkill('word_search'),
+      random: random,
+      pick: (pool, count) => daily == null
+          ? pickWordsForLevel(
+              widget.controller, 'word_search', pool, count, random)
+          : pickDailyWords(pool, daily, count),
     );
     grid = board.rows;
     placements = board.placements;
@@ -1181,8 +1196,11 @@ class _WordSearchGameState extends State<WordSearchGame> {
     super.initState();
     runtime = GameRuntime(
       controller: widget.controller,
-      gameId: 'word_search',
+      // A daily puzzle is saved apart from the everyday game, and from
+      // other days' puzzles.
+      gameId: widget.daily?.sessionId ?? 'word_search',
       mode: widget.mode,
+      countUp: widget.daily != null,
       onChanged: () {
         if (mounted) setState(() {});
       },
@@ -1198,9 +1216,13 @@ class _WordSearchGameState extends State<WordSearchGame> {
               .map((position) => '${position.$1},${position.$2}')
               .toList(),
           'message': message,
+          'helped': helped.toList(),
         },
         restorePayload: (snapshot) {
           _buildBoard();
+          helped.addAll(
+              (snapshot.payload['helped'] as List<Object?>? ?? const <Object?>[])
+                  .whereType<String>());
           found
             ..clear()
             ..addAll(
@@ -1300,6 +1322,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
       HapticFeedback.selectionClick();
       setState(() {
         found.add(word);
+        if (runtime.hintRevealed) helped.add(word);
         selected.clear();
         final gloss = glosses[word] ?? '';
         message = gloss.isEmpty
@@ -1314,6 +1337,24 @@ class _WordSearchGameState extends State<WordSearchGame> {
         finishing = true;
         final result = await runtime.finish(baseXp: 45);
         if (!mounted) return;
+        if (widget.daily case final daily?) {
+          await finishDaily(
+              context,
+              widget.controller,
+              daily,
+              result,
+              DailyResult(
+                marks: [
+                  for (final target in targets)
+                    helped.contains(target)
+                        ? DailyResult.helped
+                        : DailyResult.clean,
+                ],
+                seconds: runtime.elapsedSeconds,
+                hints: runtime.hintsUsed,
+              ));
+          return;
+        }
         await showGameResult(context, widget.controller, 'word_search', result);
       }
       return;
@@ -1334,13 +1375,19 @@ class _WordSearchGameState extends State<WordSearchGame> {
 
   @override
   Widget build(BuildContext context) => QuestPage(
-        title: GameText.of('word_search').title,
-        subtitle: GameText.of('word_search').subtitle,
+        title: widget.daily == null
+            ? GameText.of('word_search').title
+            : dailyTitle(widget.daily!),
+        subtitle: widget.daily == null
+            ? GameText.of('word_search').subtitle
+            : AppText.of('daily.subtitle'),
         hud: GameHud(
             session: session,
             progress: found.length / targets.length,
             secondsRemaining:
-                runtime.isTimed ? runtime.remainingSeconds : null),
+                runtime.isTimed ? runtime.remainingSeconds : null,
+            secondsElapsed:
+                widget.daily == null ? null : runtime.elapsedSeconds),
         child: Column(children: [
           if (runtime.restoredSession) const GameResumeBanner(),
           GameHintButton(

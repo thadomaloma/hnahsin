@@ -20,6 +20,7 @@ class GameRuntime with WidgetsBindingObserver {
     required this.onChanged,
     required this.onTimedOut,
     this.timedSeconds = 90,
+    this.countUp = false,
   })  : remainingSeconds = timedSeconds,
         session = GameSession(gameId: gameId, mode: mode);
 
@@ -29,6 +30,10 @@ class GameRuntime with WidgetsBindingObserver {
   final VoidCallback onChanged;
   final Future<void> Function() onTimedOut;
   final int timedSeconds;
+
+  /// Counts the seconds played ([elapsedSeconds]), as a daily puzzle does.
+  final bool countUp;
+  int elapsedSeconds = 0;
 
   GameSession session;
   int remainingSeconds;
@@ -77,6 +82,7 @@ class GameRuntime with WidgetsBindingObserver {
           (snapshot.payload['_remainingSeconds'] as num?)?.toInt() ??
               timedSeconds;
       hintsUsed = (snapshot.payload['_hintsUsed'] as num?)?.toInt() ?? 0;
+      elapsedSeconds = (snapshot.payload['_elapsedSeconds'] as num?)?.toInt() ?? 0;
       hintRevealed = snapshot.payload['_hintRevealed'] as bool? ?? false;
       for (final raw in snapshot.payload['_played'] as List<Object?>? ?? const <Object?>[]) {
         final play = WordPlay.fromJson(raw);
@@ -152,6 +158,7 @@ class GameRuntime with WidgetsBindingObserver {
         ..._readPayload(),
         '_remainingSeconds': remainingSeconds,
         '_hintsUsed': hintsUsed,
+        '_elapsedSeconds': elapsedSeconds,
         '_hintRevealed': hintRevealed,
         '_played': [for (final play in _played.values) play.toJson()],
       },
@@ -169,7 +176,17 @@ class GameRuntime with WidgetsBindingObserver {
 
   void _startTimer() {
     _timer?.cancel();
-    if (!isTimed || remainingSeconds <= 0 || _disposed) return;
+    if (_disposed) return;
+    if (countUp) {
+      _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+        if (_disposed || session.status != GameSessionStatus.active) return;
+        elapsedSeconds += 1;
+        onChanged();
+        if (elapsedSeconds % 5 == 0) unawaited(persist());
+      });
+      return;
+    }
+    if (!isTimed || remainingSeconds <= 0) return;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_disposed || session.status != GameSessionStatus.active) return;
       remainingSeconds -= 1;
