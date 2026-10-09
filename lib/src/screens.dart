@@ -1139,6 +1139,13 @@ class ProfileScreen extends StatelessWidget {
                 },
               ),
             ),
+            const SizedBox(height: 18),
+            // The sources the content draws on, as their licences ask.
+            Text(AppText.of('profile.credits'),
+                style: const TextStyle(fontWeight: FontWeight.w800, color: QuestColors.slate)),
+            const SizedBox(height: 4),
+            Text(AppText.of('profile.creditsBody'),
+                style: const TextStyle(color: QuestColors.slate, fontSize: 12, height: 1.4)),
           ]));
 }
 
