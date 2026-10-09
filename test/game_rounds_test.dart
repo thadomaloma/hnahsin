@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hnahsin/src/app_text.dart';
 import 'package:hnahsin/data/quest_repository.dart';
 import 'package:hnahsin/features/games/engine/game_engine.dart';
 import 'package:hnahsin/src/controller.dart';
@@ -7,7 +8,8 @@ import 'package:hnahsin/features/games/presentation/crossword_game.dart';
 import 'package:hnahsin/src/games.dart';
 import 'package:hnahsin/src/widgets.dart';
 
-Finder _hearts(int left) => find.bySemanticsLabel(RegExp('^$left of 3 hearts'));
+Finder _hearts(int left) => find.bySemanticsLabel(
+    RegExp('^${RegExp.escape(AppText.of('hud.heartsSpoken', {'hearts': left, 'total': 3}))}'));
 
 void main() {
   Future<void> pumpChain(WidgetTester tester, List<String> chain) async {
@@ -76,7 +78,7 @@ void main() {
     final tip = tester
         .widgetList<Text>(find.byType(Text))
         .map((text) => text.data ?? '')
-        .firstWhere((data) => data.startsWith('TIP'));
+        .firstWhere((data) => data.startsWith('KAWHHMUHNA'));
     final count = int.parse(RegExp(r'thumal (\d+) kan nei').firstMatch(tip)!.group(1)!);
     expect(count, greaterThan(0));
   });
@@ -139,8 +141,8 @@ void main() {
       final cells = <(int, int), String?>{};
       late (int, int) cursor;
       for (final semantics in tester.widgetList<Semantics>(find.byWidgetPredicate(
-          (widget) => widget is Semantics && (widget.properties.label ?? '').startsWith('Row ')))) {
-        final match = RegExp(r'^Row (\d+), column (\d+), (?:empty|letter (.+))$')
+          (widget) => widget is Semantics && (widget.properties.label ?? '').startsWith('Tlar ')))) {
+        final match = RegExp(r'^Tlar (\d+), ban (\d+), (?:a ruak|hawrawp (.+))$')
             .firstMatch(semantics.properties.label!)!;
         final cell = (int.parse(match[1]!), int.parse(match[2]!));
         cells[cell] = match[3];
@@ -148,7 +150,7 @@ void main() {
       }
       final down = tester
           .widgetList<Text>(find.byType(Text))
-          .any((text) => (text.data ?? '').contains('DOWN') && (text.data ?? '').contains('HAWRAWP'));
+          .any((text) => (text.data ?? '').contains('DUNG') && (text.data ?? '').contains('HAWRAWP'));
       final (dr, dc) = down ? (1, 0) : (0, 1);
       var start = cursor;
       while (cells.containsKey((start.$1 - dr, start.$2 - dc))) {
@@ -166,7 +168,7 @@ void main() {
           .widgetList<Text>(find.byType(Text))
           .map((text) => text.data ?? '')
           .firstWhere((data) => data.contains('HAWRAWP'));
-      final length = int.parse(RegExp(r'(\d+) HAWRAWP').firstMatch(header)!.group(1)!);
+      final length = int.parse(RegExp(r'HAWRAWP (\d+)').firstMatch(header)!.group(1)!);
       final clues = tester.widgetList<Text>(find.byType(Text)).map((text) => text.data);
       return controller.wordCatalog
           .map((entry) => entry.word.trim().toUpperCase())

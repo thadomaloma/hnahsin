@@ -10,7 +10,22 @@ void main() {
 
   test('built-in text fills its placeholders', () {
     expect(AppText.of('home.play'), 'Khel rawh');
+    expect(AppText.of('home.streak', {'n': 4}), 'Ni 4 indawt');
+  });
+
+  test('English shows the built-in English, not the Sheet\'s Mizo', () {
+    addTearDown(() => AppText.language = AppLanguage.mizo);
+    AppText.update(const {'home.play': 'Khel nghal rawh'});
+    AppText.language = AppLanguage.english;
+
+    expect(AppText.of('home.play'), 'Play');
     expect(AppText.of('home.streak', {'n': 4}), '4 day streak');
+  });
+
+  test('every text has the same placeholders in Mizo and English', () {
+    for (final MapEntry(:key, :value) in appTextDefaults.entries) {
+      expect(appTextPlaceholders(value.english), appTextPlaceholders(value.text), reason: key);
+    }
   });
 
   test('Sheet text replaces the built-in text', () {
@@ -23,7 +38,7 @@ void main() {
   test('Sheet text with other placeholders is ignored', () {
     AppText.update(const {'home.streak': 'Ni indawt', 'home.play': 'Khel {now}'});
 
-    expect(AppText.of('home.streak', {'n': 4}), '4 day streak');
+    expect(AppText.of('home.streak', {'n': 4}), 'Ni 4 indawt');
     expect(AppText.of('home.play'), 'Khel rawh');
   });
 

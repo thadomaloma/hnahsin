@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hnahsin/src/app_text.dart';
 import 'package:hnahsin/data/quest_repository.dart';
 import 'package:hnahsin/features/games/engine/game_engine.dart';
 import 'package:hnahsin/src/controller.dart';
@@ -32,9 +33,9 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Saved game available'), findsOneWidget);
-    expect(find.text('Resume Game'), findsOneWidget);
-    expect(find.text('Start New Game'), findsOneWidget);
+    expect(find.text(AppText.of('launcher.saved')), findsOneWidget);
+    expect(find.text(AppText.of('launcher.resume')), findsOneWidget);
+    expect(find.text(AppText.of('launcher.startNew')), findsOneWidget);
   });
 
   testWidgets('launcher starts a new timed game', (tester) async {
@@ -53,10 +54,10 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.ensureVisible(find.text('Timed — Second 90 chhungin'));
-    await tester.tap(find.text('Timed — Second 90 chhungin'));
-    await tester.ensureVisible(find.text('Start Game'));
-    await tester.tap(find.text('Start Game'));
+    await tester.ensureVisible(find.text(AppText.of('launcher.timed')));
+    await tester.tap(find.text(AppText.of('launcher.timed')));
+    await tester.ensureVisible(find.text(AppText.of('launcher.start')));
+    await tester.tap(find.text(AppText.of('launcher.start')));
     await tester.pumpAndSettle();
 
     expect(find.text('mode:timed'), findsOneWidget);

@@ -113,6 +113,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           ),
                         ),
                       ),
+                      _LanguageToggle(
+                        language: profile.appLanguage,
+                        onChanged: (language) => setState(() {
+                          profile = profile.copyWith(appLanguage: language);
+                          AppText.language = language;
+                        }),
+                      ),
+                      const SizedBox(width: 8),
                       Text(
                         '${step + 1}/$stepCount',
                         semanticsLabel: AppText.of('onboarding.stepSpoken', {'n': step + 1, 'total': stepCount}),
@@ -218,6 +226,32 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       ),
     );
   }
+}
+
+/// Mizo | English, so a learner who can't read Mizo yet can follow the
+/// setup. Each side is written in its own language.
+class _LanguageToggle extends StatelessWidget {
+  const _LanguageToggle({required this.language, required this.onChanged});
+
+  final AppLanguage language;
+  final ValueChanged<AppLanguage> onChanged;
+
+  @override
+  Widget build(BuildContext context) => SegmentedButton<AppLanguage>(
+        showSelectedIcon: false,
+        style: SegmentedButton.styleFrom(
+          visualDensity: VisualDensity.compact,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          textStyle: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13),
+        ),
+        segments: const <ButtonSegment<AppLanguage>>[
+          ButtonSegment(value: AppLanguage.mizo, label: Text('Mizo')),
+          ButtonSegment(value: AppLanguage.english, label: Text('English')),
+        ],
+        selected: <AppLanguage>{language},
+        onSelectionChanged: (selection) => onChanged(selection.single),
+      );
 }
 
 class _StepFrame extends StatelessWidget {

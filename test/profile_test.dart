@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hnahsin/src/app_text.dart';
 import 'package:hnahsin/data/quest_repository.dart';
 import 'package:hnahsin/features/onboarding/domain/learner_profile.dart';
 import 'package:hnahsin/features/progress/domain/quest_progress.dart';
@@ -54,16 +55,16 @@ void main() {
       (tester) async {
     final controller = await _profile(tester);
 
-    await tester.tap(find.text('15 min'));
+    await tester.tap(find.text(AppText.of('rhythm.minutes', {'n': 15})));
     await tester.pumpAndSettle();
     expect(controller.profile.dailyGoalMinutes, 15);
 
-    await tester.tap(find.text('Adult').first);
+    await tester.tap(find.text(AppText.of('age.adult')).first);
     await tester.pumpAndSettle();
     expect(controller.profile.ageBand, LearnerAgeBand.adult);
 
     final english = controller.profile.supportLanguage;
-    await tester.tap(find.text('English support'));
+    await tester.tap(find.text(AppText.of('support.english')));
     await tester.pumpAndSettle();
     expect(controller.profile.supportLanguage, isNot(english));
 

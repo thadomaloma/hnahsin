@@ -37,7 +37,14 @@ class QuestController extends ChangeNotifier {
   static const _adaptiveDifficulty = AdaptiveDifficulty();
   static const _lessonPlanner = DailyLessonPlanner();
   static const _journeyEngine = JourneyEngine();
-  LearnerProfile profile = LearnerProfile.fresh();
+  /// Setting the profile also sets the language of the app's labels.
+  LearnerProfile get profile => _profile;
+  set profile(LearnerProfile value) {
+    _profile = value;
+    AppText.language = value.appLanguage;
+  }
+
+  LearnerProfile _profile = LearnerProfile.fresh();
   LearningState learningState = LearningState.fresh();
   JourneyState journeyState = JourneyState.fresh();
   LearningTrack track = LearningTrack.beginner;

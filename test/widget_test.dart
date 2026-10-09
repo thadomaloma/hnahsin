@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hnahsin/src/app_text.dart';
 import 'package:hnahsin/data/quest_repository.dart';
 import 'package:hnahsin/features/learning/domain/learning_state.dart';
 import 'package:hnahsin/features/onboarding/domain/learner_profile.dart';
@@ -15,8 +16,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('HNAHSIN'), findsOneWidget);
-    expect(find.text('Your Mizo journey starts here.'), findsOneWidget);
-    expect(find.text('Start My Journey'), findsOneWidget);
+    expect(find.text(AppText.of('welcome.title')), findsOneWidget);
+    expect(find.text(AppText.of('onboarding.start')), findsOneWidget);
   });
 
   testWidgets('opens the premium home after onboarding', (tester) async {
@@ -35,10 +36,10 @@ void main() {
     expect(controller.profile.onboardingCompleted, isTrue);
     expect(find.text('VAWIIN GAME'), findsOneWidget);
     expect(find.text('Khel rawh'), findsOneWidget);
-    expect(find.text('Home'), findsOneWidget);
-    expect(find.text('Learn'), findsWidgets);
-    expect(find.text('Games'), findsWidgets);
-    expect(find.text('Profile'), findsWidgets);
+    expect(find.text(AppText.of('nav.home')), findsOneWidget);
+    expect(find.text(AppText.of('nav.learn')), findsWidgets);
+    expect(find.text(AppText.of('nav.games')), findsWidgets);
+    expect(find.text(AppText.of('nav.profile')), findsWidgets);
   });
 
   testWidgets('premium cards provide a visible Material surface for list tiles',

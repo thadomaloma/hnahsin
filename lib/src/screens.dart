@@ -1178,6 +1178,23 @@ class _ProfileSettings extends StatelessWidget {
       PremiumCard(
         padding: EdgeInsets.zero,
         child: Column(children: [
+          ListTile(
+            leading: const Icon(Icons.language_rounded, color: QuestColors.indigo),
+            title: Text(AppText.of('profile.appLanguage'), style: heading),
+            subtitle: Text(AppText.of('profile.appLanguageNote')),
+            trailing: SegmentedButton<AppLanguage>(
+              showSelectedIcon: false,
+              style: SegmentedButton.styleFrom(visualDensity: VisualDensity.compact),
+              segments: const <ButtonSegment<AppLanguage>>[
+                ButtonSegment(value: AppLanguage.mizo, label: Text('Mizo')),
+                ButtonSegment(value: AppLanguage.english, label: Text('English')),
+              ],
+              selected: <AppLanguage>{profile.appLanguage},
+              onSelectionChanged: (selection) =>
+                  _update(profile.copyWith(appLanguage: selection.single)),
+            ),
+          ),
+          const Divider(height: 1),
           SwitchListTile(
             title: Text(AppText.of('support.english'), style: heading),
             subtitle: Text(AppText.of('profile.englishNote')),

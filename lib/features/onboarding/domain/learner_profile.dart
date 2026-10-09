@@ -68,6 +68,7 @@ class LearnerProfile {
     required this.reducedMotion,
     required this.onboardingCompleted,
     this.gentleMode = true,
+    this.appLanguage = AppLanguage.mizo,
   });
 
   factory LearnerProfile.fresh() => const LearnerProfile(
@@ -80,6 +81,7 @@ class LearnerProfile {
         reducedMotion: false,
         onboardingCompleted: false,
         gentleMode: true,
+        appLanguage: AppLanguage.mizo,
       );
 
   final String id;
@@ -91,6 +93,10 @@ class LearnerProfile {
   final bool reducedMotion;
   final bool onboardingCompleted;
   final bool gentleMode;
+
+  /// The language of the app's own labels; [supportLanguage] is about the
+  /// learning content (English beside Mizo in stories).
+  final AppLanguage appLanguage;
 
   bool get isChild => ageBand != LearnerAgeBand.adult;
 
@@ -110,6 +116,7 @@ class LearnerProfile {
     bool? reducedMotion,
     bool? onboardingCompleted,
     bool? gentleMode,
+    AppLanguage? appLanguage,
   }) {
     return LearnerProfile(
       id: id,
@@ -121,6 +128,7 @@ class LearnerProfile {
       reducedMotion: reducedMotion ?? this.reducedMotion,
       onboardingCompleted: onboardingCompleted ?? this.onboardingCompleted,
       gentleMode: gentleMode ?? this.gentleMode,
+      appLanguage: appLanguage ?? this.appLanguage,
     );
   }
 
@@ -134,6 +142,7 @@ class LearnerProfile {
         'reducedMotion': reducedMotion,
         'onboardingCompleted': onboardingCompleted,
         'gentleMode': gentleMode,
+        'appLanguage': appLanguage.name,
       };
 
   factory LearnerProfile.fromJson(Map<String, Object?> json) {
@@ -178,6 +187,11 @@ class LearnerProfile {
       reducedMotion: json['reducedMotion'] as bool? ?? false,
       onboardingCompleted: json['onboardingCompleted'] as bool? ?? false,
       gentleMode: json['gentleMode'] as bool? ?? true,
+      appLanguage: enumValue(
+        AppLanguage.values,
+        json['appLanguage'],
+        AppLanguage.mizo,
+      ),
     );
   }
 }

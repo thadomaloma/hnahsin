@@ -12,7 +12,7 @@ void main() {
   });
 
   test('built-in game text is used until Studio overrides a field', () {
-    expect(GameText.of('picture_match').prompt, 'He thlalak hming hi eng nge?');
+    expect(GameText.of('picture_match').prompt, 'Milem hming hi eng nge?');
     expect(GameText.common.correctFeedback, 'A dik e!');
 
     GameText.update({

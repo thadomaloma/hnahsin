@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hnahsin/src/app_text.dart';
 import 'package:hnahsin/data/quest_repository.dart';
 import 'package:hnahsin/features/journey/presentation/journey_screens.dart';
 import 'package:hnahsin/features/learning/domain/learning_state.dart';
@@ -20,11 +21,11 @@ void main() {
       MaterialApp(home: JourneyScreen(controller: controller)),
     );
 
-    expect(find.text('Mizo Journey'), findsOneWidget);
-    expect(find.text('OPTIONAL DAILY • NO PENALTY'), findsOneWidget);
-    expect(find.text('OPTIONAL WEEKLY • NO DEADLINE'), findsOneWidget);
+    expect(find.text(AppText.of('home.journey')), findsOneWidget);
+    expect(find.text(AppText.of('journey.dailyGentle')), findsOneWidget);
+    expect(find.text(AppText.of('journey.weeklyGentle')), findsOneWidget);
     expect(find.text('Coming Home'), findsOneWidget);
-    expect(find.text('START'), findsOneWidget);
+    expect(find.text(AppText.of('journey.start')), findsOneWidget);
     expect(find.text('Level 2'), findsOneWidget);
   });
 
@@ -45,8 +46,8 @@ void main() {
     await tester.tap(find.text('Coming Home'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Story Quest'), findsOneWidget);
-    expect(find.text('Choose a natural reply'), findsOneWidget);
+    expect(find.text(AppText.of('story.title')), findsOneWidget);
+    expect(find.text(AppText.of('story.chooseReply')), findsOneWidget);
     final button = tester.widget<FilledButton>(find.byType(FilledButton).last);
     expect(button.onPressed, isNull);
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hnahsin/src/game_text.dart';
+import 'package:hnahsin/src/app_text.dart';
 import 'package:hnahsin/data/quest_repository.dart';
 import 'package:hnahsin/features/games/engine/game_engine.dart';
 import 'package:hnahsin/features/games/presentation/phase2b_games.dart';
@@ -22,12 +24,12 @@ void main() {
     await tester.pump(const Duration(milliseconds: 50));
 
     expect(find.text('Thumal Kawp'), findsOneWidget);
-    final hidden = find.bySemanticsLabel('Hidden card');
+    final hidden = find.bySemanticsLabel(AppText.of('kawp.hiddenSpoken'));
     expect(hidden, findsNWidgets(8), reason: 'level 1 plays four pairs');
 
     await tester.tap(hidden.first);
     await tester.pumpAndSettle();
-    expect(find.bySemanticsLabel('Hidden card'), findsNWidgets(7));
+    expect(find.bySemanticsLabel(AppText.of('kawp.hiddenSpoken')), findsNWidgets(7));
     expect(tester.takeException(), isNull);
   });
 
@@ -46,8 +48,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: 50));
 
     expect(find.text('Sentence Builder'), findsOneWidget);
-    expect(find.text('BUILD THIS MEANING'), findsOneWidget);
-    expect(find.text('Check Sentence'), findsOneWidget);
+    expect(find.text(GameText.of('sentence_builder').prompt), findsOneWidget);
+    expect(find.text(AppText.of('sentence.check')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hnahsin/src/app_text.dart';
 import 'package:hnahsin/data/quest_repository.dart';
 import 'package:hnahsin/features/games/application/game_runtime.dart';
 import 'package:hnahsin/features/games/engine/game_difficulty.dart';
@@ -136,16 +137,16 @@ void main() {
     await tester.pumpWidget(MaterialApp(home: _FakeGame(controller: controller)));
     expect(_FakeGame.started, 1);
 
-    await tester.tap(find.text('Finish'));
+    await tester.tap(find.text(AppText.of('sentence.finish')));
     await tester.pumpAndSettle();
     expect(find.text('Thumal i hmuh te'), findsOneWidget);
     expect(find.text('ar'), findsOneWidget);
     expect(find.text('A sen te hi i khelh leh hunah an lo lang leh ang.'), findsOneWidget);
 
-    await tester.tap(find.text('Khelh leh'));
+    await tester.tap(find.text(AppText.of('result.playAgain')));
     await tester.pumpAndSettle();
     expect(_FakeGame.started, 2);
-    expect(find.text('Finish'), findsOneWidget);
+    expect(find.text(AppText.of('sentence.finish')), findsOneWidget);
   });
 }
 
@@ -203,7 +204,7 @@ class _FakeGameState extends State<_FakeGame> {
                 words: [WordPlay(id: 'word.ar', word: 'ar', missed: true), WordPlay(id: 'word.ui', word: 'ui')],
               ),
             ),
-            child: const Text('Finish'),
+            child: Text(AppText.of('sentence.finish')),
           ),
         ),
       );

@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnahsin/features/onboarding/domain/learner_profile.dart';
+import 'package:hnahsin/src/app_text.dart';
 
 void main() {
   test('learner profile survives a JSON round-trip', () {
@@ -13,6 +14,7 @@ void main() {
       dailyGoalMinutes: 10,
       onboardingCompleted: true,
       gentleMode: false,
+      appLanguage: AppLanguage.english,
     );
 
     final decoded = LearnerProfile.fromJson(profile.toJson());
@@ -22,11 +24,16 @@ void main() {
     expect(decoded.dailyGoalMinutes, 10);
     expect(decoded.onboardingCompleted, isTrue);
     expect(decoded.gentleMode, isFalse);
+    expect(decoded.appLanguage, AppLanguage.english);
   });
 
   test('older profiles default to gentle engagement', () {
     final decoded = LearnerProfile.fromJson(const <String, Object?>{});
 
     expect(decoded.gentleMode, isTrue);
+  });
+
+  test('older profiles show the app in Mizo', () {
+    expect(LearnerProfile.fromJson(const <String, Object?>{}).appLanguage, AppLanguage.mizo);
   });
 }
