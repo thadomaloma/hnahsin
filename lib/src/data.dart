@@ -654,6 +654,21 @@ String meaningWithoutWord(String meaning, String word) {
   return maskWordInClue(text, word);
 }
 
+/// Whether [clue] holds [word] inside a longer word (“lehkhabu” in a clue
+/// for lehkha, “tihhlum” for hlum), which blanking whole words misses and
+/// which gives the answer away.
+bool clueHidesWordIn(String clue, String word) {
+  final answer = foldMizo(word).replaceAll(RegExp(r'\s+'), '');
+  if (answer.length < 3) return false;
+  return RegExp(r'\p{L}+', unicode: true).allMatches(clue).any((match) {
+    final token = foldMizo(match[0]!);
+    // Compounds put it at an end (“kailâwn”, “inmil”); in the middle it
+    // is usually chance (“kha” in “ṭhenkhat”).
+    return token != answer &&
+        (token.startsWith(answer) || token.endsWith(answer));
+  });
+}
+
 /// [normalizeMizo] without circumflexes or the dot in ṭ, for matching what a
 /// learner types on a keyboard that lacks them.
 String foldMizo(String value) => normalizeMizo(value)

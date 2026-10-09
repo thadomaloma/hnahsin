@@ -41,4 +41,12 @@ void main() {
       expect(MizoCloudConfig.backendOnly, isTrue);
     });
   });
+
+  test('a clue holding the answer inside a longer word is caught', () {
+    expect(clueHidesWordIn('Thu ziakna phek; lehkhabu sawina pawh.', 'lehkha'), isTrue);
+    expect(clueHidesWordIn('Nunna nei tawh lo; tihhlum tawh.', 'hlum'), isTrue);
+    expect(clueHidesWordIn('Thu ziakna phek.', 'lehkha'), isFalse);
+    // Short words turn up inside others by chance (“kha” in “ṭhenkhat”).
+    expect(clueHidesWordIn('Damdawi ṭhenkhat ang a tem.', 'khâ'), isFalse);
+  });
 }

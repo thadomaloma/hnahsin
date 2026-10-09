@@ -187,6 +187,8 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
     final gloss = entry.englishGloss.trim();
     final mizo = meaningWithoutWord(entry.meaningMizo, entry.word);
     if (english && gloss.isNotEmpty) return gloss;
+    // A Mizo meaning that holds the answer in a longer word gives it away.
+    if (gloss.isNotEmpty && clueHidesWordIn(mizo, entry.word)) return gloss;
     return mizo.isNotEmpty ? mizo : gloss;
   }
 

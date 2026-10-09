@@ -111,7 +111,13 @@ SpellingQuestion _spellingQuestionFor(
     masked: spell('_'),
     options: options,
     answer: correct,
-    hint: (rating < 3 && englishUsable) || mizo.isEmpty ? english : mizo,
+    // A Mizo meaning holding the word in a longer one (“lehkhabu”) gives
+    // it away, so that word keeps its English clue.
+    hint:
+        (englishUsable && (rating < 3 || clueHidesWordIn(mizo, entry.word))) ||
+                mizo.isEmpty
+            ? english
+            : mizo,
     gloss: gloss,
     contentId: entry.id,
   );
