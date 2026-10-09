@@ -17,6 +17,7 @@ import 'meaning_round.dart';
 import 'theme.dart';
 import 'widgets.dart';
 import 'app_text.dart';
+import 'game_sounds.dart';
 
 /// How long a right answer stays on screen before the round moves on.
 const rightAnswerPause = Duration(milliseconds: 1100);
@@ -1289,6 +1290,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
       return;
     }
     // A cell away from the selection starts a new word from that cell.
+    GameSounds.play(GameSound.tap);
     setState(() {
       if (!_extends(row, col)) selected.clear();
       selected.add(position);
@@ -1305,7 +1307,8 @@ class _WordSearchGameState extends State<WordSearchGame> {
             : AppText.of('search.foundGloss',
                 {'word': _label(word), 'gloss': gloss});
         final entry = wordEntries[word];
-        runtime.answer(true, wordId: entry?.id, word: entry?.word);
+        runtime.answer(true,
+            wordId: entry?.id, word: entry?.word, sound: GameSound.match);
       });
       if (found.length == targets.length) {
         finishing = true;

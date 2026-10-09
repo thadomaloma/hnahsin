@@ -15,6 +15,7 @@ import '../application/game_runtime.dart';
 import '../engine/crossword_layout.dart';
 import '../engine/game_engine.dart';
 import '../../../src/app_text.dart';
+import '../../../src/game_sounds.dart';
 
 typedef _Cell = (int, int);
 
@@ -226,6 +227,7 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
       _advance(slot);
       return;
     }
+    GameSounds.play(GameSound.tap);
     setState(() {
       letters[active] = letter;
       wrongCells.remove(active);

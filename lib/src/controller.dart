@@ -17,6 +17,7 @@ import 'app_text.dart';
 import 'data.dart';
 import 'game_session.dart';
 import 'game_text.dart';
+import 'game_sounds.dart';
 
 class QuestController extends ChangeNotifier {
   QuestController({
@@ -42,6 +43,7 @@ class QuestController extends ChangeNotifier {
   set profile(LearnerProfile value) {
     _profile = value;
     AppText.language = value.appLanguage;
+    GameSounds.enabled = value.soundEffects;
   }
 
   LearnerProfile _profile = LearnerProfile.fresh();

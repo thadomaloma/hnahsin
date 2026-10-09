@@ -13,6 +13,7 @@ import '../../../src/widgets.dart';
 import '../application/game_runtime.dart';
 import '../engine/game_engine.dart';
 import '../../../src/app_text.dart';
+import '../../../src/game_sounds.dart';
 
 enum _Face { word, picture, gloss }
 
@@ -184,6 +185,7 @@ class _ThumalKawpGameState extends State<ThumalKawpGame> {
 
   Future<void> _tap(_KawpCard card) async {
     if (!runtime.ready || busy || finishing || _faceUp(card)) return;
+    GameSounds.play(GameSound.flip);
     setState(() => flipped.add(card.id));
     if (flipped.length < 2) return;
 
@@ -196,7 +198,10 @@ class _ThumalKawpGameState extends State<ThumalKawpGame> {
         matched.add(first.pairId);
         flipped.clear();
         seen.addAll([first.id, second.id]);
-        runtime.answer(true, wordId: first.entry.id, word: first.entry.word);
+        runtime.answer(true,
+            wordId: first.entry.id,
+            word: first.entry.word,
+            sound: GameSound.match);
       });
       if (matched.length == pairCount) {
         await _finish();

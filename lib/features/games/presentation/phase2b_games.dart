@@ -16,6 +16,7 @@ import '../engine/game_engine.dart';
 import '../engine/game_difficulty.dart';
 import '../engine/phase2b_engine.dart';
 import '../../../src/app_text.dart';
+import '../../../src/game_sounds.dart';
 
 class SentenceBuilderGame extends StatefulWidget {
   const SentenceBuilderGame({
@@ -197,6 +198,7 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
   void _selectTile(SentenceTile tile) {
     if (isCorrect != null || finishing) return;
     HapticFeedback.selectionClick();
+    GameSounds.play(GameSound.tap);
     setState(() => selectedIds.add(tile.id));
     unawaited(runtime.persist());
   }

@@ -221,6 +221,11 @@ const appTextDefaults = <String, AppTextDefault>{
   'profile.appLanguage': AppTextDefault('Profile', 'App ṭawng', 'App language'),
   'profile.appLanguageNote': AppTextDefault('Profile',
       'Button leh thuchah te ṭawng', 'The language of buttons and messages'),
+  'profile.sound': AppTextDefault('Profile', 'Ri', 'Sound'),
+  'profile.soundNote': AppTextDefault(
+      'Profile',
+      'Chhanna dik, dik lo leh game zawh ri',
+      'Sounds for right and wrong answers and finished rounds'),
   'profile.ageRange': AppTextDefault('Profile', 'Kum', 'Age range'),
   'profile.englishNote': AppTextDefault(
       'Profile',

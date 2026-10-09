@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../../src/controller.dart';
 import '../../../src/game_session.dart';
+import '../../../src/game_sounds.dart';
 import '../engine/game_engine.dart';
 
 typedef GamePayloadReader = Map<String, Object?> Function();
@@ -92,9 +93,13 @@ class GameRuntime with WidgetsBindingObserver {
   }
 
   /// Scores an answer. Pass the word it was about ([wordId], [word]) so the
-  /// game remembers it: a missed word comes back in later rounds.
-  bool answer(bool isCorrect, {String? wordId, String? word}) {
+  /// game remembers it: a missed word comes back in later rounds. It sounds
+  /// right or wrong, or [sound] (a found pair, say).
+  bool answer(bool isCorrect,
+      {String? wordId, String? word, GameSound? sound}) {
     if (!ready) return false;
+    GameSounds.play(
+        sound ?? (isCorrect ? GameSound.correct : GameSound.wrong));
     if (wordId != null && word != null) {
       final before = _played[wordId];
       _played[wordId] = WordPlay(

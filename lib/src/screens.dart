@@ -1068,6 +1068,17 @@ class ProfileScreen extends StatelessWidget {
               padding: EdgeInsets.zero,
               child: Column(children: [
                 SwitchListTile(
+                  title: Text(AppText.of('profile.sound'),
+                      style: const TextStyle(fontWeight: FontWeight.w800)),
+                  subtitle: Text(AppText.of('profile.soundNote')),
+                  secondary: const Icon(Icons.volume_up_rounded,
+                      color: QuestColors.indigo),
+                  value: controller.profile.soundEffects,
+                  onChanged: (value) => controller.updateProfile(
+                      controller.profile.copyWith(soundEffects: value)),
+                ),
+                const Divider(height: 1),
+                SwitchListTile(
                   title: Text(AppText.of('profile.reduceMotion'),
                       style: const TextStyle(fontWeight: FontWeight.w800)),
                   subtitle: Text(AppText.of('profile.reduceMotionNote')),

@@ -7,6 +7,7 @@ import 'game_session.dart';
 import 'game_text.dart';
 import 'theme.dart';
 import 'app_text.dart';
+import 'game_sounds.dart';
 
 class QuestPage extends StatelessWidget {
   const QuestPage({super.key, required this.title, required this.child, this.subtitle, this.hud});
@@ -701,6 +702,11 @@ Future<void> showGameResult(BuildContext context, QuestController controller, St
   final outcome = await controller.reward(gameId, result);
   await controller.clearSession(result.sessionId);
   if (!context.mounted) return;
+  if (outcome.levelledUp) {
+    GameSounds.play(GameSound.levelUp);
+  } else if (result.endReason != GameEndReason.heartsExhausted) {
+    GameSounds.play(GameSound.complete);
+  }
   await showModalBottomSheet<void>(
     context: context,
     isDismissible: false,

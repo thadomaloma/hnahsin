@@ -69,6 +69,7 @@ class LearnerProfile {
     required this.onboardingCompleted,
     this.gentleMode = true,
     this.appLanguage = AppLanguage.mizo,
+    this.soundEffects = true,
   });
 
   factory LearnerProfile.fresh() => const LearnerProfile(
@@ -82,6 +83,7 @@ class LearnerProfile {
         onboardingCompleted: false,
         gentleMode: true,
         appLanguage: AppLanguage.mizo,
+        soundEffects: true,
       );
 
   final String id;
@@ -97,6 +99,9 @@ class LearnerProfile {
   /// The language of the app's own labels; [supportLanguage] is about the
   /// learning content (English beside Mizo in stories).
   final AppLanguage appLanguage;
+
+  /// Game sounds (right, wrong, cards, the round's end).
+  final bool soundEffects;
 
   bool get isChild => ageBand != LearnerAgeBand.adult;
 
@@ -117,6 +122,7 @@ class LearnerProfile {
     bool? onboardingCompleted,
     bool? gentleMode,
     AppLanguage? appLanguage,
+    bool? soundEffects,
   }) {
     return LearnerProfile(
       id: id,
@@ -129,6 +135,7 @@ class LearnerProfile {
       onboardingCompleted: onboardingCompleted ?? this.onboardingCompleted,
       gentleMode: gentleMode ?? this.gentleMode,
       appLanguage: appLanguage ?? this.appLanguage,
+      soundEffects: soundEffects ?? this.soundEffects,
     );
   }
 
@@ -143,6 +150,7 @@ class LearnerProfile {
         'onboardingCompleted': onboardingCompleted,
         'gentleMode': gentleMode,
         'appLanguage': appLanguage.name,
+        'soundEffects': soundEffects,
       };
 
   factory LearnerProfile.fromJson(Map<String, Object?> json) {
@@ -192,6 +200,7 @@ class LearnerProfile {
         json['appLanguage'],
         AppLanguage.mizo,
       ),
+      soundEffects: json['soundEffects'] as bool? ?? true,
     );
   }
 }
