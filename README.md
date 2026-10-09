@@ -35,7 +35,11 @@ phones, and every word, question and sentence is edited by people in a
   Word Chain also accepts about 6,000 more Mizo words.
 - **Sound and motion** — sound effects, bounces, confetti; Profile can turn
   sound off and reduce motion.
-- **English or Mizo labels** — simple English by default, Mizo in Profile.
+- **16 languages** — buttons, messages and game instructions follow the
+  phone's language: English, 日本語, 简体中文, 繁體中文, 한국어, हिन्दी, မြန်မာ,
+  ไทย, Bahasa Indonesia, Tiếng Việt, Español, Français, Deutsch, Português,
+  العربية (right to left) and Русский; Profile can pick another. The games'
+  Mizo stays Mizo.
 - **Offline first** — content packs are verified by SHA-256 and cached on the
   device; progress stays on the device.
 - **Content Sheet** — words, pictures, questions and all game text are edited
@@ -90,7 +94,16 @@ The pack format is [`docs/API_CONTENT_PACK_V1.md`](docs/API_CONTENT_PACK_V1.md).
 ```bash
 flutter analyze && flutter test          # app
 node --test content_studio/test          # content Sheet's pack builder
+python3 tool/check_l10n.py               # every language has every text
 ```
+
+## Translations
+
+The English texts are in `lib/src/app_text.dart` (and the Sheet's App text
+tab) and `lib/src/game_text.dart`. Each other language is a file in `l10n/`
+(`ja.json`, `zh_Hans.json`, …). After adding a text or changing a
+translation, run `python3 tool/check_l10n.py` and then
+`python3 tool/gen_l10n.py`, which writes `lib/l10n/`.
 
 ## Project structure
 
@@ -102,7 +115,8 @@ assets/         Branding, fonts, illustrations, sound effects, Mizo word list
 design/         Hnahsin logo and icon source art
 docs/           Design system, product notes and project history
 scripts/        Release builds and Mac diagnostics
-tool/           App text rows for the Sheet; the Mizo word list builder
+l10n/           Translations of the app's texts, one JSON file per language
+tool/           App text rows for the Sheet; Mizo word list; translation tools
 ```
 
 ## Credits

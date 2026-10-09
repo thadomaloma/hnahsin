@@ -1,3 +1,4 @@
+import '../../../l10n/app_locales.dart';
 import '../../../src/app_text.dart';
 
 enum LearnerAgeBand { early, young, teen, adult }
@@ -68,7 +69,7 @@ class LearnerProfile {
     required this.reducedMotion,
     required this.onboardingCompleted,
     this.gentleMode = true,
-    this.appLanguage = AppLanguage.english,
+    this.appLocale,
     this.soundEffects = true,
   });
 
@@ -82,7 +83,6 @@ class LearnerProfile {
         reducedMotion: false,
         onboardingCompleted: false,
         gentleMode: true,
-        appLanguage: AppLanguage.english,
         soundEffects: true,
       );
 
@@ -96,9 +96,10 @@ class LearnerProfile {
   final bool onboardingCompleted;
   final bool gentleMode;
 
-  /// The language of the app's own labels; [supportLanguage] is about the
-  /// learning content (English beside Mizo in stories).
-  final AppLanguage appLanguage;
+  /// The language of the app's labels ([AppLocale.code]), or null to
+  /// follow the phone's. ([supportLanguage] is about the learning content:
+  /// English beside Mizo in stories.)
+  final String? appLocale;
 
   /// Game sounds (right, wrong, cards, the round's end).
   final bool soundEffects;
@@ -121,7 +122,7 @@ class LearnerProfile {
     bool? reducedMotion,
     bool? onboardingCompleted,
     bool? gentleMode,
-    AppLanguage? appLanguage,
+    Object? appLocale = _keep,
     bool? soundEffects,
   }) {
     return LearnerProfile(
@@ -134,7 +135,7 @@ class LearnerProfile {
       reducedMotion: reducedMotion ?? this.reducedMotion,
       onboardingCompleted: onboardingCompleted ?? this.onboardingCompleted,
       gentleMode: gentleMode ?? this.gentleMode,
-      appLanguage: appLanguage ?? this.appLanguage,
+      appLocale: identical(appLocale, _keep) ? this.appLocale : appLocale as String?,
       soundEffects: soundEffects ?? this.soundEffects,
     );
   }
@@ -149,9 +150,7 @@ class LearnerProfile {
         'reducedMotion': reducedMotion,
         'onboardingCompleted': onboardingCompleted,
         'gentleMode': gentleMode,
-        // Saved as uiLanguage: “appLanguage” was briefly saved as Mizo
-        // for everyone, when Mizo labels were the default.
-        'uiLanguage': appLanguage.name,
+        if (appLocale != null) 'appLocale': appLocale,
         'soundEffects': soundEffects,
       };
 
@@ -197,11 +196,9 @@ class LearnerProfile {
       reducedMotion: json['reducedMotion'] as bool? ?? false,
       onboardingCompleted: json['onboardingCompleted'] as bool? ?? false,
       gentleMode: json['gentleMode'] as bool? ?? true,
-      appLanguage: enumValue(
-        AppLanguage.values,
-        json['uiLanguage'],
-        AppLanguage.english,
-      ),
+      // Earlier English/Mizo choices (“appLanguage”, “uiLanguage”) aren't
+      // kept: labels now follow the phone unless a language is chosen.
+      appLocale: appLocales.any((locale) => locale.code == json['appLocale']) ? json['appLocale'] as String : null,
       soundEffects: json['soundEffects'] as bool? ?? true,
     );
   }
@@ -210,3 +207,6 @@ class LearnerProfile {
 extension _FirstOrNull<T> on Iterable<T> {
   T? get firstOrNull => isEmpty ? null : first;
 }
+
+/// copyWith's “leave it as it is”, since null is a choice for appLocale.
+const Object _keep = Object();

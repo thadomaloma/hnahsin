@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import '../features/content_sync/domain/delivery_models.dart';
+import '../l10n/translations.dart';
 import 'app_text.dart';
 
 /// Text for one game, in simple English. Every field can be overridden per game on the
@@ -51,82 +52,6 @@ String fillGameText(String template,
         .replaceAll('{gloss}', gloss)
         .replaceAll('{answer}', answer)
         .replaceAll('{first}', answer.isEmpty ? '' : answer.substring(0, 1));
-
-/// The games' text for [AppLanguage.mizo]. The Sheet's game text is
-/// English, so it doesn't apply here.
-const _mizoGameCopy = <String, GameCopy>{
-  'picture_match': GameCopy(
-      title: 'Picture Match',
-      subtitle: 'Milem leh thumal zawm',
-      prompt: 'Milem hming hi eng nge?',
-      hint: 'Ṭanpuina: English-ah “{gloss}” tihna a ni.',
-      instructions: <String>[
-        'Milem en la, a hming Mizo-in thlang rawh.',
-        'I chhan zawhah a awmzia leh entîrna chhiar rawh.'
-      ]),
-  'spelling': GameCopy(
-      title: 'Spelling',
-      subtitle: 'Hawrawp ruak dah khat',
-      prompt: 'Hawrawp remchâng thlang rawh',
-      hint: 'Ṭanpuina: Hawrawp dik chu “{answer}” a ni.',
-      instructions: <String>[
-        'Thumal leh a kawhhmuhna chhiar rawh.',
-        'Hawrawp ruak dah khat tûr thlang rawh.'
-      ]),
-  'word_search': GameCopy(
-      title: 'Word Search',
-      subtitle: 'Thumal zawn',
-      hint: 'Ṭanpuina: “{word}” tih thumal hi zawng rawh.',
-      instructions: <String>[
-        'Hawrawp bul hnai te indawtin hmet rawh.',
-        'Thumal panga zawng hmu vek rawh.'
-      ]),
-  'word_chain': GameCopy(
-      title: 'Word Chain',
-      subtitle: 'Thumal inzawm tîr',
-      hint: 'Ṭanpuina: {word}',
-      instructions: <String>[
-        'Thumal tawpna hawrawp en rawh.',
-        'Chu hawrawp hmangin thumal thar bulṭan rawh.'
-      ]),
-  'tawng_upa': GameCopy(
-      title: 'Tawng Upa',
-      subtitle: 'Mizo tawng upa awmzia',
-      prompt: '“{word}” tih hian eng nge a kawh?',
-      hint: 'Ṭanpuina: Chhanna dik chu “{first}…” tiin a bulṭan.',
-      instructions: <String>[
-        'Tawng upa leh a zawhna chhiar rawh.',
-        'A awmzia dik thlang la, hrilhfiahna chhiar rawh.'
-      ]),
-  'crossword': GameCopy(
-      title: 'Crossword',
-      subtitle: 'Kawhhmuhna aṭanga thumal ziak',
-      hint: 'Ṭanpuina: Box pakhat kan dah khat sak e.',
-      instructions: <String>[
-        'Box pakhat hmet la, a kawhhmuhna chhiar rawh. Vawi hnih i hmet chuan vang leh dung a inthlak.',
-        'Hawrawp ziak rawh. Thumal i ziak kim veleh a dik em tih kan en nghal ang.'
-      ]),
-  'thumal_kawp': GameCopy(
-      title: 'Thumal Kawp',
-      subtitle: 'Card kawp zawn',
-      prompt:
-          'Card pahnih let la, thumal leh a kawp zawng rawh. A kawp i hmuh tawh chu theihnghilh suh!',
-      instructions: <String>[
-        'Card pahnih let la, thumal leh a milem emaw a awmzia kawp zawng rawh.',
-        'Card i hmuh tawh theihnghilh suh — a kawp i hriat tawh chu hmu nghal rawh.'
-      ]),
-  'sentence_builder': GameCopy(
-      title: 'Sentence Builder',
-      subtitle: 'Thumal rem khâwm',
-      prompt: 'HE AWMZIA HI SIAM RAWH',
-      hint: 'Sentence thumal hmasa kan dah sak e.',
-      instructions: <String>[
-        'English awmzia chhiar la, Mizo thumal te thlang rawh.',
-        'A indawt dik takin rem khâwm la, en rawh.'
-      ]),
-  'common':
-      GameCopy(correctFeedback: 'A dik e!', retryFeedback: 'Tum leh rawh'),
-};
 
 const _defaultGameCopy = <String, GameCopy>{
   'picture_match': GameCopy(
@@ -201,6 +126,24 @@ const _defaultGameCopy = <String, GameCopy>{
   'common': GameCopy(correctFeedback: 'Correct!', retryFeedback: 'Try again'),
 };
 
+/// The games' English text keyed as translations key it
+/// (game.<id>.<field>, steps as step1, step2…), for checking lib/l10n.
+Map<String, String> englishGameTexts() => {
+      for (final MapEntry(key: id, value: copy)
+          in _defaultGameCopy.entries) ...{
+        if (copy.title.isNotEmpty) 'game.$id.title': copy.title,
+        if (copy.subtitle.isNotEmpty) 'game.$id.subtitle': copy.subtitle,
+        if (copy.prompt.isNotEmpty) 'game.$id.prompt': copy.prompt,
+        if (copy.hint.isNotEmpty) 'game.$id.hint': copy.hint,
+        for (final (i, step) in copy.instructions.indexed)
+          'game.$id.step${i + 1}': step,
+        if (copy.correctFeedback.isNotEmpty)
+          'game.$id.correctFeedback': copy.correctFeedback,
+        if (copy.retryFeedback.isNotEmpty)
+          'game.$id.retryFeedback': copy.retryFeedback,
+      },
+    };
+
 /// App-wide game text: built-in defaults overridden by the reviewed
 /// content Sheet text from the active content pack.
 abstract final class GameText {
@@ -210,10 +153,37 @@ abstract final class GameText {
   static void update(Map<String, DeliveredGameCopy> delivered) =>
       _delivered = delivered;
 
-  static GameCopy of(String gameId) => AppText.language == AppLanguage.mizo
-      ? _mizoGameCopy[gameId] ?? const GameCopy()
-      : (_defaultGameCopy[gameId] ?? const GameCopy())
-          ._override(_delivered[gameId]);
+  /// [gameId]'s text in [AppText.locale]. The Sheet edits the English;
+  /// other languages use their translation (game.<id>.<field> in lib/l10n),
+  /// field by field, or the English where a field has none.
+  static GameCopy of(String gameId) {
+    final english = _defaultGameCopy[gameId] ?? const GameCopy();
+    if (AppText.locale == 'en') return english._override(_delivered[gameId]);
+    final strings = translations[AppText.locale] ?? const <String, String>{};
+    String field(String name, String fallback) {
+      final text = strings['game.$gameId.$name'];
+      return text != null &&
+              appTextPlaceholders(text).length ==
+                  appTextPlaceholders(fallback).length &&
+              appTextPlaceholders(text)
+                  .containsAll(appTextPlaceholders(fallback))
+          ? text
+          : fallback;
+    }
+
+    return GameCopy(
+      title: field('title', english.title),
+      subtitle: field('subtitle', english.subtitle),
+      prompt: field('prompt', english.prompt),
+      hint: field('hint', english.hint),
+      instructions: [
+        for (final (i, step) in english.instructions.indexed)
+          field('step${i + 1}', step),
+      ],
+      correctFeedback: field('correctFeedback', english.correctFeedback),
+      retryFeedback: field('retryFeedback', english.retryFeedback),
+    );
+  }
 
   static GameCopy get common => of('common');
 }

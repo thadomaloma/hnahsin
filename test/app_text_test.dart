@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hnahsin/l10n/app_locales.dart';
+import 'package:hnahsin/l10n/translations.dart';
 import 'package:hnahsin/features/games/engine/game_engine.dart';
 import 'package:hnahsin/features/journey/domain/journey_engine.dart';
 import 'package:hnahsin/src/app_text.dart';
@@ -13,19 +16,36 @@ void main() {
     expect(AppText.of('home.streak', {'n': 4}), '4 day streak');
   });
 
-  test('Mizo shows the built-in Mizo, not the Sheet\'s English', () {
-    addTearDown(() => AppText.language = AppLanguage.english);
+  test('another language shows its translation, not the Sheet\'s English', () {
+    addTearDown(() => AppText.locale = 'en');
     AppText.update(const {'home.play': 'Play now'});
-    AppText.language = AppLanguage.mizo;
+    AppText.locale = 'ja';
 
-    expect(AppText.of('home.play'), 'Khel rawh');
-    expect(AppText.of('home.streak', {'n': 4}), 'Ni 4 indawt');
+    expect(AppText.of('home.play'), translations['ja']!['home.play']);
+    expect(AppText.of('home.streak', {'n': 4}), isNot(contains('{n}')));
   });
 
-  test('every text has the same placeholders in English and Mizo', () {
-    for (final MapEntry(:key, :value) in appTextDefaults.entries) {
-      expect(appTextPlaceholders(value.mizo), appTextPlaceholders(value.text), reason: key);
+  test('every language translates every text with the same placeholders', () {
+    final english = {
+      for (final MapEntry(:key, :value) in appTextDefaults.entries) key: value.text,
+    };
+    for (final code in appLocales.map((locale) => locale.code).where((code) => code != 'en')) {
+      final strings = translations[code];
+      expect(strings, isNotNull, reason: code);
+      for (final MapEntry(:key, :value) in english.entries) {
+        expect(strings![key], isNotNull, reason: '$code is missing $key');
+        expect(appTextPlaceholders(strings[key]!), appTextPlaceholders(value), reason: '$code $key');
+      }
     }
+  });
+
+  test('phones get their language, Taiwan and Hong Kong traditional Chinese', () {
+    expect(localeCodeFor(const Locale('ja', 'JP')), 'ja');
+    expect(localeCodeFor(const Locale('zh', 'CN')), 'zh_Hans');
+    expect(localeCodeFor(const Locale('zh', 'TW')), 'zh_Hant');
+    expect(localeCodeFor(const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant')), 'zh_Hant');
+    expect(localeCodeFor(const Locale('pt', 'BR')), 'pt');
+    expect(localeCodeFor(const Locale('sw')), 'en');
   });
 
   test('Sheet text replaces the built-in text', () {

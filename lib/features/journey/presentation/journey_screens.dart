@@ -402,9 +402,7 @@ class _RegionSection extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        AppText.language == AppLanguage.english
-                            ? '${region.titleMizo} • ${region.subtitleEnglish}'
-                            : region.subtitleMizo,
+                        '${region.titleMizo} • ${region.subtitleEnglish}',
                         style: const TextStyle(
                           color: QuestColors.slate,
                           fontSize: 12,
@@ -499,9 +497,7 @@ class _JourneyNodeTile extends StatelessWidget {
                       style: const TextStyle(fontWeight: FontWeight.w900),
                     ),
                     Text(
-                      AppText.language == AppLanguage.english
-                          ? '${node.titleMizo} • ${node.subtitleEnglish}'
-                          : node.subtitleMizo,
+                      '${node.titleMizo} • ${node.subtitleEnglish}',
                       style: const TextStyle(
                         color: QuestColors.slate,
                         fontSize: 12,

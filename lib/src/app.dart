@@ -1,6 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
+import '../l10n/app_locales.dart';
 
 import '../features/onboarding/presentation/onboarding_screen.dart';
 import 'controller.dart';
@@ -15,39 +18,47 @@ class HnahsinApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Hnahsin',
-      theme: buildQuestTheme(),
-      // Honour larger system text, but cap it where game layouts would break.
-      // Profile's Reduce motion turns animations off like the device's
-      // setting does (see motionFor).
-      builder: (context, child) => ListenableBuilder(
-        listenable: controller,
-        builder: (context, _) {
-          final media = MediaQuery.of(context);
-          return MediaQuery(
-            data: media.copyWith(
-              disableAnimations:
-                  media.disableAnimations || controller.profile.reducedMotion,
-            ),
-            child: MediaQuery.withClampedTextScaling(
-              maxScaleFactor: 1.35,
-              child: child!,
-            ),
-          );
-        },
-      ),
-      home: AnimatedBuilder(
-        animation: controller,
-        builder: (context, _) {
-          if (ContentPolicy.isProduction && !controller.releaseContentReady) {
-            return const _ReleaseContentGate();
-          }
-          return controller.profile.onboardingCompleted
-              ? QuestShell(controller: controller)
-              : OnboardingScreen(controller: controller);
-        },
+    // Rebuilt when the profile changes, so a new label language applies
+    // at once (including right-to-left for Arabic).
+    return ListenableBuilder(
+      listenable: controller,
+      builder: (context, _) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Hnahsin',
+        theme: buildQuestTheme(),
+        locale: appLocaleOf(AppText.locale).locale,
+        supportedLocales: [for (final locale in appLocales) locale.locale],
+        localizationsDelegates: GlobalMaterialLocalizations.delegates,
+        // Honour larger system text, but cap it where game layouts would break.
+        // Profile's Reduce motion turns animations off like the device's
+        // setting does (see motionFor).
+        builder: (context, child) => ListenableBuilder(
+          listenable: controller,
+          builder: (context, _) {
+            final media = MediaQuery.of(context);
+            return MediaQuery(
+              data: media.copyWith(
+                disableAnimations:
+                    media.disableAnimations || controller.profile.reducedMotion,
+              ),
+              child: MediaQuery.withClampedTextScaling(
+                maxScaleFactor: 1.35,
+                child: child!,
+              ),
+            );
+          },
+        ),
+        home: AnimatedBuilder(
+          animation: controller,
+          builder: (context, _) {
+            if (ContentPolicy.isProduction && !controller.releaseContentReady) {
+              return const _ReleaseContentGate();
+            }
+            return controller.profile.onboardingCompleted
+                ? QuestShell(controller: controller)
+                : OnboardingScreen(controller: controller);
+          },
+        ),
       ),
     );
   }
@@ -110,9 +121,12 @@ class _Destination {
 
 const _destinations = <_Destination>[
   _Destination('nav.home', Icons.home_outlined, Icons.home_rounded),
-  _Destination('nav.learn', Icons.auto_stories_outlined, Icons.auto_stories_rounded),
-  _Destination('nav.games', Icons.sports_esports_outlined, Icons.sports_esports_rounded),
-  _Destination('nav.profile', Icons.person_outline_rounded, Icons.person_rounded),
+  _Destination(
+      'nav.learn', Icons.auto_stories_outlined, Icons.auto_stories_rounded),
+  _Destination(
+      'nav.games', Icons.sports_esports_outlined, Icons.sports_esports_rounded),
+  _Destination(
+      'nav.profile', Icons.person_outline_rounded, Icons.person_rounded),
 ];
 
 class _QuestShellState extends State<QuestShell> {
@@ -190,7 +204,8 @@ class _BottomBar extends StatelessWidget {
 }
 
 class _NavItem extends StatelessWidget {
-  const _NavItem({required this.destination, required this.selected, required this.onTap});
+  const _NavItem(
+      {required this.destination, required this.selected, required this.onTap});
 
   final _Destination destination;
   final bool selected;
@@ -259,7 +274,8 @@ class _SideRail extends StatelessWidget {
           const SizedBox(height: 22),
           ClipRRect(
             borderRadius: BorderRadius.circular(18),
-            child: Image.asset('assets/branding/hnahsin_icon.png', width: 52, height: 52, fit: BoxFit.cover),
+            child: Image.asset('assets/branding/hnahsin_icon.png',
+                width: 52, height: 52, fit: BoxFit.cover),
           ),
           const SizedBox(height: 30),
           for (var i = 0; i < _destinations.length; i++)
@@ -274,27 +290,40 @@ class _SideRail extends StatelessWidget {
                     onTap: () => onSelect(i),
                     borderRadius: BorderRadius.circular(20),
                     child: AnimatedContainer(
-                      duration: motionFor(context, const Duration(milliseconds: 240)),
+                      duration:
+                          motionFor(context, const Duration(milliseconds: 240)),
                       height: 68,
                       decoration: BoxDecoration(
-                        color: index == i ? Colors.white.withValues(alpha: .14) : Colors.transparent,
+                        color: index == i
+                            ? Colors.white.withValues(alpha: .14)
+                            : Colors.transparent,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                        Icon(
-                          index == i ? _destinations[i].selectedIcon : _destinations[i].icon,
-                          color: index == i ? QuestColors.gold : const Color(0xFF8FD0FA),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          _destinations[i].label,
-                          style: TextStyle(
-                            color: index == i ? Colors.white : const Color(0xFF8FD0FA),
-                            fontSize: 12,
-                            fontWeight: index == i ? FontWeight.w800 : FontWeight.w600,
-                          ),
-                        ),
-                      ]),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              index == i
+                                  ? _destinations[i].selectedIcon
+                                  : _destinations[i].icon,
+                              color: index == i
+                                  ? QuestColors.gold
+                                  : const Color(0xFF8FD0FA),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              _destinations[i].label,
+                              style: TextStyle(
+                                color: index == i
+                                    ? Colors.white
+                                    : const Color(0xFF8FD0FA),
+                                fontSize: 12,
+                                fontWeight: index == i
+                                    ? FontWeight.w800
+                                    : FontWeight.w600,
+                              ),
+                            ),
+                          ]),
                     ),
                   ),
                 ),

@@ -53,7 +53,13 @@ class QuestPage extends StatelessWidget {
               padding: EdgeInsets.fromLTRB(gutter, 8, gutter, 32 + MediaQuery.paddingOf(context).bottom),
               child: ScreenFrame(
                 maxWidth: 720,
-                child: Column(children: [if (hud != null) ...[hud!, const SizedBox(height: 16)], child]),
+                child: Column(children: [
+                  if (hud != null) ...[hud!, const SizedBox(height: 16)],
+                  // A game's board holds Mizo, written left to right, so it
+                  // keeps that order even when the labels are right to left
+                  // (Arabic): grids, tiles and words don't mirror.
+                  if (hud != null) Directionality(textDirection: TextDirection.ltr, child: child) else child,
+                ]),
               ),
             ),
           ),

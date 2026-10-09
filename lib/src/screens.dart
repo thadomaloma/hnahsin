@@ -10,6 +10,7 @@ import '../features/journey/domain/journey_content.dart';
 import '../features/journey/presentation/journey_screens.dart';
 import '../features/onboarding/domain/learner_profile.dart';
 import 'content_widgets.dart';
+import '../l10n/app_locales.dart';
 import 'controller.dart';
 import 'daily_widgets.dart';
 import 'data.dart';
@@ -87,9 +88,7 @@ class _HomeJourney extends StatelessWidget {
                   : AppText.of('home.journeyContinue')),
           subtitle: (controller.nextJourneyNode == null
                   ? null
-                  : AppText.language == AppLanguage.english
-                      ? '${controller.nextJourneyNode!.titleMizo} • ${controller.nextJourneyNode!.subtitleEnglish}'
-                      : controller.nextJourneyNode!.subtitleMizo) ??
+                  : '${controller.nextJourneyNode!.titleMizo} • ${controller.nextJourneyNode!.subtitleEnglish}') ??
               AppText.of('home.journeyProgress', {
                 'done': controller.journeyState.completedNodeIds.length,
                 'total': journeyNodes.length,
@@ -1164,6 +1163,34 @@ class _ProfileSettings extends StatelessWidget {
 
   void _update(LearnerProfile profile) => controller.updateProfile(profile);
 
+  /// The phone's language, or one of the app's languages, each in its own
+  /// name so a learner can find theirs.
+  void _pickLanguage(BuildContext context, LearnerProfile profile) => showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        builder: (sheetContext) => SafeArea(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(sheetContext).height * .8),
+            child: ListView(shrinkWrap: true, children: [
+              for (final code in <String?>[null, ...appLocales.map((locale) => locale.code)])
+                ListTile(
+                  title: Text(code == null
+                      ? AppText.of('profile.appLanguageAuto',
+                          {'language': appLocaleOf(localeCodeFor(View.of(sheetContext).platformDispatcher.locale)).name})
+                      : appLocaleOf(code).name),
+                  trailing: profile.appLocale == code
+                      ? const Icon(Icons.check_rounded, color: QuestColors.indigo)
+                      : null,
+                  onTap: () {
+                    Navigator.of(sheetContext).pop();
+                    _update(profile.copyWith(appLocale: code));
+                  },
+                ),
+            ]),
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     final profile = controller.profile;
@@ -1215,18 +1242,11 @@ class _ProfileSettings extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.language_rounded, color: QuestColors.indigo),
             title: Text(AppText.of('profile.appLanguage'), style: heading),
-            subtitle: Text(AppText.of('profile.appLanguageNote')),
-            trailing: SegmentedButton<AppLanguage>(
-              showSelectedIcon: false,
-              style: SegmentedButton.styleFrom(visualDensity: VisualDensity.compact),
-              segments: const <ButtonSegment<AppLanguage>>[
-                ButtonSegment(value: AppLanguage.english, label: Text('English')),
-                ButtonSegment(value: AppLanguage.mizo, label: Text('Mizo')),
-              ],
-              selected: <AppLanguage>{profile.appLanguage},
-              onSelectionChanged: (selection) =>
-                  _update(profile.copyWith(appLanguage: selection.single)),
-            ),
+            subtitle: Text(profile.appLocale == null
+                ? AppText.of('profile.appLanguageAuto', {'language': appLocaleOf(AppText.locale).name})
+                : appLocaleOf(profile.appLocale!).name),
+            trailing: const Icon(Icons.arrow_forward_rounded, color: QuestColors.indigo),
+            onTap: () => _pickLanguage(context, profile),
           ),
           const Divider(height: 1),
           SwitchListTile(

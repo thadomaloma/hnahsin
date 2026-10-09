@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' show PlatformDispatcher;
 import 'package:flutter/foundation.dart';
 
 import '../data/quest_repository.dart';
@@ -21,6 +22,7 @@ import 'game_text.dart';
 import 'game_sounds.dart';
 import '../features/games/application/daily_puzzle.dart';
 import 'mizo_lexicon.dart';
+import '../l10n/app_locales.dart';
 
 class QuestController extends ChangeNotifier {
   QuestController({
@@ -45,7 +47,7 @@ class QuestController extends ChangeNotifier {
   LearnerProfile get profile => _profile;
   set profile(LearnerProfile value) {
     _profile = value;
-    AppText.language = value.appLanguage;
+    AppText.locale = value.appLocale ?? localeCodeFor(PlatformDispatcher.instance.locale);
     GameSounds.enabled = value.soundEffects;
   }
 

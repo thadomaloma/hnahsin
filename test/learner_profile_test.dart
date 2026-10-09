@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hnahsin/features/onboarding/domain/learner_profile.dart';
-import 'package:hnahsin/src/app_text.dart';
 
 void main() {
   test('learner profile survives a JSON round-trip', () {
@@ -14,7 +13,7 @@ void main() {
       dailyGoalMinutes: 10,
       onboardingCompleted: true,
       gentleMode: false,
-      appLanguage: AppLanguage.mizo,
+      appLocale: 'ja',
     );
 
     final decoded = LearnerProfile.fromJson(profile.toJson());
@@ -24,7 +23,8 @@ void main() {
     expect(decoded.dailyGoalMinutes, 10);
     expect(decoded.onboardingCompleted, isTrue);
     expect(decoded.gentleMode, isFalse);
-    expect(decoded.appLanguage, AppLanguage.mizo);
+    expect(decoded.appLocale, 'ja');
+    expect(LearnerProfile.fromJson(profile.copyWith(appLocale: null).toJson()).appLocale, isNull);
   });
 
   test('older profiles default to gentle engagement', () {
@@ -33,12 +33,10 @@ void main() {
     expect(decoded.gentleMode, isTrue);
   });
 
-  test('older profiles show the app in English', () {
-    expect(LearnerProfile.fromJson(const <String, Object?>{}).appLanguage, AppLanguage.english);
-  });
-
-  test('the Mizo labels saved when they were the default are not kept', () {
-    expect(LearnerProfile.fromJson(const {'appLanguage': 'mizo'}).appLanguage, AppLanguage.english);
-    expect(LearnerProfile.fromJson(const {'uiLanguage': 'mizo'}).appLanguage, AppLanguage.mizo);
+  test('profiles follow the phone\'s language until one is chosen', () {
+    expect(LearnerProfile.fromJson(const <String, Object?>{}).appLocale, isNull);
+    // The earlier English/Mizo choice isn't carried over.
+    expect(LearnerProfile.fromJson(const {'uiLanguage': 'mizo'}).appLocale, isNull);
+    expect(LearnerProfile.fromJson(const {'appLocale': 'xx'}).appLocale, isNull);
   });
 }

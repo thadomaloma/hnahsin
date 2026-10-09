@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hnahsin/src/app_text.dart';
+import 'package:hnahsin/l10n/translations.dart';
 import 'package:hnahsin/features/content_sync/domain/delivery_models.dart';
 import 'package:hnahsin/src/data.dart';
 import 'package:hnahsin/src/game_text.dart';
@@ -47,6 +49,19 @@ void main() {
     WordImages.update({'abc': Uint8List.fromList([1, 2, 3])});
     expect(hasWordPicture(entry.copyWithoutIllustration), isTrue);
   });
+  test('every language has every game text, with its placeholders', () {
+    addTearDown(() => AppText.locale = 'en');
+    final english = englishGameTexts();
+    for (final MapEntry(key: code, value: strings) in translations.entries) {
+      for (final MapEntry(:key, :value) in english.entries) {
+        expect(strings[key], isNotNull, reason: '$code is missing $key');
+        expect(appTextPlaceholders(strings[key]!), appTextPlaceholders(value), reason: '$code $key');
+      }
+    }
+    AppText.locale = 'ja';
+    expect(GameText.of('picture_match').prompt, translations['ja']!['game.picture_match.prompt']);
+    expect(GameText.common.correctFeedback, translations['ja']!['game.common.correctFeedback']);
+  });
 }
 
 extension on WordEntry {
@@ -61,4 +76,5 @@ extension on WordEntry {
         category: category,
         imageChecksum: imageChecksum,
       );
+
 }

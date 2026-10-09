@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   # SharedPreferencesAsync is available from 2.3.0 onward. Keeping the lower
   # bound here lets Flutter installations with an older compatible Dart SDK
   # resolve the newest version they can use.
