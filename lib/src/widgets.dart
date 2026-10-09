@@ -10,6 +10,7 @@ import 'app_text.dart';
 import 'game_sounds.dart';
 import 'celebration.dart';
 import 'dart:math' as math;
+import 'word_cards.dart';
 
 class QuestPage extends StatelessWidget {
   const QuestPage({super.key, required this.title, required this.child, this.subtitle, this.hud});
@@ -846,6 +847,10 @@ Future<void> showGameResult(BuildContext context, QuestController controller, St
               const SizedBox(width: 10),
               Expanded(child: _ResultStat(icon: Icons.bolt_rounded, color: QuestColors.indigo, label: AppText.of('result.xp'), value: '+${outcome.xp}')),
             ]),
+            if (result.newCards.isNotEmpty || result.goldCards.isNotEmpty) ...[
+              const SizedBox(height: 14),
+              NewCardsRow(controller: controller, collected: result.newCards, gold: result.goldCards),
+            ],
             if (result.words.isNotEmpty) ...[
               const SizedBox(height: 18),
               _RoundWords(words: result.words),

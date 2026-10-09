@@ -42,6 +42,8 @@ class GameResult {
     required this.xp,
     required this.endReason,
     this.words = const <WordPlay>[],
+    this.newCards = const <String>[],
+    this.goldCards = const <String>[],
   });
 
   final String sessionId;
@@ -57,7 +59,11 @@ class GameResult {
   /// The words this round asked about.
   final List<WordPlay> words;
 
-  GameResult withWords(List<WordPlay> value) => GameResult(
+  /// Word cards this round collected, and ones it turned gold (word ids).
+  final List<String> newCards;
+  final List<String> goldCards;
+
+  GameResult withWords(List<WordPlay> value, {List<String> newCards = const <String>[], List<String> goldCards = const <String>[]}) => GameResult(
         sessionId: sessionId,
         rewardTransactionId: rewardTransactionId,
         score: score,
@@ -68,6 +74,8 @@ class GameResult {
         xp: xp,
         endReason: endReason,
         words: List<WordPlay>.unmodifiable(value),
+        newCards: List<String>.unmodifiable(newCards),
+        goldCards: List<String>.unmodifiable(goldCards),
       );
 
   double get accuracy => attempts == 0 ? 0.0 : correctAnswers / attempts;

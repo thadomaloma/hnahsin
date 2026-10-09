@@ -18,6 +18,7 @@ import 'games.dart';
 import 'theme.dart';
 import 'widgets.dart';
 import 'app_text.dart';
+import 'word_cards.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen(
@@ -489,6 +490,10 @@ class LearnScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             LearningOverviewCard(controller: controller),
+            const SizedBox(height: 26),
+            SectionTitle(AppText.of('cards.title')),
+            const SizedBox(height: 12),
+            WordCardsTile(controller: controller),
             const SizedBox(height: 26),
             SectionTitle(AppText.of('learn.library')),
             const SizedBox(height: 12),

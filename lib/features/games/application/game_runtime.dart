@@ -142,8 +142,8 @@ class GameRuntime with WidgetsBindingObserver {
     final result = session.finish(baseXp: baseXp, reason: reason);
     await _saveQueue;
     final words = playedWords;
-    await controller.recordWordsPlayed(words);
-    return result.withWords(words);
+    final cards = await controller.recordWordsPlayed(words);
+    return result.withWords(words, newCards: cards.collected, goldCards: cards.gold);
   }
 
   Future<void> persist() {

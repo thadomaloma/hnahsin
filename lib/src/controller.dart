@@ -65,6 +65,9 @@ class QuestController extends ChangeNotifier {
   final Map<String, int> gameSkills = <String, int>{};
   final Map<String, String> dailyPuzzles = <String, String>{};
 
+  /// Collected word cards: word id → 1, or 2 for gold ([WordCards]).
+  final Map<String, int> wordCards = <String, int>{};
+
   /// Adaptive difficulty rating (1–7) for [gameId]; games pick words and
   /// distractors around it. Unplayed games start from the placement level.
   double gameSkill(String gameId) {
@@ -231,6 +234,10 @@ class QuestController extends ChangeNotifier {
     profile = await _repository.loadProfile();
     _applyProgress(await _repository.loadProgress());
     learningState = await _repository.loadLearningState();
+    // Words learnt before cards existed get theirs quietly.
+    if (!_collectCards(learningState.masteries.keys.toList()).isEmpty) {
+      unawaited(_repository.saveProgress(_progress));
+    }
     journeyState = await _repository.loadJourneyState();
     await _contentSyncService?.initialize();
     _publishDeliveredContent();
@@ -311,6 +318,9 @@ class QuestController extends ChangeNotifier {
     dailyPuzzles
       ..clear()
       ..addAll(progress.dailyPuzzles);
+    wordCards
+      ..clear()
+      ..addAll(progress.wordCards);
   }
 
   QuestProgress get _progress => QuestProgress(
@@ -324,6 +334,7 @@ class QuestController extends ChangeNotifier {
         gameSkills: Map<String, int>.unmodifiable(gameSkills),
         playDay: playDay,
         dailyPuzzles: Map<String, String>.unmodifiable(dailyPuzzles),
+        wordCards: Map<String, int>.unmodifiable(wordCards),
       );
 
   Future<void> completeOnboarding(LearnerProfile value) async {
@@ -423,8 +434,9 @@ class QuestController extends ChangeNotifier {
   /// later rounds bring missed words back and show mastered ones less (see
   /// pickWordsForLevel). Only the words' memory changes; the learner's level
   /// and journey still come from lessons.
-  Future<void> recordWordsPlayed(List<WordPlay> words) async {
-    if (words.isEmpty) return;
+  /// Remembers how each word went and collects the cards this earned.
+  Future<CardsEarned> recordWordsPlayed(List<WordPlay> words) async {
+    if (words.isEmpty) return const CardsEarned();
     final now = DateTime.now().toUtc();
     final masteries = <String, ItemMastery>{...learningState.masteries};
     for (final play in words) {
@@ -440,8 +452,31 @@ class QuestController extends ChangeNotifier {
       );
     }
     learningState = learningState.copyWith(masteries: masteries);
+    final earned = _collectCards({for (final play in words) play.id});
     notifyListeners();
     await _repository.saveLearningState(learningState);
+    if (!earned.isEmpty) await _repository.saveProgress(_progress);
+    return earned;
+  }
+
+  /// Cards for [ids] that their mastery now earns: collected once a word is
+  /// familiar (right twice), gold once mastered. A card is never taken back.
+  CardsEarned _collectCards(Iterable<String> ids) {
+    final collected = <String>[];
+    final gold = <String>[];
+    for (final id in ids) {
+      final stage = learningState.masteries[id]?.stage;
+      final level = switch (stage) {
+        MasteryStage.mastered => WordCards.gold,
+        MasteryStage.familiar || MasteryStage.strong => WordCards.collected,
+        _ => 0,
+      };
+      if (level > (wordCards[id] ?? 0)) {
+        (level == WordCards.gold ? gold : collected).add(id);
+        wordCards[id] = level;
+      }
+    }
+    return CardsEarned(collected: collected, gold: gold);
   }
 
   Future<bool> completeJourneyStory({
@@ -704,6 +739,20 @@ class QuestController extends ChangeNotifier {
     _repository.close();
     super.dispose();
   }
+}
+
+/// Word card levels.
+abstract final class WordCards {
+  static const collected = 1;
+  static const gold = 2;
+}
+
+/// The cards a round earned: new ones, and ones that turned gold.
+class CardsEarned {
+  const CardsEarned({this.collected = const <String>[], this.gold = const <String>[]});
+  final List<String> collected;
+  final List<String> gold;
+  bool get isEmpty => collected.isEmpty && gold.isEmpty;
 }
 
 /// What a finished round changed: XP actually awarded (after the level

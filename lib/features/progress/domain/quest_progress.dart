@@ -10,6 +10,7 @@ class QuestProgress {
     this.gameSkills = const <String, int>{},
     this.playDay,
     this.dailyPuzzles = const <String, String>{},
+    this.wordCards = const <String, int>{},
   });
 
   factory QuestProgress.empty() => const QuestProgress(
@@ -40,6 +41,9 @@ class QuestProgress {
   /// Finished daily puzzles: [DailyPuzzle.key] → [DailyResult.encode].
   final Map<String, String> dailyPuzzles;
 
+  /// Collected word cards: word id → 1 (collected) or 2 (gold). Never lost.
+  final Map<String, int> wordCards;
+
   QuestProgress copyWith({
     int? xp,
     int? streak,
@@ -51,6 +55,7 @@ class QuestProgress {
     Map<String, int>? gameSkills,
     String? playDay,
     Map<String, String>? dailyPuzzles,
+    Map<String, int>? wordCards,
   }) {
     return QuestProgress(
       xp: xp ?? this.xp,
@@ -65,6 +70,7 @@ class QuestProgress {
       gameSkills: Map<String, int>.unmodifiable(gameSkills ?? this.gameSkills),
       playDay: playDay ?? this.playDay,
       dailyPuzzles: Map<String, String>.unmodifiable(dailyPuzzles ?? this.dailyPuzzles),
+      wordCards: Map<String, int>.unmodifiable(wordCards ?? this.wordCards),
     );
   }
 
@@ -79,6 +85,7 @@ class QuestProgress {
         'gameSkills': gameSkills,
         if (playDay != null) 'playDay': playDay,
         if (dailyPuzzles.isNotEmpty) 'dailyPuzzles': dailyPuzzles,
+        if (wordCards.isNotEmpty) 'wordCards': wordCards,
       };
 
   factory QuestProgress.fromJson(Map<String, Object?> json) {
@@ -86,6 +93,7 @@ class QuestProgress {
     final rawScores = json['bestScores'];
     final rawSkills = json['gameSkills'];
     final rawDaily = json['dailyPuzzles'];
+    final rawCards = json['wordCards'];
     return QuestProgress(
       xp: (json['xp'] as num?)?.toInt() ?? 0,
       streak: (json['streak'] as num?)?.toInt() ?? 1,
@@ -122,6 +130,12 @@ class QuestProgress {
                 if (value is String) key.toString(): value,
             })
           : const <String, String>{},
+      wordCards: rawCards is Map
+          ? Map<String, int>.unmodifiable({
+              for (final MapEntry(:key, :value) in rawCards.entries)
+                if (value is num) key.toString(): value.toInt().clamp(1, 2),
+            })
+          : const <String, int>{},
     );
   }
 }

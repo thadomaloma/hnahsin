@@ -382,6 +382,23 @@ const appTextDefaults = <String, AppTextDefault>{
       AppTextDefault('Game start', 'Resume Game', 'Chhunzawm rawh'),
   'launcher.startNew':
       AppTextDefault('Game start', 'Start New Game', 'A thar ṭan rawh'),
+  // Word cards
+  'cards.title': AppTextDefault('Word cards', 'Word Cards', 'Thumal Card'),
+  'cards.count': AppTextDefault('Word cards', '{n}/{total} cards • {gold} gold',
+      'Card {n}/{total} • Rangkachak {gold}'),
+  'cards.how': AppTextDefault(
+      'Word cards',
+      'Get a word right in two games to collect its card. Get it right four times in a row and it turns gold.',
+      'Game pahnihah thumal i chhan dik chuan a card i hmu ang. Vawi li indawt i chhan dik chuan a card a rangkachak ang.'),
+  'cards.new':
+      AppTextDefault('Word cards', 'New word cards', 'Thumal card thar'),
+  'cards.open': AppTextDefault('Word cards', 'See all', 'A vaiin en rawh'),
+  'cards.cardSpoken':
+      AppTextDefault('Word cards', '{word} card', '{word} card'),
+  'cards.goldSpoken': AppTextDefault(
+      'Word cards', '{word}, gold card', '{word}, card rangkachak'),
+  'cards.lockedSpoken': AppTextDefault(
+      'Word cards', 'Card not collected yet', 'Card i la hmu lo'),
   // Daily puzzles
   'daily.title':
       AppTextDefault('Daily puzzles', 'Daily puzzles', 'Ni tin puzzle'),
