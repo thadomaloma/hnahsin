@@ -4,24 +4,38 @@
 
 **Khelh la, zir la, thiam rawh.** — *Play, learn, master.*
 
-Hnahsin (*Mizo Thumal Infiamna*) is a game-first app for learning the **Mizo language** (lus), for
-learners from age 5 to adults. It works offline on phones, and every word,
-question and picture is written and reviewed by people in a **Google Sheet**.
+Hnahsin (*Mizo Thumal Infiamna*) is a set of word games for learning the
+**Mizo language** (lus), for players from age 5 to adults. The buttons and
+instructions are in simple English so anyone can play; the Mizo is in the
+games themselves, so players pick it up as they play. It works offline on
+phones, and every word, question and sentence is edited by people in a
+**Google Sheet**.
 
 <p align="center">
-  <img src="docs/screenshots/home.png" width="200" alt="Home screen with the daily lesson">
-  <img src="docs/screenshots/games.png" width="200" alt="Games screen">
-  <img src="docs/screenshots/picture-match.png" width="200" alt="Picture Match game">
-  <img src="docs/screenshots/thumal-kawp.png" width="200" alt="Thumal Kawp memory game">
+  <img src="docs/screenshots/home.png" width="200" alt="Home with today's game and the daily puzzles">
+  <img src="docs/screenshots/picture-match.png" width="200" alt="Picture Match, answered right">
+  <img src="docs/screenshots/daily-crossword.png" width="200" alt="The daily Crossword">
+  <img src="docs/screenshots/word-cards.png" width="200" alt="The Word Cards album">
 </p>
 
 ## Features
 
 - **8 games** — Picture Match, Spelling, Word Search, Word Chain, Tawng Upa
-  (meaning quiz), Crossword, Thumal Kawp (memory cards) and Sentence Builder.
+  (old sayings), Crossword, Thumal Kawp (memory cards) and Sentence Builder.
+  Each opens with a short looping demo of how to play.
+- **Daily puzzles** — one Crossword and one Word Search a day, the same for
+  everyone, easiest on Monday; the result can be shared without spoiling it.
+- **Word cards** — a sticker book that collects every word the player gets
+  right in two games (gold after four in a row).
 - **Adaptive difficulty** — each game has its own level (1–7) that rises and
-  falls with the learner, aiming for about 78% correct answers.
-- **1,600+ Mizo words** with original meanings, example sentences and pictures.
+  falls with the learner, aiming for about 78% correct answers; words the
+  player misses come back sooner.
+- **Content** — 1,200 Mizo words with meanings, example sentences and
+  pictures, 203 tawng upa, and 383 sentences with English meanings.
+  Word Chain also accepts about 6,000 more Mizo words.
+- **Sound and motion** — sound effects, bounces, confetti; Profile can turn
+  sound off and reduce motion.
+- **English or Mizo labels** — simple English by default, Mizo in Profile.
 - **Offline first** — content packs are verified by SHA-256 and cached on the
   device; progress stays on the device.
 - **Content Sheet** — words, pictures, questions and all game text are edited
@@ -84,10 +98,11 @@ node --test content_studio/test          # content Sheet's pack builder
 lib/            Flutter app (screens, games, adaptive engine, content sync)
 content_studio/ Apps Script for the content Google Sheet (check + publish)
 content/        Source word lists from the Kumtluang and Vartian primers
-assets/         Branding, fonts and bundled illustrations
+assets/         Branding, fonts, illustrations, sound effects, Mizo word list
 design/         Hnahsin logo and icon source art
 docs/           Design system, product notes and project history
-scripts/        Mac diagnostics
+scripts/        Release builds and Mac diagnostics
+tool/           App text rows for the Sheet; the Mizo word list builder
 ```
 
 ## Credits
@@ -95,13 +110,21 @@ scripts/        Mac diagnostics
 - Vocabulary selection is cross-referenced with the Mizoram SCERT *Kumtluang*
   and *Vartian* primers; all definitions and example sentences are original
   (see `content/pilot/kumtluang/README.md`).
+- Sentences: [Mizo-Language-Corpus-4M](https://huggingface.co/datasets/MWirelabs/mizo-language-corpus-4M)
+  by MWireLabs (CC BY 4.0; from IndicNLCorp, FineWeb and DIPR Mizoram) and the
+  [Mizo–English parallel dataset](https://huggingface.co/datasets/hillbyte/mizo-english-parallel-20k)
+  by Hillbyte AI, picked by hand.
+- Word Chain's word list (`assets/mizo_words.txt`, built by
+  `tool/mizo_lexicon.py`) comes from J.F. Laldailova's *English–Lushai
+  Dictionary*, used with its owners' permission.
+- Sound effects were made for Hnahsin (`assets/sounds/`).
 - Font: [Plus Jakarta Sans](https://github.com/tokotype/PlusJakartaSans) (SIL OFL 1.1).
 - Icons: game-icons.net (CC BY 3.0), Tabler (MIT) and Material Design Icons
   (Apache 2.0) — see `assets/illustrations/ATTRIBUTION.md`.
 
 ## License
 
-[MIT](LICENSE) © 2026 Maloma Thado. Third-party fonts and icons keep their own
-licences (listed above).
+[MIT](LICENSE) © 2026 Maloma Thado. Third-party fonts, icons and content keep
+their own licences (listed above).
 
 Development history and earlier phase notes: [`docs/PROJECT_HISTORY.md`](docs/PROJECT_HISTORY.md).
