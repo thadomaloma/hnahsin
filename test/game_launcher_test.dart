@@ -4,6 +4,7 @@ import 'package:hnahsin/src/app_text.dart';
 import 'package:hnahsin/data/quest_repository.dart';
 import 'package:hnahsin/features/games/engine/game_engine.dart';
 import 'package:hnahsin/src/controller.dart';
+import 'package:hnahsin/src/game_demo.dart';
 import 'package:hnahsin/src/games.dart';
 
 void main() {
@@ -31,7 +32,7 @@ void main() {
         ),
       ),
     );
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 600));
 
     expect(find.text(AppText.of('launcher.saved')), findsOneWidget);
     expect(find.text(AppText.of('launcher.resume')), findsOneWidget);
@@ -52,14 +53,33 @@ void main() {
         ),
       ),
     );
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 600));
 
     await tester.ensureVisible(find.text(AppText.of('launcher.timed')));
     await tester.tap(find.text(AppText.of('launcher.timed')));
     await tester.ensureVisible(find.text(AppText.of('launcher.start')));
     await tester.tap(find.text(AppText.of('launcher.start')));
-    await tester.pumpAndSettle();
+    // The demo loops forever, so pump through the page change by hand.
+    for (var frame = 0; frame < 20; frame++) {
+      await tester.pump(const Duration(milliseconds: 50));
+    }
 
     expect(find.text('mode:timed'), findsOneWidget);
+  });
+
+  testWidgets('every game has a how-to-play demo, still with reduced motion', (tester) async {
+    for (final id in ['picture_match', 'spelling', 'word_search', 'word_chain', 'tawng_upa', 'crossword', 'thumal_kawp', 'sentence_builder']) {
+      expect(GameDemo.covers(id), isTrue, reason: id);
+      for (final reduce in [false, true]) {
+        await tester.pumpWidget(MaterialApp(
+            home: MediaQuery(
+                data: MediaQueryData(disableAnimations: reduce),
+                child: Scaffold(body: GameDemo(gameId: id)))));
+        for (var step = 0; step < 10; step++) {
+          await tester.pump(const Duration(milliseconds: 460));
+        }
+        expect(tester.takeException(), isNull, reason: id);
+      }
+    }
   });
 }

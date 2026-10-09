@@ -21,6 +21,7 @@ import 'theme.dart';
 import 'widgets.dart';
 import 'app_text.dart';
 import 'game_sounds.dart';
+import 'game_demo.dart';
 
 /// How long a right answer stays on screen before the round moves on.
 const rightAnswerPause = Duration(milliseconds: 1100);
@@ -112,6 +113,11 @@ class _GameLaunchScreenState extends State<GameLaunchScreen> {
                           fontWeight: FontWeight.w900,
                           letterSpacing: 1.1)),
                   const SizedBox(height: 12),
+                  // Shows how to play with little reading.
+                  if (GameDemo.covers(widget.gameId)) ...[
+                    GameDemo(gameId: widget.gameId),
+                    const SizedBox(height: 14),
+                  ],
                   ...widget.instructions.asMap().entries.map(
                         (entry) => Padding(
                           padding: const EdgeInsets.only(bottom: 10),
