@@ -36,4 +36,9 @@ void main() {
   test('older profiles show the app in English', () {
     expect(LearnerProfile.fromJson(const <String, Object?>{}).appLanguage, AppLanguage.english);
   });
+
+  test('the Mizo labels saved when they were the default are not kept', () {
+    expect(LearnerProfile.fromJson(const {'appLanguage': 'mizo'}).appLanguage, AppLanguage.english);
+    expect(LearnerProfile.fromJson(const {'uiLanguage': 'mizo'}).appLanguage, AppLanguage.mizo);
+  });
 }

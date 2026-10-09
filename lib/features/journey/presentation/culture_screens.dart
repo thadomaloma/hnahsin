@@ -224,7 +224,9 @@ class _CultureCardTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  unlocked ? card.shortMeaningMizo : AppText.of('culture.keepLearning'),
+                  unlocked
+                      ? AppText.pick(mizo: card.shortMeaningMizo, english: card.titleEnglish)
+                      : AppText.of('culture.keepLearning'),
                   style: const TextStyle(
                     color: QuestColors.slate,
                     fontSize: 12,

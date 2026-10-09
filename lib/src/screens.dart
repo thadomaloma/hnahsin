@@ -84,7 +84,11 @@ class _HomeJourney extends StatelessWidget {
                       journeyNodes.length
                   ? AppText.of('home.journeyComplete')
                   : AppText.of('home.journeyContinue')),
-          subtitle: controller.nextJourneyNode?.subtitleMizo ??
+          subtitle: (controller.nextJourneyNode == null
+                  ? null
+                  : AppText.language == AppLanguage.english
+                      ? '${controller.nextJourneyNode!.titleMizo} • ${controller.nextJourneyNode!.subtitleEnglish}'
+                      : controller.nextJourneyNode!.subtitleMizo) ??
               AppText.of('home.journeyProgress', {
                 'done': controller.journeyState.completedNodeIds.length,
                 'total': journeyNodes.length,

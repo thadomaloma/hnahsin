@@ -149,7 +149,9 @@ class LearnerProfile {
         'reducedMotion': reducedMotion,
         'onboardingCompleted': onboardingCompleted,
         'gentleMode': gentleMode,
-        'appLanguage': appLanguage.name,
+        // Saved as uiLanguage: “appLanguage” was briefly saved as Mizo
+        // for everyone, when Mizo labels were the default.
+        'uiLanguage': appLanguage.name,
         'soundEffects': soundEffects,
       };
 
@@ -197,7 +199,7 @@ class LearnerProfile {
       gentleMode: json['gentleMode'] as bool? ?? true,
       appLanguage: enumValue(
         AppLanguage.values,
-        json['appLanguage'],
+        json['uiLanguage'],
         AppLanguage.english,
       ),
       soundEffects: json['soundEffects'] as bool? ?? true,

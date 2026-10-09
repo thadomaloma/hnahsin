@@ -91,6 +91,7 @@ class JourneyNode {
     required this.titleMizo,
     required this.titleEnglish,
     required this.subtitleMizo,
+    required this.subtitleEnglish,
     required this.storyId,
     required this.prerequisiteNodeIds,
     required this.minimumLevel,
@@ -104,6 +105,7 @@ class JourneyNode {
   final String titleMizo;
   final String titleEnglish;
   final String subtitleMizo;
+  final String subtitleEnglish;
   final String storyId;
   final List<String> prerequisiteNodeIds;
   final int minimumLevel;
@@ -117,6 +119,7 @@ class JourneyRegion {
     required this.titleMizo,
     required this.titleEnglish,
     required this.subtitleMizo,
+    required this.subtitleEnglish,
     required this.emoji,
     required this.nodeIds,
   });
@@ -125,6 +128,7 @@ class JourneyRegion {
   final String titleMizo;
   final String titleEnglish;
   final String subtitleMizo;
+  final String subtitleEnglish;
   final String emoji;
   final List<String> nodeIds;
 }
