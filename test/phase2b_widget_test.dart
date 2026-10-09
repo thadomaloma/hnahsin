@@ -48,7 +48,11 @@ void main() {
     await tester.pump(const Duration(milliseconds: 50));
 
     expect(find.text('Sentence Builder'), findsOneWidget);
-    expect(find.text(GameText.of('sentence_builder').prompt), findsOneWidget);
+    // A translated sentence asks for its meaning; a word's example shows the word.
+    expect(
+        find.text(GameText.of('sentence_builder').prompt).evaluate().length +
+            find.text(AppText.of('sentence.usingWord')).evaluate().length,
+        1);
     expect(find.text(AppText.of('sentence.check')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });

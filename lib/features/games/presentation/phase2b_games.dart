@@ -116,16 +116,15 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
         ),
       ...widget.exercises,
     ].where(fresh).toList();
-    // Words' example sentences have no translation, so levels 1–2 only use
-    // them when there aren't enough translated sentences; the longest wait
-    // for higher levels.
-    final maxTiles = rating < 2 ? 6 : (rating < 3.5 ? 8 : 12);
-    final examples = rating >= 3 || translated.length < 5
-        ? _wordCatalogSentenceExercises()
-            .where((exercise) => exercise.tokens.length <= maxTiles)
-            .where(fresh)
-            .toList()
-        : const <SentenceExercise>[];
+    // Words' example sentences show their word and its English meaning in
+    // place of a translation. Every level uses them (there are only a few
+    // translated sentences); low levels get the short ones, and the longest
+    // wait for higher levels.
+    final maxTiles = rating < 2 ? 5 : (rating < 3 ? 6 : (rating < 3.5 ? 8 : 12));
+    final examples = _wordCatalogSentenceExercises()
+        .where((exercise) => exercise.tokens.length <= maxTiles)
+        .where(fresh)
+        .toList();
     final pool = [...translated, ...examples];
     names = {
       for (final exercise in pool)
