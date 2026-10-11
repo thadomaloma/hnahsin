@@ -16,6 +16,7 @@ import '../features/onboarding/domain/learner_profile.dart';
 import '../features/progress/domain/quest_progress.dart';
 import 'app_text.dart';
 import 'data.dart';
+import 'word_sentences.dart';
 import 'game_session.dart';
 import 'game_text.dart';
 import 'game_sounds.dart';
@@ -42,11 +43,13 @@ class QuestController extends ChangeNotifier {
   static const _adaptiveDifficulty = AdaptiveDifficulty();
   static const _lessonPlanner = DailyLessonPlanner();
   static const _journeyEngine = JourneyEngine();
+
   /// Setting the profile also sets the language of the app's labels.
   LearnerProfile get profile => _profile;
   set profile(LearnerProfile value) {
     _profile = value;
-    AppText.locale = value.appLocale ?? localeCodeFor(PlatformDispatcher.instance.locale);
+    AppText.locale =
+        value.appLocale ?? localeCodeFor(PlatformDispatcher.instance.locale);
     GameSounds.enabled = value.soundEffects;
   }
 
@@ -89,7 +92,6 @@ class QuestController extends ChangeNotifier {
       ContentPolicy.releaseReady ||
       (_contentSyncService?.state.contentVersion != null &&
           _deliveredCatalogReady);
-
 
   List<WordEntry> get wordCatalog {
     final delivered =
@@ -136,6 +138,7 @@ class QuestController extends ChangeNotifier {
 
   int get level => (xp ~/ 250) + 1;
   double get levelProgress => (xp % 250) / 250;
+
   /// Rounds finished today; yesterday's count doesn't carry over.
   int get roundsToday => playDay == _dayKey(_clock()) ? dailyProgress : 0;
 
@@ -157,7 +160,8 @@ class QuestController extends ChangeNotifier {
   /// local midnight.
   int get dayNumber {
     final now = _clock();
-    return DateTime.utc(now.year, now.month, now.day).millisecondsSinceEpoch ~/ Duration.millisecondsPerDay;
+    return DateTime.utc(now.year, now.month, now.day).millisecondsSinceEpoch ~/
+        Duration.millisecondsPerDay;
   }
 
   /// Words whose next look is due: missed in a game or ready for a refresh.
@@ -182,7 +186,8 @@ class QuestController extends ChangeNotifier {
       allItemIds: playable.map((entry) => entry.id).toList(),
       itemLevels: <String, int>{
         for (final entry in playable)
-          entry.id: (entry.difficulty - 1).clamp(0, LearningLevel.values.length - 1),
+          entry.id:
+              (entry.difficulty - 1).clamp(0, LearningLevel.values.length - 1),
       },
       now: _clock().toUtc(),
     );
@@ -247,7 +252,8 @@ class QuestController extends ChangeNotifier {
 
   /// Reviewed Tawng Upa questions written in the content Sheet.
   List<ChoiceQuestion> get deliveredQuestions => [
-        for (final question in _contentSyncService?.activeQuestions ?? const <DeliveredQuestion>[])
+        for (final question in _contentSyncService?.activeQuestions ??
+            const <DeliveredQuestion>[])
           ChoiceQuestion(
             prompt: question.prompt,
             options: question.options,
@@ -263,6 +269,22 @@ class QuestController extends ChangeNotifier {
   /// Reviewed Sentence Builder sentences written in the content Sheet.
   List<DeliveredSentence> get deliveredSentences =>
       _contentSyncService?.activeSentences ?? const <DeliveredSentence>[];
+
+  /// Which sentences use which words; rebuilt when new content arrives.
+  SentenceIndex get sentenceIndex {
+    final sentences = deliveredSentences;
+    final words = _contentSyncService?.activeWords;
+    if (_sentenceIndex == null ||
+        !identical(_sentenceIndexSources.$1, sentences) ||
+        !identical(_sentenceIndexSources.$2, words)) {
+      _sentenceIndex = SentenceIndex(sentences, wordCatalog);
+      _sentenceIndexSources = (sentences, words);
+    }
+    return _sentenceIndex!;
+  }
+
+  SentenceIndex? _sentenceIndex;
+  (Object?, Object?) _sentenceIndexSources = (null, null);
 
   void _publishDeliveredContent() {
     final service = _contentSyncService;
@@ -285,7 +307,8 @@ class QuestController extends ChangeNotifier {
     // A little slack, so the once-a-minute timer isn't skipped for firing
     // a few milliseconds before a full minute has passed.
     const slack = Duration(seconds: 5);
-    if (last != null && current.difference(last) < contentRecheckAfter - slack) return;
+    if (last != null && current.difference(last) < contentRecheckAfter - slack)
+      return;
     await refreshContent();
   }
 
@@ -638,14 +661,16 @@ class QuestController extends ChangeNotifier {
   DailyPuzzle dailyPuzzle(String gameId) => DailyPuzzle.today(gameId, _clock());
 
   /// How [puzzle] went, once finished.
-  DailyResult? dailyResult(DailyPuzzle puzzle) => DailyResult.decode(dailyPuzzles[puzzle.key]);
+  DailyResult? dailyResult(DailyPuzzle puzzle) =>
+      DailyResult.decode(dailyPuzzles[puzzle.key]);
 
   /// Keeps [puzzle]'s result (the first one: a replay doesn't change it)
   /// and the last month's others.
   Future<void> recordDaily(DailyPuzzle puzzle, DailyResult result) async {
     if (dailyPuzzles.containsKey(puzzle.key)) return;
     dailyPuzzles[puzzle.key] = result.encode();
-    final keys = dailyPuzzles.keys.toList()..sort((a, b) => a.split('.').last.compareTo(b.split('.').last));
+    final keys = dailyPuzzles.keys.toList()
+      ..sort((a, b) => a.split('.').last.compareTo(b.split('.').last));
     while (dailyPuzzles.length > 60) {
       dailyPuzzles.remove(keys.removeAt(0));
     }
@@ -656,18 +681,21 @@ class QuestController extends ChangeNotifier {
   /// Banks a finished round: XP, today's rounds and streak, best score and,
   /// unless the round's difficulty was fixed (a daily puzzle, [adaptive]
   /// false), the game's level.
-  Future<RewardOutcome> reward(String gameId, GameResult result, {bool adaptive = true}) async {
+  Future<RewardOutcome> reward(String gameId, GameResult result,
+      {bool adaptive = true}) async {
     final updatedScores = <String, int>{...bestScores};
     if (adaptive && result.score > (updatedScores[gameId] ?? 0)) {
       updatedScores[gameId] = result.score;
     }
     final previousSkill = gameSkill(gameId);
-    final nextSkill = !adaptive ? previousSkill : GameDifficulty.nextRating(
-      previousSkill,
-      correct: result.correctAnswers,
-      attempts: result.attempts,
-      failed: result.endReason == GameEndReason.heartsExhausted,
-    );
+    final nextSkill = !adaptive
+        ? previousSkill
+        : GameDifficulty.nextRating(
+            previousSkill,
+            correct: result.correctAnswers,
+            attempts: result.attempts,
+            failed: result.endReason == GameEndReason.heartsExhausted,
+          );
     // Harder play earns more: +10% XP per level above the first.
     final xpAwarded = (result.xp * (1 + (previousSkill - 1) * .1)).round();
     final outcome = RewardOutcome(
@@ -691,7 +719,10 @@ class QuestController extends ChangeNotifier {
       playDay: today,
       completedGames: <String>{...completedGames, gameId},
       bestScores: updatedScores,
-      gameSkills: <String, int>{...gameSkills, gameId: (nextSkill * 100).round()},
+      gameSkills: <String, int>{
+        ...gameSkills,
+        gameId: (nextSkill * 100).round()
+      },
     );
     final committed = await _repository.commitReward(
       transactionId: result.rewardTransactionId,
@@ -750,7 +781,8 @@ abstract final class WordCards {
 
 /// The cards a round earned: new ones, and ones that turned gold.
 class CardsEarned {
-  const CardsEarned({this.collected = const <String>[], this.gold = const <String>[]});
+  const CardsEarned(
+      {this.collected = const <String>[], this.gold = const <String>[]});
   final List<String> collected;
   final List<String> gold;
   bool get isEmpty => collected.isEmpty && gold.isEmpty;

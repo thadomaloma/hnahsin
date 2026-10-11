@@ -282,8 +282,9 @@ class _WordCardsScreenState extends State<WordCardsScreen> {
         backgroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
+        isScrollControlled: true,
         builder: (sheetContext) => SafeArea(
-          child: Padding(
+          child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               SizedBox(
@@ -310,6 +311,27 @@ class _WordCardsScreenState extends State<WordCardsScreen> {
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                         color: QuestColors.slate, fontStyle: FontStyle.italic)),
+              ],
+              // The word at work in real sentences, with their meaning.
+              if (widget.controller.sentenceIndex.sentencesUsing(entry)
+                  case final sentences when sentences.isNotEmpty) ...[
+                const SizedBox(height: 14),
+                Text(AppText.of('cards.seenIn'),
+                    style: const TextStyle(
+                        color: QuestColors.slate,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: .8)),
+                for (final sentence in sentences) ...[
+                  const SizedBox(height: 6),
+                  Text('“${sentence.textMizo}”',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontWeight: FontWeight.w700)),
+                  Text(sentence.englishSupport,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          color: QuestColors.slate, fontSize: 13)),
+                ],
               ],
             ]),
           ),

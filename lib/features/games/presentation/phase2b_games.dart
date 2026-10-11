@@ -17,6 +17,9 @@ import '../engine/game_difficulty.dart';
 import '../engine/phase2b_engine.dart';
 import '../../../src/app_text.dart';
 import '../../../src/game_sounds.dart';
+import '../../../src/game_words.dart';
+import '../../../src/meaning_round.dart' show blankOutWord;
+import '../../../src/word_sentences.dart';
 
 class SentenceBuilderGame extends StatefulWidget {
   const SentenceBuilderGame({
@@ -42,11 +45,19 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
   List<SentenceExercise> questions = <SentenceExercise>[];
   List<List<SentenceTile>> tileSets = <List<SentenceTile>>[];
   final List<String> selectedIds = <String>[];
+
+  /// Questions (by index) asked as “which word is missing?” instead of
+  /// built from tiles.
+  Map<int, _Gap> gaps = <int, _Gap>{};
+
+  /// The word picked for a gap question.
+  String? picked;
   int index = 0;
   bool? isCorrect;
   bool finishing = false;
 
   SentenceExercise get question => questions[index];
+  _Gap? get gap => gaps[index];
   List<SentenceTile> get allTiles => tileSets[index];
   List<SentenceTile> get answerTiles => selectedIds
       .map((id) => allTiles.firstWhere((tile) => tile.id == id))
@@ -72,6 +83,7 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
         currentIndex: () => index,
         readPayload: () => <String, Object?>{
           'selectedIds': selectedIds,
+          if (picked != null) 'picked': picked,
           if (isCorrect != null) 'isCorrect': isCorrect,
         },
         restorePayload: (snapshot) {
@@ -86,6 +98,8 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
                   .whereType<String>()
                   .where(validIds.contains),
             );
+          final saved = snapshot.payload['picked'] as String?;
+          picked = gap?.options.contains(saved) ?? false ? saved : null;
           isCorrect = snapshot.payload['isCorrect'] as bool?;
         },
       ),
@@ -120,7 +134,8 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
     // place of a translation. Every level uses them (there are only a few
     // translated sentences); low levels get the short ones, and the longest
     // wait for higher levels.
-    final maxTiles = rating < 2 ? 5 : (rating < 3 ? 6 : (rating < 3.5 ? 8 : 12));
+    final maxTiles =
+        rating < 2 ? 5 : (rating < 3 ? 6 : (rating < 3.5 ? 8 : 12));
     final examples = _wordCatalogSentenceExercises()
         .where((exercise) => exercise.tokens.length <= maxTiles)
         .where(fresh)
@@ -154,6 +169,75 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
         .map((exercise) =>
             engine.shuffledTiles(exercise, session.random, names: names))
         .toList();
+    // The second and fourth questions ask for a missing word instead, where
+    // the sentence has one to blank out.
+    gaps = {
+      for (final i in const [1, 3])
+        if (i < questions.length)
+          if (_gapFor(questions[i], rating) case final gap?) i: gap,
+    };
+  }
+
+  /// [exercise] with one of its words blanked out and three wrong words to
+  /// choose from: for a word's example sentence the word itself, for a
+  /// Sheet sentence its least common word. Wrong words are of the same
+  /// kind and share no meaning with it, and none is in the sentence.
+  _Gap? _gapFor(SentenceExercise exercise, double rating) {
+    final catalog = widget.controller.wordCatalog
+        .where((entry) => ContentPolicy.playable(entry.review))
+        .toList();
+    final WordEntry? answer;
+    if (exercise.keyWord != null) {
+      final id = exercise.id.substring('sentence.word.'.length);
+      answer = catalog.where((entry) => entry.id == id).firstOrNull;
+    } else {
+      final sentence = widget.controller.deliveredSentences
+          .where((sentence) => sentence.id == exercise.id)
+          .firstOrNull;
+      // A built-in sentence: its longest word the catalog knows.
+      answer = sentence != null
+          ? widget.controller.sentenceIndex.gapWordIn(sentence)
+          : (catalog
+                  .where((entry) => foldMizo(entry.word).length >= 3)
+                  .where((entry) =>
+                      blankWholeWord(exercise.textMizo, entry.word) != null)
+                  .toList()
+                ..sort((a, b) => b.word.length.compareTo(a.word.length)))
+              .firstOrNull;
+    }
+    if (answer == null) return null;
+    final blanked = blankWholeWord(exercise.textMizo, answer.word);
+    if (blanked == null) return null;
+    bool isAction(WordEntry word) =>
+        word.englishGloss.trim().toLowerCase().startsWith('to ');
+    final spelling = foldMizo(answer.word);
+    // Every meaning of the spelling, so “in” (house) never has “in” (drink)'s
+    // synonyms as wrong options.
+    final senses = {
+      for (final entry in catalog)
+        if (foldMizo(entry.word) == spelling)
+          ...meaningWords(entry.englishGloss),
+    };
+    final seen = <String>{spelling};
+    final candidates = catalog
+        .where((other) => isAction(other) == isAction(answer!))
+        .where((other) =>
+            meaningWords(other.englishGloss).intersection(senses).isEmpty)
+        .where((other) => blankOutWord(exercise.textMizo, other.word) == null)
+        .where((other) => seen.add(foldMizo(other.word)))
+        .toList();
+    final wrong = GameDifficulty.distractors(answer, candidates,
+        rating: rating,
+        count: 3,
+        similarity: wordSimilarity,
+        random: session.random);
+    if (wrong.length < 3) return null;
+    return _Gap(
+      blanked: blanked,
+      entry: answer,
+      options: [answer.word, ...wrong.map((other) => other.word)]
+        ..shuffle(session.random),
+    );
   }
 
   static final _capitalised = RegExp(r'^[“"‘(]*\p{Lu}', unicode: true);
@@ -191,7 +275,8 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
     finishing = true;
     final result = await runtime.finish(baseXp: 55, reason: reason);
     if (!mounted) return;
-    await showGameResult(context, widget.controller, 'sentence_builder', result);
+    await showGameResult(
+        context, widget.controller, 'sentence_builder', result);
   }
 
   void _selectTile(SentenceTile tile) {
@@ -211,6 +296,15 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
   Future<void> _hint() async {
     // Once the sentence is right there is nothing left to hint at.
     if (runtime.hintRevealed || finishing || isCorrect == true) return;
+    if (gap != null) {
+      // Two wrong words go, leaving the right one and one other.
+      setState(() {
+        picked = null;
+        isCorrect = null;
+      });
+      await runtime.revealHint();
+      return;
+    }
     final firstId = '${question.id}.0';
     setState(() {
       selectedIds
@@ -240,11 +334,33 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
     }
   }
 
+  Future<void> _pick(String option) async {
+    final gap = this.gap;
+    if (gap == null || !runtime.ready || isCorrect != null || finishing) {
+      return;
+    }
+    final correct = option == gap.entry.word;
+    setState(() {
+      picked = option;
+      isCorrect = correct;
+      runtime.answer(correct, wordId: gap.entry.id, word: gap.entry.word);
+    });
+    await widget.controller.recordReview(
+      itemId: question.id,
+      rating: correct ? ReviewRating.good : ReviewRating.again,
+    );
+    if (!mounted) return;
+    if (!correct && !session.hasHearts) {
+      await _finish(GameEndReason.heartsExhausted);
+    }
+  }
+
   Future<void> _continue() async {
     if (isCorrect == null || finishing) return;
     if (isCorrect == false) {
       setState(() {
         selectedIds.clear();
+        picked = null;
         isCorrect = null;
       });
       await runtime.persist();
@@ -257,6 +373,7 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
     setState(() {
       index += 1;
       selectedIds.clear();
+      picked = null;
       isCorrect = null;
       runtime.hintRevealed = false;
     });
@@ -292,9 +409,11 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
                 Text(
                   // A word's example sentence has no meaning to build, only
                   // the word it is there to teach.
-                  question.keyWord == null
-                      ? GameText.of('sentence_builder').prompt
-                      : AppText.of('sentence.usingWord'),
+                  gap != null
+                      ? AppText.of('sentence.gapPrompt')
+                      : question.keyWord == null
+                          ? GameText.of('sentence_builder').prompt
+                          : AppText.of('sentence.usingWord'),
                   style: const TextStyle(
                     color: QuestColors.teal,
                     fontSize: 11,
@@ -304,9 +423,11 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  question.keyWord == null
-                      ? question.englishSupport
-                      : '“${question.keyWord}”',
+                  gap != null
+                      ? gap!.blanked
+                      : question.keyWord == null
+                          ? question.englishSupport
+                          : '“${question.keyWord}”',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.white,
@@ -315,7 +436,7 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-                if (question.keyWord != null &&
+                if ((gap != null || question.keyWord != null) &&
                     question.englishSupport.isNotEmpty) ...<Widget>[
                   const SizedBox(height: 4),
                   Text(
@@ -331,73 +452,102 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
           GameHintButton(
               revealed: runtime.hintRevealed,
               onPressed: isCorrect == true ? null : _hint),
-          if (runtime.hintRevealed)
+          if (runtime.hintRevealed && gap == null)
             GameHintCard(message: GameText.of('sentence_builder').hint),
           const SizedBox(height: 8),
-          Text(
-            AppText.of('sentence.yours'),
-            style: const TextStyle(
-              color: QuestColors.slate,
-              fontSize: 10,
-              fontWeight: FontWeight.w900,
-              letterSpacing: .8,
+          if (gap case final gap?)
+            for (final option in gap.options)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Opacity(
+                  opacity: gap.ruledOut(option, runtime.hintRevealed) ? .35 : 1,
+                  child: AnswerButton(
+                    label: option,
+                    selected: picked == option,
+                    correct: picked == option ? option == gap.entry.word : null,
+                    onTap: isCorrect == null &&
+                            runtime.ready &&
+                            !gap.ruledOut(option, runtime.hintRevealed)
+                        ? () => _pick(option)
+                        : null,
+                  ),
+                ),
+              )
+          else ...<Widget>[
+            Text(
+              AppText.of('sentence.yours'),
+              style: const TextStyle(
+                color: QuestColors.slate,
+                fontSize: 10,
+                fontWeight: FontWeight.w900,
+                letterSpacing: .8,
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Container(
-            constraints: const BoxConstraints(minHeight: 92),
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: isCorrect == true
-                  ? const Color(0xFFE6F5E2)
-                  : isCorrect == false
-                      ? const Color(0xFFFCE4EC)
-                      : Colors.white,
-              border: Border.all(color: QuestColors.line),
-              borderRadius: BorderRadius.circular(20),
+            const SizedBox(height: 8),
+            Container(
+              constraints: const BoxConstraints(minHeight: 92),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: isCorrect == true
+                    ? const Color(0xFFE6F5E2)
+                    : isCorrect == false
+                        ? const Color(0xFFFCE4EC)
+                        : Colors.white,
+                border: Border.all(color: QuestColors.line),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: answerTiles
+                    .map(
+                      (tile) => ActionChip(
+                        label: Text(
+                          tile.text,
+                          style: const TextStyle(fontWeight: FontWeight.w900),
+                        ),
+                        onPressed:
+                            isCorrect == null ? () => _returnTile(tile) : null,
+                      ),
+                    )
+                    .toList(),
+              ),
             ),
-            child: Wrap(
+            const SizedBox(height: 16),
+            Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: answerTiles
+              children: bankTiles
                   .map(
                     (tile) => ActionChip(
+                      backgroundColor: const Color(0xFFE9E4FF),
+                      side: BorderSide.none,
+                      avatar: const Icon(Icons.add_rounded, size: 17),
                       label: Text(
                         tile.text,
                         style: const TextStyle(fontWeight: FontWeight.w900),
                       ),
-                      onPressed: isCorrect == null ? () => _returnTile(tile) : null,
+                      onPressed:
+                          isCorrect == null ? () => _selectTile(tile) : null,
                     ),
                   )
                   .toList(),
             ),
-          ),
-          const SizedBox(height: 16),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: bankTiles
-                .map(
-                  (tile) => ActionChip(
-                    backgroundColor: const Color(0xFFE9E4FF),
-                    side: BorderSide.none,
-                    avatar: const Icon(Icons.add_rounded, size: 17),
-                    label: Text(
-                      tile.text,
-                      style: const TextStyle(fontWeight: FontWeight.w900),
-                    ),
-                    onPressed: isCorrect == null ? () => _selectTile(tile) : null,
-                  ),
-                )
-                .toList(),
-          ),
+          ],
           if (isCorrect != null) ...<Widget>[
             const SizedBox(height: 18),
             FeedbackCard(
               correct: isCorrect!,
-              message: isCorrect!
-                  ? AppText.of('sentence.right', {'sentence': question.textMizo})
-                  : AppText.of('sentence.wrong', {'sentence': question.textMizo}),
+              message: gap != null
+                  ? (isCorrect!
+                      ? AppText.of(
+                          'sentence.gapRight', {'sentence': question.textMizo})
+                      : AppText.of('sentence.gapWrong'))
+                  : isCorrect!
+                      ? AppText.of(
+                          'sentence.right', {'sentence': question.textMizo})
+                      : AppText.of(
+                          'sentence.wrong', {'sentence': question.textMizo}),
             ),
             ContentReportButton(
               controller: widget.controller,
@@ -405,20 +555,42 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
             ),
           ],
           const SizedBox(height: 18),
-          FilledButton(
-            onPressed: isCorrect == null
-                ? (selectedIds.length == allTiles.length ? _check : null)
-                : _continue,
-            child: Text(
-              isCorrect == null
-                  ? AppText.of('sentence.check')
-                  : isCorrect == true
-                      ? AppText.of(index == questions.length - 1 ? 'sentence.finish' : 'sentence.next')
-                      : AppText.of('sentence.retry'),
+          // A gap is answered by tapping a word; the button only moves on.
+          if (gap == null || isCorrect != null)
+            FilledButton(
+              onPressed: isCorrect == null
+                  ? (selectedIds.length == allTiles.length ? _check : null)
+                  : _continue,
+              child: Text(
+                isCorrect == null
+                    ? AppText.of('sentence.check')
+                    : isCorrect == true
+                        ? AppText.of(index == questions.length - 1
+                            ? 'sentence.finish'
+                            : 'sentence.next')
+                        : AppText.of('sentence.retry'),
+              ),
             ),
-          ),
         ],
       ),
     );
   }
+}
+
+/// A sentence with a word blanked out, and the words to choose from.
+class _Gap {
+  const _Gap(
+      {required this.blanked, required this.entry, required this.options});
+
+  final String blanked;
+
+  /// The missing word.
+  final WordEntry entry;
+  final List<String> options;
+
+  /// Whether the hint has taken [option] away: the first two wrong words.
+  bool ruledOut(String option, bool hinted) =>
+      hinted &&
+      option != entry.word &&
+      options.where((other) => other != entry.word).take(2).contains(option);
 }

@@ -278,6 +278,7 @@ const appTextDefaults = <String, AppTextDefault>{
   'cards.cardSpoken': AppTextDefault('Word cards', '{word} card'),
   'cards.goldSpoken': AppTextDefault('Word cards', '{word}, gold card'),
   'cards.lockedSpoken': AppTextDefault('Word cards', 'Card not collected yet'),
+  'cards.seenIn': AppTextDefault('Word cards', 'IN OTHER SENTENCES'),
   // Daily puzzles
   'daily.title': AppTextDefault('Daily puzzles', 'Daily puzzles'),
   'daily.subtitle':
@@ -382,6 +383,12 @@ const appTextDefaults = <String, AppTextDefault>{
   'sentence.finish': AppTextDefault('Sentence Builder', 'Finish'),
   'sentence.next': AppTextDefault('Sentence Builder', 'Next Sentence'),
   'sentence.retry': AppTextDefault('Sentence Builder', 'Try Again'),
+  'sentence.gapPrompt':
+      AppTextDefault('Sentence Builder', 'WHICH WORD IS MISSING?'),
+  'sentence.gapRight':
+      AppTextDefault('Sentence Builder', '{sentence} — That\'s the word!'),
+  'sentence.gapWrong': AppTextDefault(
+      'Sentence Builder', 'That word doesn\'t fit. Try another one.'),
   // Thumal Kawp
   'kawp.progress': AppTextDefault(
       'Thumal Kawp', '{found}/{pairs} pairs found • {turns} turns'),
