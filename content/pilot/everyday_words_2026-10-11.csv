@@ -1,0 +1,55 @@
+id,word,meaning_mizo,english,example_mizo,emoji,category,level,picture_match,jf_check
+word.jf1011.pathum,pathum,"Pahnih aia pakhat tam, pali aia pakhat tlêm.",three,Artui pathum ka ei.,3️⃣,Sikul,1,yes,triad: pathum inkawp
+word.jf1011.pali,pali,"Pathum aia pakhat tam, panga aia pakhat tlêm.",four,Ui hian ke pali a nei.,4️⃣,Sikul,1,yes,quadruped: sa ke pali nei
+word.jf1011.panga,panga,"Pali aia pakhat tam, paruk aia pakhat tlêm.",five,Kut zungtang panga ka nei.,5️⃣,Sikul,1,yes,quintuple: panga pai
+word.jf1011.paruk,paruk,"Panga aia pakhat tam, pasarih aia pakhat tlêm.",six,Kan inah mi paruk kan awm.,6️⃣,Sikul,1,yes,hexa-: paruk
+word.jf1011.nang,nang,I biak mêk mi kawhna.,you,Nang hi ka thian ber i ni.,,Sikul,1,,"you: i, nang, che"
+word.jf1011.ani,ani,"Mi dang, i sawi mêk mi kawhna (mipa emaw hmeichhia emaw).",he; she,Ani chu ka thian a ni.,,Sikul,1,,him: ani (mipa)
+word.jf1011.tu,tu,Mi hriat duhna zawhna.,who,Tu nge lo kal?,,Sikul,1,,"who: chu mi chu, tu"
+word.jf1011.khawiah,khawiah,Hmun hriat duhna zawhna.,where,Khawiah nge i kal dawn?,,Sikul,1,,"where: chutah, khawiah"
+word.jf1011.engtikah,engtikah,Hun hriat duhna zawhna.,when,Engtikah nge i haw ang?,,Sikul,2,,"when: engtikah, hunah"
+word.jf1011.engvangin,engvangin,Chhan hriat duhna zawhna.,why,Engvangin nge sikulah i kal loh?,,Sikul,2,,"wherefor: engvangin nge"
+word.jf1011.pi,pi,Nu emaw pa emaw nu.,grandmother,Ka pi chuan thawnthu min hrilh thin.,👵,Chhungkua,1,,forefather: pi leh pu
+word.jf1011.pu,pu,Nu emaw pa emaw pa.,grandfather,Ka pu chu a tar tawh.,👴,Chhungkua,1,,forefather: pi leh pu
+word.jf1011.nau,nau,Unau zinga naupang zawk; nausen.,younger sibling; baby,Ka nau chu a mu mêk.,👶,Chhungkua,1,,childbirth: nau hrinna
+word.jf1011.tlangval,tlangval,"Mipa naupang puitling tawh, nupui nei lo.",young man,Tlangvalte chuan bawlung an khel.,👨,Chhungkua,2,,bachelor: tlangval
+word.jf1011.nula,nula,"Hmeichhe naupang puitling tawh, pasal nei lo.",young woman,Nula chuan hla mawi a sa.,👩,Chhungkua,2,,belle: nula
+word.jf1011.hmeichhia,hmeichhia,"Mipa ni lo, nu ni thei mihring.",woman,Hmeichhia pakhat dawrah a kal.,👩,Chhungkua,1,,dame: hmeichhia
+word.jf1011.putar,putar,Mipa tar.,old man,Putar chu tualah a thu.,👴,Chhungkua,2,,gaffar: putar
+word.jf1011.pitar,pitar,Hmeichhia tar.,old woman,Pitar chuan puan a tah.,👵,Chhungkua,2,,crone: pitar
+word.jf1011.naktuk,naktuk,Vawiin hnu ni lo thleng tur.,tomorrow,Naktuk chuan sikulah kan kal ang.,,Sikul,1,,morrow: naktuk
+word.jf1011.nakinah,nakinah,"Tun ni lovin, hun lo la awm turah.",later,Nakinah ka lo kal ang.,,Sikul,2,,by-and-by: nakinah
+word.jf1011.hmanni,hmanni,Nimin hmaa ni.,day before yesterday,Hmanni khan ruah a sur.,,Sikul,2,,(not in JF; everyday word)
+word.jf1011.thawhtanni,Thawhtanni,"Chawlhkar ni hmasa ber, Pathianni hnu ni.",Monday,Thawhtanniah sikul kan kal leh.,,Sikul,2,,(not in JF; day name)
+word.jf1011.thawhlehni,Thawhlehni,Thawhtanni hnu ni.,Tuesday,Thawhlehniah thlai kan phun.,,Sikul,2,,Tuesday: Thawhlehni
+word.jf1011.nilaini,Nilaini,Thawhlehni hnu ni; chawlhkar laili ni.,Wednesday,Nilainiah ka pi kan tlawh.,,Sikul,2,,Wednesday: Nilaini
+word.jf1011.ningani,Ningani,Nilaini hnu ni.,Thursday,Ninganiah bawlung kan khel.,,Sikul,2,,(not in JF; day name)
+word.jf1011.zirtawpni,Zirtawpni,Ningani hnu ni; chawlhkar sikul ni hnuhnung ber.,Friday,Zirtawpniah sikul a chawl hma.,,Sikul,2,,(not in JF; day name)
+word.jf1011.inrinni,Inrinni,"Zirtawpni hnu ni, Pathianni hma ni.",Saturday,Inrinniah kan chawl.,,Sikul,2,,weekend: Inrinni leh Pathianni
+word.jf1011.pathianni,Pathianni,Inrinni hnu ni; Pathian biak ni.,Sunday,Pathianniah kohhranah kan kal.,,Sikul,2,,Sunday: Pathianni
+word.jf1011.buh,buh,"Buhfai chhuahna thlai, a la hel.",paddy; rice plant,Lovah buh a hmin tawh.,🌾,Khawvel,2,,barn: buh in
+word.jf1011.bal,bal,"Lei hnuaia a bawk ei theih, hnah lian tak nei thlai.",taro,Bal chu chawhmehah kan siam.,,Khawvel,2,,yam: bahra; bal
+word.jf1011.kamis,kamis,"Taksa chung lam hak, ban nei kawr.",shirt,Kamis var ka ha.,👕,Chhungkua,2,,shirt: kamis
+word.jf1011.nghawng,nghawng,Lu leh taksa inzawmna.,neck,Thlasikah nghawngah puan ka tuam.,,Khawvel,2,,neck: nghawng
+word.jf1011.vaivut,vaivut,"Thil dip te tak te, boruakah a thlawk thei.",dust,Tukverh chungah vaivut a tam.,,Khawvel,3,,dust: vaivut
+word.jf1011.lawng,lawng,"Tui chunga kal, mi leh thil phurhna.",boat,Luiah lawng a kal.,⛵,Khawvel,2,,boat: lawng
+word.jf1011.thirsakawr,thirsakawr,"Ke pahnih nei, chuang a, ke hmanga kalpui.",bicycle,Sikulah thirsakawr chuangin ka kal.,🚲,Khawvel,2,yes,bicycle: thirsakawr
+word.jf1011.tawlailir,tawlailir,"Kual nei, thil leh mi phurhna.",cart; vehicle,Tawlailirah bungrua kan phur.,,Khawvel,3,,car: tawlailir
+word.jf1011.chabi,chabi,Kawngkhar emaw bawm emaw hawnna leh khârna.,key,Kawngkhar chabi ka hloh.,🔑,Chhungkua,2,yes,key: chabi
+word.jf1011.mual,mual,Hmun zawl leh zau.,field; open ground,Naupangte chu mualah an infiam.,,Khawvel,2,,field: mual
+word.jf1011.sanghal,sanghal,Ngawa awm vawk.,wild boar,Sanghal chu ngawah a awm.,🐗,Nungcha,2,yes,boar: sanghal
+word.jf1011.chhuak,chhuak,Chhung atangin pawn lamah kal.,go out; come out,Naupangte chu pawnah an chhuak.,,Thiltih,1,,expel: hnawt chhuak
+word.jf1011.luak,luak,Ei tawh kha kaah lo chhuak leh.,vomit,Damlo chu a luak.,🤮,Thiltih,3,,vomit: luak
+word.jf1011.hip,hip,Kaa hnuh lut.,suck; sip,Naupang chuan bawnghnute a hip.,,Thiltih,3,,suck: hip
+word.jf1011.vung,vung,Hliam avanga taksa puam.,swell,Ka ke a vung.,,Thiltih,3,,swell: vung
+word.jf1011.nung,nung,Thi lo; la dam.,live; alive,Sangha chu a la nung.,,Thiltih,2,,live: nung
+word.jf1011.khalh,khalh,Motor emaw thil dang emaw kalpui.,drive,Ka pa chuan motor a khalh.,,Thiltih,2,,drive: khalh
+word.jf1011.bual,bual,Tuiah taksa silfai.,bathe,Luiah kan bual.,🛀,Thiltih,2,,bathe: bual
+word.jf1011.tawih,tawih,"Ei theih loh khawpa chhe, rim chhia.",rotten,Theihai chu a tawih.,,Nunphung,3,,rotten: tawih
+word.jf1011.mawi,mawi,"Hmuh nuam, en chakawm.",beautiful,Pangpar hi a mawi hle.,,Nunphung,1,,gorgeous: mawi
+word.jf1011.chhia,chhia,Tha lo.,bad,"Khaw a chhia, ruah a sur.",,Nunphung,1,,rainy: khaw chhia
+word.jf1011.al,al,"Chi tel tam, chi ang tui.",salty,Chawhmeh hi a al lutuk.,,Nunphung,2,,gustation: a thlum a al
+word.jf1011.ngui,ngui,"Lungngai, hlim lo.",sad,Ka thian a kal avangin ka ngui.,,Nunphung,2,,sad: lungngai; ngui
+word.jf1011.chau,chau,"Tha zo, chak lo.",tired; weak,Kal hla hnuah ka chau.,,Nunphung,2,,weak: derthawng; chak lo; chau
+word.jf1011.hmeltha,hmeltha,"Hmel tha, en nuam.",good-looking,Nula hmeltha tak a ni.,,Nunphung,2,,pretty: hmeltha
+word.jf1011.derthawng,derthawng,"Chak lo, tha nei lo.",weak,Damlo chu a derthawng hle.,,Nunphung,3,,weak: derthawng

@@ -1,0 +1,1761 @@
+{
+ "_comment": "Word emoji review 2026-10-11: keep only emoji showing a visible thing that matches the English gloss. id -> [old, new]; new \"\" removes it.",
+ "changes": {
+  "word.arbawm": [
+   "🐔🏠",
+   ""
+  ],
+  "word.au": [
+   "🗣️",
+   ""
+  ],
+  "word.auh": [
+   "🗣️",
+   ""
+  ],
+  "word.bauh": [
+   "🐕🗣️",
+   ""
+  ],
+  "word.beidawng": [
+   "😞",
+   ""
+  ],
+  "word.beidawnna": [
+   "😞",
+   ""
+  ],
+  "word.beidawnthlak": [
+   "😞",
+   ""
+  ],
+  "word.beihpui": [
+   "🤝",
+   ""
+  ],
+  "word.beisei": [
+   "🤞",
+   ""
+  ],
+  "word.beitham": [
+   "🤏",
+   ""
+  ],
+  "word.bengchheng": [
+   "📢",
+   ""
+  ],
+  "word.bengsikangaihtuah": [
+   "🤔",
+   ""
+  ],
+  "word.berampu": [
+   "🧑‍🌾🐑",
+   ""
+  ],
+  "word.boruak": [
+   "🌬️",
+   ""
+  ],
+  "word.buaina": [
+   "⚠️",
+   ""
+  ],
+  "word.buhlehbal": [
+   "🌾",
+   ""
+  ],
+  "word.bung": [
+   "📑",
+   ""
+  ],
+  "word.bungrua": [
+   "📦",
+   ""
+  ],
+  "word.changkang": [
+   "📈",
+   ""
+  ],
+  "word.changkanna": [
+   "📈",
+   ""
+  ],
+  "word.chatuan": [
+   "♾️",
+   ""
+  ],
+  "word.chawchhun": [
+   "🍽️",
+   ""
+  ],
+  "word.chawhnu": [
+   "🕒",
+   ""
+  ],
+  "word.chawimawi": [
+   "👏",
+   ""
+  ],
+  "word.cheng": [
+   "🏠",
+   ""
+  ],
+  "word.chhak": [
+   "➡️",
+   ""
+  ],
+  "word.chhar": [
+   "🔎",
+   ""
+  ],
+  "word.chhawmdawl": [
+   "🤝",
+   ""
+  ],
+  "word.chhiarkawp": [
+   "🔢",
+   ""
+  ],
+  "word.chhiatna": [
+   "💥",
+   ""
+  ],
+  "word.chhim": [
+   "⬇️",
+   ""
+  ],
+  "word.chhinchhiah": [
+   "📝",
+   ""
+  ],
+  "word.chhinchhiahna": [
+   "📍",
+   ""
+  ],
+  "word.chho": [
+   "⬆️",
+   ""
+  ],
+  "word.chhuah": [
+   "🚪🚶",
+   ""
+  ],
+  "word.chhuanawm": [
+   "👏",
+   ""
+  ],
+  "word.chhuang": [
+   "😌",
+   ""
+  ],
+  "word.chhui": [
+   "🔎",
+   ""
+  ],
+  "word.chhukchho": [
+   "↕️",
+   ""
+  ],
+  "word.chi-ai": [
+   "😵‍💫",
+   ""
+  ],
+  "word.chini": [
+   "🍬",
+   ""
+  ],
+  "word.choka": [
+   "🍳",
+   ""
+  ],
+  "word.chungchuang": [
+   "🌟",
+   ""
+  ],
+  "word.dam": [
+   "💪",
+   ""
+  ],
+  "word.dan": [
+   "⚖️",
+   ""
+  ],
+  "word.dawngtu": [
+   "📥",
+   ""
+  ],
+  "word.dawrkai": [
+   "🏪",
+   ""
+  ],
+  "word.dawt": [
+   "🤥",
+   ""
+  ],
+  "word.dikna": [
+   "⚖️",
+   ""
+  ],
+  "word.dil": [
+   "🙏",
+   ""
+  ],
+  "word.dilna": [
+   "🙏",
+   ""
+  ],
+  "word.dingchang": [
+   "📈",
+   ""
+  ],
+  "word.dinglam": [
+   "➡️",
+   ""
+  ],
+  "word.diriamna": [
+   "😏",
+   ""
+  ],
+  "word.duham-2": [
+   "🤑",
+   ""
+  ],
+  "word.duhsakna": [
+   "🤗",
+   ""
+  ],
+  "word.ekhai": [
+   "😲",
+   ""
+  ],
+  "word.engthawl": [
+   "😄",
+   ""
+  ],
+  "word.enkawl": [
+   "🤲",
+   ""
+  ],
+  "word.enkawlna": [
+   "🤲",
+   ""
+  ],
+  "word.enkawlsak": [
+   "🤲",
+   ""
+  ],
+  "word.enkawltu": [
+   "🤲",
+   ""
+  ],
+  "word.entawntlak": [
+   "🌟",
+   ""
+  ],
+  "word.fai": [
+   "🧼",
+   ""
+  ],
+  "word.fakawm": [
+   "👏",
+   ""
+  ],
+  "word.fang": [
+   "🧳",
+   ""
+  ],
+  "word.farnu": [
+   "👧",
+   ""
+  ],
+  "word.fel": [
+   "👍",
+   ""
+  ],
+  "word.fimkhur": [
+   "⚠️",
+   ""
+  ],
+  "word.fing": [
+   "🧠",
+   ""
+  ],
+  "word.fuih": [
+   "📣",
+   ""
+  ],
+  "word.hah": [
+   "😩",
+   ""
+  ],
+  "word.haider": [
+   "🙈",
+   ""
+  ],
+  "word.harh": [
+   "⏰",
+   ""
+  ],
+  "word.harhvang": [
+   "👀",
+   ""
+  ],
+  "word.hausa": [
+   "💰",
+   ""
+  ],
+  "word.hausakna": [
+   "💰",
+   ""
+  ],
+  "word.haw": [
+   "🏠🔙",
+   ""
+  ],
+  "word.hawihhawm": [
+   "🙇",
+   ""
+  ],
+  "word.hawng": [
+   "🔓",
+   ""
+  ],
+  "word.him": [
+   "🛡️",
+   ""
+  ],
+  "word.hlan": [
+   "🤲",
+   ""
+  ],
+  "word.hlau": [
+   "😨",
+   ""
+  ],
+  "word.hlauhawm": [
+   "⚠️",
+   ""
+  ],
+  "word.hlauthawng": [
+   "😟",
+   ""
+  ],
+  "word.hlawhchham": [
+   "❌",
+   ""
+  ],
+  "word.hlawhtling": [
+   "🏆",
+   ""
+  ],
+  "word.hlawhtlinna": [
+   "🏆",
+   ""
+  ],
+  "word.hlen": [
+   "✅",
+   ""
+  ],
+  "word.hlimna": [
+   "😊",
+   ""
+  ],
+  "word.hlothlo": [
+   "🌱",
+   ""
+  ],
+  "word.hlu": [
+   "💎",
+   ""
+  ],
+  "word.hluihlawn": [
+   "🗑️",
+   ""
+  ],
+  "word.hlum": [
+   "💀",
+   ""
+  ],
+  "word.hmangaihna": [
+   "❤️",
+   ""
+  ],
+  "word.hmanhmawh": [
+   "🏃",
+   ""
+  ],
+  "word.hmar": [
+   "⬆️",
+   ""
+  ],
+  "word.hmasawn": [
+   "📈",
+   ""
+  ],
+  "word.hmasawnna": [
+   "📈",
+   ""
+  ],
+  "word.hmingthanna": [
+   "🌟",
+   ""
+  ],
+  "word.hmuak": [
+   "👋",
+   ""
+  ],
+  "word.hna": [
+   "💼",
+   ""
+  ],
+  "word.hnathawh": [
+   "💼",
+   ""
+  ],
+  "word.hnathawk": [
+   "💼",
+   ""
+  ],
+  "word.hnatlang": [
+   "👥💪",
+   ""
+  ],
+  "word.hnawm": [
+   "💧",
+   ""
+  ],
+  "word.hnem": [
+   "🫂",
+   ""
+  ],
+  "word.hnial": [
+   "🙅",
+   ""
+  ],
+  "word.hnim-3": [
+   "👃",
+   ""
+  ],
+  "word.hram": [
+   "🐕🗣️",
+   ""
+  ],
+  "word.hrehawm": [
+   "😣",
+   ""
+  ],
+  "word.hrethiam": [
+   "🧠",
+   ""
+  ],
+  "word.hril": [
+   "🗣️",
+   ""
+  ],
+  "word.hrilh": [
+   "🗣️",
+   ""
+  ],
+  "word.hrilhfiahtu": [
+   "🗣️",
+   ""
+  ],
+  "word.hrisel": [
+   "💪",
+   ""
+  ],
+  "word.hriselna": [
+   "💪",
+   ""
+  ],
+  "word.hruai": [
+   "🧭",
+   ""
+  ],
+  "word.huaihawt": [
+   "📋",
+   ""
+  ],
+  "word.hual": [
+   "⭕",
+   ""
+  ],
+  "word.huan": [
+   "🌱",
+   ""
+  ],
+  "word.huatthlala": [
+   "😠",
+   ""
+  ],
+  "word.huh": [
+   "💦",
+   ""
+  ],
+  "word.hum": [
+   "🛡️",
+   ""
+  ],
+  "word.humhalh": [
+   "🛡️",
+   ""
+  ],
+  "word.hun": [
+   "⏰",
+   ""
+  ],
+  "word.inbiakna": [
+   "💬",
+   ""
+  ],
+  "word.inbiakpawhna": [
+   "💬",
+   ""
+  ],
+  "word.inchhawk": [
+   "🔄",
+   ""
+  ],
+  "word.inchhirna": [
+   "😔",
+   ""
+  ],
+  "word.inhnial": [
+   "🗣️💢",
+   ""
+  ],
+  "word.inngeih": [
+   "🤝",
+   ""
+  ],
+  "word.inpumkhatna": [
+   "🤝",
+   ""
+  ],
+  "word.inthurual": [
+   "🤝",
+   ""
+  ],
+  "word.intiam": [
+   "🤝",
+   ""
+  ],
+  "word.itsikna": [
+   "😒",
+   ""
+  ],
+  "word.jf178.amah": [
+   "🧑",
+   ""
+  ],
+  "word.jf178.at": [
+   "🔪",
+   ""
+  ],
+  "word.jf178.aw": [
+   "🗣️",
+   ""
+  ],
+  "word.jf178.awlsam": [
+   "👌",
+   ""
+  ],
+  "word.jf178.banrek": [
+   "⌚",
+   ""
+  ],
+  "word.jf178.bei": [
+   "💪",
+   ""
+  ],
+  "word.jf178.beiseina": [
+   "🤞",
+   ""
+  ],
+  "word.jf178.chanve": [
+   "🌓",
+   ""
+  ],
+  "word.jf178.chawlhkar": [
+   "📅",
+   ""
+  ],
+  "word.jf178.chhandam": [
+   "🛟",
+   ""
+  ],
+  "word.jf178.chhuk": [
+   "⬇️",
+   ""
+  ],
+  "word.jf178.chhunlai": [
+   "🕛",
+   ""
+  ],
+  "word.jf178.chhunzawm": [
+   "⏩",
+   ""
+  ],
+  "word.jf178.chipchiar": [
+   "🔍",
+   ""
+  ],
+  "word.jf178.do": [
+   "🥊",
+   ""
+  ],
+  "word.jf178.endik": [
+   "🔍",
+   ""
+  ],
+  "word.jf178.engtiangin": [
+   "❓",
+   ""
+  ],
+  "word.jf178.fapa": [
+   "👦",
+   ""
+  ],
+  "word.jf178.fo": [
+   "🔁",
+   ""
+  ],
+  "word.jf178.fun": [
+   "📦",
+   ""
+  ],
+  "word.jf178.hau": [
+   "😠",
+   ""
+  ],
+  "word.jf178.hetah": [
+   "📍",
+   ""
+  ],
+  "word.jf178.hlawh": [
+   "💵",
+   ""
+  ],
+  "word.jf178.hralh": [
+   "💰",
+   ""
+  ],
+  "word.jf178.hrereng": [
+   "🧠",
+   ""
+  ],
+  "word.jf178.hriam": [
+   "🗡️",
+   ""
+  ],
+  "word.jf178.inkarah": [
+   "↔️",
+   ""
+  ],
+  "word.jf178.kei": [
+   "🙋",
+   ""
+  ],
+  "word.jf178.khalhtu": [
+   "🚗",
+   ""
+  ],
+  "word.jf178.khawthlang": [
+   "⬅️",
+   ""
+  ],
+  "word.jf178.mawhpuh": [
+   "👉",
+   ""
+  ],
+  "word.jf178.mil": [
+   "🧩",
+   ""
+  ],
+  "word.jf178.nelawm": [
+   "😊",
+   ""
+  ],
+  "word.jf178.ngaina": [
+   "❤️",
+   ""
+  ],
+  "word.jf178.nghak": [
+   "⏳",
+   ""
+  ],
+  "word.jf178.puar": [
+   "😋",
+   ""
+  ],
+  "word.jf178.rei": [
+   "⏳",
+   ""
+  ],
+  "word.jf178.rim": [
+   "👃",
+   ""
+  ],
+  "word.jf178.sat": [
+   "🪓",
+   ""
+  ],
+  "word.jf178.sawi": [
+   "🗣️",
+   ""
+  ],
+  "word.jf178.taptawm": [
+   "🏠",
+   ""
+  ],
+  "word.jf178.tawp": [
+   "🏁",
+   ""
+  ],
+  "word.jf178.te": [
+   "🤏",
+   ""
+  ],
+  "word.jf178.tem": [
+   "👅",
+   ""
+  ],
+  "word.jf178.thak": [
+   "🌶️",
+   ""
+  ],
+  "word.jf178.thawn": [
+   "📤",
+   ""
+  ],
+  "word.jf178.thlum": [
+   "🍬",
+   ""
+  ],
+  "word.jf178.thu": [
+   "🪑",
+   ""
+  ],
+  "word.jf178.thuhmun": [
+   "🟰",
+   ""
+  ],
+  "word.jf178.thur": [
+   "🍋",
+   ""
+  ],
+  "word.jf178.thutiam": [
+   "🤝",
+   ""
+  ],
+  "word.jf178.titawp": [
+   "⏹️",
+   ""
+  ],
+  "word.jf178.tuihal": [
+   "🥤",
+   ""
+  ],
+  "word.jf178.vawiin": [
+   "📅",
+   ""
+  ],
+  "word.jf178.vit": [
+   "🗡️",
+   ""
+  ],
+  "word.jf178.zuar": [
+   "💰",
+   ""
+  ],
+  "word.jf300.bum": [
+   "🤥",
+   ""
+  ],
+  "word.jf300.chawhpawlh": [
+   "🔀",
+   ""
+  ],
+  "word.jf300.chawl": [
+   "😌",
+   ""
+  ],
+  "word.jf300.chelh": [
+   "✊",
+   ""
+  ],
+  "word.jf300.chhang": [
+   "💬",
+   ""
+  ],
+  "word.jf300.chhanna": [
+   "💬",
+   ""
+  ],
+  "word.jf300.chungah": [
+   "⬆️",
+   ""
+  ],
+  "word.jf300.dai": [
+   "🧊",
+   ""
+  ],
+  "word.jf300.darkar": [
+   "🕐",
+   ""
+  ],
+  "word.jf300.dawng": [
+   "📥",
+   ""
+  ],
+  "word.jf300.dem": [
+   "👉",
+   ""
+  ],
+  "word.jf300.dik": [
+   "✅",
+   ""
+  ],
+  "word.jf300.ei": [
+   "🍽️",
+   ""
+  ],
+  "word.jf300.fak": [
+   "👏",
+   ""
+  ],
+  "word.jf300.fanu": [
+   "👧",
+   ""
+  ],
+  "word.jf300.hlauhna": [
+   "😨",
+   ""
+  ],
+  "word.jf300.hlim": [
+   "😊",
+   ""
+  ],
+  "word.jf300.hmahruai": [
+   "🧭",
+   ""
+  ],
+  "word.jf300.hmangaih": [
+   "❤️",
+   ""
+  ],
+  "word.jf300.hmin": [
+   "🍲",
+   ""
+  ],
+  "word.jf300.hming": [
+   "🏷️",
+   ""
+  ],
+  "word.jf300.hniam": [
+   "⬇️",
+   ""
+  ],
+  "word.jf300.hnuaiah": [
+   "⬇️",
+   ""
+  ],
+  "word.jf300.hnuhnungber": [
+   "⏭️",
+   ""
+  ],
+  "word.jf300.hria": [
+   "🧠",
+   ""
+  ],
+  "word.jf300.hua": [
+   "😠",
+   ""
+  ],
+  "word.jf300.kaihhruai": [
+   "🧭",
+   ""
+  ],
+  "word.jf300.khawchhak": [
+   "➡️",
+   ""
+  ],
+  "word.jf300.kilhna": [
+   "🔩",
+   ""
+  ],
+  "word.jf300.kim": [
+   "✅",
+   ""
+  ],
+  "word.jf300.kir": [
+   "↩️",
+   ""
+  ],
+  "word.jf300.laihawl": [
+   "🎯",
+   ""
+  ],
+  "word.jf300.lawmna": [
+   "😄",
+   ""
+  ],
+  "word.jf300.minit": [
+   "⏱️",
+   ""
+  ],
+  "word.jf300.ngharul": [
+   "🐟",
+   ""
+  ],
+  "word.jf300.ngilnei": [
+   "🤗",
+   ""
+  ],
+  "word.jf300.pawm": [
+   "✅",
+   ""
+  ],
+  "word.jf300.pe": [
+   "🤲",
+   ""
+  ],
+  "word.jf300.pet": [
+   "🦵",
+   ""
+  ],
+  "word.jf300.puithiam": [
+   "🙏",
+   ""
+  ],
+  "word.jf300.remti": [
+   "🤝",
+   ""
+  ],
+  "word.jf300.riltamna": [
+   "🤤",
+   ""
+  ],
+  "word.jf300.ruak": [
+   "🫙",
+   ""
+  ],
+  "word.jf300.so": [
+   "♨️",
+   ""
+  ],
+  "word.jf300.sual": [
+   "❌",
+   ""
+  ],
+  "word.jf300.tan": [
+   "▶️",
+   ""
+  ],
+  "word.jf300.tawng": [
+   "🗣️",
+   ""
+  ],
+  "word.jf300.tenau": [
+   "🤏",
+   ""
+  ],
+  "word.jf300.tha": [
+   "👍",
+   ""
+  ],
+  "word.jf300.thar": [
+   "🆕",
+   ""
+  ],
+  "word.jf300.thaw": [
+   "🫁",
+   ""
+  ],
+  "word.jf300.thawm": [
+   "🛠️",
+   ""
+  ],
+  "word.jf300.thial": [
+   "🦷",
+   ""
+  ],
+  "word.jf300.thihna": [
+   "🪦",
+   ""
+  ],
+  "word.jf300.thingmistiri": [
+   "🪚",
+   ""
+  ],
+  "word.jf300.thinur": [
+   "😠",
+   ""
+  ],
+  "word.jf300.thirdeng": [
+   "⚒️",
+   ""
+  ],
+  "word.jf300.thlang": [
+   "☑️",
+   ""
+  ],
+  "word.jf300.thuk": [
+   "🔥",
+   ""
+  ],
+  "word.jf300.thup": [
+   "🫣",
+   ""
+  ],
+  "word.jf300.tifai": [
+   "🧼",
+   ""
+  ],
+  "word.jf300.tifel": [
+   "⚖️",
+   ""
+  ],
+  "word.jf300.unaupa": [
+   "👦",
+   ""
+  ],
+  "word.jf300.ur": [
+   "🔥🍗",
+   ""
+  ],
+  "word.jf300.vei": [
+   "⬅️",
+   ""
+  ],
+  "word.jf300.vuaicha": [
+   "🦥",
+   ""
+  ],
+  "word.jf300.zawt": [
+   "❓",
+   ""
+  ],
+  "word.jf300.zir": [
+   "📚",
+   ""
+  ],
+  "word.jf300.zo": [
+   "✅",
+   ""
+  ],
+  "word.kaihhruaina": [
+   "🧭",
+   ""
+  ],
+  "word.kaihruaitu": [
+   "🧭",
+   ""
+  ],
+  "word.kalliam": [
+   "🚶",
+   ""
+  ],
+  "word.kawhhmuhtu": [
+   "🧭",
+   ""
+  ],
+  "word.kawngkal": [
+   "🧳",
+   ""
+  ],
+  "word.khawk": [
+   "🔊",
+   ""
+  ],
+  "word.khawkheng": [
+   "🏜️",
+   ""
+  ],
+  "word.khawmual": [
+   "🏞️",
+   ""
+  ],
+  "word.khawngaih": [
+   "🫂",
+   ""
+  ],
+  "word.khawngaihna": [
+   "🫂",
+   ""
+  ],
+  "word.khawngaihthlakawm": [
+   "🥺",
+   ""
+  ],
+  "word.khawtlang": [
+   "👥",
+   ""
+  ],
+  "word.khualzin": [
+   "🧳",
+   ""
+  ],
+  "word.kit": [
+   "🪓🌳",
+   ""
+  ],
+  "word.ko": [
+   "📣",
+   ""
+  ],
+  "word.kum": [
+   "📅",
+   ""
+  ],
+  "word.kutdawh": [
+   "🙏",
+   ""
+  ],
+  "word.lainatawm": [
+   "😊",
+   ""
+  ],
+  "word.lawm": [
+   "😄",
+   ""
+  ],
+  "word.lawmawm": [
+   "😄",
+   ""
+  ],
+  "word.lawmthu": [
+   "🙏",
+   ""
+  ],
+  "word.lu": [
+   "🗣️",
+   ""
+  ],
+  "word.luahtu": [
+   "🏠",
+   ""
+  ],
+  "word.luang": [
+   "🏞️",
+   ""
+  ],
+  "word.luikuang": [
+   "🏞️",
+   ""
+  ],
+  "word.lum": [
+   "🌡️",
+   ""
+  ],
+  "word.lungawi": [
+   "😊",
+   ""
+  ],
+  "word.lungchhia": [
+   "😢",
+   ""
+  ],
+  "word.lungkham": [
+   "😟",
+   ""
+  ],
+  "word.lunglenna": [
+   "😔",
+   ""
+  ],
+  "word.lungngai": [
+   "😢",
+   ""
+  ],
+  "word.lungnilo": [
+   "😒",
+   ""
+  ],
+  "word.lungrual": [
+   "🤝",
+   ""
+  ],
+  "word.lut": [
+   "🚪🚶",
+   ""
+  ],
+  "word.mak": [
+   "😲",
+   ""
+  ],
+  "word.malsawmna": [
+   "🙏",
+   ""
+  ],
+  "word.mangang": [
+   "😰",
+   ""
+  ],
+  "word.muangin": [
+   "🐢",
+   ""
+  ],
+  "word.muanna": [
+   "🕊️",
+   ""
+  ],
+  "word.mumang": [
+   "💭",
+   ""
+  ],
+  "word.na": [
+   "😣",
+   ""
+  ],
+  "word.na-2": [
+   "😣",
+   ""
+  ],
+  "word.natna": [
+   "🤒",
+   ""
+  ],
+  "word.nawknawk": [
+   "🔁",
+   ""
+  ],
+  "word.nawt": [
+   "🧽",
+   ""
+  ],
+  "word.nep": [
+   "🤏",
+   ""
+  ],
+  "word.ngaihdam": [
+   "🤝",
+   ""
+  ],
+  "word.ngaihsak": [
+   "🤲",
+   ""
+  ],
+  "word.ngaihsakna": [
+   "🤲",
+   ""
+  ],
+  "word.ngaihsam": [
+   "😐",
+   ""
+  ],
+  "word.ngaihtuah": [
+   "🤔",
+   ""
+  ],
+  "word.ngaihtuahna": [
+   "🤔",
+   ""
+  ],
+  "word.ngaimawh": [
+   "😒",
+   ""
+  ],
+  "word.ngen": [
+   "🙏",
+   ""
+  ],
+  "word.ngiau": [
+   "🐱🗣️",
+   ""
+  ],
+  "word.ngil": [
+   "📏",
+   ""
+  ],
+  "word.ngurchuai": [
+   "😵‍💫",
+   ""
+  ],
+  "word.nihlawh": [
+   "🍀",
+   ""
+  ],
+  "word.nipui": [
+   "☀️",
+   ""
+  ],
+  "word.nuam": [
+   "😌",
+   ""
+  ],
+  "word.nuihsan": [
+   "😏",
+   ""
+  ],
+  "word.nuihsawh": [
+   "😏",
+   ""
+  ],
+  "word.nunkhawnawmna": [
+   "🛋️",
+   ""
+  ],
+  "word.nupui": [
+   "👩💍",
+   ""
+  ],
+  "word.paih": [
+   "🗑️",
+   ""
+  ],
+  "word.palh": [
+   "😬",
+   ""
+  ],
+  "word.pasal": [
+   "👨💍",
+   ""
+  ],
+  "word.petu": [
+   "🤲",
+   ""
+  ],
+  "word.phalna": [
+   "✅",
+   ""
+  ],
+  "word.phawk": [
+   "👀",
+   ""
+  ],
+  "word.phum": [
+   "🪦",
+   ""
+  ],
+  "word.phur-2": [
+   "🤩",
+   ""
+  ],
+  "word.piai": [
+   "🤏",
+   ""
+  ],
+  "word.pianna": [
+   "👶",
+   ""
+  ],
+  "word.puan": [
+   "🧵",
+   ""
+  ],
+  "word.puanchei": [
+   "🧵",
+   ""
+  ],
+  "word.puitling": [
+   "🧑",
+   ""
+  ],
+  "word.rang": [
+   "💨",
+   ""
+  ],
+  "word.rawl": [
+   "🗣️",
+   ""
+  ],
+  "word.rel": [
+   "⚖️",
+   ""
+  ],
+  "word.remhria": [
+   "🧠",
+   ""
+  ],
+  "word.remna": [
+   "🕊️",
+   ""
+  ],
+  "word.remruat": [
+   "📋",
+   ""
+  ],
+  "word.riangvai": [
+   "😔",
+   ""
+  ],
+  "word.rilru": [
+   "🧠",
+   ""
+  ],
+  "word.riltam": [
+   "🤤",
+   ""
+  ],
+  "word.ringhlel": [
+   "🤨",
+   ""
+  ],
+  "word.rit": [
+   "🏋️",
+   ""
+  ],
+  "word.ropui": [
+   "✨",
+   ""
+  ],
+  "word.ropuina": [
+   "✨",
+   ""
+  ],
+  "word.ropuizia": [
+   "✨",
+   ""
+  ],
+  "word.rorel": [
+   "⚖️",
+   ""
+  ],
+  "word.rualrem": [
+   "🤝",
+   ""
+  ],
+  "word.sahuan": [
+   "🦁🐘",
+   ""
+  ],
+  "word.sang": [
+   "⬆️",
+   ""
+  ],
+  "word.sawmna": [
+   "✉️",
+   ""
+  ],
+  "word.sawntlung": [
+   "🐜🏠",
+   ""
+  ],
+  "word.sawt": [
+   "📈",
+   ""
+  ],
+  "word.seh": [
+   "🦷",
+   ""
+  ],
+  "word.sil": [
+   "🧼",
+   ""
+  ],
+  "word.silai": [
+   "🔫",
+   ""
+  ],
+  "word.su": [
+   "🧺🧼",
+   ""
+  ],
+  "word.suangtuah": [
+   "💭",
+   ""
+  ],
+  "word.sumdawng": [
+   "🏪",
+   ""
+  ],
+  "word.tak": [
+   "✅",
+   ""
+  ],
+  "word.tanpui": [
+   "🤝",
+   ""
+  ],
+  "word.tanpuina": [
+   "🤝",
+   ""
+  ],
+  "word.tanpuitu": [
+   "🤝",
+   ""
+  ],
+  "word.tham": [
+   "💵🤝",
+   ""
+  ],
+  "word.thatchhe": [
+   "🦥",
+   ""
+  ],
+  "word.thatchhia": [
+   "🦥",
+   ""
+  ],
+  "word.thatho": [
+   "⚡",
+   ""
+  ],
+  "word.thatna": [
+   "🤗",
+   ""
+  ],
+  "word.thatni": [
+   "😊",
+   ""
+  ],
+  "word.thawhchhuah": [
+   "💰",
+   ""
+  ],
+  "word.thawhlawm": [
+   "💰",
+   ""
+  ],
+  "word.thawhrimna": [
+   "💪",
+   ""
+  ],
+  "word.thawipik": [
+   "😮‍💨",
+   ""
+  ],
+  "word.thawkrim": [
+   "💪",
+   ""
+  ],
+  "word.thawnthu": [
+   "📖",
+   ""
+  ],
+  "word.theihtawp": [
+   "💪",
+   ""
+  ],
+  "word.thenawm": [
+   "🏘️",
+   ""
+  ],
+  "word.thengthaw": [
+   "🌬️",
+   ""
+  ],
+  "word.thiang": [
+   "✨",
+   ""
+  ],
+  "word.thianghlim": [
+   "✨",
+   ""
+  ],
+  "word.thianghlimna": [
+   "✨",
+   ""
+  ],
+  "word.thidang": [
+   "😵",
+   ""
+  ],
+  "word.thilphal": [
+   "🤲",
+   ""
+  ],
+  "word.thiltihtheihna": [
+   "💪",
+   ""
+  ],
+  "word.thim": [
+   "🌑",
+   ""
+  ],
+  "word.thingtlang": [
+   "🏞️",
+   ""
+  ],
+  "word.thinlung": [
+   "❤️",
+   ""
+  ],
+  "word.thlak": [
+   "🔄",
+   ""
+  ],
+  "word.thlamuan": [
+   "🫂",
+   ""
+  ],
+  "word.thlamuang": [
+   "😌",
+   ""
+  ],
+  "word.thlamuanna": [
+   "🕊️",
+   ""
+  ],
+  "word.thothangtha": [
+   "💪",
+   ""
+  ],
+  "word.thubuai": [
+   "⚖️",
+   ""
+  ],
+  "word.thuhruk": [
+   "🤫",
+   ""
+  ],
+  "word.thukru": [
+   "🫣",
+   ""
+  ],
+  "word.tidur": [
+   "🌥️",
+   ""
+  ],
+  "word.tiharh": [
+   "⏰",
+   ""
+  ],
+  "word.tihlim": [
+   "😊",
+   ""
+  ],
+  "word.tihsak": [
+   "🤝",
+   ""
+  ],
+  "word.tilawm": [
+   "😊",
+   ""
+  ],
+  "word.tithlabar": [
+   "😱",
+   ""
+  ],
+  "word.titi": [
+   "💬",
+   ""
+  ],
+  "word.titlem": [
+   "➖",
+   ""
+  ],
+  "word.tla": [
+   "⬇️",
+   ""
+  ],
+  "word.tlanchhia": [
+   "🏃💨",
+   ""
+  ],
+  "word.tlanchhiatna": [
+   "🏃💨",
+   ""
+  ],
+  "word.tlawmngai": [
+   "🤝",
+   ""
+  ],
+  "word.tlem": [
+   "🤏",
+   ""
+  ],
+  "word.tuantha": [
+   "⚡",
+   ""
+  ],
+  "word.tuar": [
+   "😣",
+   ""
+  ],
+  "word.tuihnai": [
+   "😋",
+   ""
+  ],
+  "word.tuitang": [
+   "✨",
+   ""
+  ],
+  "word.tumruh": [
+   "💪",
+   ""
+  ],
+  "word.tumruhna": [
+   "💪",
+   ""
+  ],
+  "word.vanneihna": [
+   "🍀",
+   ""
+  ],
+  "word.vantlang": [
+   "👥",
+   ""
+  ],
+  "word.vawng": [
+   "🛡️",
+   ""
+  ],
+  "word.vir": [
+   "🔄",
+   ""
+  ],
+  "word.zah": [
+   "🙇",
+   ""
+  ],
+  "word.zahawm": [
+   "🙇",
+   ""
+  ],
+  "word.zahthlak": [
+   "😳",
+   ""
+  ],
+  "word.zakzum": [
+   "☺️",
+   ""
+  ],
+  "word.zalen": [
+   "🕊️",
+   ""
+  ],
+  "word.zang": [
+   "🪶",
+   ""
+  ],
+  "word.zanin-2": [
+   "🌃",
+   ""
+  ],
+  "word.zanriah": [
+   "🍽️🌙",
+   ""
+  ],
+  "word.zirna": [
+   "📚",
+   ""
+  ],
+  "word.infiam": [
+   "🎮⚽",
+   "⚽"
+  ],
+  "word.infiamna": [
+   "🎮⚽",
+   "⚽"
+  ],
+  "word.inkhel": [
+   "🎮⚽",
+   "⚽"
+  ],
+  "word.jf300.lalber": [
+   "👑",
+   "🤴"
+  ],
+  "word.jf300.lalnu": [
+   "👑",
+   "👸"
+  ],
+  "word.jf300.thingtuah": [
+   "🪵🔥",
+   "🪵"
+  ]
+ }
+}
