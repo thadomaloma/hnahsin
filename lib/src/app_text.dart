@@ -577,6 +577,8 @@ const appTextDefaults = <String, AppTextDefault>{
       'Journey', 'Preview content — awaiting Mizo language review.'),
   'journey.nodeSpoken': AppTextDefault('Journey', '{title}, {status}'),
   'journey.nodeLevel': AppTextDefault('Journey', 'Level {n}'),
+  'journey.nodeCards': AppTextDefault('Journey', '{have}/{n} cards'),
+  'journey.chapters': AppTextDefault('Journey', 'The story'),
   'journey.replay': AppTextDefault('Journey', 'REPLAY'),
   'journey.start': AppTextDefault('Journey', 'START'),
   'journey.collection': AppTextDefault('Journey', 'My Collection'),
@@ -585,6 +587,9 @@ const appTextDefaults = <String, AppTextDefault>{
       'You\'ll earn a reward when you finish your first Story Quest.'),
   'story.title': AppTextDefault('Journey', 'Story Quest'),
   'story.chooseReply': AppTextDefault('Journey', 'Choose a natural reply'),
+  'story.words': AppTextDefault('Journey', 'WORDS IN THIS CHAPTER'),
+  'story.tryAgain':
+      AppTextDefault('Journey', 'That doesn\'t fit here. Try another reply.'),
   'story.complete': AppTextDefault('Journey', 'Complete Story'),
   'story.completeTitle': AppTextDefault('Journey', 'Story Complete'),
   'story.wellDone': AppTextDefault('Journey', 'Well done!'),

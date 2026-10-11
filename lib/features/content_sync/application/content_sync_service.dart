@@ -18,6 +18,7 @@ class ContentSyncService {
   List<DeliveredWord> activeWords = const <DeliveredWord>[];
   List<DeliveredQuestion> activeQuestions = const <DeliveredQuestion>[];
   List<DeliveredSentence> activeSentences = const <DeliveredSentence>[];
+  List<DeliveredStoryChapter> activeStoryChapters = const <DeliveredStoryChapter>[];
   Map<String, DeliveredGameCopy> activeGameCopy = const <String, DeliveredGameCopy>{};
   Map<String, String> activeAppText = const <String, String>{};
 
@@ -76,6 +77,7 @@ class ContentSyncService {
     activeWords = content == null ? const <DeliveredWord>[] : DeliveredWord.parseAll(items);
     activeQuestions = DeliveredQuestion.parseAll(items);
     activeSentences = DeliveredSentence.parseAll(items);
+    activeStoryChapters = DeliveredStoryChapter.parseAll(items);
     activeGameCopy = DeliveredGameCopy.parseAll(items);
     activeAppText = DeliveredAppText.parseAll(items);
     final images = <String, Uint8List>{};

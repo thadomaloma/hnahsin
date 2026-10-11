@@ -277,66 +277,75 @@ class _WordCardsScreenState extends State<WordCardsScreen> {
       );
 
   void _showCard(BuildContext context, WordEntry entry, int level) =>
-      showModalBottomSheet<void>(
-        context: context,
-        backgroundColor: Colors.white,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
-        isScrollControlled: true,
-        builder: (sheetContext) => SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              SizedBox(
-                  width: 120,
-                  height: 146,
-                  child: WordCard(entry: entry, level: level)),
-              const SizedBox(height: 14),
-              Text(entry.word,
-                  style: const TextStyle(
-                      fontSize: 26, fontWeight: FontWeight.w900)),
-              if (entry.englishGloss.trim().isNotEmpty)
-                Text(entry.englishGloss,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        color: QuestColors.tealDark,
-                        fontWeight: FontWeight.w800)),
-              const SizedBox(height: 10),
-              Text(entry.meaningMizo,
+      showWordDetails(context, widget.controller, entry);
+}
+
+/// A word's card, meaning, example and sentences that use it, in a sheet.
+/// A word not collected yet shows its picture in place of the card.
+Future<void> showWordDetails(
+    BuildContext context, QuestController controller, WordEntry entry) {
+  final level = controller.wordCards[entry.id] ?? 0;
+  return showModalBottomSheet<void>(
+    context: context,
+    backgroundColor: Colors.white,
+    shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
+    isScrollControlled: true,
+    builder: (sheetContext) => SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          SizedBox(
+              width: 120,
+              height: 146,
+              child: level > 0
+                  ? WordCard(entry: entry, level: level)
+                  : Center(child: WordPicture(entry: entry, size: 84))),
+          const SizedBox(height: 14),
+          Text(entry.word,
+              style:
+                  const TextStyle(fontSize: 26, fontWeight: FontWeight.w900)),
+          if (entry.englishGloss.trim().isNotEmpty)
+            Text(entry.englishGloss,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    color: QuestColors.tealDark, fontWeight: FontWeight.w800)),
+          const SizedBox(height: 10),
+          Text(entry.meaningMizo,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontWeight: FontWeight.w600)),
+          if (entry.exampleMizo.trim().isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text('“${entry.exampleMizo}”',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    color: QuestColors.slate, fontStyle: FontStyle.italic)),
+          ],
+          // The word at work in real sentences, with their meaning.
+          if (controller.sentenceIndex.sentencesUsing(entry)
+              case final sentences when sentences.isNotEmpty) ...[
+            const SizedBox(height: 14),
+            Text(AppText.of('cards.seenIn'),
+                style: const TextStyle(
+                    color: QuestColors.slate,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: .8)),
+            for (final sentence in sentences) ...[
+              const SizedBox(height: 6),
+              Text('“${sentence.textMizo}”',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontWeight: FontWeight.w600)),
-              if (entry.exampleMizo.trim().isNotEmpty) ...[
-                const SizedBox(height: 8),
-                Text('“${entry.exampleMizo}”',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        color: QuestColors.slate, fontStyle: FontStyle.italic)),
-              ],
-              // The word at work in real sentences, with their meaning.
-              if (widget.controller.sentenceIndex.sentencesUsing(entry)
-                  case final sentences when sentences.isNotEmpty) ...[
-                const SizedBox(height: 14),
-                Text(AppText.of('cards.seenIn'),
-                    style: const TextStyle(
-                        color: QuestColors.slate,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: .8)),
-                for (final sentence in sentences) ...[
-                  const SizedBox(height: 6),
-                  Text('“${sentence.textMizo}”',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontWeight: FontWeight.w700)),
-                  Text(sentence.englishSupport,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: QuestColors.slate, fontSize: 13)),
-                ],
-              ],
-            ]),
-          ),
-        ),
-      );
+                  style: const TextStyle(fontWeight: FontWeight.w700)),
+              Text(sentence.englishSupport,
+                  textAlign: TextAlign.center,
+                  style:
+                      const TextStyle(color: QuestColors.slate, fontSize: 13)),
+            ],
+          ],
+        ]),
+      ),
+    ),
+  );
 }
 
 /// Learn's way into the album: how many cards so far.

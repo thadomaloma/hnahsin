@@ -6,6 +6,7 @@ import '../features/games/engine/game_difficulty.dart';
 import '../features/games/engine/game_engine.dart';
 import '../features/content_sync/application/content_sync_service.dart';
 import '../features/content_sync/domain/delivery_models.dart';
+import '../features/journey/domain/journey_book.dart';
 import '../features/journey/domain/journey_content.dart';
 import '../features/journey/domain/journey_engine.dart';
 import '../features/journey/domain/journey_models.dart';
@@ -210,17 +211,40 @@ class QuestController extends ChangeNotifier {
         now: DateTime.now(),
       );
 
+  /// The journey's chapters: the content Sheet's once published, else the
+  /// built-in stories.
+  JourneyBook get journey {
+    final chapters = _contentSyncService?.activeStoryChapters ??
+        const <DeliveredStoryChapter>[];
+    if (_journey == null || !identical(_journeyChapters, chapters)) {
+      _journey = JourneyBook.fromChapters(chapters);
+      _journeyChapters = chapters;
+    }
+    return _journey!;
+  }
+
+  JourneyBook? _journey;
+  Object? _journeyChapters;
+
+  /// Word cards collected for words still in the catalog, as Word Cards
+  /// counts them.
+  int get collectedCardCount {
+    final delivered = _contentSyncService?.activeWords;
+    if (delivered == null || !_deliveredCatalogReady) {
+      return wordCards.values.where((level) => level > 0).length;
+    }
+    return delivered.where((word) => (wordCards[word.id] ?? 0) > 0).length;
+  }
+
+  /// Chapters of [journey] finished.
+  int get journeyDone => journey.nodes
+      .where((node) => journeyState.completedNodeIds.contains(node.id))
+      .length;
+
   JourneyNode? get nextJourneyNode {
-    for (final node in journeyNodes) {
+    for (final node in journey.nodes) {
       if (!JourneyContentPolicy.playable(node.review)) continue;
-      if (_journeyEngine.statusFor(
-            node: node,
-            state: journeyState,
-            learningLevel: learningState.level.index,
-          ) ==
-          JourneyNodeStatus.available) {
-        return node;
-      }
+      if (journeyStatus(node) == JourneyNodeStatus.available) return node;
     }
     return null;
   }
@@ -229,6 +253,7 @@ class QuestController extends ChangeNotifier {
         node: node,
         state: journeyState,
         learningLevel: learningState.level.index,
+        cardsCollected: collectedCardCount,
       );
 
   bool cultureCardUnlocked(CultureCard card) =>
@@ -507,11 +532,11 @@ class QuestController extends ChangeNotifier {
     required String nodeId,
     required int choicesMade,
   }) async {
-    final node = journeyNodeById(nodeId);
+    final node = journey.nodeById(nodeId);
     if (node == null || !JourneyContentPolicy.playable(node.review)) {
       return false;
     }
-    final story = journeyStoryById(node.storyId);
+    final story = journey.storyById(node.storyId);
     if (story == null || !JourneyContentPolicy.playable(story.review)) {
       return false;
     }
@@ -526,6 +551,7 @@ class QuestController extends ChangeNotifier {
       now: now,
       learningLevel: learningState.level.index,
       choicesMade: choicesMade,
+      cardsCollected: collectedCardCount,
     );
     if (identical(next, before)) return false;
     journeyState = alreadyCompleted
@@ -536,16 +562,40 @@ class QuestController extends ChangeNotifier {
             now: now,
             amount: story.targetWordIds.length,
           );
+    // The chapter's words count as a round played right: towards their
+    // cards. Ids the catalog doesn't have (the built-in stories' lesson
+    // items) are reviewed as before.
+    final catalog = {for (final entry in wordCatalog) entry.id: entry};
+    final byWord = {
+      for (final entry in wordCatalog.reversed) normalizeMizo(entry.word): entry
+    };
+    final plays = <WordPlay>[];
+    final others = <String>[];
+    for (final id in story.targetWordIds) {
+      final entry = catalog[id] ?? byWord[normalizeMizo(id)];
+      if (entry == null) {
+        others.add(id);
+      } else {
+        plays.add(WordPlay(id: entry.id, word: entry.word));
+      }
+    }
+    lastJourneyCards = const CardsEarned();
     if (!alreadyCompleted) {
-      learningState = _reviewStoryTargets(story.targetWordIds, now.toUtc());
+      learningState = _reviewStoryTargets(others, now.toUtc());
     }
     notifyListeners();
     await Future.wait(<Future<void>>[
       _repository.saveJourneyState(journeyState),
       if (!alreadyCompleted) _repository.saveLearningState(learningState),
     ]);
+    if (!alreadyCompleted && plays.isNotEmpty) {
+      lastJourneyCards = await recordWordsPlayed(plays);
+    }
     return true;
   }
+
+  /// The cards the last finished chapter earned.
+  CardsEarned lastJourneyCards = const CardsEarned();
 
   LearningState _reviewStoryTargets(List<String> itemIds, DateTime now) {
     final masteries = <String, ItemMastery>{...learningState.masteries};

@@ -415,7 +415,7 @@ class CollectionScreen extends StatelessWidget {
                     .contains(card.id),
               )
               .toList(growable: false);
-          final storyRewards = journeyRewards
+          final storyRewards = controller.journey.rewards
               .where(
                 (reward) => controller.journeyState.unlockedRewardIds.contains(
                   reward.id,

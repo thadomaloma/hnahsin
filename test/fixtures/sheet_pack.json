@@ -1,7 +1,7 @@
 {
  "id": "00000000-0000-4000-8000-000000000000",
  "version": "2.20261001.120000",
- "checksum": "0f9437a6dfe2841375869f8e56c4f0b88d9d309fa08cf0030696251ac38089aa",
+ "checksum": "f35cdabf73e16b667e017ede147670eb1fcba54703419d6464d8648760590cbd",
  "published_at": "2026-10-01T12:00:00Z",
  "manifest": {
   "schema_version": "1.0",
@@ -25,6 +25,73 @@
     "body": {
      "text_id": "home.streak",
      "text": "Ni {n} indawt"
+    }
+   },
+   {
+    "stable_id": "chapter.inlampan",
+    "content_type": "story_chapter",
+    "checksum": "a1ea0ae38ca7c0b4d9dda4bf2292bec80095198d8aaced5c1222f9d862f85cc6",
+    "body": {
+     "order": 1,
+     "title_mizo": "In Lam Pan",
+     "title_english": "Coming Home",
+     "emoji": "🏡",
+     "intro_mizo": "Rova chu Aizawl-ah a lo haw.",
+     "intro_english": "Rova comes home to Aizawl.",
+     "word_ids": [
+      "word.w1",
+      "word.lu",
+      "word.w2"
+     ],
+     "cards_needed": 0,
+     "culture_note_mizo": "",
+     "culture_note_english": "",
+     "lines": [
+      {
+       "speaker": "Pi",
+       "mizo": "I dam em?",
+       "english": "How are you?",
+       "replies": [
+        {
+         "mizo": "Ka dam e.",
+         "english": "I am well.",
+         "answer_mizo": "",
+         "right": true
+        },
+        {
+         "mizo": "Ka ei tawh e.",
+         "english": "I have eaten.",
+         "answer_mizo": "Han thlang leh teh.",
+         "right": false
+        },
+        {
+         "mizo": "Ni lo.",
+         "english": "No.",
+         "answer_mizo": "",
+         "right": false
+        }
+       ]
+      },
+      {
+       "speaker": "Pi",
+       "mizo": "Chaw i ei tawh em?",
+       "english": "Have you eaten?",
+       "replies": [
+        {
+         "mizo": "Ka ei tawh e.",
+         "english": "I have eaten.",
+         "answer_mizo": "A ṭha e.",
+         "right": true
+        },
+        {
+         "mizo": "Ka dam e.",
+         "english": "I am well.",
+         "answer_mizo": "Chaw chungchâng ka zawt che a nia.",
+         "right": false
+        }
+       ]
+      }
+     ]
     }
    },
    {

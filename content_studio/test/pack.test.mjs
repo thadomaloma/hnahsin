@@ -39,6 +39,25 @@ function tabs() {
       level: '1', status: 'Live',
     }],
     sentences: [{ row: 2, id: 'sentence.001', text: 'Ka nu chu a hlim.', english: 'My mother is happy.', level: 1, status: 'Live' }],
+    chapters: [{
+      row: 2, id: 'chapter.inlampan', chapter: 1, title: 'In Lam Pan', english_title: 'Coming Home', emoji: '🏡',
+      intro: 'Rova chu Aizawl-ah a lo haw.', english_intro: 'Rova comes home to Aizawl.', words: 'thumal1, lu, word.w2',
+      cards: '', culture: '', english_culture: '', status: 'Live',
+    }],
+    storyLines: [
+      {
+        row: 3, id: '', chapter: 1, line: 2, speaker: 'Pi', says: 'Chaw i ei tawh em?', english_says: 'Have you eaten?',
+        right: 'Ka ei tawh e.', english_right: 'I have eaten.', right_answer: 'A ṭha e.',
+        wrong1: 'Ka dam e.', english_wrong1: 'I am well.', wrong1_answer: 'Chaw chungchâng ka zawt che a nia.',
+        wrong2: '', status: 'Live',
+      },
+      {
+        row: 2, id: 'line.hello', chapter: 1, line: 1, speaker: 'Pi', says: 'I dam em?', english_says: 'How are you?',
+        right: 'Ka dam e.', english_right: 'I am well.', right_answer: '',
+        wrong1: 'Ka ei tawh e.', english_wrong1: 'I have eaten.', wrong1_answer: 'Han thlang leh teh.',
+        wrong2: 'Ni lo.', english_wrong2: 'No.', wrong2_answer: '', status: 'Live',
+      },
+    ],
     gameText: [{ row: 2, id: 'game.common', game: 'common', correct_feedback: 'A dik e!', retry_feedback: '', step1: '', status: 'Live' }],
     appText: [
       { row: 2, id: 'home.play', where: 'Home', default: 'Khel rawh', text: 'Khel nghal rawh', note: '' },
@@ -52,8 +71,8 @@ function tabs() {
 test('builds a pack from the live rows and gives new rows an ID', () => {
   const result = P.buildPack(tabs(), options);
   assert.deepEqual(result.problems, []);
-  assert.deepEqual(result.counts, { words: 22, questions: 1, sentences: 1, gameText: 1, appText: 2 });
-  assert.deepEqual(result.newIds.map((n) => n.id), ['word.lu', 'question.thufingtihhianengngeakawh']);
+  assert.deepEqual(result.counts, { words: 22, questions: 1, sentences: 1, chapters: 1, gameText: 1, appText: 2 });
+  assert.deepEqual(result.newIds.map((n) => n.id), ['word.lu', 'question.thufingtihhianengngeakawh', 'line.chawieitawhem']);
   const items = result.envelope.manifest.items;
   const lu = items.find((i) => i.stable_id === 'word.lu');
   assert.deepEqual(lu.body.game_modes, ['picture_match', 'thumal_kawp']);
@@ -82,6 +101,8 @@ test('reports problems in Mizo with the row, and builds nothing', () => {
 test('a pack with too few words is refused, since the app would ignore it', () => {
   const t = tabs();
   t.words = t.words.slice(0, 5);
+  t.chapters = [];
+  t.storyLines = [];
   assert.match(P.buildPack(t, options).problems.at(-1).message, /at least 20/);
 });
 
@@ -112,4 +133,29 @@ test('an app text row the app does not know is reported', () => {
   const t = tabs();
   t.appText.push({ row: 6, id: 'home.typo', where: '', default: '', text: 'Chibai', note: '' });
   assert.match(P.buildPack(t, options).problems[0].message, /home\.typo/);
+});
+
+test('a chapter holds its lines in order and its words as IDs', () => {
+  const chapter = P.buildPack(tabs(), options).envelope.manifest.items.find((i) => i.content_type === 'story_chapter');
+  assert.equal(chapter.stable_id, 'chapter.inlampan');
+  assert.deepEqual(chapter.body.word_ids, ['word.w1', 'word.lu', 'word.w2']);
+  assert.equal(chapter.body.cards_needed, 0);
+  assert.deepEqual(chapter.body.lines.map((l) => l.mizo), ['I dam em?', 'Chaw i ei tawh em?']);
+  assert.deepEqual(chapter.body.lines[0].replies.map((r) => [r.mizo, r.right]),
+    [['Ka dam e.', true], ['Ka ei tawh e.', false], ['Ni lo.', false]]);
+});
+
+test('chapter problems are reported with their row', () => {
+  const t = tabs();
+  t.chapters[0].words = 'thumal1, nihlawh';
+  t.chapters.push({ row: 3, id: '', chapter: 2, title: 'Bazar', status: 'Live' });
+  t.storyLines.push({ row: 4, id: '', chapter: 9, line: 1, says: 'Hello', right: 'A', wrong1: 'B', status: 'Live' });
+  t.storyLines[0].wrong1 = 'Ka ei tawh e.';
+  const messages = P.buildPack(t, options).problems.map((p) => `${p.tab} ${p.row}: ${p.message}`);
+  assert.deepEqual(messages.sort(), [
+    'Chapters 2: Word “nihlawh” is not a “Live” word on the Words tab.',
+    'Chapters 3: Chapter 2 has no “Live” rows on the Story lines tab.',
+    'Story lines 3: “Wrong reply 1” is the same as the right reply.',
+    'Story lines 4: There is no “Live” chapter 9 on the Chapters tab.',
+  ]);
 });

@@ -1,6 +1,7 @@
 # Hnahsin content Sheet
 
-The app's words, Tawng Upa questions, Sentence Builder sentences, game text
+The app's words, Tawng Upa questions, Sentence Builder sentences, the Journey's
+story chapters, game text
 and every label, button and message (the **App text** tab) are edited in a
 Google Sheet. **Hnahsin → 🚀 Publish to the app** checks every row
 and publishes the content pack to GitHub Pages, where the app downloads it
@@ -55,8 +56,9 @@ Each row is one of the app's texts: **ID**, **Where** (where it shows),
 changes. Only rows whose Text differs from Built-in text are published; the
 app keeps its built-in text for the rest. `{n}`-style placeholders in Text
 must match Built-in text's, or publishing reports the row (and the app would
-ignore it anyway). The journey's stories and culture cards are not in the
-Sheet yet.
+ignore it anyway). The journey's story is on the **Chapters** and **Story lines** tabs (the app
+falls back to its three built-in stories until some are published); culture
+cards are not in the Sheet yet.
 
 The texts live in `lib/src/app_text.dart`. After adding one there, add its row:
 `dart run tool/app_text_rows.dart` prints every row tab-separated (ID, Where,

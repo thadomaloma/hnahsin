@@ -12,6 +12,8 @@ var TABS = {
   words: 'Words',
   questions: 'Questions',
   sentences: 'Sentences',
+  chapters: 'Chapters',
+  storyLines: 'Story lines',
   gameText: 'Game text',
   appText: 'App text',
   help: 'Help',
@@ -86,6 +88,42 @@ var COLUMNS = {
     ['status', 'Status'],
     ['note', 'Note'],
   ],
+  // The journey's story: one row per chapter, and its lines (what someone
+  // says and the replies to choose from) on Story lines.
+  chapters: [
+    ['id', 'ID'],
+    ['chapter', 'Chapter'],
+    ['title', 'Title (Mizo)'],
+    ['english_title', 'Title (English)'],
+    ['emoji', 'Emoji'],
+    ['intro', 'Intro (Mizo)'],
+    ['english_intro', 'Intro (English)'],
+    ['words', 'Words'],
+    ['cards', 'Cards needed'],
+    ['culture', 'Culture note (Mizo)'],
+    ['english_culture', 'Culture note (English)'],
+    ['status', 'Status'],
+    ['note', 'Note'],
+  ],
+  storyLines: [
+    ['id', 'ID'],
+    ['chapter', 'Chapter'],
+    ['line', 'Line'],
+    ['speaker', 'Speaker'],
+    ['says', 'Says (Mizo)'],
+    ['english_says', 'Says (English)'],
+    ['right', 'Right reply (Mizo)'],
+    ['english_right', 'Right reply (English)'],
+    ['right_answer', 'Answer to right reply (Mizo)'],
+    ['wrong1', 'Wrong reply 1 (Mizo)'],
+    ['english_wrong1', 'Wrong reply 1 (English)'],
+    ['wrong1_answer', 'Answer to wrong reply 1 (Mizo)'],
+    ['wrong2', 'Wrong reply 2 (Mizo)'],
+    ['english_wrong2', 'Wrong reply 2 (English)'],
+    ['wrong2_answer', 'Answer to wrong reply 2 (Mizo)'],
+    ['status', 'Status'],
+    ['note', 'Note'],
+  ],
   gameText: [
     ['id', 'ID'],
     ['game', 'Game'],
@@ -147,6 +185,13 @@ function wholeNumber(value) {
   return text(value) !== '' && Number.isInteger(number) ? number : NaN;
 }
 
+/** Lower case without circumflexes, to compare Mizo spellings. */
+function fold(value) {
+  return text(value).toLowerCase()
+    .replace(/[âäà]/g, 'a').replace(/[êëè]/g, 'e').replace(/[îïì]/g, 'i')
+    .replace(/[ôöò]/g, 'o').replace(/[ûüù]/g, 'u').replace(/ṭ/g, 't');
+}
+
 function ticked(value) {
   return value === true || /^(true|yes|x|✓|✔)$/i.test(text(value));
 }
@@ -169,7 +214,7 @@ function newId(prefix, source, taken) {
 /**
  * Checks every tab and builds the pack.
  *
- * tabs: {words, questions, sentences, gameText}: arrays of row objects keyed
+ * tabs: {words, questions, sentences, chapters, storyLines, gameText, appText}: arrays of row objects keyed
  *   as in COLUMNS, each with `row` (its row number in the sheet).
  * options.sha256Hex(string): hex SHA-256 of a string's UTF-8 bytes.
  * options.picture(name): {checksum, content_type, byte_size} for a picture in
@@ -186,7 +231,7 @@ function buildPack(tabs, options) {
   var newIds = [];
   var items = [];
   var pictures = [];
-  var counts = { words: 0, questions: 0, sentences: 0, gameText: 0, appText: 0 };
+  var counts = { words: 0, questions: 0, sentences: 0, chapters: 0, gameText: 0, appText: 0 };
   var taken = {};
 
   function problem(tab, row, message) { problems.push({ tab: TABS[tab], row: row, message: message }); }
@@ -318,6 +363,94 @@ function buildPack(tabs, options) {
     if (problems.length > before) return;
     add(idFor('sentences', 'sentence', row, sentence), 'sentence', body);
     counts.sentences += 1;
+  });
+
+  // Live words by ID and by spelling, for a chapter's Words.
+  var liveWordIds = {};
+  var wordIdsBySpelling = {};
+  items.forEach(function (item) {
+    if (item.content_type !== 'word') return;
+    liveWordIds[item.stable_id] = true;
+    var spelling = fold(item.body.word);
+    (wordIdsBySpelling[spelling] = wordIdsBySpelling[spelling] || []).push(item.stable_id);
+  });
+
+  // Each Live chapter's Live lines, in Line order.
+  var linesByChapter = {};
+  (tabs.storyLines || []).forEach(function (row) {
+    if (statusOf('storyLines', row) !== STATUS.live) return;
+    var before = problems.length;
+    var chapter = wholeNumber(row.chapter);
+    if (!(chapter >= 1)) problem('storyLines', row.row, '“Chapter” must be the number of a chapter on the Chapters tab (1, 2, 3 …).');
+    var says = required('storyLines', row, 'says', 'Says (Mizo)');
+    var right = required('storyLines', row, 'right', 'Right reply (Mizo)');
+    required('storyLines', row, 'wrong1', 'Wrong reply 1 (Mizo)');
+    var replies = [{ mizo: right, english: text(row.english_right), answer_mizo: text(row.right_answer), right: true }];
+    [1, 2].forEach(function (n) {
+      var wrong = text(row['wrong' + n]);
+      if (!wrong) return;
+      if (fold(wrong) === fold(right)) problem('storyLines', row.row, '“Wrong reply ' + n + '” is the same as the right reply.');
+      replies.push({ mizo: wrong, english: text(row['english_wrong' + n]), answer_mizo: text(row['wrong' + n + '_answer']), right: false });
+    });
+    idFor('storyLines', 'line', row, says);
+    if (problems.length > before) return;
+    (linesByChapter[chapter] = linesByChapter[chapter] || []).push({
+      order: wholeNumber(row.line), row: row.row,
+      line: { speaker: text(row.speaker), mizo: says, english: text(row.english_says), replies: replies },
+    });
+  });
+
+  var seenChapters = {};
+  (tabs.chapters || []).forEach(function (row) {
+    if (statusOf('chapters', row) !== STATUS.live) return;
+    var before = problems.length;
+    var chapter = wholeNumber(row.chapter);
+    if (!(chapter >= 1)) {
+      problem('chapters', row.row, '“Chapter” must be a number: 1 for the first chapter, 2 for the next …');
+    } else if (seenChapters[chapter]) {
+      problem('chapters', row.row, 'There is already a chapter ' + chapter + '.');
+    }
+    seenChapters[chapter] = true;
+    var title = required('chapters', row, 'title', 'Title (Mizo)');
+    var cards = text(row.cards) === '' ? 0 : wholeNumber(row.cards);
+    if (!(cards >= 0)) problem('chapters', row.row, '“Cards needed” must be a number (0 or more), or empty.');
+    var wordIds = [];
+    text(row.words).split(/[,;\n]/).map(text).filter(Boolean).forEach(function (word) {
+      if (liveWordIds[word]) return wordIds.push(word);
+      var ids = wordIdsBySpelling[fold(word)] || [];
+      if (!ids.length) {
+        problem('chapters', row.row, 'Word “' + word + '” is not a “' + STATUS.live + '” word on the Words tab.');
+      } else if (ids.length > 1) {
+        problem('chapters', row.row, '“' + word + '” is on the Words tab more than once. Write the ID of the one you mean instead: ' + ids.join(', ') + '.');
+      } else {
+        wordIds.push(ids[0]);
+      }
+    });
+    var lines = (linesByChapter[chapter] || []).slice().sort(function (a, b) {
+      return (a.order || 0) - (b.order || 0) || a.row - b.row;
+    });
+    if (chapter >= 1 && !lines.length) problem('chapters', row.row, 'Chapter ' + chapter + ' has no “' + STATUS.live + '” rows on the Story lines tab.');
+    if (problems.length > before) return;
+    add(idFor('chapters', 'chapter', row, title), 'story_chapter', {
+      order: chapter,
+      title_mizo: title,
+      title_english: text(row.english_title),
+      emoji: text(row.emoji),
+      intro_mizo: text(row.intro),
+      intro_english: text(row.english_intro),
+      word_ids: wordIds,
+      cards_needed: cards,
+      culture_note_mizo: text(row.culture),
+      culture_note_english: text(row.english_culture),
+      lines: lines.map(function (entry) { return entry.line; }),
+    });
+    counts.chapters += 1;
+  });
+  Object.keys(linesByChapter).forEach(function (chapter) {
+    if (seenChapters[chapter]) return;
+    linesByChapter[chapter].forEach(function (entry) {
+      problem('storyLines', entry.row, 'There is no “' + STATUS.live + '” chapter ' + chapter + ' on the Chapters tab.');
+    });
   });
 
   var seenGames = {};

@@ -17,13 +17,16 @@ class JourneyEngine {
     required JourneyNode node,
     required JourneyState state,
     required int learningLevel,
+    int cardsCollected = 0,
   }) {
     if (state.completedNodeIds.contains(node.id)) {
       return JourneyNodeStatus.completed;
     }
-    final prerequisitesMet = node.prerequisiteNodeIds
-        .every(state.completedNodeIds.contains);
-    return prerequisitesMet && learningLevel >= node.minimumLevel
+    final prerequisitesMet =
+        node.prerequisiteNodeIds.every(state.completedNodeIds.contains);
+    return prerequisitesMet &&
+            learningLevel >= node.minimumLevel &&
+            cardsCollected >= node.cardsNeeded
         ? JourneyNodeStatus.available
         : JourneyNodeStatus.locked;
   }
@@ -35,11 +38,13 @@ class JourneyEngine {
     required DateTime now,
     required int learningLevel,
     required int choicesMade,
+    int cardsCollected = 0,
   }) {
     if (statusFor(
           node: node,
           state: state,
           learningLevel: learningLevel,
+          cardsCollected: cardsCollected,
         ) ==
         JourneyNodeStatus.locked) {
       return state;

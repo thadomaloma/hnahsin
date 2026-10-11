@@ -40,6 +40,7 @@ function readTab(key) {
 function readTabs() {
   return {
     words: readTab('words'), questions: readTab('questions'), sentences: readTab('sentences'),
+    chapters: readTab('chapters'), storyLines: readTab('storyLines'),
     gameText: readTab('gameText'), appText: readTab('appText'),
   };
 }
@@ -106,6 +107,7 @@ function build(pictures) {
 /** What a publish holds, e.g. “1147 words, 5 questions, …”. */
 function summary(counts) {
   return counts.words + ' words, ' + counts.questions + ' questions, ' + counts.sentences + ' sentences, ' +
+    counts.chapters + ' story chapters, ' +
     counts.gameText + ' game texts and ' + counts.appText + ' changed app texts';
 }
 
@@ -301,7 +303,9 @@ function setUpSheet() {
       });
       whole('ID').protect().setDescription('ID').setWarningOnly(true);
     }
-    ['Meaning (Mizo)', 'Example (Mizo)', 'Question (Mizo)', 'Explanation (Mizo)', 'Note', 'Sentence (Mizo)'].forEach(function (heading) {
+    ['Meaning (Mizo)', 'Example (Mizo)', 'Question (Mizo)', 'Explanation (Mizo)', 'Note', 'Sentence (Mizo)',
+      'Intro (Mizo)', 'Intro (English)', 'Culture note (Mizo)', 'Culture note (English)', 'Words',
+      'Says (Mizo)', 'Says (English)', 'Right reply (Mizo)', 'Wrong reply 1 (Mizo)', 'Wrong reply 2 (Mizo)'].forEach(function (heading) {
       if (column(heading) > 0) sheet.setColumnWidth(column(heading), 280);
     });
     if (key === 'words') {
@@ -379,6 +383,8 @@ function writeHelp(ss) {
     [''],
     ['Questions tab: questions for the Tawng Upa game. Write 4 answers and pick the number (1–4) of the right one in “Right answer”.'],
     ['Sentences tab: sentences for Sentence Builder. A Mizo sentence and its English meaning.'],
+    ['Chapters tab: the Journey story, one row per chapter. Chapter = its number (1, 2, 3 …). Words = the chapter’s words from the Words tab, with commas (e.g. “in, chaw, pi”); they are coloured in the story and count towards their word cards. Cards needed = word cards to collect before the chapter opens (empty = none).'],
+    ['Story lines tab: what is said in each chapter, one row per line. Chapter = the chapter’s number, Line = its order. Write one right reply and one or two wrong ones; “Answer to …” is what the speaker says back to that reply.'],
     ['Game text tab: each game’s title and how to play. An empty cell keeps the app’s own text.'],
     ['App text tab: every label, button and message in the app. Change the “Text” column, then publish. “Built-in text” is the app’s own wording: if Text is empty or the same, that is shown.'],
     ['In App text, {n}, {word} and the like are filled in by the app with a number or a word. “Text” must have exactly the same ones as “Built-in text”.'],

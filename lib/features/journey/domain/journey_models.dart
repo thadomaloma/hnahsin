@@ -97,6 +97,8 @@ class JourneyNode {
     required this.minimumLevel,
     required this.rewardId,
     required this.review,
+    this.cardsNeeded = 0,
+    this.emoji = '',
   });
 
   final String id;
@@ -111,6 +113,12 @@ class JourneyNode {
   final int minimumLevel;
   final String rewardId;
   final JourneyReviewState review;
+
+  /// Word cards to collect before this opens.
+  final int cardsNeeded;
+
+  /// Shown on the map; empty for the built-in nodes.
+  final String emoji;
 }
 
 class JourneyRegion {

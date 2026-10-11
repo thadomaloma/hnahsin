@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../../../src/controller.dart';
+import '../../../src/data.dart';
+import '../../../src/word_cards.dart';
 import '../../../src/theme.dart';
 import '../../../src/widgets.dart';
 import '../../onboarding/domain/learner_profile.dart';
@@ -38,7 +42,7 @@ class JourneyScreen extends StatelessWidget {
               const SizedBox(height: 12),
               if (!JourneyContentPolicy.releaseReady)
                 const _ReviewNotice(),
-              ...journeyRegions.map(
+              ...controller.journey.regions.map(
                 (region) => _RegionSection(
                   controller: controller,
                   region: region,
@@ -105,8 +109,8 @@ class _JourneyHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final complete = controller.journeyState.completedNodeIds.length;
-    final total = journeyNodes.length;
+    final complete = controller.journeyDone;
+    final total = controller.journey.nodes.length;
     return PremiumCard(
       gradient: const LinearGradient(
         begin: Alignment.topLeft,
@@ -374,7 +378,7 @@ class _RegionSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final nodes = journeyNodes
+    final nodes = controller.journey.nodes
         .where((node) => region.nodeIds.contains(node.id))
         .where((node) => JourneyContentPolicy.playable(node.review))
         .toList(growable: false);
@@ -401,13 +405,17 @@ class _RegionSection extends StatelessWidget {
                           fontWeight: FontWeight.w900,
                         ),
                       ),
-                      Text(
-                        '${region.titleMizo} • ${region.subtitleEnglish}',
-                        style: const TextStyle(
-                          color: QuestColors.slate,
-                          fontSize: 12,
+                      if ([region.titleMizo, region.subtitleEnglish]
+                              .where((part) => part.isNotEmpty)
+                              .join(' • ')
+                          case final line when line.isNotEmpty)
+                        Text(
+                          line,
+                          style: const TextStyle(
+                            color: QuestColors.slate,
+                            fontSize: 12,
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),
@@ -446,7 +454,7 @@ class _JourneyNodeTile extends StatelessWidget {
         onTap: locked
             ? null
             : () {
-                final story = journeyStoryById(node.storyId);
+                final story = controller.journey.storyById(node.storyId);
                 if (story == null) return;
                 Navigator.of(context).push(
                   MaterialPageRoute<void>(
@@ -493,11 +501,16 @@ class _JourneyNodeTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      AppText.pick(mizo: node.titleMizo, english: node.titleEnglish),
+                      [
+                        if (node.emoji.isNotEmpty) node.emoji,
+                        AppText.pick(mizo: node.titleMizo, english: node.titleEnglish),
+                      ].join(' '),
                       style: const TextStyle(fontWeight: FontWeight.w900),
                     ),
                     Text(
-                      '${node.titleMizo} • ${node.subtitleEnglish}',
+                      [node.titleMizo, node.subtitleEnglish]
+                          .where((part) => part.isNotEmpty)
+                          .join(' • '),
                       style: const TextStyle(
                         color: QuestColors.slate,
                         fontSize: 12,
@@ -508,7 +521,12 @@ class _JourneyNodeTile extends StatelessWidget {
               ),
               Text(
                 locked
-                    ? AppText.of('journey.nodeLevel', {'n': node.minimumLevel + 1})
+                    ? (controller.collectedCardCount < node.cardsNeeded
+                        ? AppText.of('journey.nodeCards', {
+                            'have': controller.collectedCardCount,
+                            'n': node.cardsNeeded,
+                          })
+                        : AppText.of('journey.nodeLevel', {'n': node.minimumLevel + 1}))
                     : complete
                         ? AppText.of('journey.replay')
                         : AppText.of('journey.start'),
@@ -533,7 +551,7 @@ class _CollectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final unlocked = journeyRewards
+    final unlocked = controller.journey.rewards
         .where(
           (reward) => controller.journeyState.unlockedRewardIds.contains(
             reward.id,
@@ -624,11 +642,68 @@ class _StoryQuestScreenState extends State<StoryQuestScreen> {
 
   StoryBeat get beat => widget.story.beats[beatIndex];
 
+  /// The chapter's words that the catalog has, by id or (the built-in
+  /// stories) by spelling.
+  late final List<WordEntry> storyWords = () {
+    final catalog = widget.controller.wordCatalog;
+    final byId = {for (final entry in catalog) entry.id: entry};
+    final bySpelling = {
+      for (final entry in catalog.reversed) normalizeMizo(entry.word): entry
+    };
+    return [
+      for (final id in widget.story.targetWordIds)
+        if (byId[id] ?? bySpelling[normalizeMizo(id)] case final entry?) entry,
+    ];
+  }();
+
+  /// The same replies in a mixed order, so the right one isn't always first.
+  List<StoryChoice> get choices =>
+      [...beat.choices]..shuffle(Random(beat.id.hashCode));
+
+  void _openWord(WordEntry entry) =>
+      showWordDetails(context, widget.controller, entry);
+
+  /// [text] with the chapter's words in colour; tapping one opens its card.
+  Widget _withStoryWords(String text, TextStyle style) {
+    final words = {
+      for (final entry in storyWords)
+        if (!entry.word.trim().contains(' ')) foldMizo(entry.word): entry
+    };
+    if (words.isEmpty) return Text(text, style: style);
+    final spans = <InlineSpan>[];
+    var last = 0;
+    for (final match
+        in RegExp(r'\p{L}+', unicode: true).allMatches(text)) {
+      final entry = words[foldMizo(match[0]!)];
+      if (entry == null) continue;
+      if (match.start > last) {
+        spans.add(TextSpan(text: text.substring(last, match.start)));
+      }
+      spans.add(WidgetSpan(
+        alignment: PlaceholderAlignment.baseline,
+        baseline: TextBaseline.alphabetic,
+        child: GestureDetector(
+          onTap: () => _openWord(entry),
+          child: Text(match[0]!,
+              style: style.copyWith(
+                  color: QuestColors.indigo,
+                  decoration: TextDecoration.underline,
+                  decorationColor: QuestColors.indigo.withValues(alpha: .4))),
+        ),
+      ));
+      last = match.end;
+    }
+    if (last < text.length) spans.add(TextSpan(text: text.substring(last)));
+    return Text.rich(TextSpan(style: style, children: spans));
+  }
+
   void _choose(StoryChoice choice) {
     if (completed) return;
     setState(() {
       selectedChoiceId = choice.id;
-      feedback = choice.replyMizo;
+      feedback = choice.replyMizo.isNotEmpty || choice.isNatural
+          ? choice.replyMizo
+          : AppText.of('story.tryAgain');
     });
   }
 
@@ -698,6 +773,35 @@ class _StoryQuestScreenState extends State<StoryQuestScreen> {
                       style: const TextStyle(color: QuestColors.slate),
                     ),
                   ],
+                  if (storyWords.isNotEmpty) ...<Widget>[
+                    const SizedBox(height: 12),
+                    Text(
+                      AppText.of('story.words'),
+                      style: const TextStyle(
+                        color: QuestColors.tealDark,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        for (final entry in storyWords)
+                          ActionChip(
+                            avatar: entry.emoji.trim().isEmpty
+                                ? null
+                                : Text(entry.emoji),
+                            label: Text(entry.word,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w800)),
+                            onPressed: () => _openWord(entry),
+                          ),
+                      ],
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -717,12 +821,13 @@ class _StoryQuestScreenState extends State<StoryQuestScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
+                _withStoryWords(
                   '“${beat.mizo}”',
-                  style: const TextStyle(
+                  const TextStyle(
                     fontSize: 21,
                     height: 1.35,
                     fontWeight: FontWeight.w900,
+                    color: QuestColors.ink,
                   ),
                 ),
                 if (showEnglish) ...<Widget>[
@@ -741,7 +846,7 @@ class _StoryQuestScreenState extends State<StoryQuestScreen> {
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
           ),
           const SizedBox(height: 12),
-          ...beat.choices.map(
+          ...choices.map(
             (choice) => Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: AnswerButton(
@@ -789,7 +894,7 @@ class _StoryQuestScreenState extends State<StoryQuestScreen> {
   }
 
   Widget _buildCompletion(BuildContext context) {
-    final reward = journeyRewardById(widget.node.rewardId);
+    final reward = widget.controller.journey.rewardById(widget.node.rewardId);
     return QuestPage(
       title: AppText.of('story.completeTitle'),
       subtitle: widget.story.titleMizo,
@@ -812,7 +917,17 @@ class _StoryQuestScreenState extends State<StoryQuestScreen> {
               fontWeight: FontWeight.w900,
             ),
           ),
+          if (widget.controller.lastJourneyCards case final cards
+              when !cards.isEmpty) ...<Widget>[
+            const SizedBox(height: 18),
+            NewCardsRow(
+              controller: widget.controller,
+              collected: cards.collected,
+              gold: cards.gold,
+            ),
+          ],
           const SizedBox(height: 22),
+          if (widget.story.cultureNoteMizo.isNotEmpty)
           PremiumCard(
             gradient: const LinearGradient(
               colors: <Color>[Color(0xFFFFF1BE), Color(0xFFFFFAEC)],
@@ -860,7 +975,8 @@ class _StoryQuestScreenState extends State<StoryQuestScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 18),
+          if (widget.story.cultureNoteMizo.isNotEmpty)
+            const SizedBox(height: 18),
           PremiumCard(
             child: Column(
               children: <Widget>[

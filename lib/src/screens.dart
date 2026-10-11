@@ -82,16 +82,16 @@ class _HomeJourney extends StatelessWidget {
                   : AppText.pick(
                       mizo: controller.nextJourneyNode!.titleMizo,
                       english: controller.nextJourneyNode!.titleEnglish)) ??
-              (controller.journeyState.completedNodeIds.length ==
-                      journeyNodes.length
+              (controller.journeyDone ==
+                      controller.journey.nodes.length
                   ? AppText.of('home.journeyComplete')
                   : AppText.of('home.journeyContinue')),
           subtitle: (controller.nextJourneyNode == null
                   ? null
                   : '${controller.nextJourneyNode!.titleMizo} • ${controller.nextJourneyNode!.subtitleEnglish}') ??
               AppText.of('home.journeyProgress', {
-                'done': controller.journeyState.completedNodeIds.length,
-                'total': journeyNodes.length,
+                'done': controller.journeyDone,
+                'total': controller.journey.nodes.length,
               }),
           onTap: () => _open(context, JourneyScreen(controller: controller)),
         ),
@@ -1042,8 +1042,8 @@ class ProfileScreen extends StatelessWidget {
                         const SizedBox(height: 3),
                         Text(
                           AppText.of('profile.journeyCount', {
-                            'stories': controller.journeyState.completedNodeIds.length,
-                            'total': journeyNodes.length,
+                            'stories': controller.journeyDone,
+                            'total': controller.journey.nodes.length,
                             'rewards': controller.journeyState.unlockedRewardIds.length,
                           }),
                           style: const TextStyle(

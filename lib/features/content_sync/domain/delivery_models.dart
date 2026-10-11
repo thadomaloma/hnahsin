@@ -481,6 +481,129 @@ class DeliveredSentence {
   }
 }
 
+/// A chapter of the journey's story, written in the content Sheet's
+/// Chapters and Story lines tabs.
+class DeliveredStoryChapter {
+  const DeliveredStoryChapter({
+    required this.id,
+    required this.order,
+    required this.titleMizo,
+    required this.titleEnglish,
+    required this.emoji,
+    required this.introMizo,
+    required this.introEnglish,
+    required this.wordIds,
+    required this.cardsNeeded,
+    required this.cultureNoteMizo,
+    required this.cultureNoteEnglish,
+    required this.lines,
+  });
+
+  final String id;
+  final int order;
+  final String titleMizo;
+  final String titleEnglish;
+  final String emoji;
+  final String introMizo;
+  final String introEnglish;
+
+  /// The chapter's words, as word IDs.
+  final List<String> wordIds;
+
+  /// Word cards to collect before the chapter opens.
+  final int cardsNeeded;
+  final String cultureNoteMizo;
+  final String cultureNoteEnglish;
+  final List<DeliveredStoryLine> lines;
+
+  /// Chapters in order; one without a title or lines is left out.
+  static List<DeliveredStoryChapter> parseAll(Object? items) {
+    final chapters = <DeliveredStoryChapter>[];
+    for (final item in _itemsOfType(items, 'story_chapter')) {
+      final body = item['body'] as Map;
+      String text(String key) => body[key] is String ? (body[key] as String).trim() : '';
+      final lines = [
+        for (final line in body['lines'] is List ? body['lines'] as List : const <Object?>[])
+          if (DeliveredStoryLine.tryParse(line) case final parsed?) parsed,
+      ];
+      if (text('title_mizo').isEmpty || lines.isEmpty) continue;
+      chapters.add(DeliveredStoryChapter(
+        id: item['stable_id'].toString(),
+        order: body['order'] is int ? body['order'] as int : 0,
+        titleMizo: text('title_mizo'),
+        titleEnglish: text('title_english'),
+        emoji: text('emoji'),
+        introMizo: text('intro_mizo'),
+        introEnglish: text('intro_english'),
+        wordIds: [
+          for (final id in body['word_ids'] is List ? body['word_ids'] as List : const <Object?>[])
+            if (id is String && id.isNotEmpty) id,
+        ],
+        cardsNeeded: body['cards_needed'] is int ? (body['cards_needed'] as int).clamp(0, 100000) : 0,
+        cultureNoteMizo: text('culture_note_mizo'),
+        cultureNoteEnglish: text('culture_note_english'),
+        lines: List<DeliveredStoryLine>.unmodifiable(lines),
+      ));
+    }
+    chapters.sort((a, b) => a.order.compareTo(b.order));
+    return List<DeliveredStoryChapter>.unmodifiable(chapters);
+  }
+}
+
+/// One thing a chapter's speaker says, and the replies to choose from.
+class DeliveredStoryLine {
+  const DeliveredStoryLine({
+    required this.speaker,
+    required this.mizo,
+    required this.english,
+    required this.replies,
+  });
+
+  final String speaker;
+  final String mizo;
+  final String english;
+  final List<DeliveredStoryReply> replies;
+
+  /// Null unless it has something said and exactly one right reply.
+  static DeliveredStoryLine? tryParse(Object? value) {
+    if (value is! Map) return null;
+    String text(String key) => value[key] is String ? (value[key] as String).trim() : '';
+    final replies = [
+      for (final reply in value['replies'] is List ? value['replies'] as List : const <Object?>[])
+        if (reply is Map && reply['mizo'] is String && (reply['mizo'] as String).trim().isNotEmpty)
+          DeliveredStoryReply(
+            mizo: (reply['mizo'] as String).trim(),
+            english: reply['english'] is String ? (reply['english'] as String).trim() : '',
+            answerMizo: reply['answer_mizo'] is String ? (reply['answer_mizo'] as String).trim() : '',
+            right: reply['right'] == true,
+          ),
+    ];
+    if (text('mizo').isEmpty || replies.where((reply) => reply.right).length != 1) return null;
+    return DeliveredStoryLine(
+      speaker: text('speaker'),
+      mizo: text('mizo'),
+      english: text('english'),
+      replies: List<DeliveredStoryReply>.unmodifiable(replies),
+    );
+  }
+}
+
+class DeliveredStoryReply {
+  const DeliveredStoryReply({
+    required this.mizo,
+    required this.english,
+    required this.answerMizo,
+    required this.right,
+  });
+
+  final String mizo;
+  final String english;
+
+  /// What the speaker says back to this reply.
+  final String answerMizo;
+  final bool right;
+}
+
 Iterable<Map<String, Object?>> _itemsOfType(Object? items, String type) sync* {
   if (items is! List) return;
   for (final raw in items) {
