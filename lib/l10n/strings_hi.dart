@@ -88,7 +88,7 @@ const stringsHi = <String, String>{
   'profile.sound': 'आवाज़',
   'profile.soundNote': 'सही और गलत जवाब तथा राउंड खत्म होने की आवाज़',
   'profile.credits': 'आभार',
-  'profile.creditsBody': 'वाक्य MWireLabs के Mizo-Language-Corpus-4M (CC BY 4.0; स्रोत IndicNLCorp, FineWeb और DIPR Mizoram) और Hillbyte AI के मिज़ो–अंग्रेज़ी समानांतर डेटासेट से लिए गए हैं। शब्दों की जाँच J.F. Laldailova की English–Lushai Dictionary से।',
+  'profile.creditsBody': 'वाक्य MWireLabs के Mizo-Language-Corpus-4M (CC BY 4.0; स्रोत IndicNLCorp, FineWeb और DIPR Mizoram) और Hillbyte AI के मिज़ो–अंग्रेज़ी समानांतर डेटासेट से लिए गए हैं। शब्दों की जाँच J.F. Laldailova की English–Lushai Dictionary से। शब्दों के चित्र game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons और Phosphor Icons से।',
   'profile.ageRange': 'उम्र',
   'profile.englishNote': 'कहानियों और संस्कृति कार्ड में मिज़ो के साथ अंग्रेज़ी दिखाएँ।',
   'profile.xpLevel': 'Lv {level}',

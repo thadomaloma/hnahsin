@@ -86,7 +86,7 @@
 "profile.sound": "အသံ",
 "profile.soundNote": "အဖြေမှန်၊ အဖြေမှားနှင့် ကစားပွဲပြီးဆုံးချိန် အသံ",
 "profile.credits": "ကျေးဇူးတင်လွှာ",
-"profile.creditsBody": "ဝါကျများကို MWireLabs ၏ Mizo-Language-Corpus-4M (CC BY 4.0; ရင်းမြစ် IndicNLCorp၊ FineWeb နှင့် DIPR Mizoram) နှင့် Hillbyte AI ၏ မီဇို–အင်္ဂလိပ် ဒေတာအစုမှ ယူထားပါသည်။ စကားလုံးစစ်ဆေးမှုမှာ J.F. Laldailova ၏ English–Lushai Dictionary မှ ဖြစ်ပါသည်။",
+"profile.creditsBody": "ဝါကျများကို MWireLabs ၏ Mizo-Language-Corpus-4M (CC BY 4.0; ရင်းမြစ် IndicNLCorp၊ FineWeb နှင့် DIPR Mizoram) နှင့် Hillbyte AI ၏ မီဇို–အင်္ဂလိပ် ဒေတာအစုမှ ယူထားပါသည်။ စကားလုံးစစ်ဆေးမှုမှာ J.F. Laldailova ၏ English–Lushai Dictionary မှ ဖြစ်ပါသည်။ စကားလုံးပုံများကို game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons နှင့် Phosphor Icons မှ ယူထားသည်။",
 "profile.ageRange": "အသက်အပိုင်းအခြား",
 "profile.englishNote": "ဇာတ်လမ်းနှင့် ယဉ်ကျေးမှုကတ်များတွင် မီဇိုဘေး၌ အင်္ဂလိပ် ပြရန်။",
 "profile.xpLevel": "Lv {level}",

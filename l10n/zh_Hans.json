@@ -86,7 +86,7 @@
 "profile.sound": "声音",
 "profile.soundNote": "答对、答错和一局结束时的声音",
 "profile.credits": "致谢",
-"profile.creditsBody": "句子来自 MWireLabs 的 Mizo-Language-Corpus-4M（CC BY 4.0；来源 IndicNLCorp、FineWeb 和 DIPR Mizoram）以及 Hillbyte AI 的米佐语—英语平行数据集。词汇校对来自 J.F. Laldailova 的《English–Lushai Dictionary》。",
+"profile.creditsBody": "句子来自 MWireLabs 的 Mizo-Language-Corpus-4M（CC BY 4.0；来源 IndicNLCorp、FineWeb 和 DIPR Mizoram）以及 Hillbyte AI 的米佐语—英语平行数据集。词汇校对来自 J.F. Laldailova 的《English–Lushai Dictionary》。 单词图片来自 game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons 和 Phosphor Icons。",
 "profile.ageRange": "年龄段",
 "profile.englishNote": "在故事和文化卡片中，在米佐语旁显示英语。",
 "profile.xpLevel": "Lv {level}",

@@ -86,7 +86,7 @@
 "profile.sound": "Звук",
 "profile.soundNote": "Звуки верных и неверных ответов и конца раунда",
 "profile.credits": "Источники",
-"profile.creditsBody": "Предложения из Mizo-Language-Corpus-4M от MWireLabs (CC BY 4.0; источники IndicNLCorp, FineWeb и DIPR Mizoram) и параллельного корпуса мизо–английский от Hillbyte AI. Проверка слов по English–Lushai Dictionary Дж. Ф. Лалдайловы.",
+"profile.creditsBody": "Предложения из Mizo-Language-Corpus-4M от MWireLabs (CC BY 4.0; источники IndicNLCorp, FineWeb и DIPR Mizoram) и параллельного корпуса мизо–английский от Hillbyte AI. Проверка слов по English–Lushai Dictionary Дж. Ф. Лалдайловы. Картинки к словам: game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons и Phosphor Icons.",
 "profile.ageRange": "Возраст",
 "profile.englishNote": "Показывать английский рядом с мизо в историях и культурных карточках.",
 "profile.xpLevel": "Ур. {level}",

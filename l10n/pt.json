@@ -86,7 +86,7 @@
 "profile.sound": "Som",
 "profile.soundNote": "Sons para respostas certas e erradas e rodadas concluídas",
 "profile.credits": "Créditos",
-"profile.creditsBody": "Frases do Mizo-Language-Corpus-4M da MWireLabs (CC BY 4.0; fontes IndicNLCorp, FineWeb e DIPR Mizoram) e do conjunto de dados paralelo mizo–inglês da Hillbyte AI. Verificação de palavras com o English–Lushai Dictionary de J.F. Laldailova.",
+"profile.creditsBody": "Frases do Mizo-Language-Corpus-4M da MWireLabs (CC BY 4.0; fontes IndicNLCorp, FineWeb e DIPR Mizoram) e do conjunto de dados paralelo mizo–inglês da Hillbyte AI. Verificação de palavras com o English–Lushai Dictionary de J.F. Laldailova. Imagens das palavras de game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons e Phosphor Icons.",
 "profile.ageRange": "Faixa etária",
 "profile.englishNote": "Mostrar inglês ao lado do mizo nas histórias e cartões culturais.",
 "profile.xpLevel": "Nv {level}",

@@ -88,7 +88,7 @@ const stringsEs = <String, String>{
   'profile.sound': 'Sonido',
   'profile.soundNote': 'Sonidos para respuestas correctas e incorrectas y rondas terminadas',
   'profile.credits': 'Créditos',
-  'profile.creditsBody': 'Frases de Mizo-Language-Corpus-4M de MWireLabs (CC BY 4.0; fuentes IndicNLCorp, FineWeb y DIPR Mizoram) y del conjunto de datos paralelo mizo–inglés de Hillbyte AI. Revisión de palabras con el English–Lushai Dictionary de J.F. Laldailova.',
+  'profile.creditsBody': 'Frases de Mizo-Language-Corpus-4M de MWireLabs (CC BY 4.0; fuentes IndicNLCorp, FineWeb y DIPR Mizoram) y del conjunto de datos paralelo mizo–inglés de Hillbyte AI. Revisión de palabras con el English–Lushai Dictionary de J.F. Laldailova. Imágenes de las palabras de game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons y Phosphor Icons.',
   'profile.ageRange': 'Edad',
   'profile.englishNote': 'Mostrar inglés junto al mizo en las historias y tarjetas culturales.',
   'profile.xpLevel': 'Nv {level}',

@@ -86,7 +86,7 @@
 "profile.sound": "Âm thanh",
 "profile.soundNote": "Âm thanh khi trả lời đúng, sai và khi xong lượt",
 "profile.credits": "Ghi nhận",
-"profile.creditsBody": "Các câu lấy từ Mizo-Language-Corpus-4M của MWireLabs (CC BY 4.0; nguồn IndicNLCorp, FineWeb và DIPR Mizoram) và bộ dữ liệu song ngữ Mizo–Anh của Hillbyte AI. Việc kiểm tra từ dựa trên English–Lushai Dictionary của J.F. Laldailova.",
+"profile.creditsBody": "Các câu lấy từ Mizo-Language-Corpus-4M của MWireLabs (CC BY 4.0; nguồn IndicNLCorp, FineWeb và DIPR Mizoram) và bộ dữ liệu song ngữ Mizo–Anh của Hillbyte AI. Việc kiểm tra từ dựa trên English–Lushai Dictionary của J.F. Laldailova. Hình ảnh từ vựng lấy từ game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons và Phosphor Icons.",
 "profile.ageRange": "Độ tuổi",
 "profile.englishNote": "Hiện tiếng Anh bên cạnh tiếng Mizo trong câu chuyện và thẻ văn hóa.",
 "profile.xpLevel": "Lv {level}",

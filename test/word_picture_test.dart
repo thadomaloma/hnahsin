@@ -14,9 +14,11 @@ WordEntry _word(String id, String word, {String emoji = ''}) => WordEntry(
     );
 
 void main() {
-  test('illustrations resolve by stable id so homonyms get their own picture', () {
-    expect(illustrationFor(_word('word.fu', 'Fu')), 'assets/illustrations/word.fu.png');
-    expect(illustrationFor(_word('word.fu-2', 'Fu')), 'assets/illustrations/word.fu-2.png');
+  test('illustrations resolve by stable id so homonyms get their own picture',
+      () {
+    expect(illustrationFor(_word('word.fu', 'Fu')),
+        'assets/illustrations/word.fu.png');
+    expect(illustrationFor(_word('word.fu-2', 'Fu')), isNull);
   });
 
   test('words without an emoji or illustration are not picture-game words', () {
@@ -26,7 +28,8 @@ void main() {
   });
 
   testWidgets('a word without a picture shows its topic icon', (tester) async {
-    await tester.pumpWidget(MaterialApp(home: WordPicture(entry: _word('word.tlawmngai', 'Tlawmngai'))));
+    await tester.pumpWidget(MaterialApp(
+        home: WordPicture(entry: _word('word.tlawmngai', 'Tlawmngai'))));
     expect(find.byIcon(categoryIcon(WordCategory.khawvel)), findsOneWidget);
     expect(find.text('T'), findsNothing);
   });
