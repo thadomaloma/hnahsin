@@ -109,7 +109,15 @@ class _ThumalKawpGameState extends State<ThumalKawpGame> {
   void _buildBoard() {
     final random = session.random;
     final rating = widget.controller.gameSkill(ThumalKawpGame.gameId);
-    final pairs = rating < 2 ? 4 : (rating < 3.5 ? 5 : 6);
+    // More cards to remember as the level rises: 4 pairs at level 1, up
+    // to 8 at levels 6–7.
+    final pairs = switch (rating.floor()) {
+      <= 1 => 4,
+      2 => 5,
+      3 => 6,
+      4 || 5 => 7,
+      _ => 8,
+    };
     final playable = widget.controller.wordCatalog
         .where((entry) => ContentPolicy.playable(entry.review))
         .where((entry) => entry.supportsGame(ThumalKawpGame.gameId))

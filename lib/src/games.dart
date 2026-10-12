@@ -452,8 +452,22 @@ class _SpellingGameState extends State<SpellingGame> {
   GameSession get session => runtime.session;
   late List<SpellingQuestion> questions;
   int index = 0;
+
+  /// The letter or spelling chosen (one missing letter, or picking).
   String? selected;
+
+  /// Tiles placed so far, by their index in the options (two missing
+  /// letters, or building the word).
+  final List<int> placed = <int>[];
+
+  /// Set once the question is answered: right or not.
+  bool? answeredRight;
   bool finishing = false;
+
+  SpellingQuestion get question => questions[index];
+  bool get placesTiles =>
+      question.kind == SpellingKind.twoLetters ||
+      question.kind == SpellingKind.build;
 
   @override
   void initState() {
@@ -473,11 +487,20 @@ class _SpellingGameState extends State<SpellingGame> {
         currentIndex: () => index,
         readPayload: () => <String, Object?>{
           if (selected != null) 'selected': selected,
+          if (placed.isNotEmpty) 'placed': placed,
+          if (answeredRight != null) 'right': answeredRight,
         },
         restorePayload: (snapshot) {
           _buildRound();
           index = snapshot.currentIndex.clamp(0, questions.length - 1).toInt();
           selected = snapshot.payload['selected'] as String?;
+          placed
+            ..clear()
+            ..addAll((snapshot.payload['placed'] as List<Object?>? ??
+                    const <Object?>[])
+                .whereType<int>()
+                .where((i) => i < question.options.length));
+          answeredRight = snapshot.payload['right'] as bool?;
         },
       ),
     );
@@ -516,20 +539,67 @@ class _SpellingGameState extends State<SpellingGame> {
     super.dispose();
   }
 
-  void choose(String value) {
-    if (!runtime.ready || selected != null || finishing) return;
-    HapticFeedback.selectionClick();
-    setState(() {
-      selected = value;
-      final question = questions[index];
-      runtime.answer(value == question.answer,
-          wordId: question.contentId, word: question.word);
-    });
+  void _answer(bool right) {
+    answeredRight = right;
+    runtime.answer(right, wordId: question.contentId, word: question.word);
     final at = index;
-    if (value == questions[index].answer) {
+    if (right) {
       advanceAfterRightAnswer(this,
           stillWaiting: () => !finishing && index == at, next: next);
     }
+  }
+
+  /// One missing letter, or picking the right spelling.
+  void choose(String value) {
+    if (!runtime.ready || answeredRight != null || finishing) return;
+    HapticFeedback.selectionClick();
+    setState(() {
+      selected = value;
+      _answer(value == question.answer);
+    });
+  }
+
+  /// Puts tile [i] in the next gap; when every gap is full, checks the
+  /// word. A built word is also right when it spells another real word
+  /// from the same letters.
+  void place(int i) {
+    if (!runtime.ready || answeredRight != null || finishing) return;
+    if (placed.contains(i) || placed.length >= question.sequence.length) return;
+    HapticFeedback.selectionClick();
+    GameSounds.play(GameSound.tap);
+    setState(() {
+      placed.add(i);
+      if (placed.length == question.sequence.length) {
+        final letters = [for (final p in placed) question.options[p]];
+        final right = letters.join() == question.sequence.join() ||
+            (question.kind == SpellingKind.build &&
+                (letters.toList()..sort()).join() ==
+                    (question.sequence.toList()..sort()).join() &&
+                widget.controller.chainVocabulary
+                    .contains(letters.join().toLowerCase()));
+        _answer(right);
+      }
+    });
+    unawaited(runtime.persist());
+  }
+
+  void unplace(int i) {
+    if (answeredRight != null || finishing) return;
+    setState(() => placed.remove(i));
+    unawaited(runtime.persist());
+  }
+
+  Future<void> _hint() async {
+    if (answeredRight != null || runtime.hintRevealed) return;
+    if (placesTiles) {
+      // The first missing letter goes in its place.
+      setState(() {
+        placed.clear();
+        final first = question.options.indexOf(question.sequence.first);
+        if (first >= 0) placed.add(first);
+      });
+    }
+    await runtime.revealHint();
   }
 
   Future<void> next() async {
@@ -544,16 +614,46 @@ class _SpellingGameState extends State<SpellingGame> {
     setState(() {
       index += 1;
       selected = null;
+      placed.clear();
+      answeredRight = null;
     });
     await runtime.persist();
   }
 
+  /// The word as it stands: gaps filled with the tiles placed so far.
+  String get _shown {
+    if (answeredRight != null) return question.word;
+    if (!placesTiles) return question.masked;
+    final chars = question.kind == SpellingKind.build
+        ? List<String>.filled(question.sequence.length, '_')
+        : null;
+    if (chars != null) {
+      for (final (n, p) in placed.indexed) {
+        chars[n] = question.options[p];
+      }
+      return chars.join(' ');
+    }
+    var text = question.masked;
+    for (final p in placed) {
+      text = text.replaceFirst('_', question.options[p]);
+    }
+    return text;
+  }
+
+  String get _prompt => switch (question.kind) {
+        SpellingKind.oneLetter => GameText.of('spelling').prompt,
+        SpellingKind.twoLetters => AppText.of('spelling.promptTwo'),
+        SpellingKind.build => AppText.of('spelling.promptBuild'),
+        SpellingKind.pick => AppText.of('spelling.promptPick'),
+      };
+
   @override
   Widget build(BuildContext context) {
-    final question = questions[index];
-    final correct = selected == question.answer;
-    // The hint takes away two wrong letters rather than naming the answer.
-    final ruledOut = runtime.hintRevealed
+    final question = this.question;
+    final answered = answeredRight != null;
+    final right = answeredRight == true;
+    // The hint takes away two wrong choices rather than naming the answer.
+    final ruledOut = runtime.hintRevealed && !placesTiles
         ? question.options
             .where((option) => option != question.answer)
             .take(2)
@@ -570,64 +670,109 @@ class _SpellingGameState extends State<SpellingGame> {
         if (runtime.restoredSession) const GameResumeBanner(),
         PremiumCard(
             child: Column(children: [
-          Text(GameText.of('spelling').prompt,
+          Text(_prompt,
+              textAlign: TextAlign.center,
               style: const TextStyle(
                   fontWeight: FontWeight.w800, color: QuestColors.slate)),
-          const SizedBox(height: 18),
-          FittedBox(
-              // Once answered, the whole word.
-              child: Text(selected == null ? question.masked : question.word,
-                  style: const TextStyle(
-                      fontSize: 34,
-                      letterSpacing: 3,
-                      fontWeight: FontWeight.w900,
-                      color: QuestColors.navy))),
+          if (question.kind != SpellingKind.pick || answered) ...[
+            const SizedBox(height: 18),
+            FittedBox(
+                child: Text(_shown,
+                    style: const TextStyle(
+                        fontSize: 34,
+                        letterSpacing: 3,
+                        fontWeight: FontWeight.w900,
+                        color: QuestColors.navy))),
+          ],
           const SizedBox(height: 14),
           Text(AppText.of('spelling.clue', {'hint': question.hint}),
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                   color: QuestColors.slate,
-                  fontSize: 12,
+                  fontSize: question.kind == SpellingKind.pick ? 16 : 12,
                   fontWeight: FontWeight.w600)),
         ])),
         GameHintButton(
             revealed: runtime.hintRevealed,
-            onPressed: selected != null ? null : runtime.revealHint),
-        if (runtime.hintRevealed)
+            onPressed: answered ? null : _hint),
+        if (runtime.hintRevealed && question.kind == SpellingKind.oneLetter)
           GameHintCard(
               message: fillGameText(GameText.of('spelling').hint,
                   answer: question.answer)),
         const SizedBox(height: 18),
-        GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
-            childAspectRatio: 2.2,
-            children: question.options
-                .map((option) => Opacity(
-                    opacity: ruledOut.contains(option) ? .35 : 1,
-                    child: AnswerButton(
-                        label: option,
-                        selected: selected == option,
-                        correct: selected == option
-                            ? option == question.answer
-                            : null,
-                        onTap: selected == null &&
-                                runtime.ready &&
-                                !ruledOut.contains(option)
-                            ? () => choose(option)
-                            : null)))
-                .toList()),
-        if (selected != null) ...[
+        if (placesTiles)
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              for (final (i, tile) in question.options.indexed)
+                _LetterTile(
+                  letter: tile,
+                  used: placed.contains(i),
+                  onTap: answered || !runtime.ready
+                      ? null
+                      : placed.contains(i)
+                          ? () => unplace(i)
+                          : () => place(i),
+                ),
+            ],
+          )
+        else if (question.kind == SpellingKind.pick)
+          ...question.options.map((option) => Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Opacity(
+                  opacity: ruledOut.contains(option) ? .35 : 1,
+                  child: AnswerButton(
+                      label: option,
+                      selected: selected == option,
+                      correct: selected == option
+                          ? option == question.answer
+                          : null,
+                      onTap: !answered &&
+                              runtime.ready &&
+                              !ruledOut.contains(option)
+                          ? () => choose(option)
+                          : null))))
+        else
+          GridView.count(
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: 2.2,
+              children: question.options
+                  .map((option) => Opacity(
+                      opacity: ruledOut.contains(option) ? .35 : 1,
+                      child: AnswerButton(
+                          label: option,
+                          selected: selected == option,
+                          correct: selected == option
+                              ? option == question.answer
+                              : null,
+                          onTap: !answered &&
+                                  runtime.ready &&
+                                  !ruledOut.contains(option)
+                              ? () => choose(option)
+                              : null)))
+                  .toList()),
+        if (placesTiles && placed.isNotEmpty && !answered) ...[
+          const SizedBox(height: 10),
+          TextButton.icon(
+            onPressed: () => setState(placed.clear),
+            icon: const Icon(Icons.backspace_outlined, size: 18),
+            label: Text(AppText.of('spelling.clear')),
+          ),
+        ],
+        if (answered) ...[
           const SizedBox(height: 18),
           FeedbackCard(
-              correct: correct,
-              message: correct
+              correct: right,
+              message: right
                   ? '${AppText.of('spelling.right', {'word': question.word})}'
                       '${question.gloss.isEmpty ? '' : '\n${question.gloss}'}'
-                  : '${AppText.of('spelling.wrong', {'answer': question.answer, 'word': question.word})}'
+                  : '${AppText.of(question.kind == SpellingKind.oneLetter ? 'spelling.wrong' : 'spelling.wrongWord', {'answer': question.answer, 'word': question.word})}'
                       '${question.gloss.isEmpty ? '' : '\n${question.gloss}'}'),
           const SizedBox(height: 16),
           SizedBox(
@@ -859,6 +1004,16 @@ class _WordChainGameState extends State<WordChainGame> {
   /// Vocabulary words by their first letter, for finding what can follow.
   late final Map<String, List<String>> byFirstLetter;
 
+  /// Words to add to the chain: 5 at levels 1–2, 6 at 3–4, 7 from 5.
+  late final int turns;
+
+  /// The fewest Mizo letters a word may have: 2, then 3 from level 4 and
+  /// 4 from level 6.
+  late final int minLetters;
+
+  bool _longEnough(String word) =>
+      mizoLetters(word).where((l) => l.trim().isNotEmpty).length >= minLetters;
+
   /// Catalog entries by normalized word, for meanings and difficulty.
   late final Map<String, WordEntry> entries;
   String? message;
@@ -878,8 +1033,12 @@ class _WordChainGameState extends State<WordChainGame> {
       onTimedOut: _timedOut,
     );
     vocabulary = widget.controller.chainVocabulary;
+    final level = widget.controller.gameLevel('word_chain');
+    // More words to link and longer ones as the level rises.
+    turns = level <= 2 ? 5 : (level <= 4 ? 6 : 7);
+    minLetters = level >= 6 ? 4 : (level >= 4 ? 3 : 2);
     byFirstLetter = <String, List<String>>{};
-    for (final word in vocabulary) {
+    for (final word in vocabulary.where(_longEnough)) {
       (byFirstLetter[firstMizoUnit(word)] ??= <String>[]).add(word);
     }
     entries = <String, WordEntry>{
@@ -954,7 +1113,7 @@ class _WordChainGameState extends State<WordChainGame> {
 
   /// Words that can come next without leaving the learner stuck.
   List<String> get _playable {
-    final lastTurn = chain.length == 5;
+    final lastTurn = chain.length == turns;
     return _nextWords(chain.last)
         .where((word) => lastTurn || _nextWords(word).isNotEmpty)
         .toList();
@@ -1010,9 +1169,11 @@ class _WordChainGameState extends State<WordChainGame> {
     String? notice;
     if (resolved == null) {
       notice = AppText.of('chain.unknown');
+    } else if (!_longEnough(resolved)) {
+      notice = AppText.of('chain.tooShort', {'n': minLetters});
     } else if (!chain.contains(resolved) &&
         _links(chain.last, resolved) &&
-        chain.length < 5 &&
+        chain.length < turns &&
         _nextWords(resolved).isEmpty) {
       notice = AppText.of('chain.deadEnd', {'word': resolved, 'unit': lastMizoUnit(resolved)});
     }
@@ -1057,14 +1218,14 @@ class _WordChainGameState extends State<WordChainGame> {
       chain.add(word);
       input.clear();
       // The card's own heading already says “A dik e!”.
-      message = chain.length == 6
+      message = chain.length == turns + 1
           ? _withMeaning(word)
           : AppText.of('chain.linked', {'word': _withMeaning(word), 'unit': lastMizoUnit(word)});
       messageIsError = false;
       final entry = entries[word];
       runtime.answer(true, wordId: entry?.id, word: entry?.word);
     });
-    if (chain.length == 6) {
+    if (chain.length == turns + 1) {
       finishing = true;
       final result = await runtime.finish(baseXp: 45);
       if (!mounted) return;
@@ -1080,7 +1241,7 @@ class _WordChainGameState extends State<WordChainGame> {
       subtitle: GameText.of('word_chain').subtitle,
       hud: GameHud(
           session: session,
-          progress: (chain.length - 1) / 5,
+          progress: (chain.length - 1) / turns,
           secondsRemaining: runtime.isTimed ? runtime.remainingSeconds : null),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         if (runtime.restoredSession) const GameResumeBanner(),
@@ -1101,6 +1262,12 @@ class _WordChainGameState extends State<WordChainGame> {
                       color: Colors.white,
                       fontSize: 17,
                       fontWeight: FontWeight.w800)),
+              if (minLetters > 2) ...[
+                const SizedBox(height: 4),
+                Text(AppText.of('chain.minLetters', {'n': minLetters, 'words': turns}),
+                    style: const TextStyle(
+                        color: QuestColors.gold, fontWeight: FontWeight.w800)),
+              ],
               const SizedBox(height: 10),
               Text(AppText.of('chain.example'),
                   style: const TextStyle(color: Color(0xFFDDF3FF))),
@@ -1221,6 +1388,18 @@ class _WordSearchGameState extends State<WordSearchGame> {
     grid = board.rows;
     placements = board.placements;
     labels = board.labels;
+    meaningsOnly = (daily?.rating ?? widget.controller.gameSkill('word_search')) >= 5;
+  }
+
+  /// From level 5 the list shows what each word means, not the word: the
+  /// word shows once found.
+  bool meaningsOnly = false;
+
+  String _chip(String word) {
+    final gloss = glosses[word] ?? '';
+    return meaningsOnly && !found.contains(word) && gloss.isNotEmpty
+        ? gloss.split(';').first.trim()
+        : _label(word);
   }
 
   @override
@@ -1326,7 +1505,9 @@ class _WordSearchGameState extends State<WordSearchGame> {
     if (selected.isEmpty) return true;
     final last = selected.last;
     final (dr, dc) = (row - last.$1, col - last.$2);
-    if (dr.abs() + dc.abs() != 1) return false;
+    // Next to it: beside, above or below, or (for slanting words) corner
+    // to corner.
+    if (dr.abs() > 1 || dc.abs() > 1 || (dr == 0 && dc == 0)) return false;
     if (selected.length == 1) return true;
     final before = selected[selected.length - 2];
     return dr == last.$1 - before.$1 && dc == last.$2 - before.$2;
@@ -1505,7 +1686,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
                               ? Icons.check_rounded
                               : Icons.search_rounded,
                           size: 17),
-                      label: Text(_label(word),
+                      label: Text(_chip(word),
                           style: TextStyle(
                               decoration: found.contains(word)
                                   ? TextDecoration.lineThrough
@@ -1613,4 +1794,51 @@ class PlayModePicker extends StatelessWidget {
       ),
     );
   }
+}
+
+/// A letter tile to place in a Spelling word; a placed one fades and
+/// taking it back puts it out of the word again.
+class _LetterTile extends StatelessWidget {
+  const _LetterTile({required this.letter, required this.used, this.onTap});
+  final String letter;
+  final bool used;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+        button: true,
+        enabled: onTap != null,
+        label: letter,
+        child: ExcludeSemantics(
+          child: Opacity(
+            opacity: used ? .3 : 1,
+            child: Material(
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  side: const BorderSide(color: QuestColors.line, width: 1.5)),
+              child: InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.circular(16),
+                child: SizedBox(
+                  width: 58,
+                  height: 56,
+                  child: Center(
+                    child: FittedBox(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        child: Text(letter,
+                            style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w900,
+                                color: QuestColors.navy)),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
 }

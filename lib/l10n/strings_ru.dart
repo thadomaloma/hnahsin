@@ -528,4 +528,12 @@ const stringsRu = <String, String>{
   'group.farming': 'работа в поле',
   'settings.photoCredits': 'Авторы фото',
   'settings.photoCreditsNote': 'У некоторых слов есть фото с Викисклада. Спасибо тем, кто их сделал и поделился.',
+  'spelling.promptTwo': 'Вставь две пропущенные буквы по порядку',
+  'spelling.promptBuild': 'Собери слово из букв',
+  'spelling.promptPick': 'Какое написание верное?',
+  'spelling.clear': 'Начать заново',
+  'spelling.wrongWord': 'Почти. Пишется {word}.',
+  'chain.tooShort': 'На этом уровне слово должно быть из {n} букв или больше.',
+  'chain.minLetters': 'Этот уровень: {words} слов, каждое из {n} букв или больше.',
+  'sentence.extraWords': 'Не все плитки нужны: лишние слова оставь.',
 };

@@ -361,6 +361,11 @@ const appTextDefaults = <String, AppTextDefault>{
   'spelling.right': AppTextDefault('Spelling', '“{word}” is complete.'),
   'spelling.wrong':
       AppTextDefault('Spelling', 'The answer is “{answer}”: “{word}”.'),
+  "spelling.promptTwo": AppTextDefault('Spelling', "Fill in the two missing letters, in order"),
+  "spelling.promptBuild": AppTextDefault('Spelling', "Build the word from the letter tiles"),
+  "spelling.promptPick": AppTextDefault('Spelling', "Which spelling is right?"),
+  "spelling.clear": AppTextDefault('Spelling', "Start again"),
+  "spelling.wrongWord": AppTextDefault('Spelling', "Not quite. It is spelt {word}."),
   // Tawng Upa
   'tawngUpa.blank': AppTextDefault('Tawng Upa', 'Which word fills the blank?'),
   'tawngUpa.wrong':
@@ -372,6 +377,8 @@ const appTextDefaults = <String, AppTextDefault>{
   'chain.wordMeaning': AppTextDefault('Word Chain', '“{word}” ({meaning})'),
   'chain.unknown': AppTextDefault(
       'Word Chain', 'We don\'t have this word yet. Try another one.'),
+  'chain.tooShort': AppTextDefault('Word Chain', "At this level, use a word of {n} letters or more."),
+  'chain.minLetters': AppTextDefault('Word Chain', "This level: {words} words, each {n} letters or more."),
   'chain.deadEnd': AppTextDefault('Word Chain',
       '“{word}” is right, but we have no word starting with “{unit}” yet. Try another one.'),
   'chain.used': AppTextDefault('Word Chain', 'You already used this word.'),
@@ -429,6 +436,7 @@ const appTextDefaults = <String, AppTextDefault>{
   'sentence.usingWord':
       AppTextDefault('Sentence Builder', 'SENTENCE USING THIS WORD'),
   'sentence.yours': AppTextDefault('Sentence Builder', 'YOUR SENTENCE'),
+  'sentence.extraWords': AppTextDefault('Sentence Builder', "Not every tile belongs: leave out the extra words."),
   'sentence.right':
       AppTextDefault('Sentence Builder', '{sentence} — Well built!'),
   'sentence.wrong': AppTextDefault('Sentence Builder',

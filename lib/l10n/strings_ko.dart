@@ -528,4 +528,12 @@ const stringsKo = <String, String>{
   'group.farming': '농사일',
   'settings.photoCredits': '사진 출처',
   'settings.photoCreditsNote': '일부 단어 사진은 Wikimedia Commons에서 가져왔습니다. 사진을 찍고 공유해 주신 분들께 감사드립니다.',
+  'spelling.promptTwo': '빠진 두 글자를 순서대로 채워요',
+  'spelling.promptBuild': '글자 타일로 단어를 만들어요',
+  'spelling.promptPick': '맞는 철자는?',
+  'spelling.clear': '다시 하기',
+  'spelling.wrongWord': '아쉬워요. 맞는 철자는 {word}예요.',
+  'chain.tooShort': '이 레벨에서는 {n}글자 이상의 단어를 써요.',
+  'chain.minLetters': '이 레벨: 단어 {words}개, 각각 {n}글자 이상.',
+  'sentence.extraWords': '모든 타일을 쓰지는 않아요. 남는 단어는 빼세요.',
 };

@@ -528,4 +528,12 @@ const stringsVi = <String, String>{
   'group.farming': 'việc đồng áng',
   'settings.photoCredits': 'Nguồn ảnh',
   'settings.photoCreditsNote': 'Một số từ dùng ảnh từ Wikimedia Commons. Cảm ơn những người đã chụp và chia sẻ.',
+  'spelling.promptTwo': 'Điền hai chữ cái còn thiếu theo thứ tự',
+  'spelling.promptBuild': 'Ghép từ bằng các ô chữ cái',
+  'spelling.promptPick': 'Cách viết nào đúng?',
+  'spelling.clear': 'Làm lại',
+  'spelling.wrongWord': 'Gần đúng rồi. Viết là {word}.',
+  'chain.tooShort': 'Ở cấp này, dùng từ có từ {n} chữ cái trở lên.',
+  'chain.minLetters': 'Cấp này: {words} từ, mỗi từ từ {n} chữ cái trở lên.',
+  'sentence.extraWords': 'Không phải ô nào cũng dùng: bỏ ra các từ thừa.',
 };

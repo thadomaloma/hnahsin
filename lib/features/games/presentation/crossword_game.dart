@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 import '../../../src/controller.dart';
 import '../../../src/data.dart';
+import '../../../src/word_sentences.dart';
 import '../../../src/game_session.dart';
 import '../../../src/game_text.dart';
 import '../../../src/game_words.dart';
@@ -142,6 +143,8 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
     // rises, up to 8 letters on an 8×8 grid.
     final (target, longest) = rating < 2 ? (4, 5) : (rating < 3.5 ? (5, 6) : (6, 8));
     final english = rating < 3;
+    // From level 6 a clue is the word's example with the word blanked out.
+    final inSentence = rating >= 6;
     // Only words the on-screen keyboard can spell.
     final typeable = MiniCrosswordGame.keyRows.join().split('').toSet();
     final spellings = <String>{};
@@ -157,7 +160,8 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
       for (final entry in daily == null
           ? pickWordsForLevel(widget.controller, MiniCrosswordGame.gameId, pool, 40, random)
           : pickDailyWords(pool.toList(), daily, 40))
-        if (_clueFor(entry, english: english) case final clue when clue.isNotEmpty)
+        if (_clueFor(entry, english: english, inSentence: inSentence)
+            case final clue when clue.isNotEmpty)
           CrosswordCandidate(id: entry.id, answer: _answerOf(entry), clue: clue),
     ];
     final built = CrosswordBuilder.build(candidates, target: target, maxSize: min(longest + 1, 8), random: random);
@@ -183,7 +187,13 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
     return (words.join(' '), words.map((word) => word.length).join(', '));
   }
 
-  static String _clueFor(WordEntry entry, {required bool english}) {
+  static String _clueFor(WordEntry entry,
+      {required bool english, bool inSentence = false}) {
+    if (inSentence) {
+      if (blankWholeWord(entry.exampleMizo, entry.word) case final blanked?) {
+        return blanked;
+      }
+    }
     final gloss = entry.englishGloss.trim();
     final mizo = meaningWithoutWord(entry.meaningMizo, entry.word);
     if (english && gloss.isNotEmpty) return gloss;

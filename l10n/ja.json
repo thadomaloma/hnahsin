@@ -525,5 +525,13 @@
 "group.tools": "道具",
 "group.farming": "農作業",
 "settings.photoCredits": "写真のクレジット",
-"settings.photoCreditsNote": "一部の単語の写真は Wikimedia Commons のものです。撮影し共有してくれた方々に感謝します。"
+"settings.photoCreditsNote": "一部の単語の写真は Wikimedia Commons のものです。撮影し共有してくれた方々に感謝します。",
+"spelling.promptTwo": "抜けている2文字を順に入れよう",
+"spelling.promptBuild": "文字タイルで単語を作ろう",
+"spelling.promptPick": "正しいつづりはどれ？",
+"spelling.clear": "やり直す",
+"spelling.wrongWord": "おしい！正しいつづりは {word} です。",
+"chain.tooShort": "このレベルでは{n}文字以上の単語を使おう。",
+"chain.minLetters": "このレベル：{words}語、それぞれ{n}文字以上。",
+"sentence.extraWords": "すべてのタイルを使うわけではありません。余分な単語は使わないでね。"
 }

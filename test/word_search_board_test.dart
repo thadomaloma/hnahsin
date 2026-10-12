@@ -47,7 +47,7 @@ void main() {
 
   test('every word sits in a straight line and reads right', () {
     for (var seed = 0; seed < 50; seed++) {
-      for (final rating in const [1.0, 2.5, 5.0]) {
+      for (final rating in const [1.0, 2.5, 5.0, 7.0]) {
         final board = _board(catalog, rating: rating, seed: seed);
         final size = WordSearchBoard.sizeFor(rating);
         expect(board.rows, hasLength(size));
@@ -58,7 +58,13 @@ void main() {
           expect(cells.map((c) => board.rows[c.$1][c.$2]).join(), word);
           final (dr, dc) =
               (cells[1].$1 - cells[0].$1, cells[1].$2 - cells[0].$2);
-          expect({(0, 1), (1, 0)}, contains((dr, dc)));
+          final allowed = {
+            (0, 1),
+            if (rating >= 4) (1, 0),
+            if (rating >= 5) ...{(1, 1), (-1, 1)},
+            if (rating >= 6) ...{(0, -1), (-1, 0), (-1, -1), (1, -1)},
+          };
+          expect(allowed, contains((dr, dc)), reason: 'level $rating');
           for (var i = 1; i < cells.length; i++) {
             expect(
                 (cells[i].$1 - cells[i - 1].$1, cells[i].$2 - cells[i - 1].$2),
@@ -137,6 +143,16 @@ void main() {
     expect(fits.labelOf('UIRAM'), 'UI RAM');
     expect(fits.labelOf('NULA'), 'NULA');
     expect(phrases, 0);
+  });
+  test('slanting and backwards words come only at the higher levels', () {
+    final seen = <(int, int)>{};
+    for (var seed = 0; seed < 60; seed++) {
+      final board = _board(catalog, rating: 7, seed: seed);
+      for (final cells in board.placements.values) {
+        seen.add((cells[1].$1 - cells[0].$1, cells[1].$2 - cells[0].$2));
+      }
+    }
+    expect(seen, containsAll({(1, 1), (0, -1)}));
   });
 }
 

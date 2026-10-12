@@ -43,8 +43,9 @@ const _fallbackWords = <String>['NULA', 'ZAI', 'AWM', 'RAM', 'TUI', 'LUI'];
 final _lettersOnly = RegExp(r'^[A-ZÂÊÎÔÛṬ]+$');
 
 /// Hides [WordSearchBoard.wordCount] reviewed words in a straight line each.
-/// Levels 1–2 lay them across, one per row from the left; from level 2 they
-/// sit anywhere across; from level 4 some run down too. The rest of the grid
+/// Level 1 lays them across, one per row from the left; from level 2 they
+/// sit anywhere across; from level 4 some run down, from 5 some slant and
+/// from 6 some run backwards. The rest of the grid
 /// is filled with letters from the catalog — at higher levels mostly the
 /// hidden words' own letters, so decoys look like real words.
 WordSearchBoard buildWordSearchBoard({
@@ -71,7 +72,18 @@ WordSearchBoard buildWordSearchBoard({
   final cells = List.generate(n, (_) => List<String?>.filled(n, null));
   final placements = <String, List<(int, int)>>{};
   final ordered = rating < 2;
-  final canRunDown = rating >= 4;
+  // Across always; down from level 4; slanting from 5; backwards from 6.
+  final directions = <(int, int)>[
+    (0, 1),
+    if (rating >= 4) (1, 0),
+    if (rating >= 5) ...[(1, 1), (-1, 1)],
+    if (rating >= 6) ...[(0, -1), (-1, 0), (-1, -1), (1, -1)],
+  ];
+  int start(int step, int length) => step == 1
+      ? random.nextInt(n - length + 1)
+      : step == -1
+          ? length - 1 + random.nextInt(n - length + 1)
+          : random.nextInt(n);
 
   bool place(String word) {
     // A word inside another would be found in passing.
@@ -79,16 +91,17 @@ WordSearchBoard buildWordSearchBoard({
         .any((other) => other.contains(word) || word.contains(other)))
       return false;
     for (var attempt = 0; attempt < 60; attempt++) {
-      final down = canRunDown && random.nextBool();
-      final row = ordered
-          ? placements.length
-          : random.nextInt(down ? n - word.length + 1 : n);
-      final col = ordered ? 0 : random.nextInt(down ? n : n - word.length + 1);
+      final (dr, dc) = ordered
+          ? (0, 1)
+          : directions[random.nextInt(directions.length)];
+      final row = ordered ? placements.length : start(dr, word.length);
+      final col = ordered ? 0 : start(dc, word.length);
       final spots = [
-        for (var i = 0; i < word.length; i++)
-          down ? (row + i, col) : (row, col + i)
+        for (var i = 0; i < word.length; i++) (row + dr * i, col + dc * i)
       ];
-      if (spots.any((s) => s.$1 >= n || s.$2 >= n)) continue;
+      if (spots.any((s) => s.$1 < 0 || s.$2 < 0 || s.$1 >= n || s.$2 >= n)) {
+        continue;
+      }
       final fits = [
         for (final (i, s) in spots.indexed)
           cells[s.$1][s.$2] == null || cells[s.$1][s.$2] == word[i],

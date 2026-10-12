@@ -17,6 +17,48 @@ List<ChoiceQuestion> buildMeaningRound({
   required Random random,
   required List<WordEntry> Function(List<WordEntry> pool, int count) pick,
 }) {
+  final round = _meaningRound(
+      catalog: catalog,
+      written: written,
+      rating: rating,
+      random: random,
+      pick: pick);
+  // Levels 1–2 choose from three: one wrong answer fewer.
+  if (rating >= 3) return round;
+  return [
+    for (final question in round)
+      if (question.options.length < 4)
+        question
+      else
+        ChoiceQuestion(
+          prompt: question.prompt,
+          options: [
+            for (final option in question.options)
+              if (option == question.answer ||
+                  option !=
+                      question.options
+                          .firstWhere((other) => other != question.answer))
+                option
+          ],
+          answer: question.answer,
+          explanation: question.explanation,
+          emoji: question.emoji,
+          review: question.review,
+          difficulty: question.difficulty,
+          contentId: question.contentId,
+          word: question.word,
+          instruction: question.instruction,
+        ),
+  ];
+}
+
+List<ChoiceQuestion> _meaningRound({
+  required List<WordEntry> catalog,
+  required List<ChoiceQuestion> written,
+  required double rating,
+  required Random random,
+  required List<WordEntry> Function(List<WordEntry> pool, int count) pick,
+}) {
   final english = rating < 3;
   final pool = catalog
       .where((entry) => ContentPolicy.playable(entry.review))

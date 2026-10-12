@@ -528,4 +528,12 @@ const stringsAr = <String, String>{
   'group.farming': 'أعمال الزراعة',
   'settings.photoCredits': 'حقوق الصور',
   'settings.photoCreditsNote': 'بعض الكلمات لها صور من ويكيميديا كومنز. شكرًا لمن التقطها وشاركها.',
+  'spelling.promptTwo': 'املأ الحرفين الناقصين بالترتيب',
+  'spelling.promptBuild': 'كوّن الكلمة من بطاقات الحروف',
+  'spelling.promptPick': 'أي تهجئة صحيحة؟',
+  'spelling.clear': 'ابدأ من جديد',
+  'spelling.wrongWord': 'قريب. تُكتب {word}.',
+  'chain.tooShort': 'في هذا المستوى استخدم كلمة من {n} أحرف أو أكثر.',
+  'chain.minLetters': 'هذا المستوى: {words} كلمات، كل منها {n} أحرف أو أكثر.',
+  'sentence.extraWords': 'ليست كل البطاقات مطلوبة: اترك الكلمات الزائدة.',
 };

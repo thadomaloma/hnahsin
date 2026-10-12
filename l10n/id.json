@@ -525,5 +525,13 @@
 "group.tools": "alat",
 "group.farming": "pekerjaan bertani",
 "settings.photoCredits": "Kredit foto",
-"settings.photoCreditsNote": "Beberapa kata memakai foto dari Wikimedia Commons. Terima kasih kepada yang memotret dan membagikannya."
+"settings.photoCreditsNote": "Beberapa kata memakai foto dari Wikimedia Commons. Terima kasih kepada yang memotret dan membagikannya.",
+"spelling.promptTwo": "Isi dua huruf yang hilang, berurutan",
+"spelling.promptBuild": "Susun kata dari ubin huruf",
+"spelling.promptPick": "Ejaan mana yang benar?",
+"spelling.clear": "Ulangi",
+"spelling.wrongWord": "Hampir. Ejaannya {word}.",
+"chain.tooShort": "Di level ini, pakai kata dengan {n} huruf atau lebih.",
+"chain.minLetters": "Level ini: {words} kata, masing-masing {n} huruf atau lebih.",
+"sentence.extraWords": "Tidak semua ubin dipakai: tinggalkan kata yang berlebih."
 }

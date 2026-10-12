@@ -525,5 +525,13 @@
 "group.tools": "เครื่องมือ",
 "group.farming": "งานไร่นา",
 "settings.photoCredits": "เครดิตภาพถ่าย",
-"settings.photoCreditsNote": "ภาพถ่ายของคำบางคำมาจาก Wikimedia Commons ขอบคุณผู้ถ่ายและแบ่งปันภาพ"
+"settings.photoCreditsNote": "ภาพถ่ายของคำบางคำมาจาก Wikimedia Commons ขอบคุณผู้ถ่ายและแบ่งปันภาพ",
+"spelling.promptTwo": "เติมตัวอักษรที่หายไปสองตัวตามลำดับ",
+"spelling.promptBuild": "สร้างคำจากตัวอักษร",
+"spelling.promptPick": "การสะกดแบบไหนถูก?",
+"spelling.clear": "เริ่มใหม่",
+"spelling.wrongWord": "เกือบแล้ว สะกดว่า {word}",
+"chain.tooShort": "ระดับนี้ใช้คำที่มี {n} ตัวอักษรขึ้นไป",
+"chain.minLetters": "ระดับนี้: {words} คำ แต่ละคำ {n} ตัวอักษรขึ้นไป",
+"sentence.extraWords": "ไม่ต้องใช้ทุกแผ่น: เว้นคำที่เกินไว้"
 }

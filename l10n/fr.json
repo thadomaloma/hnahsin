@@ -525,5 +525,13 @@
 "group.tools": "outils",
 "group.farming": "travaux des champs",
 "settings.photoCredits": "Crédits photo",
-"settings.photoCreditsNote": "Certains mots ont des photos de Wikimedia Commons. Merci à celles et ceux qui les ont prises et partagées."
+"settings.photoCreditsNote": "Certains mots ont des photos de Wikimedia Commons. Merci à celles et ceux qui les ont prises et partagées.",
+"spelling.promptTwo": "Complète les deux lettres manquantes, dans l’ordre",
+"spelling.promptBuild": "Forme le mot avec les lettres",
+"spelling.promptPick": "Quelle orthographe est la bonne ?",
+"spelling.clear": "Recommencer",
+"spelling.wrongWord": "Presque. Ça s’écrit {word}.",
+"chain.tooShort": "À ce niveau, utilise un mot de {n} lettres ou plus.",
+"chain.minLetters": "Ce niveau : {words} mots, chacun de {n} lettres ou plus.",
+"sentence.extraWords": "Toutes les tuiles ne servent pas : laisse de côté les mots en trop."
 }

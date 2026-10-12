@@ -525,5 +525,13 @@
 "group.tools": "工具",
 "group.farming": "農活",
 "settings.photoCredits": "照片來源",
-"settings.photoCreditsNote": "部分詞語的照片來自 Wikimedia Commons。感謝拍攝並分享照片的人。"
+"settings.photoCreditsNote": "部分詞語的照片來自 Wikimedia Commons。感謝拍攝並分享照片的人。",
+"spelling.promptTwo": "依序填入缺少的兩個字母",
+"spelling.promptBuild": "用字母塊拼出這個詞",
+"spelling.promptPick": "哪個拼寫是對的？",
+"spelling.clear": "重新開始",
+"spelling.wrongWord": "差一點。正確拼寫是 {word}。",
+"chain.tooShort": "這一級請用{n}個字母以上的詞。",
+"chain.minLetters": "本級：{words}個詞，每個至少{n}個字母。",
+"sentence.extraWords": "不是每塊都要用：多餘的詞別放進去。"
 }

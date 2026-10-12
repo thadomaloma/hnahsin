@@ -525,5 +525,13 @@
 "group.tools": "औज़ार",
 "group.farming": "खेती का काम",
 "settings.photoCredits": "फ़ोटो श्रेय",
-"settings.photoCreditsNote": "कुछ शब्दों की तस्वीरें Wikimedia Commons से हैं। उन्हें खींचने और साझा करने वालों का धन्यवाद।"
+"settings.photoCreditsNote": "कुछ शब्दों की तस्वीरें Wikimedia Commons से हैं। उन्हें खींचने और साझा करने वालों का धन्यवाद।",
+"spelling.promptTwo": "दो छूटे अक्षर क्रम से भरें",
+"spelling.promptBuild": "अक्षर टाइलों से शब्द बनाएँ",
+"spelling.promptPick": "कौन सी वर्तनी सही है?",
+"spelling.clear": "फिर से शुरू करें",
+"spelling.wrongWord": "लगभग! सही वर्तनी {word} है।",
+"chain.tooShort": "इस स्तर पर {n} या अधिक अक्षरों का शब्द लिखें।",
+"chain.minLetters": "इस स्तर पर: {words} शब्द, हर शब्द {n} या अधिक अक्षरों का।",
+"sentence.extraWords": "हर टाइल इस्तेमाल नहीं होगी: फ़ालतू शब्द छोड़ दें।"
 }

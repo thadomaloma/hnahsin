@@ -4,7 +4,7 @@ import 'data.dart';
 import 'game_words.dart';
 import 'word_groups.dart';
 
-/// Four words, three of one group and one that doesn't belong.
+/// Four words (five from level 6), all but one of one group.
 class OddOneOutQuestion {
   const OddOneOutQuestion({
     required this.options,
@@ -43,9 +43,11 @@ List<OddOneOutQuestion> buildOddOneOutRound({
           if (byId[id] case final entry?) entry
       ],
   };
+  // From level 6 four words share the group, so five to look through.
+  final size = rating >= 6 ? 4 : 3;
   final groups = [
     for (final group in wordGroups)
-      if (members[group]!.length >= 3) group
+      if (members[group]!.length >= size) group
   ]..shuffle(random);
   final close = rating >= 4;
   final questions = <OddOneOutQuestion>[];
@@ -65,7 +67,8 @@ List<OddOneOutQuestion> buildOddOneOutRound({
     if (choices.isEmpty) continue;
     final oddGroup = choices[random.nextInt(choices.length)];
     final three = pick(
-        members[group]!.where((entry) => !used.contains(entry.id)).toList(), 3);
+        members[group]!.where((entry) => !used.contains(entry.id)).toList(),
+        size);
     // A word in both groups (or spelt like one) could be either answer.
     final spellings = {for (final entry in three) foldMizo(entry.word)};
     final senses = {
@@ -78,7 +81,7 @@ List<OddOneOutQuestion> buildOddOneOutRound({
             !spellings.contains(foldMizo(entry.word)) &&
             glossSenses(entry.englishGloss).intersection(senses).isEmpty)
         .toList();
-    if (three.length < 3 || oddPool.isEmpty) continue;
+    if (three.length < size || oddPool.isEmpty) continue;
     final odd = pick(oddPool, 1).single;
     used.addAll([...three.map((entry) => entry.id), odd.id]);
     questions.add(OddOneOutQuestion(

@@ -525,5 +525,13 @@
 "group.tools": "Werkzeuge",
 "group.farming": "Feldarbeit",
 "settings.photoCredits": "Bildnachweise",
-"settings.photoCreditsNote": "Einige Wörter haben Fotos von Wikimedia Commons. Danke allen, die sie aufgenommen und geteilt haben."
+"settings.photoCreditsNote": "Einige Wörter haben Fotos von Wikimedia Commons. Danke allen, die sie aufgenommen und geteilt haben.",
+"spelling.promptTwo": "Setze die zwei fehlenden Buchstaben der Reihe nach ein",
+"spelling.promptBuild": "Bilde das Wort aus den Buchstaben",
+"spelling.promptPick": "Welche Schreibweise ist richtig?",
+"spelling.clear": "Neu anfangen",
+"spelling.wrongWord": "Fast. Es wird {word} geschrieben.",
+"chain.tooShort": "Auf dieser Stufe: ein Wort mit {n} oder mehr Buchstaben.",
+"chain.minLetters": "Diese Stufe: {words} Wörter, jedes mit {n} oder mehr Buchstaben.",
+"sentence.extraWords": "Nicht jede Kachel gehört dazu: lass die überzähligen Wörter weg."
 }

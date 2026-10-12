@@ -72,7 +72,7 @@ void main() {
       for (final group in wordGroups)
         for (final id in group.wordIds.take(4)) member(id),
     ];
-    for (final level in [1, 5]) {
+    for (final level in [1, 5, 6]) {
       final round = buildOddOneOutRound(
           catalog: words,
           rating: level.toDouble(),
@@ -80,7 +80,7 @@ void main() {
           pick: (pool, count) => pool.take(count).toList());
       expect(round, hasLength(6));
       for (final q in round) {
-        expect(q.options, hasLength(4));
+        expect(q.options, hasLength(level >= 6 ? 5 : 4));
         expect(q.options, contains(q.odd));
         expect(q.group.wordIds, isNot(contains(q.odd.id)));
         expect(

@@ -129,6 +129,11 @@ class ChoiceQuestion {
   final String instruction;
 }
 
+/// How a Spelling question is answered: levels 1–2 one missing letter,
+/// 3–4 two, 5–6 the whole word from letter tiles, 7 the right spelling
+/// among slips.
+enum SpellingKind { oneLetter, twoLetters, build, pick }
+
 class SpellingQuestion {
   const SpellingQuestion(
       {required this.masked,
@@ -136,17 +141,37 @@ class SpellingQuestion {
       required this.answer,
       required this.hint,
       this.gloss = '',
-      this.contentId});
+      this.contentId,
+      this.kind = SpellingKind.oneLetter,
+      this.answers = const <String>[],
+      this.full});
+  final SpellingKind kind;
+
+  /// The word with its missing letters as “_” (all of them when building
+  /// it, none when picking a spelling).
   final String masked;
+
+  /// Letters (or tiles, or spellings) to choose from.
   final List<String> options;
+
+  /// The right choice; for two letters or a built word, all of [answers].
   final String answer;
+
+  /// The letters in order, for two missing letters or a built word.
+  final List<String> answers;
+
+  /// The whole word, when [masked] doesn't hold it with one blank.
+  final String? full;
   final String hint;
 
   /// English meaning, shown once the word is complete.
   final String gloss;
 
   /// The whole word, with the blank filled in.
-  String get word => masked.replaceFirst('_', answer);
+  String get word => full ?? masked.replaceFirst('_', answer);
+
+  /// What is placed, in order: one letter, or each of [answers].
+  List<String> get sequence => answers.isEmpty ? <String>[answer] : answers;
 
   /// Studio stable id of the word this was built from.
   final String? contentId;

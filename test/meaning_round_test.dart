@@ -50,7 +50,8 @@ void main() {
         for (final question in _round(rating: rating, seed: seed)) {
           expect(question.options, contains(question.answer));
           expect(question.options.toSet(), hasLength(question.options.length));
-          expect(question.options, hasLength(4));
+          expect(question.options, hasLength(rating < 3 ? 3 : 4),
+              reason: 'levels 1–2 choose from three');
         }
       }
     }
@@ -157,7 +158,8 @@ void main() {
       pick: (pool, count) => pool.take(count).toList(),
     );
     expect(round, hasLength(10));
-    expect(round.every(written.contains), isTrue);
+    expect(round.every((q) => written.any((w) => w.contentId == q.contentId)),
+        isTrue);
     expect(round.where((q) => q.difficulty == 2).length, greaterThan(7));
   });
 

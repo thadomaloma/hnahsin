@@ -35,11 +35,26 @@ void main() {
             reason: 'a spelling only comes up once per round');
         for (final question in round) {
           expect(known, contains(question.word));
-          expect(question.options, contains(question.answer));
-          expect(question.options.toSet(), hasLength(question.options.length));
-          for (final option in question.options.where((o) => o != question.answer)) {
-            expect(known, isNot(contains(question.masked.replaceFirst('_', option))),
-                reason: '$option would spell another real word in ${question.masked}');
+          switch (question.kind) {
+            case SpellingKind.oneLetter:
+              expect(question.options, contains(question.answer));
+              expect(question.options.toSet(), hasLength(question.options.length));
+              for (final option in question.options.where((o) => o != question.answer)) {
+                expect(known, isNot(contains(question.masked.replaceFirst('_', option))),
+                    reason: '$option would spell another real word in ${question.masked}');
+              }
+            case SpellingKind.twoLetters:
+              expect(question.options, containsAll(question.answers));
+              expect('_'.allMatches(question.masked), hasLength(2));
+            case SpellingKind.build:
+              expect(question.options.length, question.answers.length + 2);
+              expect(question.answers.join(), question.word);
+            case SpellingKind.pick:
+              expect(question.options, contains(question.word));
+              expect(question.options.toSet(), hasLength(4));
+              for (final slip in question.options.where((o) => o != question.word)) {
+                expect(known, isNot(contains(slip)), reason: '$slip is a real word');
+              }
           }
           final clueWords = RegExp(r'\p{L}+', unicode: true)
               .allMatches(question.hint)
@@ -64,7 +79,7 @@ void main() {
       _word('w.bawng2', 'bawng', gloss: 'other'),
     ];
     for (var seed = 0; seed < 30; seed++) {
-      for (final question in _round(catalog, seed: seed, rating: 7)) {
+      for (final question in _round(catalog, seed: seed, rating: 2)) {
         if (question.word == 'BÂWNG' && question.answer == 'ÂW') {
           expect(question.options, isNot(contains('AW')));
         }
@@ -90,5 +105,18 @@ void main() {
     final teacher = round.firstWhere((q) => q.word == 'ZIRTÎRTU');
     expect(teacher.hint, isNot(contains('zirtîrtu')));
     expect(round.firstWhere((q) => q.answer == 'AW').word, 'KHAWVÊL');
+  });
+
+  test('each level has its own kind of question', () {
+    final catalog = [
+      _word('w.sangha', 'sangha', gloss: 'fish'),
+      _word('w.kaikuang', 'kaikuang', gloss: 'prawn'),
+    ];
+    SpellingQuestion at(double rating) => _round(catalog, rating: rating).first;
+    expect(at(1).kind, SpellingKind.oneLetter);
+    expect(at(1).options, hasLength(3), reason: 'levels 1–2 choose from three');
+    expect(at(3).kind, SpellingKind.twoLetters);
+    expect(at(5).kind, SpellingKind.build);
+    expect(at(7).kind, SpellingKind.pick);
   });
 }

@@ -528,4 +528,12 @@ const stringsPt = <String, String>{
   'group.farming': 'trabalho no campo',
   'settings.photoCredits': 'Créditos das fotos',
   'settings.photoCreditsNote': 'Algumas palavras têm fotos do Wikimedia Commons. Obrigado a quem as tirou e compartilhou.',
+  'spelling.promptTwo': 'Preencha as duas letras que faltam, em ordem',
+  'spelling.promptBuild': 'Monte a palavra com as letras',
+  'spelling.promptPick': 'Qual grafia está certa?',
+  'spelling.clear': 'Recomeçar',
+  'spelling.wrongWord': 'Quase. Escreve-se {word}.',
+  'chain.tooShort': 'Neste nível, use uma palavra com {n} letras ou mais.',
+  'chain.minLetters': 'Este nível: {words} palavras, cada uma com {n} letras ou mais.',
+  'sentence.extraWords': 'Nem toda peça serve: deixe de fora as palavras a mais.',
 };

@@ -176,6 +176,30 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
         if (i < questions.length)
           if (_gapFor(questions[i], rating) case final gap?) i: gap,
     };
+    // From level 5 one word that doesn't belong joins the tiles, two from
+    // level 6: the sentence uses all but those.
+    final decoys = rating >= 6 ? 2 : (rating >= 5 ? 1 : 0);
+    if (decoys > 0) {
+      final words = widget.controller.wordCatalog
+          .where((entry) => ContentPolicy.playable(entry.review))
+          .map((entry) => entry.word.trim())
+          .where((word) => RegExp(r'^\p{L}+$', unicode: true).hasMatch(word))
+          .toList();
+      for (final (i, exercise) in questions.indexed) {
+        if (gaps.containsKey(i) || words.isEmpty) continue;
+        final inSentence = {for (final t in exercise.tokens) foldMizo(t)};
+        final extra = <String>{};
+        for (var tries = 0; extra.length < decoys && tries < 40; tries++) {
+          final word = words[session.random.nextInt(words.length)];
+          if (!inSentence.contains(foldMizo(word))) extra.add(word.toLowerCase());
+        }
+        tileSets[i] = [
+          ...tileSets[i],
+          for (final (k, word) in extra.indexed)
+            SentenceTile(id: '${exercise.id}.x$k', text: word),
+        ]..shuffle(session.random);
+      }
+    }
   }
 
   /// [exercise] with one of its words blanked out and three wrong words to
@@ -316,7 +340,9 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
   }
 
   Future<void> _check() async {
-    if (!runtime.ready || selectedIds.length != allTiles.length || finishing) {
+    if (!runtime.ready ||
+        selectedIds.length != question.tokens.length ||
+        finishing) {
       return;
     }
     final correct = engine.evaluate(question, answerTiles);
@@ -474,6 +500,14 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
                 ),
               )
           else ...<Widget>[
+            if (allTiles.length > question.tokens.length) ...<Widget>[
+              Text(
+                AppText.of('sentence.extraWords'),
+                style: const TextStyle(
+                    color: QuestColors.coral, fontWeight: FontWeight.w800),
+              ),
+              const SizedBox(height: 8),
+            ],
             Text(
               AppText.of('sentence.yours'),
               style: const TextStyle(
@@ -559,7 +593,7 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
           if (gap == null || isCorrect != null)
             FilledButton(
               onPressed: isCorrect == null
-                  ? (selectedIds.length == allTiles.length ? _check : null)
+                  ? (selectedIds.length == question.tokens.length ? _check : null)
                   : _continue,
               child: Text(
                 isCorrect == null
