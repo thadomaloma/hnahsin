@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../features/games/engine/game_engine.dart';
 import '../features/games/presentation/crossword_game.dart';
 import '../features/games/presentation/phase2b_games.dart';
+import '../features/games/presentation/odd_one_out_game.dart';
 import '../features/games/presentation/thumal_kawp_game.dart';
 import '../features/learning/domain/learning_state.dart';
 import '../features/learning/presentation/learning_screens.dart';
@@ -455,6 +456,7 @@ class LearnScreen extends StatelessWidget {
     ('tawng_upa', Icons.forum_rounded, Color(0xFFDCF0FF), QuestColors.indigo),
     ('crossword', Icons.grid_on_rounded, Color(0xFFE6F4D9), QuestColors.success),
     (ThumalKawpGame.gameId, Icons.style_rounded, Color(0xFFFFE6F0), Color(0xFFD6457A)),
+    (OddOneOutGame.gameId, Icons.category_rounded, Color(0xFFFFF0BD), Color(0xFF9A6800)),
     ('sentence_builder', Icons.view_stream_rounded, Color(0xFFE9E4FF), QuestColors.violet),
   ];
 
@@ -465,6 +467,7 @@ class LearnScreen extends StatelessWidget {
         'tawng_upa' => OldWordQuizGame(controller: controller),
         'crossword' => MiniCrosswordGame(controller: controller),
         'sentence_builder' => SentenceBuilderGame(controller: controller),
+        OddOneOutGame.gameId => OddOneOutGame(controller: controller),
         _ => ThumalKawpGame(controller: controller),
       };
 
@@ -676,6 +679,15 @@ List<_GameInfo> _gameCatalog(QuestController controller) {
         const Color(0xFFD6457A),
         GameText.of(ThumalKawpGame.gameId).instructions,
         (mode) => ThumalKawpGame(controller: controller, mode: mode)),
+    _GameInfo(
+        OddOneOutGame.gameId,
+        GameText.of(OddOneOutGame.gameId).title,
+        Icons.category_rounded,
+        GameText.of(OddOneOutGame.gameId).subtitle,
+        const Color(0xFFFFF0BD),
+        const Color(0xFF9A6800),
+        GameText.of(OddOneOutGame.gameId).instructions,
+        (mode) => OddOneOutGame(controller: controller, mode: mode)),
     _GameInfo(
         'sentence_builder',
         GameText.of('sentence_builder').title,

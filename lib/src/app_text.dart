@@ -268,6 +268,33 @@ const appTextDefaults = <String, AppTextDefault>{
   'launcher.resume': AppTextDefault('Game start', 'Resume Game'),
   'launcher.startNew': AppTextDefault('Game start', 'Start New Game'),
   // Word cards
+  // Odd One Out
+  "oddOne.empty": AppTextDefault('Odd One Out', "There aren't enough words for this game yet."),
+  "oddOne.right": AppTextDefault('Odd One Out', "{three}: {group}. \u201c{odd}\u201d doesn't belong."),
+  "oddOne.wrong": AppTextDefault('Odd One Out', "The odd one is \u201c{odd}\u201d ({oddGroup}). {three}: {group}."),
+  "group.mammals": AppTextDefault('Odd One Out', "animals with four legs"),
+  "group.birds": AppTextDefault('Odd One Out', "birds"),
+  "group.small_creatures": AppTextDefault('Odd One Out', "insects and small creatures"),
+  "group.water_animals": AppTextDefault('Odd One Out', "animals that live in water"),
+  "group.fruit": AppTextDefault('Odd One Out', "fruit"),
+  "group.vegetables": AppTextDefault('Odd One Out', "vegetables"),
+  "group.drinks": AppTextDefault('Odd One Out', "drinks"),
+  "group.meat": AppTextDefault('Odd One Out', "meat"),
+  "group.head": AppTextDefault('Odd One Out', "parts of the head"),
+  "group.limbs": AppTextDefault('Odd One Out', "parts of the arms and legs"),
+  "group.family": AppTextDefault('Odd One Out', "family"),
+  "group.jobs": AppTextDefault('Odd One Out', "people's jobs"),
+  "group.sky": AppTextDefault('Odd One Out', "the sky and weather"),
+  "group.land": AppTextDefault('Odd One Out', "land and water"),
+  "group.house": AppTextDefault('Odd One Out', "things in a house"),
+  "group.kitchen": AppTextDefault('Odd One Out', "kitchen things"),
+  "group.clothes": AppTextDefault('Odd One Out', "clothes"),
+  "group.school": AppTextDefault('Odd One Out', "school things"),
+  "group.numbers": AppTextDefault('Odd One Out', "numbers"),
+  "group.days": AppTextDefault('Odd One Out', "days of the week"),
+  "group.daytime": AppTextDefault('Odd One Out', "times of day"),
+  "group.colours": AppTextDefault('Odd One Out', "colours"),
+  "group.music": AppTextDefault('Odd One Out', "musical instruments"),
   'cards.title': AppTextDefault('Word cards', 'Word Cards'),
   'cards.count':
       AppTextDefault('Word cards', '{n}/{total} cards • {gold} gold'),
@@ -299,6 +326,8 @@ const appTextDefaults = <String, AppTextDefault>{
   'daily.shareText': AppTextDefault(
       'Daily puzzles', 'Hnahsin {puzzle}\n{marks}\n⏱ {time} · 💡 {hints}'),
   // Picture Match
+  "picture.whichPicture": AppTextDefault('Picture Match', "Which picture is it?"),
+  "picture.optionSpoken": AppTextDefault('Picture Match', "Picture {n}"),
   'picture.right': AppTextDefault('Picture Match', '{word} — {gloss}'),
   'picture.wrong': AppTextDefault(
       'Picture Match', 'The answer is “{word}”.\n{meaning}\n“{example}”'),

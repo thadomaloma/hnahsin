@@ -123,6 +123,15 @@ const _defaultGameCopy = <String, GameCopy>{
         'Read the English meaning and pick the Mizo word tiles.',
         'Put them in a natural order, then check.'
       ]),
+  'odd_one_out': GameCopy(
+      title: 'Odd One Out',
+      subtitle: 'Find the word that doesn\'t belong',
+      prompt: 'Which word doesn\'t belong?',
+      hint: 'Hint: three of them are {gloss}.',
+      instructions: <String>[
+        'Read the four words. Three of them are the same kind of thing.',
+        'Pick the one that doesn\'t belong.'
+      ]),
   'common': GameCopy(correctFeedback: 'Correct!', retryFeedback: 'Try again'),
 };
 

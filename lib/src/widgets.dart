@@ -1077,3 +1077,63 @@ IconData categoryIcon(WordCategory category) => switch (category) {
       WordCategory.nunphung => Icons.auto_stories_rounded,
       WordCategory.thiltih => Icons.directions_run_rounded,
     };
+
+/// A picture to choose, for questions that ask “which picture is this
+/// word?”. Once chosen it turns green or red like [AnswerButton].
+class PictureOption extends StatelessWidget {
+  const PictureOption({
+    super.key,
+    required this.entry,
+    required this.label,
+    required this.onTap,
+    this.selected = false,
+    this.correct,
+  });
+
+  final WordEntry entry;
+
+  /// What a screen reader says for it (“Picture A”), since the picture
+  /// mustn't give its word away.
+  final String label;
+  final VoidCallback? onTap;
+  final bool selected;
+  final bool? correct;
+
+  @override
+  Widget build(BuildContext context) {
+    final border = correct == true
+        ? QuestColors.success
+        : correct == false
+            ? QuestColors.coral
+            : selected
+                ? QuestColors.indigo
+                : QuestColors.line;
+    return Semantics(
+      button: true,
+      enabled: onTap != null,
+      selected: selected,
+      label: label,
+      child: ExcludeSemantics(
+        child: Material(
+          color: correct == true
+              ? const Color(0xFFE6F5E2)
+              : correct == false
+                  ? const Color(0xFFFCE4EC)
+                  : Colors.white,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(color: border, width: selected ? 3 : 1.5)),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: onTap,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.all(14),
+              child: FittedBox(child: WordPicture(entry: entry, size: 84)),
+            )),
+          ),
+        ),
+      ),
+    );
+  }
+}

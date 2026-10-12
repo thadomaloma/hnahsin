@@ -122,3 +122,178 @@ double wordMemoryBoost(ItemMastery? memory, DateTime now) {
     _ => .7,
   };
 }
+
+/// One Picture Match question. Levels 1–4 show the picture and ask for its
+/// name; levels 5–6 turn it round, showing the name and asking for its
+/// picture ([pictures]).
+class PictureMatchQuestion {
+  const PictureMatchQuestion(
+      {required this.entry, required this.options, this.pictures});
+
+  final WordEntry entry;
+
+  /// The names to choose from (the right one is [entry]'s word), or for a
+  /// picture question the words whose pictures are shown.
+  final List<String> options;
+
+  /// For a picture question: the words whose pictures to choose from.
+  final List<WordEntry>? pictures;
+
+  bool get asksForPicture => pictures != null;
+}
+
+/// [question] as a Picture Match question at [rating]:
+/// levels 1–2 three names; 3–4 four, one a real word spelt almost the same
+/// (sa, sâ); 5–6 four pictures for its name, of the same kind where there
+/// are enough; 7 four names, with look-alike words and misspellings
+/// (bawgn) as the wrong ones.
+PictureMatchQuestion pictureMatchQuestion(
+  WordEntry question,
+  List<WordEntry> catalog, {
+  required double rating,
+  required Random random,
+  bool Function(String word)? isRealWord,
+}) {
+  final level = rating.floor();
+  if (level >= 5 && level <= 6) {
+    final wrong = _wrongPictures(question, catalog, random: random);
+    if (wrong.length == 3) {
+      final pictures = [question, ...wrong]..shuffle(random);
+      return PictureMatchQuestion(
+          entry: question,
+          options: [for (final entry in pictures) entry.word],
+          pictures: pictures);
+    }
+  }
+  final wrong = <String>[];
+  if (level >= 3) {
+    final alike = _lookAlikeWords(question, catalog)..shuffle(random);
+    wrong.addAll(alike.take(1).map((entry) => entry.word));
+  }
+  if (level >= 7) {
+    final misspelt = misspellings(question.word,
+        random: random,
+        isRealWord: (word) =>
+            (isRealWord?.call(word) ?? false) ||
+            catalog.any((entry) => foldMizo(entry.word) == foldMizo(word)));
+    wrong.addAll(misspelt.take(2));
+  }
+  final count = level <= 2 ? 2 : 3;
+  if (wrong.length < count) {
+    final others = pictureMatchDistractors(question, catalog,
+        rating: rating, random: random, count: count);
+    for (final other in others) {
+      if (wrong.length >= count) break;
+      if (!wrong.contains(other.word)) wrong.add(other.word);
+    }
+  }
+  return PictureMatchQuestion(
+      entry: question,
+      options: [question.word, ...wrong.take(count)]..shuffle(random));
+}
+
+/// Real words spelt almost like [question]'s (one letter or accent apart),
+/// that don't show the same picture or share a meaning with it.
+List<WordEntry> _lookAlikeWords(WordEntry question, List<WordEntry> catalog) {
+  final word = normalizeMizo(question.word);
+  final folded = foldMizo(question.word);
+  final picture = pictureKey(question);
+  final senses = glossSenses(question.englishGloss);
+  final seen = <String>{word};
+  return [
+    for (final other in catalog)
+      if (ContentPolicy.playable(other.review) &&
+          seen.add(normalizeMizo(other.word)) &&
+          pictureKey(other) != picture &&
+          glossSenses(other.englishGloss).intersection(senses).isEmpty &&
+          _editDistance(foldMizo(other.word), folded) <=
+              (folded.length >= 6 ? 2 : 1))
+        other,
+  ];
+}
+
+/// Three other Picture Match words whose pictures are clearly different
+/// from [question]'s and that share no meaning with it, of the same topic
+/// where there are enough.
+List<WordEntry> _wrongPictures(WordEntry question, List<WordEntry> catalog,
+    {required Random random}) {
+  final senses = glossSenses(question.englishGloss);
+  final pictures = <String>{pictureKey(question)};
+  final words = <String>{normalizeMizo(question.word)};
+  final candidates = [
+    for (final other in catalog)
+      if (ContentPolicy.playable(other.review) &&
+          other.supportsGame('picture_match') &&
+          hasWordPicture(other) &&
+          glossSenses(other.englishGloss).intersection(senses).isEmpty)
+        other,
+  ]..shuffle(random);
+  candidates.sort((a, b) => (b.category == question.category ? 1 : 0)
+      .compareTo(a.category == question.category ? 1 : 0));
+  return [
+    for (final other in candidates)
+      if (pictures.add(pictureKey(other)) && words.add(normalizeMizo(other.word)))
+        other,
+  ].take(3).toList();
+}
+
+/// Spellings of [word] a learner might mix up with it that are not words
+/// ([isRealWord] says which are), in a random order: first the usual slips
+/// (aw for o, n for ng, ch for chh, a dropped h), then two letters swapped.
+List<String> misspellings(String word,
+    {required bool Function(String) isRealWord, required Random random}) {
+  final w = word.trim();
+  final found = <String>{};
+  final swapped = <String>{};
+  void tryAdd(String candidate, [Set<String>? into]) {
+    if (candidate == w || candidate.trim().isEmpty) return;
+    if (foldMizo(candidate) == foldMizo(w) || isRealWord(candidate)) return;
+    (into ?? found).add(candidate);
+  }
+
+  for (final (from, to) in const [
+    ('aw', 'o'),
+    ('chh', 'ch'),
+    ('hl', 'l'),
+    ('hm', 'm'),
+    ('hn', 'n'),
+    ('hr', 'r'),
+    ('th', 't'),
+    ('kh', 'k'),
+  ]) {
+    for (final match in RegExp(from).allMatches(w)) {
+      tryAdd(w.replaceRange(match.start, match.end, to));
+    }
+  }
+  for (final match in RegExp(r'(?<!a)o').allMatches(w)) {
+    tryAdd(w.replaceRange(match.start, match.end, 'aw'));
+  }
+  if (w.endsWith('ng')) tryAdd(w.substring(0, w.length - 1));
+  if (w.endsWith('n')) tryAdd('${w}g');
+  // Not the first letter: a word is read from its start.
+  for (var i = 1; i + 1 < w.length; i++) {
+    final a = w[i], b = w[i + 1];
+    if (a == b || a == ' ' || b == ' ') continue;
+    tryAdd(w.replaceRange(i, i + 2, '$b$a'), swapped);
+  }
+  return [
+    ...(found.toList()..shuffle(random)),
+    ...(swapped.difference(found).toList()..shuffle(random)),
+  ];
+}
+
+int _editDistance(String a, String b) {
+  var previous = List<int>.generate(b.length + 1, (i) => i);
+  for (var i = 1; i <= a.length; i++) {
+    final current = List<int>.filled(b.length + 1, 0)..[0] = i;
+    for (var j = 1; j <= b.length; j++) {
+      current[j] = [
+        previous[j] + 1,
+        current[j - 1] + 1,
+        previous[j - 1] + (a[i - 1] == b[j - 1] ? 0 : 1),
+      ].reduce(min);
+    }
+    previous = current;
+  }
+  return previous[b.length];
+}

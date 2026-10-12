@@ -145,6 +145,7 @@ class PreferencesQuestRepository implements QuestRepository {
       'crossword',
       'listen_pick', // retired game: clears sessions saved before its removal
       'thumal_kawp',
+      'odd_one_out',
       'sentence_builder',
     ]) {
       final snapshot = await loadSession(gameId);
@@ -178,6 +179,7 @@ class PreferencesQuestRepository implements QuestRepository {
         'crossword',
         'listen_pick', // retired game: clears sessions saved before its removal
         'thumal_kawp',
+      'odd_one_out',
         'sentence_builder',
       ].map(_sessionKey),
     };

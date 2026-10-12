@@ -245,6 +245,9 @@ final _demos = <String, _Demo>{
   'crossword': _crossword(),
   'thumal_kawp': _pairs(),
   'sentence_builder': _sentence(),
+  // Two animals and a drink: tap the one that doesn't belong.
+  'odd_one_out': _choice(
+      prompt: '🐕  🐖  💧', options: ['ui', 'vawk', 'tui'], answer: 2, promptSize: 34),
 };
 
 _Demo _choice(

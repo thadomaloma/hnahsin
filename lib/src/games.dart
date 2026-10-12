@@ -241,8 +241,7 @@ class PictureMatchGame extends StatefulWidget {
 class _PictureMatchGameState extends State<PictureMatchGame> {
   late final GameRuntime runtime;
   GameSession get session => runtime.session;
-  late List<WordEntry> questions;
-  late List<List<String>> optionSets;
+  late List<PictureMatchQuestion> questions;
   int index = 0;
   String? selected;
   bool finishing = false;
@@ -280,16 +279,16 @@ class _PictureMatchGameState extends State<PictureMatchGame> {
         .where((word) => ContentPolicy.playable(word.review))
         .where((word) => word.supportsGame('picture_match'))
         .where(hasWordPicture);
-    questions = pickWordsForLevel(
-        widget.controller, 'picture_match', pool, 5, session.random);
     final rating = widget.controller.gameSkill('picture_match');
-    optionSets = questions.map((question) {
-      final wrong = pictureMatchDistractors(
-          question, widget.controller.wordCatalog,
-          rating: rating, random: session.random);
-      return <String>[question.word, ...wrong.map((word) => word.word)]
-        ..shuffle(session.random);
-    }).toList();
+    final catalog = widget.controller.wordCatalog;
+    questions = [
+      for (final entry in pickWordsForLevel(
+          widget.controller, 'picture_match', pool, 5, session.random))
+        pictureMatchQuestion(entry, catalog,
+            rating: rating,
+            random: session.random,
+            isRealWord: MizoLexicon.contains),
+    ];
   }
 
   Future<void> _timedOut() async {
@@ -314,7 +313,7 @@ class _PictureMatchGameState extends State<PictureMatchGame> {
 
   void choose(String value) {
     if (!runtime.ready || selected != null || finishing) return;
-    final entry = questions[index];
+    final entry = questions[index].entry;
     final correct = value == entry.word;
     HapticFeedback.selectionClick();
     setState(() {
@@ -350,7 +349,8 @@ class _PictureMatchGameState extends State<PictureMatchGame> {
 
   @override
   Widget build(BuildContext context) {
-    final entry = questions[index];
+    final question = questions[index];
+    final entry = question.entry;
     final answered = selected != null;
     final correct = selected == entry.word;
     return QuestPage(
@@ -364,9 +364,18 @@ class _PictureMatchGameState extends State<PictureMatchGame> {
         if (runtime.restoredSession) const GameResumeBanner(),
         GameStage(
             child: Column(children: [
-          _pictureFor(entry),
+          if (question.asksForPicture)
+            Text(entry.word,
+                textAlign: TextAlign.center,
+                style:
+                    const TextStyle(fontSize: 40, fontWeight: FontWeight.w900))
+          else
+            _pictureFor(entry),
           const SizedBox(height: 16),
-          Text(GameText.of('picture_match').prompt,
+          Text(
+              question.asksForPicture
+                  ? AppText.of('picture.whichPicture')
+                  : GameText.of('picture_match').prompt,
               textAlign: TextAlign.center,
               style:
                   const TextStyle(fontSize: 19, fontWeight: FontWeight.w800)),
@@ -381,16 +390,39 @@ class _PictureMatchGameState extends State<PictureMatchGame> {
                   gloss: entry.englishGloss,
                   answer: entry.word)),
         const SizedBox(height: 18),
-        ...optionSets[index].indexed.map((pair) => Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: AnswerButton(
-                badge: String.fromCharCode(65 + pair.$1),
-                label: pair.$2,
-                selected: selected == pair.$2,
-                correct: selected == pair.$2 ? pair.$2 == entry.word : null,
-                onTap: answered || !runtime.ready
-                    ? null
-                    : () => choose(pair.$2)))),
+        if (question.pictures case final pictures?)
+          GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+            children: [
+              for (final (i, option) in pictures.indexed)
+                PictureOption(
+                  entry: option,
+                  label: AppText.of('picture.optionSpoken',
+                      {'n': String.fromCharCode(65 + i)}),
+                  selected: selected == option.word,
+                  correct:
+                      selected == option.word ? option.word == entry.word : null,
+                  onTap: answered || !runtime.ready
+                      ? null
+                      : () => choose(option.word),
+                ),
+            ],
+          )
+        else
+          ...question.options.indexed.map((pair) => Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: AnswerButton(
+                  badge: String.fromCharCode(65 + pair.$1),
+                  label: pair.$2,
+                  selected: selected == pair.$2,
+                  correct: selected == pair.$2 ? pair.$2 == entry.word : null,
+                  onTap: answered || !runtime.ready
+                      ? null
+                      : () => choose(pair.$2)))),
         if (answered) ...[
           const SizedBox(height: 6),
           FeedbackCard(
