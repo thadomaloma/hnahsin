@@ -92,4 +92,24 @@ void main() {
       }
     }
   });
+
+  test('Odd One Out never pairs groups that overlap (a lemon grows on a tree)',
+      () {
+    WordEntry member(String id) => _word(id, id.split('.').last, id);
+    final words = [
+      for (final group in wordGroups)
+        for (final id in group.wordIds) member(id),
+    ];
+    for (var seed = 0; seed < 50; seed++) {
+      for (final q in buildOddOneOutRound(
+          catalog: words,
+          rating: 2,
+          random: Random(seed),
+          pick: (pool, count) => pool.take(count).toList())) {
+        expect(groupsOverlap(q.group, q.oddGroup), isFalse,
+            reason: '${q.group.id} / ${q.oddGroup.id}');
+      }
+    }
+  });
 }
+

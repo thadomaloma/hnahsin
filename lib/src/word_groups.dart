@@ -266,4 +266,113 @@ const wordGroups = <WordGroup>[
     'word.darbu',
     'word.bengbung',
   ]),
+  WordGroup('moving', 'actions', "ways of moving", <String>[
+    'word.jf178.tlan',
+    'word.zuang',
+    'word.thlawk',
+    'word.jf178.hleuh',
+    'word.jf300.kal',
+    'word.lawn',
+    'word.jf300.bawkvak',
+    'word.jf300.liluh'
+  ]),
+  WordGroup('senses', 'actions', "seeing and hearing", <String>[
+    'word.jf300.en',
+    'word.jf300.hmu',
+    'word.jf300.ngaithla',
+    'word.thlir',
+    'word.enthla'
+  ]),
+  WordGroup('eating', 'actions', "eating and drinking", <String>[
+    'word.jf300.ei',
+    'word.dawlh',
+    'word.jf178.lem',
+    'word.jf300.thial',
+    'word.jf1011.hip',
+    'word.jf178.tem'
+  ]),
+  WordGroup('handwork', 'actions', "sewing, weaving and knitting",
+      <String>['word.thui', 'word.jf178.tah', 'word.jf300.laphiar']),
+  WordGroup('farming', 'actions', "farm work", <String>[
+    'word.tuh',
+    'word.jf300.phun',
+    'word.jf300.seng',
+    'word.hlothlo'
+  ]),
+  WordGroup('tastes', 'describing', "tastes", <String>[
+    'word.jf178.thlum',
+    'word.jf1011.al',
+    'word.jf178.thak',
+    'word.jf300.kha',
+    'word.jf178.thur'
+  ]),
+  WordGroup('sizes', 'describing', "sizes and shapes", <String>[
+    'word.jf300.lian',
+    'word.jf178.te',
+    'word.sei',
+    'word.tawi',
+    'word.sang',
+    'word.jf300.hniam',
+    'word.jf178.cher',
+    'word.jf178.chhah'
+  ]),
+  WordGroup('feelings', 'describing', "feelings", <String>[
+    'word.jf300.hlim',
+    'word.lungngai',
+    'word.jf300.thinur',
+    'word.hlau',
+    'word.lungawi',
+    'word.jf1011.ngui'
+  ]),
+  WordGroup('hot_cold', 'describing', "hot, cold, wet and dry",
+      <String>['word.lum', 'word.vawt', 'word.hul', 'word.huh']),
+  WordGroup('nearby_days', 'time', "yesterday, today and tomorrow", <String>[
+    'word.nimin',
+    'word.jf178.vawiin',
+    'word.jf1011.naktuk',
+    'word.jf1011.hmanni'
+  ]),
+  WordGroup('questions', 'questions', "question words", <String>[
+    'word.jf1011.tu',
+    'word.jf1011.khawiah',
+    'word.jf1011.engtikah',
+    'word.jf1011.engvangin',
+    'word.jf178.engtiangin'
+  ]),
+  WordGroup('plants', 'nature', "trees and plants", <String>[
+    'word.jf178.thing',
+    'word.hnah',
+    'word.pangpar',
+    'word.jf300.mau',
+    'word.zung',
+    'word.jf300.thingtang',
+    'word.jf300.katchat'
+  ]),
+  WordGroup('tools', 'home', "tools", <String>[
+    'word.jf300.hrei',
+    'word.hreipui',
+    'word.jf300.tuboh',
+    'word.chem',
+    'word.favah',
+    'word.tuthlawh'
+  ]),
 ];
+
+/// Groups close enough that a word of one could seem to belong to the
+/// other (a lemon is fruit, but grows on a tree), so neither is ever the
+/// odd one out for the other.
+const overlappingGroups = <(String, String)>{
+  ('plants', 'fruit'),
+  ('plants', 'vegetables'),
+  ('eating', 'tastes'),
+  ('eating', 'drinks'),
+  ('hot_cold', 'sky'),
+  ('tools', 'kitchen'),
+  ('farming', 'plants'),
+  ('farming', 'vegetables'),
+  ('senses', 'head'),
+};
+
+bool groupsOverlap(WordGroup a, WordGroup b) =>
+    overlappingGroups.contains((a.id, b.id)) ||
+    overlappingGroups.contains((b.id, a.id));

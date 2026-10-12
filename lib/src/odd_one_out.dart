@@ -54,7 +54,10 @@ List<OddOneOutQuestion> buildOddOneOutRound({
     if (questions.length >= count) break;
     final others = [
       for (final other in wordGroups)
-        if (other != group && members[other]!.isNotEmpty) other
+        if (other != group &&
+            members[other]!.isNotEmpty &&
+            !groupsOverlap(group, other))
+          other
     ];
     final near = others.where((other) => other.family == group.family).toList();
     final far = others.where((other) => other.family != group.family).toList();
