@@ -8,8 +8,9 @@ void main() {
   test('duplicate reward transaction is committed only once', () async {
     final repository = InMemoryQuestRepository();
     final controller = QuestController(repository: repository);
-    final session = GameSession(gameId: 'picture_match', seed: 5)
-      ..registerAnswer(true);
+    final session =
+        GameSession(gameId: 'picture_match', mode: GameMode.relaxed, seed: 5)
+          ..registerAnswer(true);
     final result = session.finish(baseXp: 30);
 
     await controller.reward('picture_match', result);
@@ -18,6 +19,34 @@ void main() {
     expect(controller.xp, result.xp);
     expect(controller.dailyProgress, 1);
     expect(controller.completedGames, contains('picture_match'));
+  });
+
+  test('Classic and Speed earn more XP, and keep their own best score',
+      () async {
+    final controller = QuestController(repository: InMemoryQuestRepository());
+    final earned = <GameMode, int>{};
+    for (final mode in GameMode.values) {
+      final result = (GameSession(gameId: 'spelling', mode: mode, seed: 3)
+            ..registerAnswer(true))
+          .finish(baseXp: 40);
+      earned[mode] = (await controller.reward('spelling', result)).xp;
+      expect(controller.bestScore('spelling', mode), result.score);
+    }
+    expect(
+        earned[GameMode.standard], (earned[GameMode.relaxed]! * 1.25).round());
+    expect(earned[GameMode.timed], (earned[GameMode.relaxed]! * 1.5).round());
+  });
+
+  test('the play mode and seen how-to-plays are remembered', () async {
+    final repository = InMemoryQuestRepository();
+    final controller = QuestController(repository: repository);
+    await controller.setPlayMode(GameMode.timed);
+    await controller.markHowToSeen('spelling');
+
+    final reloaded = QuestController(repository: repository);
+    await reloaded.load();
+    expect(reloaded.playMode, GameMode.timed);
+    expect(reloaded.seenHowTo, {'spelling'});
   });
 
   test('reset clears local learner progress', () async {

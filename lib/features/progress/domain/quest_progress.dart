@@ -11,6 +11,8 @@ class QuestProgress {
     this.playDay,
     this.dailyPuzzles = const <String, String>{},
     this.wordCards = const <String, int>{},
+    this.playMode,
+    this.seenHowTo = const <String>{},
   });
 
   factory QuestProgress.empty() => const QuestProgress(
@@ -44,6 +46,12 @@ class QuestProgress {
   /// Collected word cards: word id → 1 (collected) or 2 (gold). Never lost.
   final Map<String, int> wordCards;
 
+  /// The play mode the player picked last (GameMode name), for every game.
+  final String? playMode;
+
+  /// Games whose how-to-play the player has seen before their first round.
+  final Set<String> seenHowTo;
+
   QuestProgress copyWith({
     int? xp,
     int? streak,
@@ -56,6 +64,8 @@ class QuestProgress {
     String? playDay,
     Map<String, String>? dailyPuzzles,
     Map<String, int>? wordCards,
+    String? playMode,
+    Set<String>? seenHowTo,
   }) {
     return QuestProgress(
       xp: xp ?? this.xp,
@@ -71,6 +81,8 @@ class QuestProgress {
       playDay: playDay ?? this.playDay,
       dailyPuzzles: Map<String, String>.unmodifiable(dailyPuzzles ?? this.dailyPuzzles),
       wordCards: Map<String, int>.unmodifiable(wordCards ?? this.wordCards),
+      playMode: playMode ?? this.playMode,
+      seenHowTo: Set<String>.unmodifiable(seenHowTo ?? this.seenHowTo),
     );
   }
 
@@ -86,6 +98,8 @@ class QuestProgress {
         if (playDay != null) 'playDay': playDay,
         if (dailyPuzzles.isNotEmpty) 'dailyPuzzles': dailyPuzzles,
         if (wordCards.isNotEmpty) 'wordCards': wordCards,
+        if (playMode != null) 'playMode': playMode,
+        if (seenHowTo.isNotEmpty) 'seenHowTo': seenHowTo.toList()..sort(),
       };
 
   factory QuestProgress.fromJson(Map<String, Object?> json) {
@@ -94,6 +108,7 @@ class QuestProgress {
     final rawSkills = json['gameSkills'];
     final rawDaily = json['dailyPuzzles'];
     final rawCards = json['wordCards'];
+    final rawSeen = json['seenHowTo'];
     return QuestProgress(
       xp: (json['xp'] as num?)?.toInt() ?? 0,
       streak: (json['streak'] as num?)?.toInt() ?? 1,
@@ -136,6 +151,10 @@ class QuestProgress {
                 if (value is num) key.toString(): value.toInt().clamp(1, 2),
             })
           : const <String, int>{},
+      playMode: json['playMode'] is String ? json['playMode'] as String : null,
+      seenHowTo: rawSeen is List
+          ? Set<String>.unmodifiable(rawSeen.whereType<String>())
+          : const <String>{},
     );
   }
 }

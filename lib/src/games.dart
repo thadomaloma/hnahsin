@@ -87,8 +87,12 @@ class _GameLaunchScreenState extends State<GameLaunchScreen> {
       await widget.controller.clearSession(saved.sessionId);
       if (!mounted) return;
     }
+    await widget.controller.markHowToSeen(widget.gameId);
+    if (!mounted) return;
+    // A saved round goes on in its own mode; a new one in the chosen mode.
+    final play = resume && saved != null ? mode : widget.controller.playMode;
     await Navigator.of(context).pushReplacement(
-      MaterialPageRoute<void>(builder: (_) => widget.builder(mode)),
+      MaterialPageRoute<void>(builder: (_) => widget.builder(play)),
     );
   }
 
@@ -168,7 +172,7 @@ class _GameLaunchScreenState extends State<GameLaunchScreen> {
                           const SizedBox(height: 3),
                           Text(
                               AppText.of('launcher.savedDetail', {
-                                'mode': AppText.of('launcher.modeName.${savedSession!.mode.name}'),
+                                'mode': AppText.of('mode.${savedSession!.mode.name}'),
                                 'attempts': savedSession!.attempts,
                               }),
                               style: const TextStyle(color: QuestColors.slate)),
@@ -182,25 +186,9 @@ class _GameLaunchScreenState extends State<GameLaunchScreen> {
             ],
             GameLevelCard(skill: widget.controller.gameSkill(widget.gameId)),
             const SizedBox(height: 18),
-            SectionTitle(AppText.of('launcher.chooseMode')),
+            SectionTitle(AppText.of('mode.title')),
             const SizedBox(height: 12),
-            AnswerButton(
-              label: AppText.of('launcher.relaxed'),
-              selected: mode == GameMode.relaxed,
-              onTap: () => setState(() => mode = GameMode.relaxed),
-            ),
-            const SizedBox(height: 10),
-            AnswerButton(
-              label: AppText.of('launcher.standard'),
-              selected: mode == GameMode.standard,
-              onTap: () => setState(() => mode = GameMode.standard),
-            ),
-            const SizedBox(height: 10),
-            AnswerButton(
-              label: AppText.of('launcher.timed'),
-              selected: mode == GameMode.timed,
-              onTap: () => setState(() => mode = GameMode.timed),
-            ),
+            PlayModePicker(controller: widget.controller),
             const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
@@ -1529,4 +1517,99 @@ class _WordSearchGameState extends State<WordSearchGame> {
                   .toList()),
         ]),
       );
+}
+
+/// Practice, Classic or Speed, for every game; the choice is remembered.
+class PlayModePicker extends StatelessWidget {
+  const PlayModePicker(
+      {super.key, required this.controller, this.compact = false});
+  final QuestController controller;
+
+  /// One row of icon and name, with the chosen mode's note below.
+  final bool compact;
+
+  static const icons = <GameMode, IconData>{
+    GameMode.relaxed: Icons.spa_rounded,
+    GameMode.standard: Icons.favorite_rounded,
+    GameMode.timed: Icons.timer_rounded,
+  };
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+        animation: controller,
+        builder: (context, _) => compact
+            ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: SegmentedButton<GameMode>(
+                    showSelectedIcon: false,
+                    segments: [
+                      for (final mode in icons.keys)
+                        ButtonSegment<GameMode>(
+                            value: mode,
+                            icon: Icon(icons[mode], size: 18),
+                            label: Text(AppText.of('mode.${mode.name}'),
+                                maxLines: 1)),
+                    ],
+                    selected: {controller.playMode},
+                    onSelectionChanged: (value) =>
+                        controller.setPlayMode(value.first),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(AppText.of('mode.${controller.playMode.name}Note'),
+                    style: const TextStyle(
+                        color: QuestColors.slate, fontSize: 12)),
+              ])
+            : Row(children: [
+                for (final (i, mode) in icons.keys.indexed) ...[
+                  if (i > 0) const SizedBox(width: 8),
+                  Expanded(child: _modeCard(mode)),
+                ],
+              ]),
+      );
+
+  Widget _modeCard(GameMode mode) {
+    final selected = controller.playMode == mode;
+    return Semantics(
+      button: true,
+      selected: selected,
+      label:
+          '${AppText.of('mode.${mode.name}')}, ${AppText.of('mode.${mode.name}Note')}',
+      child: ExcludeSemantics(
+        child: Material(
+          color: selected ? const Color(0xFFE9EDFF) : Colors.white,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+              side: BorderSide(
+                  color: selected ? QuestColors.indigo : QuestColors.line,
+                  width: selected ? 2 : 1.2)),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: () => controller.setPlayMode(mode),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(10, 12, 10, 12),
+              child: Column(children: [
+                Icon(icons[mode],
+                    color: selected ? QuestColors.indigo : QuestColors.slate,
+                    size: 26),
+                const SizedBox(height: 6),
+                Text(AppText.of('mode.${mode.name}'),
+                    maxLines: 1,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        color: selected ? QuestColors.indigo : QuestColors.ink)),
+                const SizedBox(height: 2),
+                Text(AppText.of('mode.${mode.name}Note'),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    style: const TextStyle(
+                        fontSize: 11, color: QuestColors.slate, height: 1.2)),
+              ]),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

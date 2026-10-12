@@ -101,8 +101,6 @@ const appTextDefaults = <String, AppTextDefault>{
   'report.save': AppTextDefault('Content report', 'Save Report'),
   'report.saved': AppTextDefault('Content report', 'Report saved. Thank you!'),
   // Home
-  'home.games': AppTextDefault('Home', 'Games'),
-  'home.viewAll': AppTextDefault('Home', 'View All'),
   'home.journey': AppTextDefault('Home', 'Mizo Journey'),
   'home.viewMap': AppTextDefault('Home', 'View Map'),
   'home.storyPath': AppTextDefault('Home', 'STORY PATH'),
@@ -124,9 +122,11 @@ const appTextDefaults = <String, AppTextDefault>{
   'home.otherGame': AppTextDefault('Home', 'Play another game'),
   // Learn
   'learn.eyebrow': AppTextDefault('Learn', 'Your learning'),
+  'learn.subtitleWords': AppTextDefault('Learn', "Your words, your story and today's lesson."),
+  'settings.title': AppTextDefault('Settings', 'Settings'),
+  'settings.note':
+      AppTextDefault('Settings', "Daily goal, language, sound and more"),
   'learn.title': AppTextDefault('Learn', 'Learn'),
-  'learn.subtitle': AppTextDefault(
-      'Learn', '{level} {title} • Keep learning at your own pace.'),
   'learn.library': AppTextDefault('Learn', 'Word Library'),
   'learn.libraryCount':
       AppTextDefault('Learn', '{words} words • {categories} topics'),
@@ -145,7 +145,6 @@ const appTextDefaults = <String, AppTextDefault>{
   'games.played': AppTextDefault('Games', 'PLAYED'),
   'games.level': AppTextDefault('Games', 'Lv {level}'),
   'games.best': AppTextDefault('Games', '★ {score}'),
-  'games.play': AppTextDefault('Games', 'PLAY'),
   // Profile
   'profile.eyebrow': AppTextDefault('Profile', 'Your journey'),
   'profile.title': AppTextDefault('Profile', 'Profile'),
@@ -162,7 +161,6 @@ const appTextDefaults = <String, AppTextDefault>{
   'profile.journey': AppTextDefault('Profile', 'Mizo Journey Collection'),
   'profile.journeyCount': AppTextDefault(
       'Profile', '{stories}/{total} stories • {rewards} rewards'),
-  'profile.settings': AppTextDefault('Profile', 'My settings'),
   'profile.dailyGoal': AppTextDefault('Profile', 'Daily goal'),
   'profile.dailyGoalNote': AppTextDefault('Profile',
       'About one game round a minute; Home\'s ring fills when you reach it.'),
@@ -256,14 +254,16 @@ const appTextDefaults = <String, AppTextDefault>{
   'launcher.saved': AppTextDefault('Game start', 'Saved game available'),
   'launcher.savedDetail':
       AppTextDefault('Game start', '{mode} mode • {attempts} attempts'),
-  'launcher.modeName.relaxed': AppTextDefault('Game start', 'relaxed'),
-  'launcher.modeName.standard': AppTextDefault('Game start', 'standard'),
-  'launcher.modeName.timed': AppTextDefault('Game start', 'timed'),
-  'launcher.chooseMode': AppTextDefault('Game start', 'Choose a mode'),
-  'launcher.relaxed':
-      AppTextDefault('Game start', 'Relaxed — no hearts to lose'),
-  'launcher.standard': AppTextDefault('Game start', 'Standard — 3 hearts'),
-  'launcher.timed': AppTextDefault('Game start', 'Timed — 90 seconds'),
+  "mode.title": AppTextDefault('Game start', "PLAY MODE"),
+  "mode.relaxed": AppTextDefault('Game start', "Practice"),
+  "mode.relaxedNote": AppTextDefault('Game start', "No hearts to lose"),
+  "mode.standard": AppTextDefault('Game start', "Classic"),
+  "mode.standardNote": AppTextDefault('Game start', "3 hearts \u00b7 +25% XP"),
+  "mode.timed": AppTextDefault('Game start', "Speed"),
+  "mode.timedNote": AppTextDefault('Game start', "90 seconds \u00b7 +50% XP"),
+  "games.howTo": AppTextDefault('Game start', "How to play"),
+  "result.xpBonus": AppTextDefault('Game start', "XP +{n}%"),
+  "result.newBest": AppTextDefault('Game start', "New best: {score}!"),
   'launcher.start': AppTextDefault('Game start', 'Start Game'),
   'launcher.resume': AppTextDefault('Game start', 'Resume Game'),
   'launcher.startNew': AppTextDefault('Game start', 'Start New Game'),

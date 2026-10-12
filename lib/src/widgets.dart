@@ -204,7 +204,11 @@ class Pill extends StatelessWidget {
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           Icon(icon, size: 17, color: foreground),
           const SizedBox(width: 6),
-          Text(label, style: TextStyle(color: foreground, fontWeight: FontWeight.w800, fontSize: 13)),
+          Flexible(
+              child: Text(label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: foreground, fontWeight: FontWeight.w800, fontSize: 13))),
         ]),
       );
 }
@@ -851,8 +855,17 @@ Future<void> showGameResult(BuildContext context, QuestController controller, St
               const SizedBox(width: 10),
               Expanded(child: _ResultStat(icon: Icons.track_changes_rounded, color: QuestColors.tealDark, label: AppText.of('result.accuracy'), value: '${(result.accuracy * 100).round()}%')),
               const SizedBox(width: 10),
-              Expanded(child: _ResultStat(icon: Icons.bolt_rounded, color: QuestColors.indigo, label: AppText.of('result.xp'), value: '+${outcome.xp}')),
+              Expanded(child: _ResultStat(icon: Icons.bolt_rounded, color: QuestColors.indigo, label: outcome.bonusPercent > 0 ? AppText.of('result.xpBonus', {'n': outcome.bonusPercent}) : AppText.of('result.xp'), value: '+${outcome.xp}')),
             ]),
+            if (outcome.newBest) ...[
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                decoration: BoxDecoration(color: const Color(0xFFFFF4CA), borderRadius: BorderRadius.circular(99)),
+                child: Text(AppText.of('result.newBest', {'score': result.score}),
+                    style: const TextStyle(color: Color(0xFF9A6800), fontWeight: FontWeight.w900)),
+              ),
+            ],
             if (result.newCards.isNotEmpty || result.goldCards.isNotEmpty) ...[
               const SizedBox(height: 14),
               NewCardsRow(controller: controller, collected: result.newCards, gold: result.goldCards),

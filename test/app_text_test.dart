@@ -78,7 +78,7 @@ void main() {
       }
     }
     // IDs built at run time.
-    asked.addAll(GameMode.values.map((mode) => 'launcher.modeName.${mode.name}'));
+    asked.addAll(GameMode.values.expand((mode) => ['mode.${mode.name}', 'mode.${mode.name}Note']));
     for (final quest in [...dailyQuestCatalog, ...weeklyQuestCatalog]) {
       asked.addAll([quest.textId, '${quest.textId}.note']);
     }

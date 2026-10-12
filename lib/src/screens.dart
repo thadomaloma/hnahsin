@@ -38,19 +38,7 @@ class HomeScreen extends StatelessWidget {
           const SizedBox(height: 28),
           DailyPuzzlesCard(controller: controller),
           const SizedBox(height: 28),
-          if (_journeyVisible) ...[
-            _HomeJourney(controller: controller),
-            const SizedBox(height: 28),
-          ],
-          SectionTitle(AppText.of('home.games'),
-              trailing: TextButton(
-                  onPressed: openGames, child: Text(AppText.of('home.viewAll')))),
-          const SizedBox(height: 12),
-          _GameGrid(
-              controller: controller,
-              games: _gameCatalog(controller),
-              maxRows: 2,
-              maxRowsWide: 1),
+          if (_journeyVisible) _HomeJourney(controller: controller),
         ]),
       );
 }
@@ -83,8 +71,7 @@ class _HomeJourney extends StatelessWidget {
                   : AppText.pick(
                       mizo: controller.nextJourneyNode!.titleMizo,
                       english: controller.nextJourneyNode!.titleEnglish)) ??
-              (controller.journeyDone ==
-                      controller.journey.nodes.length
+              (controller.journeyDone == controller.journey.nodes.length
                   ? AppText.of('home.journeyComplete')
                   : AppText.of('home.journeyContinue')),
           subtitle: (controller.nextJourneyNode == null
@@ -200,22 +187,6 @@ class _DailyHero extends StatelessWidget {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(
-                            color: const Color(0x228FD0FA),
-                            borderRadius: BorderRadius.circular(99)),
-                        child: Text(
-                          '${controller.learningState.level.code} • ${controller.track.title.toUpperCase()}',
-                          style: const TextStyle(
-                              color: QuestColors.teal,
-                              fontSize: 10.5,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 1.1),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
                       Text(AppText.of('home.todaysGame'),
                           style: const TextStyle(
                               color: const Color(0xFFDDF3FF),
@@ -237,7 +208,8 @@ class _DailyHero extends StatelessWidget {
                       Text(
                           [
                             game.subtitle,
-                            if (best > 0) AppText.of('home.best', {'score': best}),
+                            if (best > 0)
+                              AppText.of('home.best', {'score': best}),
                           ].join(' • '),
                           style: const TextStyle(
                               color: Color(0xFFDDF3FF),
@@ -283,7 +255,7 @@ class _DailyHero extends StatelessWidget {
                 icon: Icons.play_arrow_rounded,
                 label: AppText.of('home.play'),
                 onPressed: () =>
-                    _open(context, game.builder(GameMode.standard)),
+                    _open(context, game.builder(controller.playMode)),
               ),
               const SizedBox(height: 4),
               TextButton(
@@ -448,29 +420,6 @@ class LearnScreen extends StatelessWidget {
   const LearnScreen({super.key, required this.controller});
   final QuestController controller;
 
-  /// The course's games in order, with their icon colours.
-  static const _steps = <(String, IconData, Color, Color)>[
-    ('picture_match', Icons.image_rounded, Color(0xFFFFF0BD), Color(0xFF9A6800)),
-    ('spelling', Icons.spellcheck_rounded, Color(0xFFDDF3FF), QuestColors.tealDark),
-    ('word_search', Icons.search_rounded, Color(0xFFE9E4FF), QuestColors.violet),
-    ('tawng_upa', Icons.forum_rounded, Color(0xFFDCF0FF), QuestColors.indigo),
-    ('crossword', Icons.grid_on_rounded, Color(0xFFE6F4D9), QuestColors.success),
-    (ThumalKawpGame.gameId, Icons.style_rounded, Color(0xFFFFE6F0), Color(0xFFD6457A)),
-    (OddOneOutGame.gameId, Icons.category_rounded, Color(0xFFFFF0BD), Color(0xFF9A6800)),
-    ('sentence_builder', Icons.view_stream_rounded, Color(0xFFE9E4FF), QuestColors.violet),
-  ];
-
-  Widget _game(String gameId) => switch (gameId) {
-        'picture_match' => PictureMatchGame(controller: controller),
-        'spelling' => SpellingGame(controller: controller),
-        'word_search' => WordSearchGame(controller: controller),
-        'tawng_upa' => OldWordQuizGame(controller: controller),
-        'crossword' => MiniCrosswordGame(controller: controller),
-        'sentence_builder' => SentenceBuilderGame(controller: controller),
-        OddOneOutGame.gameId => OddOneOutGame(controller: controller),
-        _ => ThumalKawpGame(controller: controller),
-      };
-
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
         animation: controller,
@@ -478,29 +427,20 @@ class LearnScreen extends StatelessWidget {
           final playableWords = controller.wordCatalog
               .where((entry) => ContentPolicy.playable(entry.review))
               .length;
-          // The first game not yet played is the one to do next.
-          final next = _steps.indexWhere(
-              (step) => !controller.completedGames.contains(step.$1));
           return QuestTabPage(children: [
             PageIntro(
               eyebrow: AppText.of('learn.eyebrow'),
               title: AppText.of('learn.title'),
-              subtitle: AppText.of('learn.subtitle', {
-                'level': controller.learningState.level.code,
-                'title': controller.learningState.level.title,
-              }),
+              subtitle: AppText.of('learn.subtitleWords'),
             ),
             const SizedBox(height: 20),
             LearningOverviewCard(controller: controller),
             const SizedBox(height: 26),
-            SectionTitle(AppText.of('cards.title')),
-            const SizedBox(height: 12),
             WordCardsTile(controller: controller),
-            const SizedBox(height: 26),
-            SectionTitle(AppText.of('learn.library')),
             const SizedBox(height: 12),
             PremiumCard(
-              onTap: () => _open(context, WordBankScreen(controller: controller)),
+              onTap: () =>
+                  _open(context, WordBankScreen(controller: controller)),
               gradient: const LinearGradient(
                   colors: [Color(0xFFDDF3FF), Color(0xFFF5FBFA)]),
               child: Row(children: [
@@ -528,90 +468,13 @@ class LearnScreen extends StatelessWidget {
                     color: QuestColors.tealDark),
               ]),
             ),
-            const SizedBox(height: 26),
-            for (var index = 0; index < _steps.length; index += 1)
-              _LessonStep(
-                  number: index + 1,
-                  icon: _steps[index].$2,
-                  color: _steps[index].$3,
-                  foreground: _steps[index].$4,
-                  title: GameText.of(_steps[index].$1).title,
-                  subtitle: GameText.of(_steps[index].$1).subtitle,
-                  state: controller.completedGames.contains(_steps[index].$1)
-                      ? _LessonState.done
-                      : index == next
-                          ? _LessonState.current
-                          : _LessonState.open,
-                  onTap: () => _open(context, _game(_steps[index].$1))),
+            if (_journeyVisible) ...[
+              const SizedBox(height: 26),
+              _HomeJourney(controller: controller),
+            ],
           ]);
         },
       );
-}
-
-enum _LessonState { done, current, open }
-
-class _LessonStep extends StatelessWidget {
-  const _LessonStep(
-      {required this.number,
-      required this.icon,
-      required this.color,
-      required this.foreground,
-      required this.title,
-      required this.subtitle,
-      required this.state,
-      required this.onTap});
-  final int number;
-  final IconData icon;
-  final Color color;
-  final Color foreground;
-  final String title;
-  final String subtitle;
-  final _LessonState state;
-  final VoidCallback onTap;
-  @override
-  Widget build(BuildContext context) {
-    final active = state == _LessonState.current;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: PremiumCard(
-        onTap: onTap,
-        gradient: active
-            ? const LinearGradient(
-                colors: [QuestColors.navy, QuestColors.indigo])
-            : null,
-        child: Row(children: [
-          _IconTile(
-              icon: icon,
-              color: active ? const Color(0xFFDDF3FF) : color,
-              foreground: active ? QuestColors.tealDark : foreground),
-          const SizedBox(width: 14),
-          Expanded(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                Text('$number. $title',
-                    style: TextStyle(
-                        color: active ? Colors.white : QuestColors.ink,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 17)),
-                const SizedBox(height: 4),
-                Text(subtitle,
-                    style: TextStyle(
-                        color: active
-                            ? const Color(0xFFDDF3FF)
-                            : QuestColors.slate)),
-              ])),
-          Icon(
-              state == _LessonState.done
-                  ? Icons.check_circle_rounded
-                  : Icons.play_circle_fill_rounded,
-              color: state == _LessonState.done
-                  ? QuestColors.success
-                  : (active ? QuestColors.gold : QuestColors.indigo)),
-        ]),
-      ),
-    );
-  }
 }
 
 List<_GameInfo> _gameCatalog(QuestController controller) {
@@ -718,6 +581,10 @@ class GamesScreen extends StatelessWidget {
               subtitle: AppText.of('games.subtitle'),
               trailing: _CompletionBadge(done: completed, total: games.length),
             ),
+            const SizedBox(height: 18),
+            SectionTitle(AppText.of('mode.title')),
+            const SizedBox(height: 10),
+            PlayModePicker(controller: controller, compact: true),
             const SizedBox(height: 22),
             _GameGrid(controller: controller, games: games),
           ]);
@@ -757,17 +624,9 @@ class _CompletionBadge extends StatelessWidget {
 }
 
 class _GameGrid extends StatelessWidget {
-  const _GameGrid(
-      {required this.controller,
-      required this.games,
-      this.maxRows,
-      this.maxRowsWide});
+  const _GameGrid({required this.controller, required this.games});
   final QuestController controller;
   final List<_GameInfo> games;
-
-  /// Limits a preview grid to whole rows (phones / wider layouts).
-  final int? maxRows;
-  final int? maxRowsWide;
 
   @override
   Widget build(BuildContext context) =>
@@ -780,35 +639,50 @@ class _GameGrid extends StatelessWidget {
         const spacing = 12.0;
         final width =
             (constraints.maxWidth - spacing * (columns - 1)) / columns;
-        final rows = columns == 2 ? maxRows : maxRowsWide ?? maxRows;
-        final shown = rows == null ? games : games.take(rows * columns);
         return Wrap(
           spacing: spacing,
           runSpacing: spacing,
           children: [
-            for (final game in shown)
+            for (final game in games)
               SizedBox(
                 width: width,
                 child: _GameCard(
                   game: game,
                   level: controller.gameLevel(game.id),
                   completed: controller.completedGames.contains(game.id),
-                  best: controller.bestScores[game.id] ?? 0,
-                  onTap: () => _open(
-                    context,
-                    GameLaunchScreen(
-                        controller: controller,
-                        gameId: game.id,
-                        title: game.title,
-                        subtitle: game.subtitle,
-                        instructions: game.instructions,
-                        builder: game.builder),
-                  ),
+                  best: controller.bestScore(game.id, controller.playMode),
+                  onTap: () => _play(context, game),
+                  onInfo: () => _open(context, _launcher(game)),
                 ),
               ),
           ],
         );
       });
+}
+
+extension on _GameGrid {
+  Widget _launcher(_GameInfo game) => GameLaunchScreen(
+      controller: controller,
+      gameId: game.id,
+      title: game.title,
+      subtitle: game.subtitle,
+      instructions: game.instructions,
+      builder: game.builder);
+
+  /// One tap plays in the chosen mode. The first time, and when there is
+  /// a saved round to go back to, the game's start page comes first.
+  Future<void> _play(BuildContext context, _GameInfo game) async {
+    final saved = await controller.loadSession(game.id);
+    if (!context.mounted) return;
+    final resumable = saved != null &&
+        (saved.status == GameSessionStatus.active ||
+            saved.status == GameSessionStatus.paused);
+    if (resumable || !controller.seenHowTo.contains(game.id)) {
+      _open(context, _launcher(game));
+    } else {
+      _open(context, game.builder(controller.playMode));
+    }
+  }
 }
 
 class _GameInfo {
@@ -830,12 +704,16 @@ class _GameCard extends StatelessWidget {
       required this.level,
       required this.completed,
       required this.best,
-      required this.onTap});
+      required this.onTap,
+      required this.onInfo});
   final _GameInfo game;
   final int level;
   final bool completed;
   final int best;
   final VoidCallback onTap;
+
+  /// Opens the game's how-to-play and modes.
+  final VoidCallback onInfo;
   @override
   Widget build(BuildContext context) => PremiumCard(
         onTap: onTap,
@@ -914,26 +792,36 @@ class _GameCard extends StatelessWidget {
                       const TextStyle(color: QuestColors.slate, fontSize: 12)),
               const SizedBox(height: 10),
               Row(children: [
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
-                  decoration: BoxDecoration(
-                      color: best > 0
-                          ? const Color(0xFFFFF4CA)
-                          : const Color(0xFFEAF6FF),
-                      borderRadius: BorderRadius.circular(99)),
-                  child: Text(
-                    best > 0 ? AppText.of('games.best', {'score': best}) : AppText.of('games.play'),
-                    style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 11,
-                        letterSpacing: .4,
-                        color: best > 0
-                            ? const Color(0xFF9A6800)
-                            : QuestColors.indigo),
-                  ),
-                ),
+                // Only a best score: the whole card already says play.
+                if (best > 0)
+                  Flexible(
+                      child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                    decoration: BoxDecoration(
+                        color: const Color(0xFFFFF4CA),
+                        borderRadius: BorderRadius.circular(99)),
+                    child: Text(AppText.of('games.best', {'score': best}),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 11,
+                            letterSpacing: .4,
+                            color: Color(0xFF9A6800))),
+                  )),
                 const Spacer(),
+                IconButton(
+                  onPressed: onInfo,
+                  tooltip: AppText.of('games.howTo'),
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
+                  constraints:
+                      const BoxConstraints.tightFor(width: 32, height: 32),
+                  icon: const Icon(Icons.info_outline_rounded,
+                      color: QuestColors.slate, size: 20),
+                ),
+                const SizedBox(width: 2),
                 Container(
                   width: 30,
                   height: 30,
@@ -975,14 +863,16 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  Text(AppText.of('profile.name', {'experience': controller.profile.experienceLabel}),
+                  Text(
+                      AppText.of('profile.name',
+                          {'experience': controller.profile.experienceLabel}),
                       style: const TextStyle(
                           color: Colors.white,
                           fontSize: 21,
                           fontWeight: FontWeight.w800)),
                   const SizedBox(height: 4),
                   Text(
-                      '${controller.profile.ageBand.label} • ${controller.learningState.level.code} • ${controller.selectedAvatar.labelFor(isChild: controller.profile.isChild)}',
+                      '${controller.profile.ageBand.label} • ${controller.selectedAvatar.labelFor(isChild: controller.profile.isChild)}',
                       style: const TextStyle(
                           color: QuestColors.teal,
                           fontWeight: FontWeight.w900)),
@@ -990,7 +880,9 @@ class ProfileScreen extends StatelessWidget {
                   // The XP level the bar fills towards (Home's “Lv”), not
                   // the learning level above.
                   Row(children: [
-                    Text(AppText.of('profile.xpLevel', {'level': controller.level}),
+                    Text(
+                        AppText.of(
+                            'profile.xpLevel', {'level': controller.level}),
                         style: const TextStyle(
                             color: QuestColors.gold,
                             fontWeight: FontWeight.w900)),
@@ -1006,7 +898,9 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ]),
                   const SizedBox(height: 8),
-                  Text(AppText.of('profile.xpToNext', {'xp': controller.xp % 250}),
+                  Text(
+                      AppText.of(
+                          'profile.xpToNext', {'xp': controller.xp % 250}),
                       style: const TextStyle(color: Color(0xFFDDF3FF))),
                 ])),
             const SizedBox(height: 14),
@@ -1050,13 +944,15 @@ class ProfileScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                         Text(AppText.of('profile.journey'),
-                            style: const TextStyle(fontWeight: FontWeight.w900)),
+                            style:
+                                const TextStyle(fontWeight: FontWeight.w900)),
                         const SizedBox(height: 3),
                         Text(
                           AppText.of('profile.journeyCount', {
                             'stories': controller.journeyDone,
                             'total': controller.journey.nodes.length,
-                            'rewards': controller.journeyState.unlockedRewardIds.length,
+                            'rewards': controller
+                                .journeyState.unlockedRewardIds.length,
                           }),
                           style: const TextStyle(
                               color: QuestColors.slate, fontSize: 12),
@@ -1067,102 +963,142 @@ class ProfileScreen extends StatelessWidget {
                 ]),
               ),
             ],
-            const SizedBox(height: 28),
-            SectionTitle(AppText.of('profile.settings')),
-            const SizedBox(height: 12),
-            _ProfileSettings(controller: controller),
             const SizedBox(height: 14),
             PremiumCard(
-                child: Row(children: [
-              const Icon(Icons.verified_user_rounded, color: QuestColors.tealDark),
-              const SizedBox(width: 12),
-              Expanded(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                    Text(AppText.of('profile.family'),
-                        style: const TextStyle(fontWeight: FontWeight.w800)),
-                    const SizedBox(height: 3),
-                    Text(AppText.of('profile.familyNote'),
-                        style:
-                            const TextStyle(color: QuestColors.slate, fontSize: 12))
-                  ]))
-            ])),
-            const SizedBox(height: 14),
-            ContentDeliveryStatusCard(controller: controller),
-            const SizedBox(height: 14),
-            PremiumCard(
-              padding: EdgeInsets.zero,
-              child: Column(children: [
-                SwitchListTile(
-                  title: Text(AppText.of('profile.sound'),
-                      style: const TextStyle(fontWeight: FontWeight.w800)),
-                  subtitle: Text(AppText.of('profile.soundNote')),
-                  secondary: const Icon(Icons.volume_up_rounded,
-                      color: QuestColors.indigo),
-                  value: controller.profile.soundEffects,
-                  onChanged: (value) => controller.updateProfile(
-                      controller.profile.copyWith(soundEffects: value)),
-                ),
-                const Divider(height: 1),
-                SwitchListTile(
-                  title: Text(AppText.of('profile.reduceMotion'),
-                      style: const TextStyle(fontWeight: FontWeight.w800)),
-                  subtitle: Text(AppText.of('profile.reduceMotionNote')),
-                  secondary: const Icon(Icons.motion_photos_off_rounded,
-                      color: QuestColors.indigo),
-                  value: controller.profile.reducedMotion,
-                  onChanged: (value) => controller.updateProfile(
-                      controller.profile.copyWith(reducedMotion: value)),
-                ),
-                const Divider(height: 1),
-                SwitchListTile(
-                  title: Text(AppText.of('profile.gentle'),
-                      style: const TextStyle(fontWeight: FontWeight.w800)),
-                  subtitle: Text(AppText.of('profile.gentleNote')),
-                  secondary: const Icon(Icons.self_improvement_rounded,
-                      color: QuestColors.indigo),
-                  value: controller.profile.gentleMode,
-                  onChanged: (value) => controller.updateProfile(
-                      controller.profile.copyWith(gentleMode: value)),
-                ),
+              onTap: () =>
+                  _open(context, SettingsScreen(controller: controller)),
+              child: Row(children: [
+                const Icon(Icons.settings_rounded, color: QuestColors.indigo),
+                const SizedBox(width: 12),
+                Expanded(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                      Text(AppText.of('settings.title'),
+                          style: const TextStyle(fontWeight: FontWeight.w900)),
+                      const SizedBox(height: 3),
+                      Text(AppText.of('settings.note'),
+                          style: const TextStyle(
+                              color: QuestColors.slate, fontSize: 12)),
+                    ])),
+                const Icon(Icons.arrow_forward_rounded,
+                    color: QuestColors.indigo),
               ]),
             ),
-            const SizedBox(height: 14),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                icon: const Icon(Icons.delete_outline_rounded),
-                label: Text(AppText.of('profile.reset')),
-                onPressed: () async {
-                  final confirmed = await showDialog<bool>(
-                    context: context,
-                    builder: (dialogContext) => AlertDialog(
-                      title: Text(AppText.of('profile.resetTitle')),
-                      content: Text(AppText.of('profile.resetBody')),
-                      actions: [
-                        TextButton(
-                            onPressed: () =>
-                                Navigator.pop(dialogContext, false),
-                            child: Text(AppText.of('common.cancel'))),
-                        FilledButton(
-                            onPressed: () => Navigator.pop(dialogContext, true),
-                            child: Text(AppText.of('profile.resetConfirm'))),
-                      ],
-                    ),
-                  );
-                  if (confirmed == true) await controller.resetAll();
-                },
-              ),
-            ),
-            const SizedBox(height: 18),
-            // The sources the content draws on, as their licences ask.
-            Text(AppText.of('profile.credits'),
-                style: const TextStyle(fontWeight: FontWeight.w800, color: QuestColors.slate)),
-            const SizedBox(height: 4),
-            Text(AppText.of('profile.creditsBody'),
-                style: const TextStyle(color: QuestColors.slate, fontSize: 12, height: 1.4)),
           ]));
+}
+
+/// Everything the player can change, away from their progress on Profile:
+/// what onboarding asked, language, sound and motion, the content, reset
+/// and the credits.
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key, required this.controller});
+  final QuestController controller;
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+      animation: controller,
+      builder: (context, _) => QuestPage(
+            title: AppText.of('settings.title'),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              _ProfileSettings(controller: controller),
+              const SizedBox(height: 14),
+              PremiumCard(
+                  child: Row(children: [
+                const Icon(Icons.verified_user_rounded,
+                    color: QuestColors.tealDark),
+                const SizedBox(width: 12),
+                Expanded(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                      Text(AppText.of('profile.family'),
+                          style: const TextStyle(fontWeight: FontWeight.w800)),
+                      const SizedBox(height: 3),
+                      Text(AppText.of('profile.familyNote'),
+                          style: const TextStyle(
+                              color: QuestColors.slate, fontSize: 12))
+                    ]))
+              ])),
+              const SizedBox(height: 14),
+              ContentDeliveryStatusCard(controller: controller),
+              const SizedBox(height: 14),
+              PremiumCard(
+                padding: EdgeInsets.zero,
+                child: Column(children: [
+                  SwitchListTile(
+                    title: Text(AppText.of('profile.sound'),
+                        style: const TextStyle(fontWeight: FontWeight.w800)),
+                    subtitle: Text(AppText.of('profile.soundNote')),
+                    secondary: const Icon(Icons.volume_up_rounded,
+                        color: QuestColors.indigo),
+                    value: controller.profile.soundEffects,
+                    onChanged: (value) => controller.updateProfile(
+                        controller.profile.copyWith(soundEffects: value)),
+                  ),
+                  const Divider(height: 1),
+                  SwitchListTile(
+                    title: Text(AppText.of('profile.reduceMotion'),
+                        style: const TextStyle(fontWeight: FontWeight.w800)),
+                    subtitle: Text(AppText.of('profile.reduceMotionNote')),
+                    secondary: const Icon(Icons.motion_photos_off_rounded,
+                        color: QuestColors.indigo),
+                    value: controller.profile.reducedMotion,
+                    onChanged: (value) => controller.updateProfile(
+                        controller.profile.copyWith(reducedMotion: value)),
+                  ),
+                  const Divider(height: 1),
+                  SwitchListTile(
+                    title: Text(AppText.of('profile.gentle'),
+                        style: const TextStyle(fontWeight: FontWeight.w800)),
+                    subtitle: Text(AppText.of('profile.gentleNote')),
+                    secondary: const Icon(Icons.self_improvement_rounded,
+                        color: QuestColors.indigo),
+                    value: controller.profile.gentleMode,
+                    onChanged: (value) => controller.updateProfile(
+                        controller.profile.copyWith(gentleMode: value)),
+                  ),
+                ]),
+              ),
+              const SizedBox(height: 14),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  icon: const Icon(Icons.delete_outline_rounded),
+                  label: Text(AppText.of('profile.reset')),
+                  onPressed: () async {
+                    final confirmed = await showDialog<bool>(
+                      context: context,
+                      builder: (dialogContext) => AlertDialog(
+                        title: Text(AppText.of('profile.resetTitle')),
+                        content: Text(AppText.of('profile.resetBody')),
+                        actions: [
+                          TextButton(
+                              onPressed: () =>
+                                  Navigator.pop(dialogContext, false),
+                              child: Text(AppText.of('common.cancel'))),
+                          FilledButton(
+                              onPressed: () =>
+                                  Navigator.pop(dialogContext, true),
+                              child: Text(AppText.of('profile.resetConfirm'))),
+                        ],
+                      ),
+                    );
+                    if (confirmed == true) await controller.resetAll();
+                  },
+                ),
+              ),
+              const SizedBox(height: 18),
+              // The sources the content draws on, as their licences ask.
+              Text(AppText.of('profile.credits'),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w800, color: QuestColors.slate)),
+              const SizedBox(height: 4),
+              Text(AppText.of('profile.creditsBody'),
+                  style: const TextStyle(
+                      color: QuestColors.slate, fontSize: 12, height: 1.4)),
+            ]),
+          ));
 }
 
 /// What onboarding asked, changeable later: daily goal, age range, English
@@ -1177,21 +1113,32 @@ class _ProfileSettings extends StatelessWidget {
 
   /// The phone's language, or one of the app's languages, each in its own
   /// name so a learner can find theirs.
-  void _pickLanguage(BuildContext context, LearnerProfile profile) => showModalBottomSheet<void>(
+  void _pickLanguage(BuildContext context, LearnerProfile profile) =>
+      showModalBottomSheet<void>(
         context: context,
         isScrollControlled: true,
         builder: (sheetContext) => SafeArea(
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(sheetContext).height * .8),
+            constraints: BoxConstraints(
+                maxHeight: MediaQuery.sizeOf(sheetContext).height * .8),
             child: ListView(shrinkWrap: true, children: [
-              for (final code in <String?>[null, ...appLocales.map((locale) => locale.code)])
+              for (final code in <String?>[
+                null,
+                ...appLocales.map((locale) => locale.code)
+              ])
                 ListTile(
                   title: Text(code == null
-                      ? AppText.of('profile.appLanguageAuto',
-                          {'language': appLocaleOf(localeCodeFor(View.of(sheetContext).platformDispatcher.locale)).name})
+                      ? AppText.of('profile.appLanguageAuto', {
+                          'language': appLocaleOf(localeCodeFor(
+                                  View.of(sheetContext)
+                                      .platformDispatcher
+                                      .locale))
+                              .name
+                        })
                       : appLocaleOf(code).name),
                   trailing: profile.appLocale == code
-                      ? const Icon(Icons.check_rounded, color: QuestColors.indigo)
+                      ? const Icon(Icons.check_rounded,
+                          color: QuestColors.indigo)
                       : null,
                   onTap: () {
                     Navigator.of(sheetContext).pop();
@@ -1208,8 +1155,10 @@ class _ProfileSettings extends StatelessWidget {
     final profile = controller.profile;
     const heading = TextStyle(fontWeight: FontWeight.w800);
     // A goal saved before these three choices shows as the nearest one.
-    final goal = _goals.reduce((a, b) =>
-        (a - profile.dailyGoalMinutes).abs() <= (b - profile.dailyGoalMinutes).abs() ? a : b);
+    final goal = _goals.reduce((a, b) => (a - profile.dailyGoalMinutes).abs() <=
+            (b - profile.dailyGoalMinutes).abs()
+        ? a
+        : b);
     return Column(children: [
       PremiumCard(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -1227,7 +1176,8 @@ class _ProfileSettings extends StatelessWidget {
                 for (final minutes in _goals)
                   ButtonSegment<int>(
                       value: minutes,
-                      label: Text(AppText.of('rhythm.minutes', {'n': minutes}))),
+                      label:
+                          Text(AppText.of('rhythm.minutes', {'n': minutes}))),
               ],
               selected: {goal},
               onSelectionChanged: (value) =>
@@ -1252,22 +1202,28 @@ class _ProfileSettings extends StatelessWidget {
         padding: EdgeInsets.zero,
         child: Column(children: [
           ListTile(
-            leading: const Icon(Icons.language_rounded, color: QuestColors.indigo),
+            leading:
+                const Icon(Icons.language_rounded, color: QuestColors.indigo),
             title: Text(AppText.of('profile.appLanguage'), style: heading),
             subtitle: Text(profile.appLocale == null
-                ? AppText.of('profile.appLanguageAuto', {'language': appLocaleOf(AppText.locale).name})
+                ? AppText.of('profile.appLanguageAuto',
+                    {'language': appLocaleOf(AppText.locale).name})
                 : appLocaleOf(profile.appLocale!).name),
-            trailing: const Icon(Icons.arrow_forward_rounded, color: QuestColors.indigo),
+            trailing: const Icon(Icons.arrow_forward_rounded,
+                color: QuestColors.indigo),
             onTap: () => _pickLanguage(context, profile),
           ),
           const Divider(height: 1),
           SwitchListTile(
             title: Text(AppText.of('support.english'), style: heading),
             subtitle: Text(AppText.of('profile.englishNote')),
-            secondary: const Icon(Icons.translate_rounded, color: QuestColors.indigo),
+            secondary:
+                const Icon(Icons.translate_rounded, color: QuestColors.indigo),
             value: profile.supportLanguage == SupportLanguage.english,
             onChanged: (value) => _update(profile.copyWith(
-                supportLanguage: value ? SupportLanguage.english : SupportLanguage.mizoOnly)),
+                supportLanguage: value
+                    ? SupportLanguage.english
+                    : SupportLanguage.mizoOnly)),
           ),
           const Divider(height: 1),
           ListTile(
@@ -1275,8 +1231,10 @@ class _ProfileSettings extends StatelessWidget {
             title: Text(AppText.of('learn.retakeLevel'), style: heading),
             subtitle: Text(
                 '${controller.learningState.level.code} • ${controller.learningState.level.title}'),
-            trailing: const Icon(Icons.arrow_forward_rounded, color: QuestColors.indigo),
-            onTap: () => _open(context, PlacementScreen(controller: controller)),
+            trailing: const Icon(Icons.arrow_forward_rounded,
+                color: QuestColors.indigo),
+            onTap: () =>
+                _open(context, PlacementScreen(controller: controller)),
           ),
         ]),
       ),
@@ -1342,18 +1300,18 @@ class _WordBankScreenState extends State<WordBankScreen> {
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                          Row(children: [
-                            Expanded(
-                                child: Text(entry.word,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w900,
-                                        fontSize: 18))),
+                          // The word and its English one under the other: side
+                          // by side, a long English squeezed the word into a
+                          // column of single letters.
+                          Text(entry.word,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w900, fontSize: 18)),
+                          if (entry.englishGloss.trim().isNotEmpty)
                             Text(entry.englishGloss,
                                 style: const TextStyle(
                                     color: QuestColors.tealDark,
                                     fontWeight: FontWeight.w800,
-                                    fontSize: 12))
-                          ]),
+                                    fontSize: 12.5)),
                           const SizedBox(height: 4),
                           Text(entry.meaningMizo,
                               style:

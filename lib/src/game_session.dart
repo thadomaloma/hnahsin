@@ -41,6 +41,7 @@ class GameResult {
     required this.heartsLeft,
     required this.xp,
     required this.endReason,
+    this.mode = GameMode.standard,
     this.words = const <WordPlay>[],
     this.newCards = const <String>[],
     this.goldCards = const <String>[],
@@ -55,6 +56,9 @@ class GameResult {
   final int heartsLeft;
   final int xp;
   final GameEndReason endReason;
+
+  /// How the round was played: Practice, Classic or Speed.
+  final GameMode mode;
 
   /// The words this round asked about.
   final List<WordPlay> words;
@@ -73,6 +77,7 @@ class GameResult {
         heartsLeft: heartsLeft,
         xp: xp,
         endReason: endReason,
+        mode: mode,
         words: List<WordPlay>.unmodifiable(value),
         newCards: List<String>.unmodifiable(newCards),
         goldCards: List<String>.unmodifiable(goldCards),
@@ -150,6 +155,7 @@ class GameSession {
           (result.heartsLeft > 0
               ? GameEndReason.completed
               : GameEndReason.heartsExhausted),
+      mode: _engine.config.mode,
     );
   }
 }

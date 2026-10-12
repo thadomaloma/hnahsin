@@ -73,6 +73,36 @@ class QuestController extends ChangeNotifier {
   /// Collected word cards: word id → 1, or 2 for gold ([WordCards]).
   final Map<String, int> wordCards = <String, int>{};
 
+  /// The mode every game starts in: Practice (relaxed) until the player
+  /// picks another.
+  GameMode playMode = GameMode.relaxed;
+
+  /// Games whose how-to-play the player has seen.
+  final Set<String> seenHowTo = <String>{};
+
+  /// Extra XP for the harder modes, in percent.
+  static int modeBonus(GameMode mode) => switch (mode) {
+        GameMode.relaxed => 0,
+        GameMode.standard => 25,
+        GameMode.timed => 50,
+      };
+
+  /// [gameId]'s best score in [mode].
+  int bestScore(String gameId, GameMode mode) =>
+      bestScores['$gameId@${mode.name}'] ?? 0;
+
+  Future<void> setPlayMode(GameMode mode) async {
+    if (playMode == mode) return;
+    playMode = mode;
+    notifyListeners();
+    await _repository.saveProgress(_progress);
+  }
+
+  Future<void> markHowToSeen(String gameId) async {
+    if (!seenHowTo.add(gameId)) return;
+    await _repository.saveProgress(_progress);
+  }
+
   /// Adaptive difficulty rating (1–7) for [gameId]; games pick words and
   /// distractors around it. Unplayed games start from the placement level.
   double gameSkill(String gameId) {
@@ -370,6 +400,13 @@ class QuestController extends ChangeNotifier {
     wordCards
       ..clear()
       ..addAll(progress.wordCards);
+    playMode = GameMode.values
+            .where((mode) => mode.name == progress.playMode)
+            .firstOrNull ??
+        GameMode.relaxed;
+    seenHowTo
+      ..clear()
+      ..addAll(progress.seenHowTo);
   }
 
   QuestProgress get _progress => QuestProgress(
@@ -384,6 +421,8 @@ class QuestController extends ChangeNotifier {
         playDay: playDay,
         dailyPuzzles: Map<String, String>.unmodifiable(dailyPuzzles),
         wordCards: Map<String, int>.unmodifiable(wordCards),
+        playMode: playMode.name,
+        seenHowTo: Set<String>.unmodifiable(seenHowTo),
       );
 
   Future<void> completeOnboarding(LearnerProfile value) async {
@@ -734,9 +773,13 @@ class QuestController extends ChangeNotifier {
   Future<RewardOutcome> reward(String gameId, GameResult result,
       {bool adaptive = true}) async {
     final updatedScores = <String, int>{...bestScores};
+    final modeKey = '$gameId@${result.mode.name}';
+    final previousBest = updatedScores[modeKey] ?? 0;
+    final newBest = adaptive && result.score > previousBest;
     if (adaptive && result.score > (updatedScores[gameId] ?? 0)) {
       updatedScores[gameId] = result.score;
     }
+    if (newBest) updatedScores[modeKey] = result.score;
     final previousSkill = gameSkill(gameId);
     final nextSkill = !adaptive
         ? previousSkill
@@ -746,13 +789,19 @@ class QuestController extends ChangeNotifier {
             attempts: result.attempts,
             failed: result.endReason == GameEndReason.heartsExhausted,
           );
-    // Harder play earns more: +10% XP per level above the first.
-    final xpAwarded = (result.xp * (1 + (previousSkill - 1) * .1)).round();
+    // Harder play earns more: +10% XP per level above the first, and the
+    // harder modes' bonus on top.
+    final bonus = modeBonus(result.mode);
+    final xpAwarded =
+        (result.xp * (1 + (previousSkill - 1) * .1) * (1 + bonus / 100))
+            .round();
     final outcome = RewardOutcome(
       xp: xpAwarded,
       previousLevel: previousSkill.floor(),
       level: nextSkill.floor(),
       skill: nextSkill,
+      bonusPercent: bonus,
+      newBest: newBest && previousBest > 0,
     );
     final now = _clock();
     final today = _dayKey(now);
@@ -846,12 +895,20 @@ class RewardOutcome {
     required this.previousLevel,
     required this.level,
     required this.skill,
+    this.bonusPercent = 0,
+    this.newBest = false,
   });
 
   final int xp;
   final int previousLevel;
   final int level;
   final double skill;
+
+  /// The mode's extra XP, in percent (in [xp] already).
+  final int bonusPercent;
+
+  /// The round beat an earlier best score in its mode.
+  final bool newBest;
 
   bool get levelledUp => level > previousLevel;
   bool get levelledDown => level < previousLevel;

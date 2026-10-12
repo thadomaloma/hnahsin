@@ -54,6 +54,9 @@ void main() {
   testWidgets('daily goal, age range and English support can be changed',
       (tester) async {
     final controller = await _profile(tester);
+    // The settings are a page of their own, opened from Profile.
+    await tester.tap(find.text(AppText.of('settings.title')));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.text(AppText.of('rhythm.minutes', {'n': 15})));
     await tester.pumpAndSettle();
