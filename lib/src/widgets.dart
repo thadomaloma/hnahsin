@@ -1066,17 +1066,21 @@ class WordPicture extends StatelessWidget {
       return Text(entry.emoji, style: TextStyle(fontSize: size * 0.92, height: 1.1));
     }
     // No picture or emoji depicts the word (abstract words, many verbs): its
-    // topic's icon stands in. hasWordPicture stays false, so picture games
-    // never ask about it.
+    // topic's icon stands in, in the topic's colour, like a sticker.
+    // hasWordPicture stays false, so picture games never ask about it.
+    final (background, foreground) = categoryColors(entry.category);
     return Container(
       width: size,
       height: size,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        gradient: const LinearGradient(colors: [Color(0xFFDDF3FF), Color(0xFFEAF6FF)]),
+        gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [background, Color.lerp(background, Colors.white, .5)!]),
         borderRadius: BorderRadius.circular(size * 0.3),
       ),
-      child: Icon(categoryIcon(entry.category), size: size * 0.56, color: QuestColors.tealDark),
+      child: Icon(categoryIcon(entry.category), size: size * 0.56, color: foreground),
     );
   }
 }
@@ -1089,6 +1093,17 @@ IconData categoryIcon(WordCategory category) => switch (category) {
       WordCategory.khawvel => Icons.eco_rounded,
       WordCategory.nunphung => Icons.auto_stories_rounded,
       WordCategory.thiltih => Icons.directions_run_rounded,
+    };
+
+/// A topic's sticker colours (background, icon) for words without a
+/// picture, so each topic looks its own.
+(Color, Color) categoryColors(WordCategory category) => switch (category) {
+      WordCategory.chhungkua => (const Color(0xFFFFE6F0), const Color(0xFFD6457A)),
+      WordCategory.sikul => (const Color(0xFFDCEBFF), QuestColors.indigo),
+      WordCategory.nungcha => (const Color(0xFFFFE8D6), const Color(0xFFC2560C)),
+      WordCategory.khawvel => (const Color(0xFFDDF6EF), const Color(0xFF0F766E)),
+      WordCategory.nunphung => (const Color(0xFFEDE7FF), QuestColors.violet),
+      WordCategory.thiltih => (const Color(0xFFE6F4D9), const Color(0xFF3F7D20)),
     };
 
 /// A picture to choose, for questions that ask “which picture is this
