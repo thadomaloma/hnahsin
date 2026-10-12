@@ -83,7 +83,7 @@ const stringsKo = <String, String>{
   'profile.sound': '소리',
   'profile.soundNote': '정답, 오답, 라운드 종료 소리',
   'profile.credits': '출처',
-  'profile.creditsBody': '문장은 MWireLabs의 Mizo-Language-Corpus-4M(CC BY 4.0, 출처 IndicNLCorp, FineWeb, DIPR Mizoram)과 Hillbyte AI의 미조어–영어 병렬 데이터셋에서 가져왔어요. 단어 확인은 J.F. Laldailova의 English–Lushai Dictionary를 참고했어요. 단어 그림은 game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons, Phosphor Icons에서 가져왔습니다. 일부 사진은 Wikimedia Commons에서 가져왔습니다(사진 출처 참고).',
+  'profile.creditsBody': '문장은 MWireLabs의 Mizo-Language-Corpus-4M(CC BY 4.0, 출처 IndicNLCorp, FineWeb, DIPR Mizoram)과 Hillbyte AI의 미조어–영어 병렬 데이터셋에서 가져왔어요. 단어 확인은 J.F. Laldailova의 English–Lushai Dictionary를 참고했어요. 단어 그림은 game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons, Phosphor Icons에서 가져왔습니다. 일부 사진은 Wikimedia Commons에서 가져왔습니다(사진 출처 참고). 이모지: Microsoft Fluent Emoji (MIT).',
   'profile.ageRange': '연령대',
   'profile.englishNote': '스토리와 문화 카드에서 미조어 옆에 영어를 보여 줘요.',
   'profile.xpLevel': 'Lv {level}',

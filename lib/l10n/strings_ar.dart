@@ -83,7 +83,7 @@ const stringsAr = <String, String>{
   'profile.sound': 'الصوت',
   'profile.soundNote': 'أصوات للإجابات الصحيحة والخاطئة ونهاية الجولات',
   'profile.credits': 'شكر وتقدير',
-  'profile.creditsBody': 'الجمل مأخوذة من Mizo-Language-Corpus-4M من MWireLabs (CC BY 4.0؛ المصادر IndicNLCorp وFineWeb وDIPR Mizoram) ومن مجموعة البيانات الموازية الميزوية–الإنجليزية من Hillbyte AI. التحقق من الكلمات بالاعتماد على English–Lushai Dictionary لـ J.F. Laldailova. صور الكلمات من game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons وPhosphor Icons. بعض الصور من ويكيميديا كومنز (انظر حقوق الصور).',
+  'profile.creditsBody': 'الجمل مأخوذة من Mizo-Language-Corpus-4M من MWireLabs (CC BY 4.0؛ المصادر IndicNLCorp وFineWeb وDIPR Mizoram) ومن مجموعة البيانات الموازية الميزوية–الإنجليزية من Hillbyte AI. التحقق من الكلمات بالاعتماد على English–Lushai Dictionary لـ J.F. Laldailova. صور الكلمات من game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons وPhosphor Icons. بعض الصور من ويكيميديا كومنز (انظر حقوق الصور). الرموز التعبيرية: Microsoft Fluent Emoji (MIT).',
   'profile.ageRange': 'الفئة العمرية',
   'profile.englishNote': 'عرض الإنجليزية بجانب الميزوية في القصص وبطاقات الثقافة.',
   'profile.xpLevel': 'مستوى {level}',

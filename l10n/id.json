@@ -81,7 +81,7 @@
 "profile.sound": "Suara",
 "profile.soundNote": "Suara untuk jawaban benar, salah, dan ronde selesai",
 "profile.credits": "Kredit",
-"profile.creditsBody": "Kalimat dari Mizo-Language-Corpus-4M oleh MWireLabs (CC BY 4.0; sumber IndicNLCorp, FineWeb, dan DIPR Mizoram) serta dataset paralel Mizo–Inggris oleh Hillbyte AI. Pemeriksaan kata dari English–Lushai Dictionary karya J.F. Laldailova. Gambar kata dari game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons, dan Phosphor Icons. Sebagian foto dari Wikimedia Commons (lihat Kredit foto).",
+"profile.creditsBody": "Kalimat dari Mizo-Language-Corpus-4M oleh MWireLabs (CC BY 4.0; sumber IndicNLCorp, FineWeb, dan DIPR Mizoram) serta dataset paralel Mizo–Inggris oleh Hillbyte AI. Pemeriksaan kata dari English–Lushai Dictionary karya J.F. Laldailova. Gambar kata dari game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons, dan Phosphor Icons. Sebagian foto dari Wikimedia Commons (lihat Kredit foto). Emoji: Microsoft Fluent Emoji (MIT).",
 "profile.ageRange": "Rentang usia",
 "profile.englishNote": "Tampilkan bahasa Inggris di samping bahasa Mizo dalam cerita dan kartu budaya.",
 "profile.xpLevel": "Lv {level}",

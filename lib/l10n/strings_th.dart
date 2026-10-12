@@ -83,7 +83,7 @@ const stringsTh = <String, String>{
   'profile.sound': 'เสียง',
   'profile.soundNote': 'เสียงเมื่อตอบถูก ตอบผิด และจบรอบ',
   'profile.credits': 'เครดิต',
-  'profile.creditsBody': 'ประโยคจาก Mizo-Language-Corpus-4M ของ MWireLabs (CC BY 4.0; แหล่งที่มา IndicNLCorp, FineWeb และ DIPR Mizoram) และชุดข้อมูลคู่ขนานมิโซ–อังกฤษของ Hillbyte AI การตรวจคำจาก English–Lushai Dictionary ของ J.F. Laldailova ภาพคำศัพท์จาก game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons และ Phosphor Icons ภาพถ่ายบางภาพจาก Wikimedia Commons (ดูเครดิตภาพถ่าย)',
+  'profile.creditsBody': 'ประโยคจาก Mizo-Language-Corpus-4M ของ MWireLabs (CC BY 4.0; แหล่งที่มา IndicNLCorp, FineWeb และ DIPR Mizoram) และชุดข้อมูลคู่ขนานมิโซ–อังกฤษของ Hillbyte AI การตรวจคำจาก English–Lushai Dictionary ของ J.F. Laldailova ภาพคำศัพท์จาก game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons และ Phosphor Icons ภาพถ่ายบางภาพจาก Wikimedia Commons (ดูเครดิตภาพถ่าย) อีโมจิ: Microsoft Fluent Emoji (MIT)',
   'profile.ageRange': 'ช่วงอายุ',
   'profile.englishNote': 'แสดงภาษาอังกฤษข้างภาษามิโซในเรื่องราวและการ์ดวัฒนธรรม',
   'profile.xpLevel': 'Lv {level}',

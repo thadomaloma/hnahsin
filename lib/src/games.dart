@@ -10,6 +10,7 @@ import '../features/games/engine/game_engine.dart';
 import 'controller.dart';
 import 'daily_widgets.dart';
 import 'data.dart';
+import 'emoji_assets.dart';
 import 'spelling_round.dart';
 import 'word_search_board.dart';
 import 'game_session.dart';
@@ -778,7 +779,7 @@ class _OldWordQuizGameState extends State<OldWordQuizGame> {
       child: Column(children: [
         if (runtime.restoredSession) const GameResumeBanner(),
         if (question.emoji.trim().isNotEmpty) ...[
-          Text(question.emoji, style: const TextStyle(fontSize: 60)),
+          EmojiImage(question.emoji, size: 64),
           const SizedBox(height: 14),
         ],
         if (question.instruction.isNotEmpty) ...[

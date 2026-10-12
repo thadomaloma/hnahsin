@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../src/controller.dart';
 import '../../../src/data.dart';
+import '../../../src/emoji_assets.dart';
 import '../../../src/word_cards.dart';
 import '../../../src/theme.dart';
 import '../../../src/widgets.dart';
@@ -793,7 +794,7 @@ class _StoryQuestScreenState extends State<StoryQuestScreen> {
                           ActionChip(
                             avatar: entry.emoji.trim().isEmpty
                                 ? null
-                                : Text(entry.emoji),
+                                : EmojiImage(entry.emoji, size: 20),
                             label: Text(entry.word,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w800)),
@@ -901,7 +902,7 @@ class _StoryQuestScreenState extends State<StoryQuestScreen> {
       child: Column(
         children: <Widget>[
           const SizedBox(height: 12),
-          Text(reward?.emoji ?? '✨', style: const TextStyle(fontSize: 58)),
+          EmojiImage(reward?.emoji ?? '✨', size: 64),
           const SizedBox(height: 12),
           Text(
             AppText.of('story.wellDone'),

@@ -83,7 +83,7 @@ const stringsZhHant = <String, String>{
   'profile.sound': '聲音',
   'profile.soundNote': '答對、答錯和一局結束時的聲音',
   'profile.credits': '致謝',
-  'profile.creditsBody': '句子來自 MWireLabs 的 Mizo-Language-Corpus-4M（CC BY 4.0；來源 IndicNLCorp、FineWeb 和 DIPR Mizoram）以及 Hillbyte AI 的米佐語—英語平行資料集。詞彙校對來自 J.F. Laldailova 的《English–Lushai Dictionary》。 單字圖片來自 game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons 和 Phosphor Icons。 部分照片來自 Wikimedia Commons（見照片來源）。',
+  'profile.creditsBody': '句子來自 MWireLabs 的 Mizo-Language-Corpus-4M（CC BY 4.0；來源 IndicNLCorp、FineWeb 和 DIPR Mizoram）以及 Hillbyte AI 的米佐語—英語平行資料集。詞彙校對來自 J.F. Laldailova 的《English–Lushai Dictionary》。 單字圖片來自 game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons 和 Phosphor Icons。 部分照片來自 Wikimedia Commons（見照片來源）。 表情符號：Microsoft Fluent Emoji（MIT）。',
   'profile.ageRange': '年齡段',
   'profile.englishNote': '在故事和文化卡片中，在米佐語旁顯示英語。',
   'profile.xpLevel': 'Lv {level}',

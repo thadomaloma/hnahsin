@@ -83,7 +83,7 @@ const stringsJa = <String, String>{
   'profile.sound': 'サウンド',
   'profile.soundNote': '正解・不正解とラウンド終了の音',
   'profile.credits': 'クレジット',
-  'profile.creditsBody': '文は MWireLabs の Mizo-Language-Corpus-4M（CC BY 4.0、出典 IndicNLCorp、FineWeb、DIPR Mizoram）と Hillbyte AI のミゾ語・英語対訳データセットから。単語チェックは J.F. Laldailova の English–Lushai Dictionary から。 単語の絵は game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons、Phosphor Icons から。 一部の写真は Wikimedia Commons から（写真のクレジットを参照）。',
+  'profile.creditsBody': '文は MWireLabs の Mizo-Language-Corpus-4M（CC BY 4.0、出典 IndicNLCorp、FineWeb、DIPR Mizoram）と Hillbyte AI のミゾ語・英語対訳データセットから。単語チェックは J.F. Laldailova の English–Lushai Dictionary から。 単語の絵は game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons、Phosphor Icons から。 一部の写真は Wikimedia Commons から（写真のクレジットを参照）。 絵文字：Microsoft Fluent Emoji（MIT）。',
   'profile.ageRange': '年齢層',
   'profile.englishNote': 'ストーリーと文化カードで、ミゾ語の横に英語を表示します。',
   'profile.xpLevel': 'Lv {level}',

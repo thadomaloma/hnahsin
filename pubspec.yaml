@@ -32,6 +32,7 @@ flutter:
     - assets/branding/hnahsin_logo.png
     - assets/branding/hnahsin_icon.png
     - assets/illustrations/
+    - assets/emoji/
     - assets/sounds/
     - assets/mizo_words.txt
   fonts:

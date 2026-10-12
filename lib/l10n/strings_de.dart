@@ -83,7 +83,7 @@ const stringsDe = <String, String>{
   'profile.sound': 'Ton',
   'profile.soundNote': 'Töne für richtige und falsche Antworten und beendete Runden',
   'profile.credits': 'Quellen',
-  'profile.creditsBody': 'Sätze aus Mizo-Language-Corpus-4M von MWireLabs (CC BY 4.0; Quellen IndicNLCorp, FineWeb und DIPR Mizoram) und dem parallelen Mizo–Englisch-Datensatz von Hillbyte AI. Wortprüfung nach J.F. Laldailovas English–Lushai Dictionary. Wortbilder von game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons und Phosphor Icons. Einige Fotos stammen von Wikimedia Commons (siehe Bildnachweise).',
+  'profile.creditsBody': 'Sätze aus Mizo-Language-Corpus-4M von MWireLabs (CC BY 4.0; Quellen IndicNLCorp, FineWeb und DIPR Mizoram) und dem parallelen Mizo–Englisch-Datensatz von Hillbyte AI. Wortprüfung nach J.F. Laldailovas English–Lushai Dictionary. Wortbilder von game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons und Phosphor Icons. Einige Fotos stammen von Wikimedia Commons (siehe Bildnachweise). Emojis: Microsoft Fluent Emoji (MIT).',
   'profile.ageRange': 'Altersgruppe',
   'profile.englishNote': 'Englisch neben Mizo in Geschichten und Kulturkarten anzeigen.',
   'profile.xpLevel': 'St. {level}',

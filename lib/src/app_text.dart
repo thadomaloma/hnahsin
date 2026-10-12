@@ -177,7 +177,7 @@ const appTextDefaults = <String, AppTextDefault>{
       'Profile', 'Sounds for right and wrong answers and finished rounds'),
   'profile.credits': AppTextDefault('Profile', 'Credits'),
   'profile.creditsBody': AppTextDefault('Profile',
-      'Sentences from Mizo-Language-Corpus-4M by MWireLabs (CC BY 4.0; sources IndicNLCorp, FineWeb and DIPR Mizoram) and the Mizo–English parallel dataset by Hillbyte AI. Word checks from J.F. Laldailova\'s English–Lushai Dictionary. Word pictures from game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons and Phosphor Icons. Some photos from Wikimedia Commons (see Photo credits).'),
+      'Sentences from Mizo-Language-Corpus-4M by MWireLabs (CC BY 4.0; sources IndicNLCorp, FineWeb and DIPR Mizoram) and the Mizo–English parallel dataset by Hillbyte AI. Word checks from J.F. Laldailova\'s English–Lushai Dictionary. Word pictures from game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons and Phosphor Icons. Some photos from Wikimedia Commons (see Photo credits). Emoji: Microsoft Fluent Emoji (MIT).'),
   'profile.ageRange': AppTextDefault('Profile', 'Age range'),
   'profile.englishNote': AppTextDefault(
       'Profile', 'Show English beside the Mizo in stories and culture cards.'),

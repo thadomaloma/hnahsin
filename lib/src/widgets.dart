@@ -7,6 +7,7 @@ import 'game_session.dart';
 import 'game_text.dart';
 import 'theme.dart';
 import 'app_text.dart';
+import 'emoji_assets.dart';
 import 'game_sounds.dart';
 import 'celebration.dart';
 import 'dart:math' as math;
@@ -1070,7 +1071,7 @@ class WordPicture extends StatelessWidget {
       return Image.asset(assetPath, height: size, width: size);
     }
     if (entry.emoji.trim().isNotEmpty) {
-      return Text(entry.emoji, style: TextStyle(fontSize: size * 0.92, height: 1.1));
+      return EmojiImage(entry.emoji, size: size);
     }
     // No picture or emoji depicts the word (abstract words, many verbs): its
     // topic's icon stands in, in the topic's colour, like a sticker.
