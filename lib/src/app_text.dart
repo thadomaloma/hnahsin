@@ -122,8 +122,12 @@ const appTextDefaults = <String, AppTextDefault>{
   'home.otherGame': AppTextDefault('Home', 'Play another game'),
   // Learn
   'learn.eyebrow': AppTextDefault('Learn', 'Your learning'),
-  'learn.subtitleWords': AppTextDefault('Learn', "Your words, your story and today's lesson."),
+  'learn.subtitleWords':
+      AppTextDefault('Learn', "Your words, your story and today's lesson."),
   'settings.title': AppTextDefault('Settings', 'Settings'),
+  "settings.photoCredits": AppTextDefault('Settings', "Photo credits"),
+  "settings.photoCreditsNote": AppTextDefault('Settings',
+      "Some words have photos from Wikimedia Commons. Thank you to the people who took and shared them."),
   'settings.note':
       AppTextDefault('Settings', "Daily goal, language, sound and more"),
   'learn.title': AppTextDefault('Learn', 'Learn'),
@@ -173,7 +177,7 @@ const appTextDefaults = <String, AppTextDefault>{
       'Profile', 'Sounds for right and wrong answers and finished rounds'),
   'profile.credits': AppTextDefault('Profile', 'Credits'),
   'profile.creditsBody': AppTextDefault('Profile',
-      'Sentences from Mizo-Language-Corpus-4M by MWireLabs (CC BY 4.0; sources IndicNLCorp, FineWeb and DIPR Mizoram) and the Mizo–English parallel dataset by Hillbyte AI. Word checks from J.F. Laldailova\'s English–Lushai Dictionary. Word pictures from game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons and Phosphor Icons.'),
+      'Sentences from Mizo-Language-Corpus-4M by MWireLabs (CC BY 4.0; sources IndicNLCorp, FineWeb and DIPR Mizoram) and the Mizo–English parallel dataset by Hillbyte AI. Word checks from J.F. Laldailova\'s English–Lushai Dictionary. Word pictures from game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons and Phosphor Icons. Some photos from Wikimedia Commons (see Photo credits).'),
   'profile.ageRange': AppTextDefault('Profile', 'Age range'),
   'profile.englishNote': AppTextDefault(
       'Profile', 'Show English beside the Mizo in stories and culture cards.'),
@@ -269,13 +273,18 @@ const appTextDefaults = <String, AppTextDefault>{
   'launcher.startNew': AppTextDefault('Game start', 'Start New Game'),
   // Word cards
   // Odd One Out
-  "oddOne.empty": AppTextDefault('Odd One Out', "There aren't enough words for this game yet."),
-  "oddOne.right": AppTextDefault('Odd One Out', "{three}: {group}. \u201c{odd}\u201d doesn't belong."),
-  "oddOne.wrong": AppTextDefault('Odd One Out', "The odd one is \u201c{odd}\u201d ({oddGroup}). {three}: {group}."),
+  "oddOne.empty": AppTextDefault(
+      'Odd One Out', "There aren't enough words for this game yet."),
+  "oddOne.right": AppTextDefault(
+      'Odd One Out', "{three}: {group}. \u201c{odd}\u201d doesn't belong."),
+  "oddOne.wrong": AppTextDefault('Odd One Out',
+      "The odd one is \u201c{odd}\u201d ({oddGroup}). {three}: {group}."),
   "group.mammals": AppTextDefault('Odd One Out', "animals with four legs"),
   "group.birds": AppTextDefault('Odd One Out', "birds"),
-  "group.small_creatures": AppTextDefault('Odd One Out', "insects and small creatures"),
-  "group.water_animals": AppTextDefault('Odd One Out', "animals that live in water"),
+  "group.small_creatures":
+      AppTextDefault('Odd One Out', "insects and small creatures"),
+  "group.water_animals":
+      AppTextDefault('Odd One Out', "animals that live in water"),
   "group.fruit": AppTextDefault('Odd One Out', "fruit"),
   "group.vegetables": AppTextDefault('Odd One Out', "vegetables"),
   "group.drinks": AppTextDefault('Odd One Out', "drinks"),
@@ -295,6 +304,21 @@ const appTextDefaults = <String, AppTextDefault>{
   "group.daytime": AppTextDefault('Odd One Out', "times of day"),
   "group.colours": AppTextDefault('Odd One Out', "colours"),
   "group.music": AppTextDefault('Odd One Out', "musical instruments"),
+  "group.moving": AppTextDefault('Odd One Out', "ways of moving"),
+  "group.senses": AppTextDefault('Odd One Out', "seeing and hearing"),
+  "group.eating": AppTextDefault('Odd One Out', "eating and drinking"),
+  "group.handwork":
+      AppTextDefault('Odd One Out', "sewing, weaving and knitting"),
+  "group.farming": AppTextDefault('Odd One Out', "farm work"),
+  "group.tastes": AppTextDefault('Odd One Out', "tastes"),
+  "group.sizes": AppTextDefault('Odd One Out', "sizes and shapes"),
+  "group.feelings": AppTextDefault('Odd One Out', "feelings"),
+  "group.hot_cold": AppTextDefault('Odd One Out', "hot, cold, wet and dry"),
+  "group.nearby_days":
+      AppTextDefault('Odd One Out', "yesterday, today and tomorrow"),
+  "group.questions": AppTextDefault('Odd One Out', "question words"),
+  "group.plants": AppTextDefault('Odd One Out', "trees and plants"),
+  "group.tools": AppTextDefault('Odd One Out', "tools"),
   'cards.title': AppTextDefault('Word cards', 'Word Cards'),
   'cards.count':
       AppTextDefault('Word cards', '{n}/{total} cards • {gold} gold'),
@@ -326,7 +350,8 @@ const appTextDefaults = <String, AppTextDefault>{
   'daily.shareText': AppTextDefault(
       'Daily puzzles', 'Hnahsin {puzzle}\n{marks}\n⏱ {time} · 💡 {hints}'),
   // Picture Match
-  "picture.whichPicture": AppTextDefault('Picture Match', "Which picture is it?"),
+  "picture.whichPicture":
+      AppTextDefault('Picture Match', "Which picture is it?"),
   "picture.optionSpoken": AppTextDefault('Picture Match', "Picture {n}"),
   'picture.right': AppTextDefault('Picture Match', '{word} — {gloss}'),
   'picture.wrong': AppTextDefault(

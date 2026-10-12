@@ -13,6 +13,7 @@ import '../features/onboarding/domain/learner_profile.dart';
 import 'content_widgets.dart';
 import '../l10n/app_locales.dart';
 import 'controller.dart';
+import 'photo_credits.dart';
 import 'daily_widgets.dart';
 import 'data.dart';
 import 'game_text.dart';
@@ -1097,8 +1098,36 @@ class SettingsScreen extends StatelessWidget {
               Text(AppText.of('profile.creditsBody'),
                   style: const TextStyle(
                       color: QuestColors.slate, fontSize: 12, height: 1.4)),
+              TextButton.icon(
+                onPressed: () => _open(context, const PhotoCreditsScreen()),
+                icon: const Icon(Icons.photo_library_outlined, size: 18),
+                label: Text(AppText.of('settings.photoCredits')),
+              ),
             ]),
           ));
+}
+
+/// Who took each word's photo and its licence, as the licences ask.
+class PhotoCreditsScreen extends StatelessWidget {
+  const PhotoCreditsScreen({super.key});
+  @override
+  Widget build(BuildContext context) => QuestPage(
+        title: AppText.of('settings.photoCredits'),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(AppText.of('settings.photoCreditsNote'),
+              style: const TextStyle(color: QuestColors.slate)),
+          const SizedBox(height: 12),
+          for (final credit in photoCredits)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: PremiumCard(
+                child: SelectableText(
+                    '${credit.title}\n${credit.author} • ${credit.licence}\n${credit.url}',
+                    style: const TextStyle(fontSize: 12.5, height: 1.4)),
+              ),
+            ),
+        ]),
+      );
 }
 
 /// What onboarding asked, changeable later: daily goal, age range, English

@@ -1059,6 +1059,13 @@ class WordPicture extends StatelessWidget {
       return Image.memory(uploaded, height: size, width: size, fit: BoxFit.contain, gaplessPlayback: true);
     }
     final assetPath = illustrationFor(entry);
+    if (assetPath != null && assetPath.endsWith('.jpg')) {
+      // A photo: square with soft corners, like a card.
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(size * 0.22),
+        child: Image.asset(assetPath, height: size, width: size, fit: BoxFit.cover),
+      );
+    }
     if (assetPath != null) {
       return Image.asset(assetPath, height: size, width: size);
     }
