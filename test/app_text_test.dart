@@ -39,12 +39,12 @@ void main() {
     }
   });
 
-  test('phones get their language, Taiwan and Hong Kong traditional Chinese', () {
+  test('phones get their language, any Chinese simplified', () {
     expect(localeCodeFor(const Locale('ja', 'JP')), 'ja');
     expect(localeCodeFor(const Locale('zh', 'CN')), 'zh_Hans');
-    expect(localeCodeFor(const Locale('zh', 'TW')), 'zh_Hant');
-    expect(localeCodeFor(const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant')), 'zh_Hant');
-    expect(localeCodeFor(const Locale('pt', 'BR')), 'pt');
+    expect(localeCodeFor(const Locale('zh', 'TW')), 'zh_Hans');
+    expect(localeCodeFor(const Locale('es', 'MX')), 'es');
+    expect(localeCodeFor(const Locale('fr', 'FR')), 'en');
     expect(localeCodeFor(const Locale('sw')), 'en');
   });
 

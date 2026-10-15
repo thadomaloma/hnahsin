@@ -35,11 +35,9 @@ phones, and every word, question and sentence is edited by people in a
   Word Chain also accepts about 6,000 more Mizo words.
 - **Sound and motion** — sound effects, bounces, confetti; Profile can turn
   sound off and reduce motion.
-- **16 languages** — buttons, messages and game instructions follow the
-  phone's language: English, 日本語, 简体中文, 繁體中文, 한국어, हिन्दी, မြန်မာ,
-  ไทย, Bahasa Indonesia, Tiếng Việt, Español, Français, Deutsch, Português,
-  العربية (right to left) and Русский; Profile can pick another. The games'
-  Mizo stays Mizo.
+- **7 languages** — buttons, messages and game instructions follow the
+  phone's language: English, 日本語, 简体中文, 한국어, हिन्दी, မြန်မာ and
+  Español; Profile can pick another. The games' Mizo stays Mizo.
 - **Offline first** — content packs are verified by SHA-256 and cached on the
   device; progress stays on the device.
 - **Content Sheet** — words, pictures, questions and all game text are edited
