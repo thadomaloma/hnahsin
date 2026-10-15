@@ -794,7 +794,7 @@ class _StoryQuestScreenState extends State<StoryQuestScreen> {
                           ActionChip(
                             avatar: entry.emoji.trim().isEmpty
                                 ? null
-                                : EmojiImage(entry.emoji, size: 20),
+                                : EmojiImage(entry.emoji, size: 18),
                             label: Text(entry.word,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w800)),

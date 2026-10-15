@@ -479,12 +479,16 @@ class EmojiImage extends StatelessWidget {
       return Text(emoji, style: TextStyle(fontSize: size * 0.92, height: 1.1));
     }
     final each = parts.length == 1 ? size : size * 0.62;
+    // Shrinks to fit a smaller box, such as a chip's 18 px avatar.
     return Semantics(
       label: emoji,
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
-        for (final asset in assets)
-          Image.asset(asset!, width: each, height: each, filterQuality: FilterQuality.medium),
-      ]),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          for (final asset in assets)
+            Image.asset(asset!, width: each, height: each, filterQuality: FilterQuality.medium),
+        ]),
+      ),
     );
   }
 }

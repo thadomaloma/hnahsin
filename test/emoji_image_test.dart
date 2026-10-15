@@ -20,4 +20,17 @@ void main() {
     expect(find.byType(Image), findsNWidgets(3));
     expect(find.text('🪢'), findsOneWidget);
   });
+
+  testWidgets('an emoji or a pair shrinks to fit a chip', (tester) async {
+    await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+            body: Wrap(children: [
+      for (final emoji in ['🐕', '👧👦', '1️⃣1️⃣'])
+        ActionChip(
+            avatar: EmojiImage(emoji, size: 24),
+            label: const Text('word'),
+            onPressed: () {}),
+    ]))));
+    expect(tester.takeException(), isNull);
+  });
 }
