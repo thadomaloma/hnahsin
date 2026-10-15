@@ -4,7 +4,6 @@ import '../features/games/engine/game_engine.dart';
 import '../features/games/presentation/crossword_game.dart';
 import '../features/games/presentation/phase2b_games.dart';
 import '../features/games/presentation/odd_one_out_game.dart';
-import '../features/games/presentation/thumal_kawp_game.dart';
 import '../features/learning/domain/learning_state.dart';
 import '../features/learning/presentation/learning_screens.dart';
 import '../features/journey/domain/journey_content.dart';
@@ -534,15 +533,6 @@ List<_GameInfo> _gameCatalog(QuestController controller) {
         QuestColors.success,
         GameText.of('crossword').instructions,
         (mode) => MiniCrosswordGame(controller: controller, mode: mode)),
-    _GameInfo(
-        ThumalKawpGame.gameId,
-        GameText.of(ThumalKawpGame.gameId).title,
-        Icons.style_rounded,
-        GameText.of(ThumalKawpGame.gameId).subtitle,
-        const Color(0xFFFFE6F0),
-        const Color(0xFFD6457A),
-        GameText.of(ThumalKawpGame.gameId).instructions,
-        (mode) => ThumalKawpGame(controller: controller, mode: mode)),
     _GameInfo(
         OddOneOutGame.gameId,
         GameText.of(OddOneOutGame.gameId).title,

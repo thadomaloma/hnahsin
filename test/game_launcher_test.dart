@@ -80,7 +80,6 @@ void main() {
       'word_chain',
       'tawng_upa',
       'crossword',
-      'thumal_kawp',
       'sentence_builder',
       'odd_one_out'
     ]) {

@@ -451,14 +451,6 @@ const appTextDefaults = <String, AppTextDefault>{
       AppTextDefault('Sentence Builder', '{sentence} — That\'s the word!'),
   'sentence.gapWrong': AppTextDefault(
       'Sentence Builder', 'That word doesn\'t fit. Try another one.'),
-  // Thumal Kawp
-  'kawp.progress': AppTextDefault(
-      'Thumal Kawp', '{found}/{pairs} pairs found • {turns} turns'),
-  'kawp.notEnough': AppTextDefault('Thumal Kawp',
-      'Not enough words for the cards yet. Try again when new content arrives.'),
-  'kawp.hiddenSpoken': AppTextDefault('Thumal Kawp', 'Hidden card'),
-  'kawp.pictureSpoken': AppTextDefault('Thumal Kawp', 'Picture of {gloss}'),
-  'kawp.matchedSpoken': AppTextDefault('Thumal Kawp', '{card}, matched'),
   // Level check
   'placement.empty': AppTextDefault('Level check', 'No words to learn yet.'),
   'placement.prompt': AppTextDefault('Level check', 'Pick the closest meaning'),

@@ -243,7 +243,6 @@ final _demos = <String, _Demo>{
   'word_search': _wordSearch(),
   'word_chain': _wordChain(),
   'crossword': _crossword(),
-  'thumal_kawp': _pairs(),
   'sentence_builder': _sentence(),
   // Two animals and a drink: tap the one that doesn't belong.
   'odd_one_out': _choice(
@@ -395,47 +394,6 @@ _Demo _crossword() {
         _text('💧', const Offset(150, 70), fontSize: 22),
         for (final letter in keys) _tile(letter, key(letter), height: 36),
         if (done) _check(cell(2) + const Offset(36, 0), t, taps.last.$1),
-      ];
-    },
-  );
-}
-
-_Demo _pairs() {
-  Offset card(int i) => Offset(60 + i * 60.0, 70);
-  const faces = ['ui', '🐟', 'sangha', '🐕'];
-  final taps = [(.32, card(0)), (.56, card(3))];
-  return _Demo(
-    taps: taps,
-    frame: (t) {
-      final flipped = t < _reset ? taps.where((tap) => t >= tap.$1).length : 0;
-      final matched = flipped == 2;
-      Widget face(int i) {
-        final up = (i == 0 && flipped >= 1) || (i == 3 && flipped >= 2);
-        if (!up) {
-          return Positioned(
-            left: card(i).dx - 26,
-            top: card(i).dy - 36,
-            child: Container(
-              width: 52,
-              height: 72,
-              decoration: BoxDecoration(
-                  gradient: QuestGradients.hero,
-                  borderRadius: BorderRadius.circular(12)),
-              child: const Icon(Icons.auto_awesome_rounded,
-                  color: QuestColors.gold, size: 20),
-            ),
-          );
-        }
-        return _tile(faces[i], card(i),
-            width: 52,
-            height: 72,
-            look: matched ? _Look.right : _Look.picked,
-            fontSize: 18);
-      }
-
-      return [
-        for (var i = 0; i < 4; i++) face(i),
-        if (matched) _check(const Offset(270, 70), t, taps.last.$1),
       ];
     },
   );

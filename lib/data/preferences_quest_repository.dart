@@ -144,7 +144,7 @@ class PreferencesQuestRepository implements QuestRepository {
       'tawng_upa',
       'crossword',
       'listen_pick', // retired game: clears sessions saved before its removal
-      'thumal_kawp',
+      'thumal_kawp', // retired game: clears sessions saved before its removal
       'odd_one_out',
       'sentence_builder',
     ]) {
@@ -178,8 +178,8 @@ class PreferencesQuestRepository implements QuestRepository {
         'tawng_upa',
         'crossword',
         'listen_pick', // retired game: clears sessions saved before its removal
-        'thumal_kawp',
-      'odd_one_out',
+        'thumal_kawp', // retired game: clears sessions saved before its removal
+        'odd_one_out',
         'sentence_builder',
       ].map(_sessionKey),
     };

@@ -21,7 +21,7 @@ phones, and every word, question and sentence is edited by people in a
 ## Features
 
 - **8 games** — Picture Match, Spelling, Word Search, Word Chain, Tawng Upa
-  (old sayings), Crossword, Thumal Kawp (memory cards) and Sentence Builder.
+  (old sayings), Crossword, Odd One Out and Sentence Builder.
   Each opens with a short looping demo of how to play.
 - **Daily puzzles** — one Crossword and one Word Search a day, the same for
   everyone, easiest on Monday; the result can be shared without spoiling it.

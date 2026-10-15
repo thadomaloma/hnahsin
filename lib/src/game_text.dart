@@ -105,15 +105,6 @@ const _defaultGameCopy = <String, GameCopy>{
         'Tap a box and read its clue. Tap it again to switch across and down.',
         'Type the letters. We check each word as soon as it is full.'
       ]),
-  'thumal_kawp': GameCopy(
-      title: 'Thumal Kawp',
-      subtitle: 'Memory card pairs',
-      prompt:
-          'Turn over two cards to find a word and its pair. Remember the cards you have seen!',
-      instructions: <String>[
-        'Turn over two cards to match a word with its picture or meaning.',
-        'Remember every card you have seen — match it as soon as you find its pair.'
-      ]),
   'sentence_builder': GameCopy(
       title: 'Sentence Builder',
       subtitle: 'Put the word tiles in order',
