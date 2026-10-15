@@ -27,7 +27,6 @@ var GAMES = [
   ['word_chain', 'Word Chain'],
   ['tawng_upa', 'Tawng Upa'],
   ['crossword', 'Crossword'],
-  ['thumal_kawp', 'Thumal Kawp'],
   ['sentence_builder', 'Sentence Builder'],
 ];
 

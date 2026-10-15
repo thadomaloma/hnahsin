@@ -1,7 +1,7 @@
 {
  "id": "00000000-0000-4000-8000-000000000000",
  "version": "2.20261001.120000",
- "checksum": "f35cdabf73e16b667e017ede147670eb1fcba54703419d6464d8648760590cbd",
+ "checksum": "5d0537bd2e0e41d89f649e24a83a45d2beeee0f8610c53509b0c970f2b24fb05",
  "published_at": "2026-10-01T12:00:00Z",
  "manifest": {
   "schema_version": "1.0",
@@ -139,7 +139,7 @@
    {
     "stable_id": "word.lu",
     "content_type": "word",
-    "checksum": "7827a923e4309b1d14f34df9805ee3bd7100d89c5c1989dc508b4fb39c0fd5b5",
+    "checksum": "daf21d9d5e463377eae51a058bdc0f91b677c4085a410299013142d70f62258b",
     "body": {
      "word": "Lû",
      "meaning_mizo": "Awmzia a ni.",
@@ -150,7 +150,7 @@
      "difficulty": 3,
      "game_modes": [
       "picture_match",
-      "thumal_kawp"
+      "spelling"
      ],
      "image": {
       "checksum": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",

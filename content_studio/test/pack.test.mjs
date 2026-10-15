@@ -30,7 +30,7 @@ function tabs() {
   return {
     words: [
       ...Array.from({ length: 21 }, (_, i) => word(i + 1)),
-      word(22, { id: '', word: 'Lû', picture: 'lu.png', picture_match: true, thumal_kawp: true }),
+      word(22, { id: '', word: 'Lû', picture: 'lu.png', picture_match: true, spelling: true }),
       word(23, { status: 'In review', english: '' }),
     ],
     questions: [{
@@ -75,7 +75,7 @@ test('builds a pack from the live rows and gives new rows an ID', () => {
   assert.deepEqual(result.newIds.map((n) => n.id), ['word.lu', 'question.thufingtihhianengngeakawh', 'line.chawieitawhem']);
   const items = result.envelope.manifest.items;
   const lu = items.find((i) => i.stable_id === 'word.lu');
-  assert.deepEqual(lu.body.game_modes, ['picture_match', 'thumal_kawp']);
+  assert.deepEqual(lu.body.game_modes, ['picture_match', 'spelling']);
   assert.equal(lu.body.image.checksum, 'a'.repeat(64));
   assert.equal(items.find((i) => i.content_type === 'question').body.answer, 'Finna thu tawi');
   assert.equal(result.envelope.checksum, sha256Hex(P.canonicalJson(result.envelope.manifest)));

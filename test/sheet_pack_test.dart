@@ -19,7 +19,7 @@ void main() {
     final lu = words.singleWhere((word) => word.id == 'word.lu');
     expect(lu.word, 'Lû');
     expect(lu.category, 'khawvel');
-    expect(lu.gameModes, {'picture_match', 'thumal_kawp'});
+    expect(lu.gameModes, {'picture_match', 'spelling'});
     expect(lu.image?.checksum, 'a' * 64);
 
     final question = DeliveredQuestion.parseAll(items).single;
