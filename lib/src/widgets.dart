@@ -10,6 +10,7 @@ import 'app_text.dart';
 import 'emoji_assets.dart';
 import 'game_sounds.dart';
 import 'celebration.dart';
+import 'juice.dart';
 import 'dart:math' as math;
 import 'word_cards.dart';
 
@@ -355,93 +356,100 @@ class GameHud extends StatelessWidget {
               AppText.of('hud.scoreSpoken', {'score': session.score, 'percent': (progress * 100).round()}),
             ].join(' '),
       child: ExcludeSemantics(
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
-          decoration: BoxDecoration(
-            gradient: QuestGradients.hero,
-            borderRadius: BorderRadius.circular(QuestRadius.large),
-            boxShadow: QuestShadows.card,
-          ),
-          child: Column(children: [
-            Row(children: [
-              if (relaxed)
-                _HudChip(icon: Icons.eco_rounded, label: AppText.of('hud.relaxed'), iconColor: QuestColors.teal)
-              else
-                Row(mainAxisSize: MainAxisSize.min, children: [
-                  for (var i = 0; i < session.startingHearts; i++)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 2),
-                      // A lost heart shrinks away and its outline pops in.
-                      child: AnimatedSwitcher(
-                        duration: motionFor(context, const Duration(milliseconds: 420)),
-                        transitionBuilder: (child, animation) => ScaleTransition(
-                          scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
-                          child: child,
-                        ),
-                        child: Icon(
-                          i < session.hearts ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                          key: ValueKey<bool>(i < session.hearts),
-                          size: 22,
-                          color: i < session.hearts ? QuestColors.coral : const Color(0x66FFFFFF),
+        child: ComboCheer(
+          combo: session.combo,
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+            decoration: BoxDecoration(
+              gradient: QuestGradients.hero,
+              borderRadius: BorderRadius.circular(QuestRadius.large),
+              boxShadow: QuestShadows.card,
+            ),
+            child: Column(children: [
+              Row(children: [
+                if (relaxed)
+                  _HudChip(icon: Icons.eco_rounded, label: AppText.of('hud.relaxed'), iconColor: QuestColors.teal)
+                else
+                  Row(mainAxisSize: MainAxisSize.min, children: [
+                    for (var i = 0; i < session.startingHearts; i++)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 2),
+                        // A lost heart shrinks away and its outline pops in.
+                        child: AnimatedSwitcher(
+                          duration: motionFor(context, const Duration(milliseconds: 420)),
+                          transitionBuilder: (child, animation) => ScaleTransition(
+                            scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+                            child: child,
+                          ),
+                          child: Icon(
+                            i < session.hearts ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                            key: ValueKey<bool>(i < session.hearts),
+                            size: 22,
+                            color: i < session.hearts ? QuestColors.coral : const Color(0x66FFFFFF),
+                          ),
                         ),
                       ),
-                    ),
-                ]),
-              const Spacer(),
-              if (secondsElapsed case final s?)
-                _HudChip(
-                  icon: Icons.timer_rounded,
-                  label: '${s ~/ 60}:${(s % 60).toString().padLeft(2, '0')}',
-                  iconColor: QuestColors.gold,
-                )
-              else if (secondsRemaining != null)
-                _HudChip(
-                  icon: Icons.timer_rounded,
-                  label: '${secondsRemaining}s',
-                  iconColor: lowTime ? QuestColors.coral : QuestColors.gold,
-                  highlight: lowTime,
-                )
-              else if (session.combo > 1)
-                PopOnChange(
-                  trigger: session.combo,
-                  child: _HudChip(icon: Icons.bolt_rounded, label: 'x${session.combo}', iconColor: QuestColors.gold),
-                ),
-              const SizedBox(width: 8),
-              // The score counts up to its new value.
-              PopOnChange(
-                trigger: session.score,
-                child: TweenAnimationBuilder<double>(
-                  tween: Tween(end: session.score.toDouble()),
-                  duration: motionFor(context, const Duration(milliseconds: 600)),
-                  curve: Curves.easeOutCubic,
-                  builder: (context, value, _) => _HudChip(
-                      icon: Icons.star_rounded, label: '${value.round()}', iconColor: QuestColors.gold),
-                ),
-              ),
-            ]),
-            const SizedBox(height: 12),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(99),
-              child: Stack(children: [
-                Container(height: 9, color: const Color(0x33FFFFFF)),
-                TweenAnimationBuilder<double>(
-                  tween: Tween(end: progress.clamp(0, 1).toDouble()),
-                  duration: motionFor(context, const Duration(milliseconds: 420)),
-                  curve: Curves.easeOutCubic,
-                  builder: (context, value, _) => FractionallySizedBox(
-                    widthFactor: value,
-                    child: Container(
-                      height: 9,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(colors: [QuestColors.teal, QuestColors.gold]),
-                        borderRadius: BorderRadius.circular(99),
-                      ),
+                  ]),
+                const Spacer(),
+                if (secondsElapsed case final s?)
+                  _HudChip(
+                    icon: Icons.timer_rounded,
+                    label: '${s ~/ 60}:${(s % 60).toString().padLeft(2, '0')}',
+                    iconColor: QuestColors.gold,
+                  )
+                else if (secondsRemaining != null)
+                  _HudChip(
+                    icon: Icons.timer_rounded,
+                    label: '${secondsRemaining}s',
+                    iconColor: lowTime ? QuestColors.coral : QuestColors.gold,
+                    highlight: lowTime,
+                  )
+                else if (session.combo > 1)
+                  PopOnChange(
+                    trigger: session.combo,
+                    child: _HudChip(icon: Icons.bolt_rounded, label: 'x${session.combo}', iconColor: QuestColors.gold),
+                  ),
+                const SizedBox(width: 8),
+                // The score counts up to its new value, the points gained
+                // floating off it.
+                ScoreFloat(
+                  score: session.score,
+                  child: PopOnChange(
+                    trigger: session.score,
+                    child: TweenAnimationBuilder<double>(
+                      tween: Tween(end: session.score.toDouble()),
+                      duration: motionFor(context, const Duration(milliseconds: 600)),
+                      curve: Curves.easeOutCubic,
+                      builder: (context, value, _) => _HudChip(
+                          icon: Icons.star_rounded, label: '${value.round()}', iconColor: QuestColors.gold),
                     ),
                   ),
                 ),
               ]),
-            ),
-          ]),
+              const SizedBox(height: 12),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(99),
+                child: Stack(children: [
+                  Container(height: 9, color: const Color(0x33FFFFFF)),
+                  TweenAnimationBuilder<double>(
+                    tween: Tween(end: progress.clamp(0, 1).toDouble()),
+                    duration: motionFor(context, const Duration(milliseconds: 420)),
+                    curve: Curves.easeOutCubic,
+                    builder: (context, value, _) => FractionallySizedBox(
+                      widthFactor: value,
+                      child: Container(
+                        height: 9,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(colors: [QuestColors.teal, QuestColors.gold]),
+                          borderRadius: BorderRadius.circular(99),
+                        ),
+                      ),
+                    ),
+                  ),
+                ]),
+              ),
+            ]),
+          ),
         ),
       ),
     );
@@ -852,11 +860,11 @@ Future<void> showGameResult(BuildContext context, QuestController controller, St
           padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + MediaQuery.of(sheetContext).padding.bottom),
           child: Column(children: [
             Row(children: [
-              Expanded(child: _ResultStat(icon: Icons.star_rounded, color: QuestColors.goldDeep, label: AppText.of('result.score'), value: '${result.score}')),
+              Expanded(child: _ResultStat(icon: Icons.star_rounded, color: QuestColors.goldDeep, label: AppText.of('result.score'), value: '${result.score}', count: result.score)),
               const SizedBox(width: 10),
               Expanded(child: _ResultStat(icon: Icons.track_changes_rounded, color: QuestColors.tealDark, label: AppText.of('result.accuracy'), value: '${(result.accuracy * 100).round()}%')),
               const SizedBox(width: 10),
-              Expanded(child: _ResultStat(icon: Icons.bolt_rounded, color: QuestColors.indigo, label: outcome.bonusPercent > 0 ? AppText.of('result.xpBonus', {'n': outcome.bonusPercent}) : AppText.of('result.xp'), value: '+${outcome.xp}')),
+              Expanded(child: _ResultStat(icon: Icons.bolt_rounded, color: QuestColors.indigo, label: outcome.bonusPercent > 0 ? AppText.of('result.xpBonus', {'n': outcome.bonusPercent}) : AppText.of('result.xp'), value: '+${outcome.xp}', count: outcome.xp, prefix: '+')),
             ]),
             if (outcome.newBest) ...[
               const SizedBox(height: 12),
@@ -1026,11 +1034,15 @@ class _LevelBanner extends StatelessWidget {
 }
 
 class _ResultStat extends StatelessWidget {
-  const _ResultStat({required this.icon, required this.color, required this.label, required this.value});
+  const _ResultStat({required this.icon, required this.color, required this.label, required this.value, this.count, this.prefix = ''});
   final IconData icon;
   final Color color;
   final String label;
   final String value;
+
+  /// Counts up to this number instead of showing [value] straight away.
+  final int? count;
+  final String prefix;
   @override
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 6),
@@ -1038,7 +1050,10 @@ class _ResultStat extends StatelessWidget {
         child: Column(children: [
           Icon(icon, color: color, size: 22),
           const SizedBox(height: 4),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 20)),
+          if (count case final n?)
+            CountUp(value: n, prefix: prefix, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 20))
+          else
+            Text(value, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 20)),
           const SizedBox(height: 2),
           Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: .8, color: QuestColors.slate)),
         ]),

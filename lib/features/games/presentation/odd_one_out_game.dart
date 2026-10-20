@@ -9,6 +9,7 @@ import '../../../src/game_session.dart';
 import '../../../src/game_text.dart';
 import '../../../src/games.dart' show advanceAfterRightAnswer;
 import '../../../src/game_words.dart';
+import '../../../src/juice.dart';
 import '../../../src/odd_one_out.dart';
 import '../../../src/widgets.dart';
 import '../application/game_runtime.dart';
@@ -152,10 +153,14 @@ class _OddOneOutGameState extends State<OddOneOutGame> {
       child: Column(children: [
         if (runtime.restoredSession) const GameResumeBanner(),
         GameStage(
-          child: Text(copy.prompt,
-              textAlign: TextAlign.center,
-              style:
-                  const TextStyle(fontSize: 21, fontWeight: FontWeight.w900)),
+          child: PopIn(
+            key: ValueKey('prompt$index'),
+            from: .85,
+            child: Text(copy.prompt,
+                textAlign: TextAlign.center,
+                style:
+                    const TextStyle(fontSize: 21, fontWeight: FontWeight.w900)),
+          ),
         ),
         GameHintButton(
             revealed: runtime.hintRevealed,
@@ -166,17 +171,27 @@ class _OddOneOutGameState extends State<OddOneOutGame> {
                   gloss: _groupName(question.group.id))),
         const SizedBox(height: 18),
         for (final (i, entry) in question.options.indexed)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: AnswerButton(
-              badge: String.fromCharCode(65 + i),
-              label: withPictures && entry.emoji.trim().isNotEmpty
-                  ? '${entry.emoji}  ${entry.word}'
-                  : entry.word,
-              selected: selected == entry.id,
-              correct:
-                  selected == entry.id ? entry.id == question.odd.id : null,
-              onTap: answered || !runtime.ready ? null : () => choose(entry.id),
+          SlideIn(
+            key: ValueKey('option$index.$i'),
+            index: i,
+            child: Cheer(
+              // The odd one hops when found.
+              active: selected == entry.id && entry.id == question.odd.id,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: AnswerButton(
+                  badge: String.fromCharCode(65 + i),
+                  label: withPictures && entry.emoji.trim().isNotEmpty
+                      ? '${entry.emoji}  ${entry.word}'
+                      : entry.word,
+                  selected: selected == entry.id,
+                  correct:
+                      selected == entry.id ? entry.id == question.odd.id : null,
+                  onTap: answered || !runtime.ready
+                      ? null
+                      : () => choose(entry.id),
+                ),
+              ),
             ),
           ),
         if (answered) ...[

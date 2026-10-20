@@ -526,4 +526,7 @@ const stringsKo = <String, String>{
   'chain.tooShort': '이 레벨에서는 {n}글자 이상의 단어를 써요.',
   'chain.minLetters': '이 레벨: 단어 {words}개, 각각 {n}글자 이상.',
   'sentence.extraWords': '모든 타일을 쓰지는 않아요. 남는 단어는 빼세요.',
+  'cheer.streak3': '좋아요! {n}개 연속',
+  'cheer.streak5': '불타오른다! {n}개 연속',
+  'cheer.streak10': '멈출 수 없어! {n}개 연속',
 };

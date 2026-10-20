@@ -526,4 +526,7 @@ const stringsZhHans = <String, String>{
   'chain.tooShort': '这一级请用{n}个字母以上的词。',
   'chain.minLetters': '本级：{words}个词，每个至少{n}个字母。',
   'sentence.extraWords': '不是每块都要用：多余的词别放进去。',
+  'cheer.streak3': '不错！连对 {n} 题',
+  'cheer.streak5': '火力全开！连对 {n} 题',
+  'cheer.streak10': '势不可挡！连对 {n} 题',
 };

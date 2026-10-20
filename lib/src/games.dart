@@ -16,6 +16,7 @@ import 'word_search_board.dart';
 import 'game_session.dart';
 import 'game_text.dart';
 import 'game_words.dart';
+import 'juice.dart';
 import 'meaning_round.dart';
 import 'mizo_lexicon.dart';
 import 'theme.dart';
@@ -353,13 +354,19 @@ class _PictureMatchGameState extends State<PictureMatchGame> {
         if (runtime.restoredSession) const GameResumeBanner(),
         GameStage(
             child: Column(children: [
-          if (question.asksForPicture)
-            Text(entry.word,
-                textAlign: TextAlign.center,
-                style:
-                    const TextStyle(fontSize: 40, fontWeight: FontWeight.w900))
-          else
-            _pictureFor(entry),
+          // Each question's picture pops in, and hops when named right.
+          Cheer(
+            active: correct,
+            child: PopIn(
+              key: ValueKey('picture$index'),
+              child: question.asksForPicture
+                  ? Text(entry.word,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          fontSize: 40, fontWeight: FontWeight.w900))
+                  : _pictureFor(entry),
+            ),
+          ),
           const SizedBox(height: 16),
           Text(
               question.asksForPicture
@@ -388,30 +395,40 @@ class _PictureMatchGameState extends State<PictureMatchGame> {
             crossAxisSpacing: 12,
             children: [
               for (final (i, option) in pictures.indexed)
-                PictureOption(
-                  entry: option,
-                  label: AppText.of('picture.optionSpoken',
-                      {'n': String.fromCharCode(65 + i)}),
-                  selected: selected == option.word,
-                  correct:
-                      selected == option.word ? option.word == entry.word : null,
-                  onTap: answered || !runtime.ready
-                      ? null
-                      : () => choose(option.word),
+                SlideIn(
+                  key: ValueKey('option$index.$i'),
+                  index: i,
+                  child: Cheer(
+                    active: selected == option.word && option.word == entry.word,
+                    child: PictureOption(
+                      entry: option,
+                      label: AppText.of('picture.optionSpoken',
+                          {'n': String.fromCharCode(65 + i)}),
+                      selected: selected == option.word,
+                      correct:
+                          selected == option.word ? option.word == entry.word : null,
+                      onTap: answered || !runtime.ready
+                          ? null
+                          : () => choose(option.word),
+                    ),
+                  ),
                 ),
             ],
           )
         else
-          ...question.options.indexed.map((pair) => Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: AnswerButton(
-                  badge: String.fromCharCode(65 + pair.$1),
-                  label: pair.$2,
-                  selected: selected == pair.$2,
-                  correct: selected == pair.$2 ? pair.$2 == entry.word : null,
-                  onTap: answered || !runtime.ready
-                      ? null
-                      : () => choose(pair.$2)))),
+          ...question.options.indexed.map((pair) => SlideIn(
+              key: ValueKey('option$index.${pair.$1}'),
+              index: pair.$1,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: AnswerButton(
+                    badge: String.fromCharCode(65 + pair.$1),
+                    label: pair.$2,
+                    selected: selected == pair.$2,
+                    correct: selected == pair.$2 ? pair.$2 == entry.word : null,
+                    onTap: answered || !runtime.ready
+                        ? null
+                        : () => choose(pair.$2))))),
         if (answered) ...[
           const SizedBox(height: 6),
           FeedbackCard(
@@ -676,13 +693,23 @@ class _SpellingGameState extends State<SpellingGame> {
                   fontWeight: FontWeight.w800, color: QuestColors.slate)),
           if (question.kind != SpellingKind.pick || answered) ...[
             const SizedBox(height: 18),
-            FittedBox(
-                child: Text(_shown,
-                    style: const TextStyle(
-                        fontSize: 34,
-                        letterSpacing: 3,
-                        fontWeight: FontWeight.w900,
-                        color: QuestColors.navy))),
+            // The word pops in, hops when spelt right and shakes when not.
+            Shake(
+              trigger: answeredRight == false ? 'missed$index' : 'open',
+              child: Cheer(
+                active: right,
+                child: PopIn(
+                  key: ValueKey('word$index'),
+                  child: FittedBox(
+                      child: Text(_shown,
+                          style: const TextStyle(
+                              fontSize: 34,
+                              letterSpacing: 3,
+                              fontWeight: FontWeight.w900,
+                              color: QuestColors.navy))),
+                ),
+              ),
+            ),
           ],
           const SizedBox(height: 14),
           Text(AppText.of('spelling.clue', {'hint': question.hint}),
@@ -707,33 +734,40 @@ class _SpellingGameState extends State<SpellingGame> {
             runSpacing: 10,
             children: [
               for (final (i, tile) in question.options.indexed)
-                _LetterTile(
-                  letter: tile,
-                  used: placed.contains(i),
-                  onTap: answered || !runtime.ready
-                      ? null
-                      : placed.contains(i)
-                          ? () => unplace(i)
-                          : () => place(i),
+                SlideIn(
+                  key: ValueKey('tile$index.$i'),
+                  index: i,
+                  child: _LetterTile(
+                    letter: tile,
+                    used: placed.contains(i),
+                    onTap: answered || !runtime.ready
+                        ? null
+                        : placed.contains(i)
+                            ? () => unplace(i)
+                            : () => place(i),
+                  ),
                 ),
             ],
           )
         else if (question.kind == SpellingKind.pick)
-          ...question.options.map((option) => Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: Opacity(
-                  opacity: ruledOut.contains(option) ? .35 : 1,
-                  child: AnswerButton(
-                      label: option,
-                      selected: selected == option,
-                      correct: selected == option
-                          ? option == question.answer
-                          : null,
-                      onTap: !answered &&
-                              runtime.ready &&
-                              !ruledOut.contains(option)
-                          ? () => choose(option)
-                          : null))))
+          ...question.options.indexed.map((pair) => SlideIn(
+              key: ValueKey('option$index.${pair.$1}'),
+              index: pair.$1,
+              child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Opacity(
+                      opacity: ruledOut.contains(pair.$2) ? .35 : 1,
+                      child: AnswerButton(
+                          label: pair.$2,
+                          selected: selected == pair.$2,
+                          correct: selected == pair.$2
+                              ? pair.$2 == question.answer
+                              : null,
+                          onTap: !answered &&
+                                  runtime.ready &&
+                                  !ruledOut.contains(pair.$2)
+                              ? () => choose(pair.$2)
+                              : null)))))
         else
           GridView.count(
               crossAxisCount: 2,
@@ -742,21 +776,25 @@ class _SpellingGameState extends State<SpellingGame> {
               mainAxisSpacing: 10,
               crossAxisSpacing: 10,
               childAspectRatio: 2.2,
-              children: question.options
-                  .map((option) => Opacity(
-                      opacity: ruledOut.contains(option) ? .35 : 1,
-                      child: AnswerButton(
-                          label: option,
-                          selected: selected == option,
-                          correct: selected == option
-                              ? option == question.answer
-                              : null,
-                          onTap: !answered &&
-                                  runtime.ready &&
-                                  !ruledOut.contains(option)
-                              ? () => choose(option)
-                              : null)))
-                  .toList()),
+              children: [
+                for (final (i, option) in question.options.indexed)
+                  SlideIn(
+                      key: ValueKey('option$index.$i'),
+                      index: i,
+                      child: Opacity(
+                          opacity: ruledOut.contains(option) ? .35 : 1,
+                          child: AnswerButton(
+                              label: option,
+                              selected: selected == option,
+                              correct: selected == option
+                                  ? option == question.answer
+                                  : null,
+                              onTap: !answered &&
+                                      runtime.ready &&
+                                      !ruledOut.contains(option)
+                                  ? () => choose(option)
+                                  : null))),
+              ]),
         if (placesTiles && placed.isNotEmpty && !answered) ...[
           const SizedBox(height: 10),
           TextButton.icon(
@@ -923,20 +961,30 @@ class _OldWordQuizGameState extends State<OldWordQuizGame> {
           secondsRemaining: runtime.isTimed ? runtime.remainingSeconds : null),
       child: Column(children: [
         if (runtime.restoredSession) const GameResumeBanner(),
-        if (question.emoji.trim().isNotEmpty) ...[
-          EmojiImage(question.emoji, size: 64),
-          const SizedBox(height: 14),
-        ],
-        if (question.instruction.isNotEmpty) ...[
-          Text(question.instruction,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  color: QuestColors.slate, fontWeight: FontWeight.w700)),
-          const SizedBox(height: 8),
-        ],
-        Text(question.prompt,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headlineSmall),
+        // The question pops in and hops when answered right.
+        Cheer(
+          active: correct,
+          child: PopIn(
+            key: ValueKey('question$index'),
+            from: .85,
+            child: Column(children: [
+              if (question.emoji.trim().isNotEmpty) ...[
+                EmojiImage(question.emoji, size: 64),
+                const SizedBox(height: 14),
+              ],
+              if (question.instruction.isNotEmpty) ...[
+                Text(question.instruction,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        color: QuestColors.slate, fontWeight: FontWeight.w700)),
+                const SizedBox(height: 8),
+              ],
+              Text(question.prompt,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineSmall),
+            ]),
+          ),
+        ),
         GameHintButton(
             revealed: runtime.hintRevealed,
             onPressed: selected != null ? null : runtime.revealHint),
@@ -945,20 +993,24 @@ class _OldWordQuizGameState extends State<OldWordQuizGame> {
               message: fillGameText(GameText.of('tawng_upa').hint,
                   answer: question.answer)),
         const SizedBox(height: 22),
-        ...question.options.map((option) => Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: Opacity(
-                opacity: ruledOut.contains(option) ? .35 : 1,
-                child: AnswerButton(
-                    label: option,
-                    selected: selected == option,
-                    correct:
-                        selected == option ? option == question.answer : null,
-                    onTap: selected == null &&
-                            runtime.ready &&
-                            !ruledOut.contains(option)
-                        ? () => choose(option)
-                        : null)))),
+        ...question.options.indexed.map((pair) => SlideIn(
+            key: ValueKey('option$index.${pair.$1}'),
+            index: pair.$1,
+            child: Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Opacity(
+                    opacity: ruledOut.contains(pair.$2) ? .35 : 1,
+                    child: AnswerButton(
+                        label: pair.$2,
+                        selected: selected == pair.$2,
+                        correct: selected == pair.$2
+                            ? pair.$2 == question.answer
+                            : null,
+                        onTap: selected == null &&
+                                runtime.ready &&
+                                !ruledOut.contains(pair.$2)
+                            ? () => choose(pair.$2)
+                            : null))))),
         if (selected != null) ...[
           const SizedBox(height: 8),
           FeedbackCard(
@@ -1019,6 +1071,9 @@ class _WordChainGameState extends State<WordChainGame> {
   String? message;
   bool messageIsError = false;
   bool finishing = false;
+
+  /// Bumped for each word not taken, to shake the box it was typed in.
+  int misses = 0;
 
   @override
   void initState() {
@@ -1181,6 +1236,7 @@ class _WordChainGameState extends State<WordChainGame> {
       setState(() {
         message = notice;
         messageIsError = true;
+        misses++;
         input.clear();
       });
       await runtime.persist();
@@ -1202,6 +1258,7 @@ class _WordChainGameState extends State<WordChainGame> {
       setState(() {
         message = error;
         messageIsError = true;
+        misses++;
         input.clear();
         runtime.answer(false);
       });
@@ -1278,13 +1335,22 @@ class _WordChainGameState extends State<WordChainGame> {
         Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: chain
-                .map((word) => Chip(
-                    label: Text('${word[0].toUpperCase()}${word.substring(1)}',
-                        style: const TextStyle(fontWeight: FontWeight.w900)),
-                    backgroundColor: const Color(0xFFDDF3FF),
-                    side: BorderSide.none))
-                .toList()),
+            children: [
+              // Each word joins the chain with a pop; the newest glows.
+              for (final (i, word) in chain.indexed)
+                PopIn(
+                  key: ValueKey('link$i.$word'),
+                  from: .3,
+                  child: Chip(
+                      label: Text(
+                          '${word[0].toUpperCase()}${word.substring(1)}',
+                          style: const TextStyle(fontWeight: FontWeight.w900)),
+                      backgroundColor: i == chain.length - 1 && i > 0
+                          ? const Color(0xFFE6F5E2)
+                          : const Color(0xFFDDF3FF),
+                      side: BorderSide.none),
+                ),
+            ]),
         if (chain.length == 1) ...[
           const SizedBox(height: 8),
           Text(AppText.of('chain.start', {'word': _withMeaning(chain.single)}),
@@ -1292,8 +1358,12 @@ class _WordChainGameState extends State<WordChainGame> {
                   color: QuestColors.slate, fontWeight: FontWeight.w600)),
         ],
         const SizedBox(height: 24),
-        Text(AppText.of('chain.needed', {'unit': needed}),
-            style: Theme.of(context).textTheme.titleLarge),
+        PopIn(
+          key: ValueKey('needed${chain.length}'),
+          from: .8,
+          child: Text(AppText.of('chain.needed', {'unit': needed}),
+              style: Theme.of(context).textTheme.titleLarge),
+        ),
         GameHintButton(
             revealed: runtime.hintRevealed, onPressed: runtime.revealHint),
         if (runtime.hintRevealed)
@@ -1301,16 +1371,19 @@ class _WordChainGameState extends State<WordChainGame> {
               message: fillGameText(GameText.of('word_chain').hint,
                   word: _hintWord)),
         const SizedBox(height: 10),
-        TextField(
-            controller: input,
-            textInputAction: TextInputAction.done,
-            autocorrect: false,
-            onSubmitted: (_) => submit(),
-            decoration: InputDecoration(
-                hintText: AppText.of('chain.input'),
-                suffixIcon: IconButton(
-                    onPressed: submit,
-                    icon: const Icon(Icons.arrow_upward_rounded)))),
+        Shake(
+          trigger: misses,
+          child: TextField(
+              controller: input,
+              textInputAction: TextInputAction.done,
+              autocorrect: false,
+              onSubmitted: (_) => submit(),
+              decoration: InputDecoration(
+                  hintText: AppText.of('chain.input'),
+                  suffixIcon: IconButton(
+                      onPressed: submit,
+                      icon: const Icon(Icons.arrow_upward_rounded)))),
+        ),
         if (message != null) ...[
           const SizedBox(height: 14),
           FeedbackCard(correct: !messageIsError, message: message!)
@@ -1354,6 +1427,9 @@ class _WordSearchGameState extends State<WordSearchGame> {
   final Set<String> found = {};
   String message = AppText.of('search.start');
   bool finishing = false;
+
+  /// Bumped when the letters tapped spell no word, to shake the board.
+  int misses = 0;
 
   /// Words found with a hint showing: a daily result's yellow marks.
   final Set<String> helped = {};
@@ -1581,6 +1657,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
       setState(() {
         selected.clear();
         message = AppText.of('search.noMatch');
+        misses++;
       });
       await runtime.persist();
     }
@@ -1609,7 +1686,9 @@ class _WordSearchGameState extends State<WordSearchGame> {
             GameHintCard(
                 message: fillGameText(GameText.of('word_search').hint,
                     word: _label(_hintWord))),
-          PremiumCard(
+          Shake(
+            trigger: misses,
+            child: PremiumCard(
               padding: const EdgeInsets.all(12),
               child: AspectRatio(
                   aspectRatio: 1,
@@ -1653,16 +1732,22 @@ class _WordSearchGameState extends State<WordSearchGame> {
                                               width: 3)
                                           : null,
                                       borderRadius: BorderRadius.circular(10)),
-                                  child: ExcludeSemantics(
-                                      child: Text(grid[row][col],
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w900,
-                                              fontSize: grid.length > 6 ? 15 : 19,
-                                              color: isFound && !active
-                                                  ? QuestColors.successInk
-                                                  : QuestColors.navy))))));
+                                  // A letter pops as its word is found.
+                                  child: PopIn(
+                                    key: ValueKey('cell$row.$col.$isFound'),
+                                    from: isFound ? .4 : .7,
+                                    child: ExcludeSemantics(
+                                        child: Text(grid[row][col],
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w900,
+                                                fontSize: grid.length > 6 ? 15 : 19,
+                                                color: isFound && !active
+                                                    ? QuestColors.successInk
+                                                    : QuestColors.navy))),
+                                  ))));
                     },
                   ))),
+          ),
           const SizedBox(height: 18),
           Text(message,
               textAlign: TextAlign.center,
@@ -1680,7 +1765,9 @@ class _WordSearchGameState extends State<WordSearchGame> {
               runSpacing: 8,
               alignment: WrapAlignment.center,
               children: targets
-                  .map((word) => Chip(
+                  .map((word) => Cheer(
+                      active: found.contains(word),
+                      child: Chip(
                       avatar: Icon(
                           found.contains(word)
                               ? Icons.check_rounded
@@ -1695,7 +1782,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
                       backgroundColor: found.contains(word)
                           ? const Color(0xFFE6F5E2)
                           : Colors.white,
-                      side: BorderSide.none))
+                      side: BorderSide.none)))
                   .toList()),
         ]),
       );

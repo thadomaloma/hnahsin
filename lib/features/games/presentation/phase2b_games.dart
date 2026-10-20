@@ -18,6 +18,7 @@ import '../engine/phase2b_engine.dart';
 import '../../../src/app_text.dart';
 import '../../../src/game_sounds.dart';
 import '../../../src/game_words.dart';
+import '../../../src/juice.dart';
 import '../../../src/meaning_round.dart' show blankOutWord;
 import '../../../src/word_sentences.dart';
 
@@ -54,6 +55,9 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
   String? picked;
   int index = 0;
   bool? isCorrect;
+
+  /// Bumped for a wrong sentence, to shake it.
+  int misses = 0;
   bool finishing = false;
 
   SentenceExercise get question => questions[index];
@@ -348,6 +352,7 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
     final correct = engine.evaluate(question, answerTiles);
     setState(() {
       isCorrect = correct;
+      if (!correct) misses++;
       runtime.answer(correct);
     });
     await widget.controller.recordReview(
@@ -426,53 +431,58 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           if (runtime.restoredSession) const GameResumeBanner(),
-          PremiumCard(
-            gradient: const LinearGradient(
-              colors: <Color>[QuestColors.midnight, QuestColors.indigo],
-            ),
-            child: Column(
-              children: <Widget>[
-                Text(
-                  // A word's example sentence has no meaning to build, only
-                  // the word it is there to teach.
-                  gap != null
-                      ? AppText.of('sentence.gapPrompt')
-                      : question.keyWord == null
-                          ? GameText.of('sentence_builder').prompt
-                          : AppText.of('sentence.usingWord'),
-                  style: const TextStyle(
-                    color: QuestColors.teal,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.1,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  gap != null
-                      ? gap!.blanked
-                      : question.keyWord == null
-                          ? question.englishSupport
-                          : '“${question.keyWord}”',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 21,
-                    height: 1.25,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                if ((gap != null || question.keyWord != null) &&
-                    question.englishSupport.isNotEmpty) ...<Widget>[
-                  const SizedBox(height: 4),
+          PopIn(
+            key: ValueKey('prompt$index.${gap != null}'),
+            from: .85,
+            child: PremiumCard(
+              gradient: const LinearGradient(
+                colors: <Color>[QuestColors.midnight, QuestColors.indigo],
+              ),
+              child: Column(
+                children: <Widget>[
                   Text(
-                    question.englishSupport,
+                    // A word's example sentence has no meaning to build, only
+                    // the word it is there to teach.
+                    gap != null
+                        ? AppText.of('sentence.gapPrompt')
+                        : question.keyWord == null
+                            ? GameText.of('sentence_builder').prompt
+                            : AppText.of('sentence.usingWord'),
+                    style: const TextStyle(
+                      color: QuestColors.teal,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.1,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    gap != null
+                        ? gap!.blanked
+                        : question.keyWord == null
+                            ? question.englishSupport
+                            : '“${question.keyWord}”',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                        color: Color(0xFFDDF3FF), fontWeight: FontWeight.w600),
+                      color: Colors.white,
+                      fontSize: 21,
+                      height: 1.25,
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
+                  if ((gap != null || question.keyWord != null) &&
+                      question.englishSupport.isNotEmpty) ...<Widget>[
+                    const SizedBox(height: 4),
+                    Text(
+                      question.englishSupport,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          color: Color(0xFFDDF3FF),
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
           GameHintButton(
@@ -482,20 +492,26 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
             GameHintCard(message: GameText.of('sentence_builder').hint),
           const SizedBox(height: 8),
           if (gap case final gap?)
-            for (final option in gap.options)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Opacity(
-                  opacity: gap.ruledOut(option, runtime.hintRevealed) ? .35 : 1,
-                  child: AnswerButton(
-                    label: option,
-                    selected: picked == option,
-                    correct: picked == option ? option == gap.entry.word : null,
-                    onTap: isCorrect == null &&
-                            runtime.ready &&
-                            !gap.ruledOut(option, runtime.hintRevealed)
-                        ? () => _pick(option)
-                        : null,
+            for (final (i, option) in gap.options.indexed)
+              SlideIn(
+                key: ValueKey('gap$index.$i'),
+                index: i,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Opacity(
+                    opacity:
+                        gap.ruledOut(option, runtime.hintRevealed) ? .35 : 1,
+                    child: AnswerButton(
+                      label: option,
+                      selected: picked == option,
+                      correct:
+                          picked == option ? option == gap.entry.word : null,
+                      onTap: isCorrect == null &&
+                              runtime.ready &&
+                              !gap.ruledOut(option, runtime.hintRevealed)
+                          ? () => _pick(option)
+                          : null,
+                    ),
                   ),
                 ),
               )
@@ -518,33 +534,47 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
               ),
             ),
             const SizedBox(height: 8),
-            Container(
-              constraints: const BoxConstraints(minHeight: 92),
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: isCorrect == true
-                    ? const Color(0xFFE6F5E2)
-                    : isCorrect == false
-                        ? const Color(0xFFFCE4EC)
-                        : Colors.white,
-                border: Border.all(color: QuestColors.line),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: answerTiles
-                    .map(
-                      (tile) => ActionChip(
-                        label: Text(
-                          tile.text,
-                          style: const TextStyle(fontWeight: FontWeight.w900),
-                        ),
-                        onPressed:
-                            isCorrect == null ? () => _returnTile(tile) : null,
-                      ),
-                    )
-                    .toList(),
+            Shake(
+              trigger: misses,
+              child: Cheer(
+                active: isCorrect == true,
+                child: Container(
+                  constraints: const BoxConstraints(minHeight: 92),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: isCorrect == true
+                        ? const Color(0xFFE6F5E2)
+                        : isCorrect == false
+                            ? const Color(0xFFFCE4EC)
+                            : Colors.white,
+                    border: Border.all(color: QuestColors.line),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: answerTiles
+                        .map(
+                          // A word pops into the sentence as it's tapped.
+                          (tile) => PopIn(
+                            key: ValueKey('placed${tile.id}'),
+                            from: .5,
+                            duration: const Duration(milliseconds: 280),
+                            child: ActionChip(
+                              label: Text(
+                                tile.text,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w900),
+                              ),
+                              onPressed: isCorrect == null
+                                  ? () => _returnTile(tile)
+                                  : null,
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -553,16 +583,21 @@ class _SentenceBuilderGameState extends State<SentenceBuilderGame> {
               runSpacing: 8,
               children: bankTiles
                   .map(
-                    (tile) => ActionChip(
-                      backgroundColor: const Color(0xFFE9E4FF),
-                      side: BorderSide.none,
-                      avatar: const Icon(Icons.add_rounded, size: 17),
-                      label: Text(
-                        tile.text,
-                        style: const TextStyle(fontWeight: FontWeight.w900),
+                    (tile) => PopIn(
+                      key: ValueKey('bank${tile.id}'),
+                      from: .7,
+                      duration: const Duration(milliseconds: 240),
+                      child: ActionChip(
+                        backgroundColor: const Color(0xFFE9E4FF),
+                        side: BorderSide.none,
+                        avatar: const Icon(Icons.add_rounded, size: 17),
+                        label: Text(
+                          tile.text,
+                          style: const TextStyle(fontWeight: FontWeight.w900),
+                        ),
+                        onPressed:
+                            isCorrect == null ? () => _selectTile(tile) : null,
                       ),
-                      onPressed:
-                          isCorrect == null ? () => _selectTile(tile) : null,
                     ),
                   )
                   .toList(),

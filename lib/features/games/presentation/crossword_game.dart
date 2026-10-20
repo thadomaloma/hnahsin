@@ -19,6 +19,7 @@ import '../engine/crossword_layout.dart';
 import '../engine/game_engine.dart';
 import '../../../src/app_text.dart';
 import '../../../src/game_sounds.dart';
+import '../../../src/juice.dart';
 
 typedef _Cell = (int, int);
 
@@ -65,6 +66,9 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
   /// checked again once all of them have been replaced, so fixing it costs
   /// at most one more heart.
   final Set<_Cell> wrongCells = {};
+
+  /// Bumped when a filled word is wrong, to shake the board.
+  int misses = 0;
   late _Cell active;
   bool across = true;
   CrosswordSlot? lastSolved;
@@ -329,6 +333,7 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
           lastSolved = slot;
         } else {
           wrongCells.addAll(slot.cells.where((c) => letters[c] != solution[c]));
+          misses++;
           helped.add(slot.key);
         }
         final entry = widget.controller.wordCatalog.where((e) => e.id == slot.id).firstOrNull;
@@ -458,14 +463,17 @@ class _MiniCrosswordGameState extends State<MiniCrosswordGame> {
             onNext: () => _stepSlot(1),
           ),
           const SizedBox(height: 12),
-          _Board(
-            layout: layout,
-            letters: letters,
-            active: active,
-            activeSlot: slot,
-            isSolved: _locked,
-            isWrong: wrongCells.contains,
-            onTap: _select,
+          Shake(
+            trigger: misses,
+            child: _Board(
+              layout: layout,
+              letters: letters,
+              active: active,
+              activeSlot: slot,
+              isSolved: _locked,
+              isWrong: wrongCells.contains,
+              onTap: _select,
+            ),
           ),
           GameHintButton(revealed: runtime.hintRevealed, onPressed: _hint),
           if (runtime.hintRevealed) GameHintCard(message: copy.hint),
@@ -647,13 +655,19 @@ class _Board extends StatelessWidget {
                 ),
               ),
             Center(
-              child: ExcludeSemantics(
-                child: Text(
-                  letter ?? '',
-                  style: TextStyle(
-                    fontSize: size * .48,
-                    fontWeight: FontWeight.w900,
-                    color: wrong ? const Color(0xFFC2185B) : (solved ? QuestColors.successInk : QuestColors.navy),
+              // A letter pops in as it's typed, and again as its word is solved.
+              child: PopIn(
+                key: ValueKey('$cell.$letter.$solved'),
+                from: solved ? .5 : .7,
+                duration: const Duration(milliseconds: 260),
+                child: ExcludeSemantics(
+                  child: Text(
+                    letter ?? '',
+                    style: TextStyle(
+                      fontSize: size * .48,
+                      fontWeight: FontWeight.w900,
+                      color: wrong ? const Color(0xFFC2185B) : (solved ? QuestColors.successInk : QuestColors.navy),
+                    ),
                   ),
                 ),
               ),

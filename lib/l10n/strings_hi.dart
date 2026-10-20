@@ -526,4 +526,7 @@ const stringsHi = <String, String>{
   'chain.tooShort': 'इस स्तर पर {n} या अधिक अक्षरों का शब्द लिखें।',
   'chain.minLetters': 'इस स्तर पर: {words} शब्द, हर शब्द {n} या अधिक अक्षरों का।',
   'sentence.extraWords': 'हर टाइल इस्तेमाल नहीं होगी: फ़ालतू शब्द छोड़ दें।',
+  'cheer.streak3': 'बढ़िया! लगातार {n}',
+  'cheer.streak5': 'कमाल! लगातार {n}',
+  'cheer.streak10': 'रुकना नहीं! लगातार {n}',
 };

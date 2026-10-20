@@ -526,4 +526,7 @@ const stringsEs = <String, String>{
   'chain.tooShort': 'En este nivel, usa una palabra de {n} letras o más.',
   'chain.minLetters': 'Este nivel: {words} palabras, cada una de {n} letras o más.',
   'sentence.extraWords': 'No todas las fichas sirven: deja fuera las palabras de más.',
+  'cheer.streak3': '¡Bien! {n} seguidas',
+  'cheer.streak5': '¡Imparable racha! {n} seguidas',
+  'cheer.streak10': '¡Nadie te para! {n} seguidas',
 };

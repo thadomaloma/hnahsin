@@ -349,6 +349,10 @@ const appTextDefaults = <String, AppTextDefault>{
       AppTextDefault('Daily puzzles', '{clean} of {total} words without help'),
   'daily.shareText': AppTextDefault(
       'Daily puzzles', 'Hnahsin {puzzle}\n{marks}\n⏱ {time} · 💡 {hints}'),
+  // Cheers during a round
+  'cheer.streak3': AppTextDefault('Games', 'Nice! {n} in a row'),
+  'cheer.streak5': AppTextDefault('Games', 'On fire! {n} in a row'),
+  'cheer.streak10': AppTextDefault('Games', 'Unstoppable! {n} in a row'),
   // Picture Match
   "picture.whichPicture":
       AppTextDefault('Picture Match', "Which picture is it?"),

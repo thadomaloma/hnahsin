@@ -526,4 +526,7 @@ const stringsJa = <String, String>{
   'chain.tooShort': 'このレベルでは{n}文字以上の単語を使おう。',
   'chain.minLetters': 'このレベル：{words}語、それぞれ{n}文字以上。',
   'sentence.extraWords': 'すべてのタイルを使うわけではありません。余分な単語は使わないでね。',
+  'cheer.streak3': 'いいね！{n}問連続',
+  'cheer.streak5': '絶好調！{n}問連続',
+  'cheer.streak10': '止まらない！{n}問連続',
 };
