@@ -13,6 +13,7 @@ import 'content_widgets.dart';
 import '../l10n/app_locales.dart';
 import 'controller.dart';
 import 'photo_credits.dart';
+import 'garden.dart';
 import 'daily_widgets.dart';
 import 'data.dart';
 import 'game_text.dart';
@@ -37,6 +38,8 @@ class HomeScreen extends StatelessWidget {
           _DailyHero(controller: controller, openGames: openGames),
           const SizedBox(height: 28),
           DailyPuzzlesCard(controller: controller),
+          const SizedBox(height: 20),
+          GardenCard(controller: controller),
           const SizedBox(height: 28),
           if (_journeyVisible) _HomeJourney(controller: controller),
         ]),

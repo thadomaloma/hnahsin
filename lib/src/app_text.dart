@@ -401,6 +401,48 @@ const appTextDefaults = <String, AppTextDefault>{
   'chain.input': AppTextDefault('Word Chain', 'Type a Mizo word…'),
   'chain.tip': AppTextDefault(
       'Word Chain', 'TIP  •  We know {n} words starting with “{unit}”.'),
+  // Garden
+  'garden.title': AppTextDefault('Garden', 'My garden'),
+  'garden.count':
+      AppTextDefault('Garden', '{flowers} flowers · {gold} golden'),
+  'garden.empty': AppTextDefault('Garden',
+      'Every word you learn grows a flower here. Play a game to plant your first one!'),
+  'garden.next':
+      AppTextDefault('Garden', '{n} more words for the next surprise'),
+  'garden.flowerSpoken': AppTextDefault('Garden', 'Flower: {word}'),
+  'garden.countFull': AppTextDefault(
+      'Garden', '{flowers} flowers · {gold} golden · {sprouts} sprouts'),
+  'garden.sproutSpoken': AppTextDefault('Garden', 'Sprout: {word}'),
+  'garden.names': AppTextDefault('Garden', 'Names'),
+  'garden.health': AppTextDefault('Garden', 'Garden health'),
+  'garden.new': AppTextDefault('Garden', 'New flowers: {words}'),
+  'garden.sprouts': AppTextDefault('Garden', '{n} sprouts'),
+  'garden.sproutsNote': AppTextDefault(
+      'Garden', 'Words you are still learning. Answer to help them bloom.'),
+  'garden.grow': AppTextDefault('Garden', 'Help them grow'),
+  'garden.beds': AppTextDefault('Garden', 'Garden beds'),
+  'garden.bedNext': AppTextDefault(
+      'Garden', '{n} flowers · {left} more for the next star'),
+  'garden.bedFull': AppTextDefault('Garden', '{n} flowers · every star'),
+  'garden.soon': AppTextDefault(
+      'Garden', '{n} more will need water by tomorrow.'),
+  'garden.ripe': AppTextDefault(
+      'Garden', '{n} fruits are ripe. Pick one to fill a sentence.'),
+  'garden.fruitTitle': AppTextDefault('Garden', 'FILL THE GAP'),
+  'garden.fruitRight': AppTextDefault('Garden', 'Sweet! {word} — {gloss}'),
+  'garden.fruitWrong': AppTextDefault(
+      'Garden', 'It is “{word}” — {gloss}. The fruit grows back tomorrow.'),
+  'garden.pickTopic':
+      AppTextDefault('Garden', 'Pick a topic to read its flowers\' names.'),
+  'garden.thirsty': AppTextDefault('Garden', '{n} flowers need water'),
+  'garden.thirstyNote': AppTextDefault(
+      'Garden', 'Their words are fading. Answer a quick question to water each one.'),
+  'garden.water': AppTextDefault('Garden', 'Water them'),
+  'garden.allWell': AppTextDefault(
+      'Garden', 'Every flower is fresh. Come back later: words you might forget will need water.'),
+  'garden.question': AppTextDefault('Garden', 'Which Mizo word means “{gloss}”?'),
+  'garden.missed': AppTextDefault('Garden', 'It is “{word}”. This flower will ask again soon.'),
+  'garden.done': AppTextDefault('Garden', '{n} of {total} flowers bloom again'),
   // Word Groups
   'groups.submit': AppTextDefault('Word Groups', 'Submit'),
   'groups.shuffle': AppTextDefault('Word Groups', 'Shuffle'),
