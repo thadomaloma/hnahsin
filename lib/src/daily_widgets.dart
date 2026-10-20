@@ -5,6 +5,7 @@ import 'package:share_plus/share_plus.dart';
 import '../features/games/application/daily_puzzle.dart';
 import '../features/games/engine/game_engine.dart';
 import '../features/games/presentation/crossword_game.dart';
+import '../features/games/presentation/word_groups_game.dart';
 import 'app_text.dart';
 import 'celebration.dart';
 import 'controller.dart';
@@ -16,15 +17,22 @@ import 'theme.dart';
 import 'widgets.dart';
 
 /// The games with a daily puzzle.
-const dailyGameIds = <String>[MiniCrosswordGame.gameId, 'word_search'];
+const dailyGameIds = <String>[
+  WordGroupsGame.gameId,
+  MiniCrosswordGame.gameId,
+  'word_search'
+];
 
 /// [puzzle]'s game, relaxed (no hearts) and timed by a clock that counts up.
 Widget dailyGameFor(QuestController controller, DailyPuzzle puzzle) =>
-    puzzle.gameId == MiniCrosswordGame.gameId
-        ? MiniCrosswordGame(
-            controller: controller, mode: GameMode.relaxed, daily: puzzle)
-        : WordSearchGame(
-            controller: controller, mode: GameMode.relaxed, daily: puzzle);
+    switch (puzzle.gameId) {
+      WordGroupsGame.gameId =>
+        WordGroupsGame(controller: controller, daily: puzzle),
+      MiniCrosswordGame.gameId => MiniCrosswordGame(
+          controller: controller, mode: GameMode.relaxed, daily: puzzle),
+      _ => WordSearchGame(
+          controller: controller, mode: GameMode.relaxed, daily: puzzle),
+    };
 
 /// “Crossword #12”.
 String dailyTitle(DailyPuzzle puzzle) => AppText.of('daily.puzzle',
@@ -105,14 +113,25 @@ Future<void> showDailyResult(
                       fontSize: 25,
                       fontWeight: FontWeight.w800)),
               const SizedBox(height: 14),
-              Text(result.marks.join(' '),
-                  semanticsLabel: AppText.of('daily.marksSpoken', {
-                    'clean': result.marks
-                        .where((mark) => mark == DailyResult.clean)
-                        .length,
-                    'total': result.marks.length,
+              // Word Groups shares a grid, a row per try; the others a mark
+              // per word.
+              if (result.marks.contains('\n'))
+                Semantics(
+                  label: AppText.of('groups.resultSpoken', {
+                    'tries': result.marks.join().split('\n').length,
                   }),
-                  style: const TextStyle(fontSize: 30, letterSpacing: 2)),
+                  child: ExcludeSemantics(
+                      child: _SquareGrid(rows: result.marks.join().split('\n'))),
+                )
+              else
+                Text(result.marks.join(' '),
+                    semanticsLabel: AppText.of('daily.marksSpoken', {
+                      'clean': result.marks
+                          .where((mark) => mark == DailyResult.clean)
+                          .length,
+                      'total': result.marks.length,
+                    }),
+                    style: const TextStyle(fontSize: 30, letterSpacing: 2)),
               const SizedBox(height: 8),
               Text(AppText.of('daily.comeBack'),
                   style: const TextStyle(color: Color(0xFFDDF3FF))),
@@ -233,8 +252,13 @@ class DailyPuzzlesCard extends StatelessWidget {
         Text(AppText.of('daily.subtitle'),
             style: const TextStyle(color: QuestColors.slate, fontSize: 13)),
         const SizedBox(height: 12),
+        // The first across the card, the others side by side below it.
+        _DailyTile(
+            controller: controller,
+            puzzle: controller.dailyPuzzle(dailyGameIds.first)),
+        const SizedBox(height: 12),
         Row(children: [
-          for (final (index, gameId) in dailyGameIds.indexed) ...[
+          for (final (index, gameId) in dailyGameIds.skip(1).indexed) ...[
             if (index > 0) const SizedBox(width: 12),
             Expanded(
                 child: _DailyTile(
@@ -254,9 +278,11 @@ class _DailyTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final result = controller.dailyResult(puzzle);
     final done = result != null;
-    final icon = puzzle.gameId == MiniCrosswordGame.gameId
-        ? Icons.grid_on_rounded
-        : Icons.search_rounded;
+    final icon = switch (puzzle.gameId) {
+      WordGroupsGame.gameId => Icons.category_rounded,
+      MiniCrosswordGame.gameId => Icons.grid_on_rounded,
+      _ => Icons.search_rounded,
+    };
     return PremiumCard(
       padding: const EdgeInsets.all(14),
       onTap: () {
@@ -304,4 +330,39 @@ class _DailyTile extends StatelessWidget {
       ]),
     );
   }
+}
+
+/// A shared grid's coloured squares drawn as boxes, so every phone shows
+/// them the same.
+class _SquareGrid extends StatelessWidget {
+  const _SquareGrid({required this.rows});
+  final List<String> rows;
+
+  static const _colors = <String, Color>{
+    '🟨': Color(0xFFF7D774),
+    '🟩': Color(0xFFA9D67C),
+    '🟦': Color(0xFF9CC7F2),
+    '🟪': Color(0xFFC8A6EE),
+  };
+
+  @override
+  Widget build(BuildContext context) => Column(children: [
+        for (final row in rows)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              for (final rune in row.runes)
+                Container(
+                  width: 24,
+                  height: 24,
+                  margin: const EdgeInsets.symmetric(horizontal: 2),
+                  decoration: BoxDecoration(
+                    color: _colors[String.fromCharCode(rune)] ??
+                        const Color(0x55FFFFFF),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+            ]),
+          ),
+      ]);
 }

@@ -60,11 +60,30 @@ void main() {
     await play(tester, 'nawlpui');
     expect(find.textContaining("We don't have this word yet"), findsNothing);
     expect(find.text('Nawlpui'), findsOneWidget);
+    // Rova answers.
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.text('Nawlpui'), findsOneWidget);
+  });
+
+  testWidgets('word chain: Rova answers each word with one that links on',
+      (tester) async {
+    await pumpChain(tester, ['in']);
+    await play(tester, 'nula');
+    expect(find.text('…'), findsOneWidget, reason: 'Rova is thinking');
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.text('…'), findsNothing);
+    // Rova's word starts with the a that “nula” ends with.
+    final bubbles = tester
+        .widgetList<Text>(find.byType(Text))
+        .map((text) => text.data ?? '')
+        .where((data) => data.startsWith('A'))
+        .toList();
+    expect(bubbles, isNotEmpty);
   });
 
   testWidgets('word chain links by Mizo alphabet letters: th starts with t',
       (tester) async {
-    await pumpChain(tester, ['in', 'nat']);
+    await pumpChain(tester, ['nat']);
 
     // Nothing here starts with “ng”, so “thing” would strand the learner:
     // it is explained, not scored.
@@ -76,6 +95,7 @@ void main() {
     expect(_hearts(3), findsOneWidget);
     expect(find.text('Thla'), findsOneWidget);
     expect(find.textContaining('Now link a word starting with “a”'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 1));
   });
 
   testWidgets('a new word chain starts from a word with ways to go on',

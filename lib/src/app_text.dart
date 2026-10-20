@@ -174,7 +174,7 @@ const appTextDefaults = <String, AppTextDefault>{
       AppTextDefault('Profile', 'Phone language ({language})'),
   'profile.sound': AppTextDefault('Profile', 'Sound'),
   'profile.soundNote': AppTextDefault(
-      'Profile', 'Sounds for right and wrong answers and finished rounds'),
+      'Profile', 'Sounds and vibration for answers and finished rounds'),
   'profile.credits': AppTextDefault('Profile', 'Credits'),
   'profile.creditsBody': AppTextDefault('Profile',
       'Sentences from Mizo-Language-Corpus-4M by MWireLabs (CC BY 4.0; sources IndicNLCorp, FineWeb and DIPR Mizoram) and the Mizo–English parallel dataset by Hillbyte AI. Word checks from J.F. Laldailova\'s English–Lushai Dictionary. Word pictures from game-icons.net (CC BY 3.0), Material Design Icons, Tabler Icons, Health Icons and Phosphor Icons. Some photos from Wikimedia Commons (see Photo credits). Emoji: Microsoft Fluent Emoji (MIT).'),
@@ -391,18 +391,31 @@ const appTextDefaults = <String, AppTextDefault>{
   'chain.linked': AppTextDefault(
       'Word Chain', '{word}\nNow link a word starting with “{unit}”.'),
   'chain.howToPlay': AppTextDefault('Word Chain', 'HOW TO PLAY'),
-  'chain.rule': AppTextDefault(
-      'Word Chain', 'Start each word with the last letter of the one before.'),
+  'chain.rule': AppTextDefault('Word Chain',
+      'Take turns with Rova: start each word with the last letter of the one before.'),
+  'chain.rova': AppTextDefault('Word Chain', 'Rova'),
   'chain.example':
       AppTextDefault('Word Chain', 'Example: In → Nula → Aizawl → Lal'),
   'chain.title': AppTextDefault('Word Chain', 'Our chain'),
-  'chain.start': AppTextDefault('Word Chain', 'Start: {word}'),
   'chain.needed': AppTextDefault('Word Chain', 'Start with “{unit}”'),
   'chain.input': AppTextDefault('Word Chain', 'Type a Mizo word…'),
   'chain.tip': AppTextDefault(
       'Word Chain', 'TIP  •  We know {n} words starting with “{unit}”.'),
+  // Word Groups
+  'groups.submit': AppTextDefault('Word Groups', 'Submit'),
+  'groups.shuffle': AppTextDefault('Word Groups', 'Shuffle'),
+  'groups.clear': AppTextDefault('Word Groups', 'Deselect'),
+  'groups.mistakes': AppTextDefault('Word Groups', 'Mistakes left'),
+  'groups.oneAway': AppTextDefault('Word Groups', 'One away!'),
+  'groups.notGroup': AppTextDefault('Word Groups', 'Not a group. Try again.'),
+  'groups.tried': AppTextDefault('Word Groups', 'You already tried those four.'),
+  'groups.empty': AppTextDefault(
+      'Word Groups', 'Not enough word groups yet. Try again when new content arrives.'),
+  'groups.resultSpoken': AppTextDefault('Word Groups', 'Solved in {tries} tries'),
+  'groups.groupSpoken': AppTextDefault('Word Groups', '{group}: {words}'),
   // Word Search
-  'search.start': AppTextDefault('Word Search', 'Tap the letters in order.'),
+  'search.start': AppTextDefault(
+      'Word Search', 'Swipe across a word, or tap its letters in order.'),
   'search.allFound': AppTextDefault('Word Search', 'You found every word.'),
   'search.adjacent':
       AppTextDefault('Word Search', 'Pick letters next to each other.'),

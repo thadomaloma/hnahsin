@@ -167,4 +167,50 @@ void main() {
     expect(find.text(dailyTitle(puzzle)), findsWidgets);
     expect(find.text(AppText.of('daily.share')), findsOneWidget);
   });
+
+  testWidgets('a word is found by swiping across it, either way',
+      (tester) async {
+    tester.view.physicalSize = const Size(420, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final controller = QuestController(repository: InMemoryQuestRepository());
+    final puzzle = controller.dailyPuzzle('word_search');
+    await tester.pumpWidget(MaterialApp(
+        home: WordSearchGame(
+            controller: controller, mode: GameMode.relaxed, daily: puzzle)));
+    await tester.pump(const Duration(seconds: 1));
+    final board = buildWordSearchBoard(
+      catalog: controller.wordCatalog,
+      rating: puzzle.rating,
+      random: puzzle.random,
+      pick: (pool, count) => pickDailyWords(pool, puzzle, count),
+    );
+    Offset centre((int, int) cell) => tester.getCenter(find.bySemanticsLabel(
+        AppText.of('search.cellSpoken', {
+          'row': cell.$1 + 1,
+          'column': cell.$2 + 1,
+          'letter': board.rows[cell.$1][cell.$2],
+        })));
+    Future<void> swipe((int, int) from, (int, int) to) async {
+      final gesture = await tester.startGesture(centre(from));
+      await tester.pump(const Duration(milliseconds: 20));
+      final start = centre(from);
+      final end = centre(to);
+      for (var i = 1; i <= 8; i++) {
+        await gesture.moveTo(Offset.lerp(start, end, i / 8)!);
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+      await gesture.up();
+      await tester.pump(const Duration(milliseconds: 400));
+    }
+
+    final words = board.placements.entries.toList();
+    // The first word from its first letter, the second from its last.
+    await swipe(words[0].value.first, words[0].value.last);
+    await swipe(words[1].value.last, words[1].value.first);
+    expect(find.textContaining(board.labelOf(words[0].key)), findsWidgets);
+    final state = tester.state(find.byType(WordSearchGame)) as dynamic;
+    expect((state.found as Set<String>).length, 2);
+    expect(tester.takeException(), isNull);
+  });
 }

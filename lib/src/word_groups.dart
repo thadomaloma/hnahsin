@@ -112,7 +112,7 @@ const wordGroups = <WordGroup>[
   WordGroup('meat', 'food', "meat", <String>[
     'word.arsa',
     'word.vawksa',
-    'word.bawng',
+    'word.jf300.bawngsa',
     'word.sa',
   ]),
   WordGroup('head', 'body', "parts of the head", <String>[

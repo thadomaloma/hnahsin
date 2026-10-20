@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../src/controller.dart';
@@ -106,6 +107,13 @@ class GameRuntime with WidgetsBindingObserver {
     if (!ready) return false;
     GameSounds.play(
         sound ?? (isCorrect ? GameSound.correct : GameSound.wrong));
+    // A light tap for a right answer, a firmer one for a wrong one; off
+    // with the game sounds.
+    if (GameSounds.enabled) {
+      unawaited(isCorrect
+          ? HapticFeedback.lightImpact()
+          : HapticFeedback.heavyImpact());
+    }
     if (wordId != null && word != null) {
       final before = _played[wordId];
       _played[wordId] = WordPlay(
@@ -122,6 +130,12 @@ class GameRuntime with WidgetsBindingObserver {
     hintRevealed = false;
     unawaited(persist());
     return accepted;
+  }
+
+  /// Remembers a word the round showed, without scoring it: a group's
+  /// other words, found together with one answer.
+  void noteWord(String wordId, String word) {
+    _played[wordId] ??= WordPlay(id: wordId, word: word);
   }
 
   Future<void> revealHint() async {

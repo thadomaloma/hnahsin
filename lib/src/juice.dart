@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'app_text.dart';
 import 'emoji_assets.dart';
@@ -310,6 +311,7 @@ class _ComboCheerState extends State<ComboCheer> {
     super.didUpdateWidget(old);
     if (widget.combo > old.combo && ComboCheer.milestone(widget.combo)) {
       GameSounds.play(GameSound.match);
+      if (GameSounds.enabled) HapticFeedback.mediumImpact();
       // Not while building: the banner goes in once this frame is drawn.
       final combo = widget.combo;
       if (!_still(context)) {

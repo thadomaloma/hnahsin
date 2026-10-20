@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:math' as math;
 import 'dart:math' show min;
 
+import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -1075,6 +1077,16 @@ class _WordChainGameState extends State<WordChainGame> {
   /// Bumped for each word not taken, to shake the box it was typed in.
   int misses = 0;
 
+  /// Rova plays the other side: the chain's first word is his, then the
+  /// player and he take turns. Rova is choosing his next word.
+  bool rovaThinking = false;
+
+  /// The player's words so far (every other word, from the second).
+  int get playerWords => chain.length ~/ 2;
+
+  /// The player's turn: the chain ends on one of Rova's words.
+  bool get playersTurn => chain.length.isOdd;
+
   @override
   void initState() {
     super.initState();
@@ -1121,8 +1133,47 @@ class _WordChainGameState extends State<WordChainGame> {
           message = snapshot.payload['message'] as String?;
           messageIsError = snapshot.payload['messageIsError'] as bool? ?? false;
         },
-      ),
+      ).then((_) {
+        // Saved just after the player's word: Rova still owes a reply.
+        if (mounted && !playersTurn && playerWords < turns) _rovaTurn();
+      }),
     );
+  }
+
+  /// Rova's reply: a word that links on, at the player's level, that the
+  /// player can follow in turn. Words with a meaning to learn come first.
+  Future<void> _rovaTurn() async {
+    setState(() => rovaThinking = true);
+    await Future<void>.delayed(const Duration(milliseconds: 900));
+    if (!mounted || finishing) return;
+    final options = _nextWords(chain.last).toList();
+    final fair = [
+      for (final word in options)
+        if (_nextWords(word).any((next) => next != chain.last)) word,
+    ];
+    final pool = [
+      for (final word in fair.isEmpty ? options : fair)
+        if (entries[word] case final entry?) entry,
+    ];
+    final picked = pool.isEmpty
+        ? (options..shuffle(session.random)).firstOrNull
+        : normalizeMizo(pickWordsForLevel(
+                widget.controller, 'word_chain', pool, 1, session.random)
+            .single
+            .word);
+    if (picked == null) {
+      setState(() => rovaThinking = false);
+      return;
+    }
+    GameSounds.play(GameSound.flip);
+    setState(() {
+      rovaThinking = false;
+      chain.add(picked);
+      // His bubble says it all; the turn prompt below asks for the next.
+      message = null;
+      messageIsError = false;
+    });
+    await runtime.persist();
   }
 
   @override
@@ -1168,7 +1219,7 @@ class _WordChainGameState extends State<WordChainGame> {
 
   /// Words that can come next without leaving the learner stuck.
   List<String> get _playable {
-    final lastTurn = chain.length == turns;
+    final lastTurn = playerWords + 1 == turns;
     return _nextWords(chain.last)
         .where((word) => lastTurn || _nextWords(word).isNotEmpty)
         .toList();
@@ -1214,7 +1265,7 @@ class _WordChainGameState extends State<WordChainGame> {
   static final _singleWord = RegExp(r'^[a-zâêîôûṭ]+$');
 
   Future<void> submit() async {
-    if (!runtime.ready || finishing) return;
+    if (!runtime.ready || finishing || rovaThinking || !playersTurn) return;
     final typed = normalizeMizo(input.text);
     final needed = lastMizoUnit(chain.last);
     if (typed.isEmpty) return;
@@ -1228,7 +1279,7 @@ class _WordChainGameState extends State<WordChainGame> {
       notice = AppText.of('chain.tooShort', {'n': minLetters});
     } else if (!chain.contains(resolved) &&
         _links(chain.last, resolved) &&
-        chain.length < turns &&
+        playerWords + 1 < turns &&
         _nextWords(resolved).isEmpty) {
       notice = AppText.of('chain.deadEnd', {'word': resolved, 'unit': lastMizoUnit(resolved)});
     }
@@ -1275,19 +1326,21 @@ class _WordChainGameState extends State<WordChainGame> {
       chain.add(word);
       input.clear();
       // The card's own heading already says “A dik e!”.
-      message = chain.length == turns + 1
+      message = playerWords == turns
           ? _withMeaning(word)
           : AppText.of('chain.linked', {'word': _withMeaning(word), 'unit': lastMizoUnit(word)});
       messageIsError = false;
       final entry = entries[word];
       runtime.answer(true, wordId: entry?.id, word: entry?.word);
     });
-    if (chain.length == turns + 1) {
+    if (playerWords == turns) {
       finishing = true;
       final result = await runtime.finish(baseXp: 45);
       if (!mounted) return;
       await showGameResult(context, widget.controller, 'word_chain', result);
+      return;
     }
+    await _rovaTurn();
   }
 
   @override
@@ -1298,7 +1351,7 @@ class _WordChainGameState extends State<WordChainGame> {
       subtitle: GameText.of('word_chain').subtitle,
       hud: GameHud(
           session: session,
-          progress: (chain.length - 1) / turns,
+          progress: playerWords / turns,
           secondsRemaining: runtime.isTimed ? runtime.remainingSeconds : null),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         if (runtime.restoredSession) const GameResumeBanner(),
@@ -1332,33 +1385,23 @@ class _WordChainGameState extends State<WordChainGame> {
         const SizedBox(height: 22),
         SectionTitle(AppText.of('chain.title')),
         const SizedBox(height: 12),
-        Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              // Each word joins the chain with a pop; the newest glows.
-              for (final (i, word) in chain.indexed)
-                PopIn(
-                  key: ValueKey('link$i.$word'),
-                  from: .3,
-                  child: Chip(
-                      label: Text(
-                          '${word[0].toUpperCase()}${word.substring(1)}',
-                          style: const TextStyle(fontWeight: FontWeight.w900)),
-                      backgroundColor: i == chain.length - 1 && i > 0
-                          ? const Color(0xFFE6F5E2)
-                          : const Color(0xFFDDF3FF),
-                      side: BorderSide.none),
-                ),
-            ]),
-        if (chain.length == 1) ...[
-          const SizedBox(height: 8),
-          Text(AppText.of('chain.start', {'word': _withMeaning(chain.single)}),
-              style: const TextStyle(
-                  color: QuestColors.slate, fontWeight: FontWeight.w600)),
-        ],
+        // Rova's words on the left, the player's on the right, each popping
+        // in as it's played.
+        for (final (i, word) in chain.indexed)
+          PopIn(
+            key: ValueKey('link$i.$word'),
+            from: .3,
+            child: _ChainBubble(
+              word: '${word[0].toUpperCase()}${word.substring(1)}',
+              meaning: entries[word]?.englishGloss.trim() ?? '',
+              rova: i.isEven,
+              latest: i == chain.length - 1,
+            ),
+          ),
+        if (rovaThinking)
+          const _ChainBubble(word: '…', meaning: '', rova: true, latest: true),
         const SizedBox(height: 24),
-        PopIn(
+        if (playersTurn && !rovaThinking) PopIn(
           key: ValueKey('needed${chain.length}'),
           from: .8,
           child: Text(AppText.of('chain.needed', {'unit': needed}),
@@ -1375,6 +1418,7 @@ class _WordChainGameState extends State<WordChainGame> {
           trigger: misses,
           child: TextField(
               controller: input,
+              enabled: !rovaThinking && playersTurn,
               textInputAction: TextInputAction.done,
               autocorrect: false,
               onSubmitted: (_) => submit(),
@@ -1608,44 +1652,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
     });
     final word = current;
     if (targets.contains(word) && !found.contains(word)) {
-      HapticFeedback.selectionClick();
-      setState(() {
-        found.add(word);
-        if (runtime.hintRevealed) helped.add(word);
-        selected.clear();
-        final gloss = glosses[word] ?? '';
-        message = gloss.isEmpty
-            ? AppText.of('search.found', {'word': _label(word)})
-            : AppText.of('search.foundGloss',
-                {'word': _label(word), 'gloss': gloss});
-        final entry = wordEntries[word];
-        runtime.answer(true,
-            wordId: entry?.id, word: entry?.word, sound: GameSound.match);
-      });
-      if (found.length == targets.length) {
-        finishing = true;
-        final result = await runtime.finish(baseXp: 45);
-        if (!mounted) return;
-        if (widget.daily case final daily?) {
-          await finishDaily(
-              context,
-              widget.controller,
-              daily,
-              result,
-              DailyResult(
-                marks: [
-                  for (final target in targets)
-                    helped.contains(target)
-                        ? DailyResult.helped
-                        : DailyResult.clean,
-                ],
-                seconds: runtime.elapsedSeconds,
-                hints: runtime.hintsUsed,
-              ));
-          return;
-        }
-        await showGameResult(context, widget.controller, 'word_search', result);
-      }
+      await _foundWord(word);
       return;
     }
     final canContinue = targets
@@ -1654,12 +1661,128 @@ class _WordSearchGameState extends State<WordSearchGame> {
     if (!canContinue) {
       await Future<void>.delayed(const Duration(milliseconds: 300));
       if (!mounted) return;
-      setState(() {
+      _missed();
+      await runtime.persist();
+    }
+  }
+
+  void _missed() => setState(() {
         selected.clear();
         message = AppText.of('search.noMatch');
         misses++;
       });
+
+  /// Where a swipe started, while one is under way.
+  (int, int)? _swipeFrom;
+
+  /// The cell under [local], a point on a board [side] wide.
+  (int, int) _cellAt(Offset local, double side) {
+    final n = grid.length;
+    int clamp(double v) => (v / side * n).floor().clamp(0, n - 1).toInt();
+    return (clamp(local.dy), clamp(local.dx));
+  }
+
+  /// The cells from where the swipe started towards [to], in a straight
+  /// line (across, down or slanting), as far as the finger has gone.
+  List<(int, int)> _line((int, int) from, (int, int) to) {
+    final dr = to.$1 - from.$1;
+    final dc = to.$2 - from.$2;
+    if (dr == 0 && dc == 0) return [from];
+    // Snap to the nearest of the eight directions.
+    final angle = math.atan2(dr.toDouble(), dc.toDouble());
+    final step = (angle / (math.pi / 4)).round();
+    final sr = [0, 1, 1, 1, 0, -1, -1, -1][step % 8];
+    final sc = [1, 1, 0, -1, -1, -1, 0, 1][step % 8];
+    final length = math.max(dr.abs(), dc.abs());
+    final n = grid.length;
+    return [
+      for (var i = 0; i <= length; i++)
+        if (from.$1 + sr * i >= 0 &&
+            from.$1 + sr * i < n &&
+            from.$2 + sc * i >= 0 &&
+            from.$2 + sc * i < n)
+          (from.$1 + sr * i, from.$2 + sc * i),
+    ];
+  }
+
+  void _swipeStart(Offset local, double side) {
+    if (!runtime.ready || finishing) return;
+    final cell = _cellAt(local, side);
+    _swipeFrom = cell;
+    GameSounds.play(GameSound.tap);
+    setState(() => selected
+      ..clear()
+      ..add(cell));
+  }
+
+  void _swipeUpdate(Offset local, double side) {
+    final from = _swipeFrom;
+    if (from == null) return;
+    final line = _line(from, _cellAt(local, side));
+    if (line.length != selected.length) {
+      HapticFeedback.selectionClick();
+      GameSounds.play(GameSound.tap);
+    }
+    setState(() => selected
+      ..clear()
+      ..addAll(line));
+  }
+
+  /// A swipe ends: a hidden word (either way along it) is found, anything
+  /// longer than a letter that isn't one shakes the board.
+  Future<void> _swipeEnd() async {
+    if (_swipeFrom == null) return;
+    _swipeFrom = null;
+    final word = current;
+    final backwards = String.fromCharCodes(word.runes.toList().reversed);
+    final hit = [word, backwards].where(
+        (candidate) => targets.contains(candidate) && !found.contains(candidate));
+    if (hit.isNotEmpty) {
+      await _foundWord(hit.first);
+    } else if (selected.length > 1) {
+      _missed();
       await runtime.persist();
+    }
+  }
+
+  Future<void> _foundWord(String word) async {
+    HapticFeedback.selectionClick();
+    setState(() {
+      found.add(word);
+      if (runtime.hintRevealed) helped.add(word);
+      selected.clear();
+      final gloss = glosses[word] ?? '';
+      message = gloss.isEmpty
+          ? AppText.of('search.found', {'word': _label(word)})
+          : AppText.of('search.foundGloss',
+              {'word': _label(word), 'gloss': gloss});
+      final entry = wordEntries[word];
+      runtime.answer(true,
+          wordId: entry?.id, word: entry?.word, sound: GameSound.match);
+    });
+    if (found.length == targets.length) {
+      finishing = true;
+      final result = await runtime.finish(baseXp: 45);
+      if (!mounted) return;
+      if (widget.daily case final daily?) {
+        await finishDaily(
+            context,
+            widget.controller,
+            daily,
+            result,
+            DailyResult(
+              marks: [
+                for (final target in targets)
+                  helped.contains(target)
+                      ? DailyResult.helped
+                      : DailyResult.clean,
+              ],
+              seconds: runtime.elapsedSeconds,
+              hints: runtime.hintsUsed,
+            ));
+        return;
+      }
+      await showGameResult(context, widget.controller, 'word_search', result);
     }
   }
 
@@ -1692,7 +1815,18 @@ class _WordSearchGameState extends State<WordSearchGame> {
               padding: const EdgeInsets.all(12),
               child: AspectRatio(
                   aspectRatio: 1,
-                  child: GridView.builder(
+                  // Swipe across a word, or tap its letters one by one.
+                  // Both drag directions follow the finger, so the page
+                  // doesn't scroll while a word is being swiped.
+                  child: LayoutBuilder(builder: (context, box) => GestureDetector(
+                    dragStartBehavior: DragStartBehavior.down,
+                    onVerticalDragStart: (d) => _swipeStart(d.localPosition, box.maxWidth),
+                    onVerticalDragUpdate: (d) => _swipeUpdate(d.localPosition, box.maxWidth),
+                    onVerticalDragEnd: (_) => _swipeEnd(),
+                    onHorizontalDragStart: (d) => _swipeStart(d.localPosition, box.maxWidth),
+                    onHorizontalDragUpdate: (d) => _swipeUpdate(d.localPosition, box.maxWidth),
+                    onHorizontalDragEnd: (_) => _swipeEnd(),
+                    child: GridView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     gridDelegate:
                         SliverGridDelegateWithFixedCrossAxisCount(
@@ -1746,7 +1880,7 @@ class _WordSearchGameState extends State<WordSearchGame> {
                                                     : QuestColors.navy))),
                                   ))));
                     },
-                  ))),
+                  ))))),
           ),
           const SizedBox(height: 18),
           Text(message,
@@ -1928,4 +2062,81 @@ class _LetterTile extends StatelessWidget {
           ),
         ),
       );
+}
+
+/// One word of a Word Chain duel: Rova's on the left with his face and the
+/// word's meaning, the player's on the right.
+class _ChainBubble extends StatelessWidget {
+  const _ChainBubble(
+      {required this.word,
+      required this.meaning,
+      required this.rova,
+      required this.latest});
+
+  final String word;
+  final String meaning;
+  final bool rova;
+  final bool latest;
+
+  @override
+  Widget build(BuildContext context) {
+    final bubble = Flexible(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+        decoration: BoxDecoration(
+          color: rova
+              ? Colors.white
+              : (latest ? const Color(0xFFD9F4E5) : const Color(0xFFE6F5E2)),
+          border: Border.all(
+              color: latest
+                  ? (rova ? QuestColors.indigo : QuestColors.success)
+                  : QuestColors.line,
+              width: latest ? 2 : 1),
+          borderRadius: BorderRadius.only(
+            topLeft: const Radius.circular(18),
+            topRight: const Radius.circular(18),
+            bottomLeft: Radius.circular(rova ? 4 : 18),
+            bottomRight: Radius.circular(rova ? 18 : 4),
+          ),
+        ),
+        child: Column(
+            crossAxisAlignment:
+                rova ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+            children: [
+              Text(word,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 17,
+                      color: QuestColors.ink)),
+              if (meaning.isNotEmpty)
+                Text(meaning.split(';').first,
+                    style: const TextStyle(
+                        color: QuestColors.slate,
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w600)),
+            ]),
+      ),
+    );
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        mainAxisAlignment:
+            rova ? MainAxisAlignment.start : MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: rova
+            ? [
+                Semantics(
+                    label: AppText.of('chain.rova'),
+                    child: const EmojiImage('👦', size: 30)),
+                const SizedBox(width: 8),
+                bubble,
+                const SizedBox(width: 48),
+              ]
+            : [
+                const SizedBox(width: 48),
+                bubble,
+              ],
+      ),
+    );
+  }
 }

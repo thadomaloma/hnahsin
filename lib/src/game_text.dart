@@ -77,8 +77,17 @@ const _defaultGameCopy = <String, GameCopy>{
       subtitle: 'Find words in the grid',
       hint: 'Hint: look for “{word}”.',
       instructions: <String>[
-        'Tap letters next to each other, in order.',
+        'Swipe across a word, or tap its letters one by one.',
         'Find all five words.'
+      ]),
+  'word_groups': GameCopy(
+      title: 'Word Groups',
+      subtitle: 'Sort 16 Mizo words into 4 groups',
+      prompt: 'Find four groups of four.',
+      hint: 'Hint: one group is “{gloss}”.',
+      instructions: <String>[
+        'Pick four words that belong together and tap Submit.',
+        'Find all four groups. You can make four mistakes.'
       ]),
   'word_chain': GameCopy(
       title: 'Word Chain',
