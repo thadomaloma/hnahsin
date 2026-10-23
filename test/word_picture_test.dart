@@ -17,7 +17,7 @@ void main() {
   test('illustrations resolve by stable id so homonyms get their own picture',
       () {
     expect(illustrationFor(_word('word.fu', 'Fu')),
-        'assets/illustrations/word.fu.png');
+        'assets/illustrations/word.fu.jpg');
     expect(illustrationFor(_word('word.fu-2', 'Fu')), isNull);
   });
 

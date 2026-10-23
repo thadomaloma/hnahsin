@@ -393,6 +393,7 @@ const bundledEmoji = <String>{
   '1fad8',
   '1fad9',
   '1fada',
+  '1fadb',
   '1fae3',
   '2194',
   '2195',
