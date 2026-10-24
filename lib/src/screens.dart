@@ -480,6 +480,23 @@ class LearnScreen extends StatelessWidget {
       );
 }
 
+/// The start page of the game with [id], as the Games tab opens it, or null when
+/// there is no such game. Used when the web site links straight to one game.
+Widget? gameLauncherFor(QuestController controller, String id) {
+  for (final game in _gameCatalog(controller)) {
+    if (game.id == id) {
+      return GameLaunchScreen(
+          controller: controller,
+          gameId: game.id,
+          title: game.title,
+          subtitle: game.subtitle,
+          instructions: game.instructions,
+          builder: game.builder);
+    }
+  }
+  return null;
+}
+
 List<_GameInfo> _gameCatalog(QuestController controller) {
   return <_GameInfo>[
     _GameInfo(

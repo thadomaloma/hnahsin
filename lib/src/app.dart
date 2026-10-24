@@ -11,6 +11,10 @@ import 'data.dart';
 import 'screens.dart';
 import 'theme.dart';
 import 'app_text.dart';
+import 'web_link/web_link.dart';
+
+/// Tells the web game page when the game on top of it is closed.
+final webGameRoutes = RouteObserver<ModalRoute<void>>();
 
 class HnahsinApp extends StatelessWidget {
   const HnahsinApp({super.key, required this.controller});
@@ -24,6 +28,7 @@ class HnahsinApp extends StatelessWidget {
       listenable: controller,
       builder: (context, _) => MaterialApp(
         debugShowCheckedModeBanner: false,
+        navigatorObservers: [webGameRoutes],
         title: 'Hnahsin',
         theme: buildQuestTheme(),
         locale: appLocaleOf(AppText.locale).locale,
@@ -54,6 +59,11 @@ class HnahsinApp extends StatelessWidget {
             if (ContentPolicy.isProduction && !controller.releaseContentReady) {
               return const _ReleaseContentGate();
             }
+            // A web link to one game opens it at once (no onboarding first).
+            final linked = linkedGameId();
+            final launcher =
+                linked == null ? null : gameLauncherFor(controller, linked);
+            if (launcher != null) return WebGamePage(launcher: launcher);
             return controller.profile.onboardingCompleted
                 ? QuestShell(controller: controller)
                 : OnboardingScreen(controller: controller);
@@ -333,4 +343,49 @@ class _SideRail extends StatelessWidget {
       ),
     );
   }
+}
+
+/// The web site's way into one game: opens the game's start page on top, and
+/// goes back to the Playground once the player has left the game.
+class WebGamePage extends StatefulWidget {
+  const WebGamePage({super.key, required this.launcher});
+  final Widget launcher;
+
+  @override
+  State<WebGamePage> createState() => _WebGamePageState();
+}
+
+class _WebGamePageState extends State<WebGamePage> with RouteAware {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      Navigator.of(context)
+          .push(MaterialPageRoute<void>(builder: (_) => widget.launcher));
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route != null) webGameRoutes.subscribe(this, route);
+  }
+
+  @override
+  void dispose() {
+    webGameRoutes.unsubscribe(this);
+    super.dispose();
+  }
+
+  // The game (or its start page) was closed: this page is on top again.
+  @override
+  void didPopNext() => leaveToPlayground();
+
+  @override
+  Widget build(BuildContext context) => const Scaffold(
+        backgroundColor: QuestColors.mist,
+        body: Center(child: CircularProgressIndicator()),
+      );
 }
