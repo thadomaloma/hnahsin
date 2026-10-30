@@ -154,12 +154,8 @@ const photoCredits = <PhotoCredit>[
       "VinhNguyen.1257",
       "CC BY-SA 4.0",
       "https://commons.wikimedia.org/wiki/File:Uncooked_ST25_rice_on_bamboo_surface.jpg"),
-  PhotoCredit(
-      "word.buhmal",
-      "Long grain rice Bakan.JPG",
-      "Paxse",
-      "CC BY-SA 3.0",
-      "https://commons.wikimedia.org/wiki/File:Long_grain_rice_Bakan.JPG"),
+  PhotoCredit("word.buhmal", "Single grain of rice.png", "Yarzaryeni", "CC0",
+      "https://commons.wikimedia.org/wiki/File:Single_grain_of_rice.png"),
   PhotoCredit(
       "word.chhuat",
       "Pine boards sanded.jpg",
@@ -178,8 +174,6 @@ const photoCredits = <PhotoCredit>[
       "Avantikac98",
       "CC BY-SA 4.0",
       "https://commons.wikimedia.org/wiki/File:Traditional_Naga_kitchen.jpg"),
-  PhotoCredit("word.darbu", "Gong chimes.jpg", "Pbwelch", "CC BY-SA 3.0",
-      "https://commons.wikimedia.org/wiki/File:Gong_chimes.jpg"),
   PhotoCredit(
       "word.dawrkai",
       "Shopkeeper - Indian Market.jpg",
@@ -410,10 +404,10 @@ const photoCredits = <PhotoCredit>[
       "https://commons.wikimedia.org/wiki/File:Smoke_plume_rising_from_Cape_Town_station_during_July_21,_2018,_train_fire.jpg"),
   PhotoCredit(
       "word.jf300.ngharul",
-      "Freshwater eel 2.jpg",
-      "국립국어원",
-      "CC BY-SA 2.0 kr",
-      "https://commons.wikimedia.org/wiki/File:Freshwater_eel_2.jpg"),
+      "Monopterus albus 1.jpg",
+      "U.S. Geological Survey",
+      "Public domain",
+      "https://commons.wikimedia.org/wiki/File:Monopterus_albus_1.jpg"),
   PhotoCredit(
       "word.jf300.nowalh",
       "Closeup of match stick heads.jpg",
@@ -536,10 +530,10 @@ const photoCredits = <PhotoCredit>[
       "https://commons.wikimedia.org/wiki/File:Andermanik_village,_Mizoram,_Feb_2013,_AJTJ._DSCN4396.jpg"),
   PhotoCredit(
       "word.kuli",
-      "Porters carry awesome loads in Peru (6020845235).jpg",
-      "sergejf",
-      "CC BY-SA 2.0",
-      "https://commons.wikimedia.org/wiki/File:Porters_carry_awesome_loads_in_Peru_(6020845235).jpg"),
+      "India - Kolkata train - 3095.jpg",
+      "Jorge Royan",
+      "CC BY-SA 3.0",
+      "https://commons.wikimedia.org/wiki/File:India_-_Kolkata_train_-_3095.jpg"),
   PhotoCredit("word.kut-2", "Cheraw Mizoram.jpg", "Ramesh Lalwani", "CC BY 2.0",
       "https://commons.wikimedia.org/wiki/File:Cheraw_Mizoram.jpg"),
   PhotoCredit(
@@ -556,10 +550,10 @@ const photoCredits = <PhotoCredit>[
       "https://commons.wikimedia.org/wiki/File:Orange_texture_made_of_a_fishing_net_on_a_wooden_board_at_golden_hour.jpg"),
   PhotoCredit(
       "word.lo",
-      "Shifting Cultivation.jpg",
-      "Kravesper",
-      "CC BY-SA 4.0",
-      "https://commons.wikimedia.org/wiki/File:Shifting_Cultivation.jpg"),
+      "Sulawesi trsr DSCN0881 v1.JPG",
+      "T. R. Shankar Raman",
+      "CC BY-SA 3.0",
+      "https://commons.wikimedia.org/wiki/File:Sulawesi_trsr_DSCN0881_v1.JPG"),
   PhotoCredit(
       "word.lukham",
       "HK SW Hollywood Road Police HQ Art Demo 12-2009 bed and pillows in white.JPG",
@@ -624,10 +618,10 @@ const photoCredits = <PhotoCredit>[
       "https://commons.wikimedia.org/wiki/File:James_Dwyer,_Wooden_Chest,_c._1939,_NGA_16852.jpg"),
   PhotoCredit(
       "word.tiaupho",
-      "Don Puay river bank landscape at sunset.jpg",
-      "Basile Morin",
+      "Sand on Bank of South Saskatchewan River - Saskatoon.jpg",
+      "Ryan Hodnett",
       "CC BY-SA 4.0",
-      "https://commons.wikimedia.org/wiki/File:Don_Puay_river_bank_landscape_at_sunset.jpg"),
+      "https://commons.wikimedia.org/wiki/File:Sand_on_Bank_of_South_Saskatchewan_River_-_Saskatoon.jpg"),
   PhotoCredit(
       "word.tuichhunchhuah",
       "Water well in Yangdong Village.jpg",

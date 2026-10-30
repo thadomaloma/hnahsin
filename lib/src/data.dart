@@ -603,7 +603,7 @@ const wordIllustrationsById = <String, String>{
   'word.chhuat': 'assets/illustrations/word.chhuat.jpg',
   'word.chini': 'assets/illustrations/word.chini.jpg',
   'word.choka': 'assets/illustrations/word.choka.jpg',
-  'word.darbu': 'assets/illustrations/word.darbu.jpg',
+  'word.darbu': 'assets/illustrations/word.darbu.png',
   'word.darkhuang': 'assets/illustrations/word.darkhuang.png',
   'word.darmang': 'assets/illustrations/word.darmang.png',
   'word.dawhkan-2': 'assets/illustrations/word.dawhkan-2.png',

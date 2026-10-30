@@ -8,6 +8,7 @@ files in this folder are project-made illustrations (see `docs/IMAGE_SOURCING_PL
 |---|---|---|---|---|
 | `word.buhtun` | rice-pounding mortar | `game-icons:pestle-mortar` | game-icons.net — Lorc, Delapouite & contributors | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `word.dawhkan-2` | table (furniture) | `game-icons:table` | game-icons.net — Lorc, Delapouite & contributors | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `word.darbu` | small gong | `game-icons:gong` | game-icons.net — Lorc, Delapouite & contributors | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `word.darkhuang` | large gong | `game-icons:gong` | game-icons.net — Lorc, Delapouite & contributors | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `word.darmang` | small gong/cymbal | `game-icons:gong` | game-icons.net — Lorc, Delapouite & contributors | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `word.pumpui` | stomach | `game-icons:stomach` | game-icons.net — Lorc, Delapouite & contributors | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
